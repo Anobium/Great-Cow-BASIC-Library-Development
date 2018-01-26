@@ -25,7 +25,7 @@
 
 
   ' Determine the power on wait. Can be changed by the user
-  #define Max7219_PowerOnTestWait_ms 10
+  #define Max7219_PowerOnTestWait_ms 100
   #define Max7219_PixelTransmissionDelay 1 ms
 
   #startup MAX7219_LEDMatrix_Init
@@ -45,20 +45,53 @@
     Dir Max7219_DO  Out
     Dir Max7219_SCK Out
     Dir Max7219_CS  out
-    wait 10 ms
+    wait 100 ms
 
     Set Max7219_DO  off
-    Set Max7219_SCK off
-    wait 10 ms
+    Set Max7219_SCK on
+    wait 100 ms
 
-    Max7219_sendByte(MAX7219_REG_INTENSITY, 0x00)'Brightness to minimum
-    wait Max7219_PowerOnTestWait_ms ms
-    Max7219_sendByte(MAX7219_REG_DECODEMODE, 0x00)'Decoding off
-    Max7219_sendByte(MAX7219_REG_DECODEMODE, 0x00)'Decoding off
-    Max7219_sendByte(MAX7219_REG_INTENSITY, 0x0F)'Brightness to intermediate
+'    repeat 4
     Max7219_sendByte(MAX7219_REG_SCANLIMIT, 0x07)'Scan limit = 7
+'    end Repeat
+
+'    repeat 4
+    Max7219_sendByte(MAX7219_REG_DECODEMODE, 0x00)'Decoding off
+'    end Repeat
+
+'    repeat 4
     Max7219_sendByte(MAX7219_REG_SHUTDOWN, 0x01)'Normal operation mode
+'    end Repeat
+
+
+'    repeat 4
+    Max7219_sendByte(MAX7219_REG_DISPLAYTEST, 0x00)
+'    end Repeat
+
+'    repeat 4
+    Max7219_sendByte(MAX7219_REG_INTENSITY, 0x00)'Brightness to minimum
+'    end Repeat
+
+'    repeat 4
     wait Max7219_PowerOnTestWait_ms ms
+'    end Repeat
+
+
+
+
+
+
+
+    wait Max7219_PowerOnTestWait_ms ms
+
+    Max7219_CS = 1
+    wait Max7219_PowerOnTestWait_ms ms
+    Max7219_CS = 0
+    wait Max7219_PowerOnTestWait_ms ms
+    Max7219_CS = 1
+    wait Max7219_PowerOnTestWait_ms ms
+
+
     GLCDFontWidth = 6
 
 
@@ -189,8 +222,9 @@ sub Max7219_LEDMatrix_FlashInvertDisplay()
  dim null as byte
       Max7219_CS = 1
       Max7219_CS = 0
-      FastHWSPITransfer  reg
-      FastHWSPITransfer  ddata
+      FastHWSPITransfer  reg, indata
+
+      FastHWSPITransfer  ddata, indata
 
       Max7219_CS = 1
 
