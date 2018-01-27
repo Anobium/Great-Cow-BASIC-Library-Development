@@ -1,17 +1,30 @@
-'  Required for MAX7219 device
-'  Required for MAX7219 device
-  '  #define Max7219_DI portb.3
-  '  #define Max7219_DO portb.2
-  '  #define Max7219_SCK portb.1
-  '  #define Max7219_CS portb.0
+'    Graphical Max7219 GLCD routines for the GCBASIC compiler
+'    Copyright (C) 2018 Hugh Considine and Evan Venn
 
-  ' Include GLCD.H to reuse the font tables
+'    This library is free software; you can redistribute it and/or
+'    modify it under the terms of the GNU Lesser General Public
+'    License as published by the Free Software Foundation; either
+'    version 2.1 of the License, or (at your option) any later version.
+
+'    This library is distributed in the hope that it will be useful,
+'    but WITHOUT ANY WARRANTY; without even the implied warranty of
+'    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+'    Lesser General Public License for more details.
+
+'    You should have received a copy of the GNU Lesser General Public
+'    License along with this library; if not, write to the Free Software
+'    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+'Notes:
+' Supports Max7219 as a GLCD controller only.
+
+  ' Include the GLCD.H to reuse the font tables
   #include <glcd.h>
 
   ' Set GLCD_TYPE to ensure glcdinit does initialise for the max7219 solution
-  #define GLCD_TYPE NOTSPECIFIED
+  #define GLCD_TYPE NOTSPECIFIED    'Do not change
 
-  ' Reguired defines
+  ' Reguired defines - Do not change
   #define  MAX7219_REG_NOOP        0x00
   #define  MAX7219_REG_DECODEMODE  0x09   ' decode register; specify digits to decode
   #define  MAX7219_REG_INTENSITY   0x0A   ' intensity (brightness) register; 15 = 100%
@@ -20,6 +33,7 @@
   #define  MAX7219_REG_DISPLAYTEST 0x0F   ' 1 =  on; 0 =  off
 
 
+  'Constants - Do not change
   #define Max7219_LEDMatrix_Update  Max7219_LEDMatrix_SendBuffer
   #define Pset max7219_LEDMatrix_PSet_0
 
@@ -34,14 +48,14 @@
 
   #startup MAX7219_LEDMatrix_Init
 
-'Declare global variables
+ 'Declare global variables
   dim  GLCDBackground, GLCDForeground as byte
-
+  'Declare default Constants
   #define MAX7219_X_Devices 4       'Default
   #define MAX7219_Y_Devices 1       'Default
 
 
-  ' Calculate the max pixels
+  ' Calculate the max pixels for the buffer
   #define Max7219_Devices ( MAX7219_X_Devices  * MAX7219_Y_Devices )
   #define Max7219_PixelBytes ( Max7219_Devices * 8 )
 
@@ -50,12 +64,12 @@
 
   sub MAX7219_LEDMatrix_Init
 
-
-
     GLCDBackground = 0
     GLCDForeground = 1
 
-    SPIMode masterfast, SPI_CPOL_0 + SPI_CPHA_0
+    #ifdef MAX7219_LEDMatrix_HardwareSPI
+        SPIMode masterfast, SPI_CPOL_0 + SPI_CPHA_0
+    #endif
 
     Dir Max7219_DI  In
     Dir Max7219_DO  Out
@@ -67,32 +81,20 @@
     Set Max7219_SCK on
     wait 100 ms
 
+    'initialise
     Max7219_sendByte(MAX7219_REG_SCANLIMIT, 0x07)'Scan limit = 7
     Max7219_sendByte(MAX7219_REG_DECODEMODE, 0x00)'Decoding off
     Max7219_sendByte(MAX7219_REG_SHUTDOWN, 0x01)'Normal operation mode
     Max7219_sendByte(MAX7219_REG_DISPLAYTEST, 0x00)
     Max7219_sendByte(MAX7219_REG_INTENSITY, 0x00)'Brightness to minimum
     wait Max7219_PowerOnTestWait_ms ms
-
-
-
-
-
-
-
-    wait Max7219_PowerOnTestWait_ms ms
-
     Max7219_CS = 1
     wait Max7219_PowerOnTestWait_ms ms
     Max7219_CS = 0
     wait Max7219_PowerOnTestWait_ms ms
     Max7219_CS = 1
     wait Max7219_PowerOnTestWait_ms ms
-
-
     GLCDFontWidth = 6
-
-
     GLCDCLS
 
 end sub
@@ -185,25 +187,87 @@ End Sub
   end sub
 
 
- macro Max7219_SendByte(in reg, in ddata)
- dim null as byte
-      Max7219_CS = 1
+  sub Max7219_SendByte(in _MAX7219_reg, in _MAX7219_ddata )
+
+  #ifdef MAX7219_LEDMatrix_HardwareSPI
       Max7219_CS = 0
-      FastHWSPITransfer  reg, indata
-
-      FastHWSPITransfer  ddata, indata
-
+      FastHWSPITransfer  _MAX7219_reg
+      FastHWSPITransfer  _MAX7219_ddata
       Max7219_CS = 1
+      exit sub
+  #endif
 
-  end macro
+  'must be software SPI
+  Max7219_CS = 0
 
-  macro Max7219_SendByteStream(in reg, in ddata)
+  repeat 8
 
-      FastHWSPITransfer  reg
-      FastHWSPITransfer  ddata
+    if _MAX7219_reg.7 = ON then
+      set Max7219_DO ON
+    else
+      set Max7219_DO OFF
+    end if
+    SET Max7219_SCK OFF
+    rotate _MAX7219_reg left
+    set Max7219_SCK ON
 
-  end macro
+  end Repeat
 
+  repeat 8
+
+    if _MAX7219_ddata.7 = ON then
+      set Max7219_DO ON
+    else
+      set Max7219_DO OFF
+    end if
+    SET Max7219_SCK OFF
+    rotate _MAX7219_ddata left
+    set Max7219_SCK ON
+
+  end Repeat
+
+  Max7219_CS = 1
+
+  end sub
+
+  sub Max7219_SendByteStream(in _MAX7219_reg, in _MAX7219_ddata)
+
+  #ifdef MAX7219_LEDMatrix_HardwareSPI
+      FastHWSPITransfer  _MAX7219_reg
+      FastHWSPITransfer  _MAX7219_ddata
+      exit sub
+  #endif
+
+
+  'must be software SPI
+  repeat 8
+
+    if _MAX7219_reg.7 = ON then
+      set Max7219_DO ON
+    else
+      set Max7219_DO OFF
+    end if
+    SET Max7219_SCK OFF
+    rotate _MAX7219_reg left
+    set Max7219_SCK ON
+
+  end Repeat
+
+  repeat 8
+
+    if _MAX7219_ddata.7 = ON then
+      set Max7219_DO ON
+    else
+      set Max7219_DO OFF
+    end if
+    SET Max7219_SCK OFF
+    rotate _MAX7219_ddata left
+    set Max7219_SCK ON
+
+  end Repeat
+
+
+  end sub
 
 
   Sub Max7219_LEDMatrix_SendBuffer
@@ -346,11 +410,7 @@ Sub Max7219_LEDMatrix_PSet_0( max7219_LocX as word, max7219_LocY as word, PixelC
       elementbit = max7219_LocX mod 8
       element = ( ( max7219_LocX / 8 ) * 8 ) + (8-max7219_LocY)
 
-'      If PixelCol.0 = 0 Then
-'        Max7219_Image_Buffer( element ) = Max7219_Image_Buffer( element ) AND FnLSL( PixelCol, elementbit )
-'      Else
-        Max7219_Image_Buffer( element ) = Max7219_Image_Buffer( element ) OR FnLSL( PixelCol, elementbit )
-'      End If
+      Max7219_Image_Buffer( element ) = Max7219_Image_Buffer( element ) OR FnLSL( PixelCol, elementbit )
 
 
 

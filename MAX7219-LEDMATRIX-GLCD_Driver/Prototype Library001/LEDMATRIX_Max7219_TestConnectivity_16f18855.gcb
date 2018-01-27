@@ -4,10 +4,10 @@
 '''This purely toggles the control lines  - not needed for production code
 '''[todo]
 ''':
-'''@author
+'''@author  Evan R. Venn
 '''@licence GPL
-'''@version
-'''@date    02.02.2015
+'''@version 1.00
+'''@date    27.01.2017
 '''********************************************************************************
 ; ----- Configuration
   #chip 16f18855,32
