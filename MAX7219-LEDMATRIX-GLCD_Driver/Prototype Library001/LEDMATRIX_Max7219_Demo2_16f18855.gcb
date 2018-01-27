@@ -43,6 +43,10 @@
   #define Max7219_SCK   portb.3
   #define Max7219_CS    portc.3
 
+  #define LED1          porta.0
+  #define LED2          porta.1
+  Dir     LED1          out
+  Dir     LED2          out
 
 
   '#define TestPorts  'this purely toggles the control lines  - not needed for production code
@@ -197,7 +201,7 @@ goto endofClock
 
             dim mytime as long
             dim secs, mins, hours as byte
-            myTime = 900
+            myTime = 900+109
 
 
 
@@ -245,7 +249,7 @@ goto endofClock
                  minutepassed++
 
 
-                  Max7219_ClearBuffer ( Max7219_Image_Buffer() ,32)
+                  Max7219_LEDMatrix_ClearBuffer
                   if minutepassed.0 = 1 then
                     pset 0,0, 1
                   Else
@@ -264,7 +268,7 @@ goto endofClock
                   end if
 
                   GLCDPrint ( 2, 0, myString )
-                  Max7219_PaintFromBuffer ( Max7219_Image_Buffer() ,32)
+                  Max7219_LEDMatrix_Update
 
             loop
 
@@ -280,14 +284,30 @@ endofClock:
 
       GLCDCLS
 
-      Max7219_ClearBuffer ( Max7219_Image_Buffer() ,32)
-      myString = "   Space Invaders... if Arduino users can do it... so can Great Cow BASIC users!!"
-'      myString = "a123456789ABCDEFb123456789ABCDEFc123456789ABCD"
-      Max7219_ScrollMessage ( myString, 1 )
+      Max7219_LEDMatrix_ClearBuffer
+      GLCDPrint ( 0, 0, "B")
+      GLCDPrint ( 5, 0, ":")
+      GLCDPrint ( 9, 0, GCBBuildStr )
+      Max7219_LEDMatrix_Update
+
+
+
+      Repeat 4
+        Max7219_LEDMatrix_Flash 500
+        wait 500 ms
+      end Repeat
+
+
+      GLCDCLS
+      Max7219_LEDMatrix_ClearBuffer
+       myString = "Space Invaders... if Arduino users can do it... so can Great Cow BASIC users!!"
+
+'     myString = "a123456789ABCDEFb123456789ABCDEFc123456789ABCD"
+      Max7219_LEDMatrix_ScrollMessage ( myString, 1 )
 
   repeat 2
 
-    Max7219_ClearBuffer ( Max7219_Image_Buffer() ,32)
+    Max7219_LEDMatrix_ClearBuffer
     for xpos = 0 to 24 step 8
       for xx = 0 to 7
       for yy = 0 to 8
@@ -302,11 +322,11 @@ endofClock:
       Next
       next
     next
-    Max7219_PaintFromBuffer ( Max7219_Image_Buffer() ,32)
+    Max7219_LEDMatrix_Update
     wait 1 s
 
 
-    Max7219_ClearBuffer ( Max7219_Image_Buffer() ,32)
+    Max7219_LEDMatrix_ClearBuffer
     for xpos = 0 to 24 step 8
       for xx = 0 to 7
       for yy = 0 to 8
@@ -321,7 +341,7 @@ endofClock:
       Next
       next
     next
-    Max7219_PaintFromBuffer ( Max7219_Image_Buffer() ,32)
+    Max7219_LEDMatrix_Update
     wait 1 s
 
   end Repeat
@@ -329,31 +349,35 @@ endofClock:
 
 do
       GLCDCLS
-      Max7219_ScrollMessage ( "Hello, Great Cow BASIC 2018" , 50 )
+      Max7219_LEDMatrix_ScrollMessage ( "Hello, Great Cow BASIC 2018     " , 50 )
+      wait 1 s
 
     GLCDCLS
     GLCDPrint 0,0,"Great"
-    Max7219_PaintFromBuffer ( Max7219_Image_Buffer() ,32)
+    Max7219_LEDMatrix_Update
     wait 1 s
 
     GLCDCLS
     GLCDPrint 0,0,"Cow"
-    Max7219_PaintFromBuffer ( Max7219_Image_Buffer() ,32)
+    Max7219_LEDMatrix_Update
     wait 1 s
 
     GLCDCLS
     GLCDPrint 0,0,"BASIC"
-    Max7219_PaintFromBuffer ( Max7219_Image_Buffer() ,32)
+    Max7219_LEDMatrix_Update
     wait 1 s
 
     GLCDCLS
     GLCDPrint 0,0,"GLCD!"
-    Max7219_PaintFromBuffer ( Max7219_Image_Buffer() ,32)
+    Max7219_LEDMatrix_Update
     wait 2 s
 
 
     GLCDCLS
-    Max7219_ScrollMessage (  "Set Pixels", 25 )
+    Max7219_LEDMatrix_ScrollMessage (  "Set Pixels", 25 )
+    wait 1 s
+    GLCDCLS
+
     Pset 0, 0, 1
     Pset 0, 7, 1
     Pset 1, 7, 1
@@ -361,14 +385,14 @@ do
     Pset 1, 0, 1
     Pset 1, 7, 1
     Pset 31, 7, 1
-    Max7219_PaintFromBuffer ( Max7219_Image_Buffer() ,32)
+    Max7219_LEDMatrix_Update
     wait 2 s
 
     GLCDCLS
     line 0,0,31,7
     box 0,0,31,7
     line 0,7,31,0
-    Max7219_PaintFromBuffer ( Max7219_Image_Buffer() ,32)
+    Max7219_LEDMatrix_Update
     wait 2 s
 
     GLCDCLS
@@ -376,7 +400,7 @@ do
     Circle 12, 3, 3
     Circle 20, 3, 3
     Circle 28, 3, 3
-    Max7219_PaintFromBuffer ( Max7219_Image_Buffer() ,32)
+    Max7219_LEDMatrix_Update
     wait 500 ms
 
     GLCDCLS
@@ -384,7 +408,7 @@ do
     FilledCircle  12, 3, 2
     FilledCircle  20, 3, 2
     FilledCircle  28, 3, 2
-    Max7219_PaintFromBuffer ( Max7219_Image_Buffer() ,32)
+    Max7219_LEDMatrix_Update
     wait 500 ms
 
 
@@ -398,8 +422,8 @@ do
   GLCDCLS
     repeat 2
 
-      Max7219_ScrollMessage("Great Cow BASIC v.98.02", 10 )
-      Max7219_ScrollMessage("Evan R. Venn 2018", 10 )
+      Max7219_LEDMatrix_ScrollMessage("Great Cow BASIC v.98.02        ", 10 )
+      Max7219_LEDMatrix_ScrollMessage("Evan R. Venn 2018         ", 10 )
 
       Wait 1000 ms
 

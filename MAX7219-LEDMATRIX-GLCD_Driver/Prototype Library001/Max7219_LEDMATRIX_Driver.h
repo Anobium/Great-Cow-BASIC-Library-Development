@@ -11,8 +11,6 @@
   ' Set GLCD_TYPE to ensure glcdinit does initialise for the max7219 solution
   #define GLCD_TYPE NOTSPECIFIED
 
-  #define GLCDCLS Max7219_LEDMatrix_GLCDCLS
-
   ' Reguired defines
   #define  MAX7219_REG_NOOP        0x00
   #define  MAX7219_REG_DECODEMODE  0x09   ' decode register; specify digits to decode
@@ -22,24 +20,42 @@
   #define  MAX7219_REG_DISPLAYTEST 0x0F   ' 1 =  on; 0 =  off
 
 
+  #define Max7219_LEDMatrix_Update  Max7219_LEDMatrix_SendBuffer
+  #define Pset max7219_LEDMatrix_PSet_0
 
+  ' Do NOT CHANGE!
+  #define GLCDCLS Max7219_LEDMatrix_GLCDCLS
+  #define GLCDDrawChar max7219_LEDMatrix_GLCDDrawChar
+  #define GLCDPrint max7219_LEDMatrix_GLCDPrint
+  ' Do NOT CHANGE!
 
   ' Determine the power on wait. Can be changed by the user
   #define Max7219_PowerOnTestWait_ms 100
-  #define Max7219_PixelTransmissionDelay 1 ms
 
   #startup MAX7219_LEDMatrix_Init
 
 'Declare global variables
   dim  GLCDBackground, GLCDForeground as byte
 
+  #define MAX7219_X_Devices 4       'Default
+  #define MAX7219_Y_Devices 1       'Default
+
+
+  ' Calculate the max pixels
+  #define Max7219_Devices ( MAX7219_X_Devices  * MAX7219_Y_Devices )
+  #define Max7219_PixelBytes ( Max7219_Devices * 8 )
+
+  ' Create the image buffer
+  Dim Max7219_Image_Buffer( Max7219_PixelBytes )
 
   sub MAX7219_LEDMatrix_Init
+
+
 
     GLCDBackground = 0
     GLCDForeground = 1
 
-    SPIMode master, SPI_CPOL_0 + SPI_CPHA_0
+    SPIMode masterfast, SPI_CPOL_0 + SPI_CPHA_0
 
     Dir Max7219_DI  In
     Dir Max7219_DO  Out
@@ -51,30 +67,12 @@
     Set Max7219_SCK on
     wait 100 ms
 
-'    repeat 4
     Max7219_sendByte(MAX7219_REG_SCANLIMIT, 0x07)'Scan limit = 7
-'    end Repeat
-
-'    repeat 4
     Max7219_sendByte(MAX7219_REG_DECODEMODE, 0x00)'Decoding off
-'    end Repeat
-
-'    repeat 4
     Max7219_sendByte(MAX7219_REG_SHUTDOWN, 0x01)'Normal operation mode
-'    end Repeat
-
-
-'    repeat 4
     Max7219_sendByte(MAX7219_REG_DISPLAYTEST, 0x00)
-'    end Repeat
-
-'    repeat 4
     Max7219_sendByte(MAX7219_REG_INTENSITY, 0x00)'Brightness to minimum
-'    end Repeat
-
-'    repeat 4
     wait Max7219_PowerOnTestWait_ms ms
-'    end Repeat
 
 
 
@@ -138,76 +136,45 @@ Sub Max7219_LEDMatrix_GLCDCLS ( Optional In  GLCDBackground as byte = GLCDBackgr
 
 End Sub
 
+  Sub Max7219_LEDMatrix_ScrollMessage( in OutMessage as string, In max7219_MessageTime As Word )
 
-Sub Max7219_LEDMatrix_Update
+    dim max7219_ScrollLen, max7219_ScrollPosition, max7219_XScrollPosition as word
+    max7219_ScrollLen = OutMessage(0) * GLCDFontWidth
 
+    max7219_XScrollPosition = Max7219_PixelBytes-1
 
-  Dim Max7219_PixelCounter , Max7219_DeviceAddress as byte
+    For max7219_ScrollPosition = 0 to max7219_ScrollLen-1
+      Max7219_LEDMatrix_ClearBuffer ( Max7219_Image_Buffer() ,Max7219_PixelBytes)
+      GLCDPrint(max7219_XScrollPosition, 0,  OutMessage)
+      max7219_XScrollPosition--
+      Max7219_LEDMatrix_SendBuffer ( Max7219_Image_Buffer() ,Max7219_PixelBytes)
+      if max7219_MessageTime > 0 then
+          Wait max7219_MessageTime ms
+      end if
+    Next
 
-  Max7219_DeviceAddress = 1
-
-  For Max7219_PixelCounter = 1 to Max7219_PixelBytes
-
-          Max7219_RowAddress = ( ( Max7219_PixelCounter mod 8 ) )
-
-          'Send a number of NOPS
-          Repeat ( Max7219_Devices - Max7219_DeviceAddress )
-              Max7219_sendByte(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-          End Repeat
-
-          'Send data to the specific Device and Row
-          Max7219_sendByte( Max7219_RowAddress, Max7219_Image_Buffer ( Max7219_PixelCounter) )
-
-          'Send a number of NOPS
-          Repeat Max7219_DeviceAddress - 1
-              Max7219_sendByte(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-          End Repeat
-
-          'Increment the Device address
-          If Max7219_RowAddress = 8 then
-              Max7219_DeviceAddress++
-          end if
-
-  Next
-
-End Sub
-
-
-
-
-sub Max7219_LEDMatrix_FlashInvertDisplay()
-
-  Dim Max7219_PixelCounter , Max7219_DeviceAddress as byte
-
-  Max7219_DeviceAddress = 1
-
-  For Max7219_PixelCounter = 1 to Max7219_PixelBytes
-
-          Max7219_RowAddress = ( ( Max7219_PixelCounter mod 8 ) )
-
-          'Send a number of NOPS
-          Repeat ( Max7219_Devices - Max7219_DeviceAddress )
-              Max7219_sendByte(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-          End Repeat
-          Max7219_Image_Buffer ( Max7219_PixelCounter + 1 ) = (!Max7219_Image_Buffer ( Max7219_PixelCounter ))
-
-          'Send data to the specific Device and Row
-          Max7219_sendByte( Max7219_RowAddress, Max7219_Image_Buffer ( Max7219_PixelCounter ) )
-
-          'Send a number of NOPS
-          Repeat Max7219_DeviceAddress - 1
-              Max7219_sendByte(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-          End Repeat
-
-          'Increment the Device address
-          If Max7219_RowAddress = 8 then
-              Max7219_DeviceAddress++
-          end if
-
-  Next
   End Sub
 
-  sub Max7219_LEDMATRIX_Brightness (  optional in Max7219_Brightness_Value = 7  )
+  Sub Max7219_LEDMatrix_Flash( In max7219_MessageTime As Word)
+
+    Max7219_sendByte(MAX7219_REG_SHUTDOWN, 0x00)
+    Max7219_sendByte(MAX7219_REG_SHUTDOWN, 0x00)
+    Max7219_sendByte(MAX7219_REG_SHUTDOWN, 0x00)
+    Max7219_sendByte(MAX7219_REG_SHUTDOWN, 0x00)
+    Wait max7219_MessageTime ms
+
+    Max7219_sendByte(MAX7219_REG_SHUTDOWN, 0x01)'Normal operation mode
+    Max7219_sendByte(MAX7219_REG_SHUTDOWN, 0x01)'Normal operation mode
+    Max7219_sendByte(MAX7219_REG_SHUTDOWN, 0x01)'Normal operation mode
+    Max7219_sendByte(MAX7219_REG_SHUTDOWN, 0x01)'Normal operation mode
+    Wait max7219_MessageTime ms
+
+
+  End Sub
+
+
+
+  sub Max7219_LEDMatrix_Brightness (  optional in Max7219_Brightness_Value = 7  )
 
     if Max7219_Brightness_Value > 0x0f then Max7219_Brightness_Value = 0x0f
     Max7219_sendByte( MAX7219_REG_INTENSITY , Max7219_Brightness_Value )
@@ -218,7 +185,7 @@ sub Max7219_LEDMatrix_FlashInvertDisplay()
   end sub
 
 
-  macro Max7219_SendByte(in reg, in ddata)
+ macro Max7219_SendByte(in reg, in ddata)
  dim null as byte
       Max7219_CS = 1
       Max7219_CS = 0
@@ -230,7 +197,7 @@ sub Max7219_LEDMatrix_FlashInvertDisplay()
 
   end macro
 
-  macro Max7219_SendBytex(in reg, in ddata)
+  macro Max7219_SendByteStream(in reg, in ddata)
 
       FastHWSPITransfer  reg
       FastHWSPITransfer  ddata
@@ -238,96 +205,50 @@ sub Max7219_LEDMatrix_FlashInvertDisplay()
   end macro
 
 
-  Sub xMax7219_PaintFromBuffer( in PixelBuffer(), Max7219_PixelCount )
 
-    Dim Max7219_ByteValue, Max7219_PixelCounter, outbyte As Byte
+  Sub Max7219_LEDMatrix_SendBuffer
 
+    Dim Max7219_ByteValue, Max7219_PixelCounter As Byte
     Max7219_PixelCounter = 1
 
-    For Max7219_Loop = 1 to Max7219_PixelCount / 8
+    Max7219_CS = 1
 
-      For CurrPixelY = 1 to 8
+    For Max7219_CurrentMatrix = 1 to Max7219_Devices
 
-            outbyte = 0
-          dim yy as byte
-          for yy = 0 to 7
-            Max7219_ByteValue = PixelBuffer ( (Max7219_Loop * 8 + yy))
-            HSerPrintCRLF
-            hserprint Max7219_ByteValue
-            HSerPrint ": R="
-            repeat CurrPixelY-1
-                rotate Max7219_ByteValue right
-                HSerPrint "."
-            end repeat
+        For CurrPixelY = 1 to 8
 
-            hserprint Max7219_ByteValue
-            HSerPrint " outbyte ="
-
-            if Max7219_ByteValue.0 = 1 then
-                outbyte.0 = 1
-            Else
-                outbyte.0 = 0
-            end if
-            HSerPrint outbyte
-            set c off
-            rotate outbyte left
-
-          next
-          HSerPrintCRLF
-
-          Max7219_CS = 1
           Max7219_CS = 0
 
-          select case Max7219_PixelCounter
+          'Send a number of NOPS
+          Repeat ( Max7219_Devices - Max7219_CurrentMatrix )
+              Max7219_SendByteStream(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
+          End Repeat
 
-          case 1 to 8
+          'Send data to the specific Device and Row
+          Max7219_SendByteStream( CurrPixelY, Max7219_Image_Buffer ( Max7219_PixelCounter) )
 
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex( CurrPixelY ,outbyte )
-
-          case 9 to 16
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex( CurrPixelY ,outbyte )
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-
-          case 17 to 24
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex( CurrPixelY ,outbyte )
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-
-
-          case 25 to 32
-              Max7219_sendBytex( CurrPixelY ,outbyte )
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-
-          end select
+          'Send a number of NOPS
+          Repeat Max7219_CurrentMatrix - 1
+              Max7219_SendByteStream(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
+          End Repeat
 
           Max7219_PixelCounter++
-
           Max7219_CS = 1
-          wait 50 ms
 
         Next
-        wait 2 s
+        HSerPrintCRLF
 
     Next
 
   End Sub
 
 
-
-  Sub Max7219_PaintFromBuffer( in PixelBuffer(), Max7219_PixelCount )
+  Sub Max7219_LED4Matrix_SendBuffer
 
     Dim Max7219_ByteValue, Max7219_PixelCounter As Byte
     Max7219_PixelCounter = 1
 
-    For Max7219_CurrPixelX = 1 to Max7219_PixelCount / 8
+    For Max7219_CurrPixelX = 1 to Max7219_PixelBytes / 8
 
         For CurrPixelY = 1 to 8
 
@@ -338,29 +259,29 @@ sub Max7219_LEDMatrix_FlashInvertDisplay()
 
           case 1 to 8
 
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex( CurrPixelY ,PixelBuffer ( Max7219_PixelCounter) )
+              Max7219_SendByteStream(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
+              Max7219_SendByteStream(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
+              Max7219_SendByteStream(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
+              Max7219_SendByteStream( CurrPixelY ,Max7219_Image_Buffer ( Max7219_PixelCounter) )
 
           case 9 to 16
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex( CurrPixelY ,PixelBuffer ( Max7219_PixelCounter) )
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
+              Max7219_SendByteStream(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
+              Max7219_SendByteStream(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
+              Max7219_SendByteStream( CurrPixelY ,Max7219_Image_Buffer ( Max7219_PixelCounter) )
+              Max7219_SendByteStream(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
 
           case 17 to 24
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex( CurrPixelY ,PixelBuffer ( Max7219_PixelCounter) )
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
+              Max7219_SendByteStream(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
+              Max7219_SendByteStream( CurrPixelY ,Max7219_Image_Buffer ( Max7219_PixelCounter) )
+              Max7219_SendByteStream(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
+              Max7219_SendByteStream(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
 
 
           case 25 to 32
-              Max7219_sendBytex( CurrPixelY ,PixelBuffer ( Max7219_PixelCounter) )
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
-              Max7219_sendBytex(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
+              Max7219_SendByteStream( CurrPixelY ,Max7219_Image_Buffer ( Max7219_PixelCounter) )
+              Max7219_SendByteStream(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
+              Max7219_SendByteStream(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
+              Max7219_SendByteStream(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
 
           end select
 
@@ -374,46 +295,32 @@ sub Max7219_LEDMatrix_FlashInvertDisplay()
   End Sub
 
 
+ sub Max7219_LEDMatrix_BufferInvert
+
+  Dim Max7219_PixelCounter as word
+
+  For Max7219_PixelCounter = 1 to Max7219_PixelBytes
+
+          Max7219_Image_Buffer ( Max7219_PixelCounter ) = !Max7219_Image_Buffer ( Max7219_PixelCounter )
+  Next
+
+  Max7219_PaintFromBuffer
+
+  End Sub
 
 
-  Sub Max7219_ClearBuffer( in PixelBuffer(), Max7219_PixelCount )
+  Sub Max7219_LEDMatrix_ClearBuffer
 
-    For Max7219_CurrPixelX = 1 to Max7219_PixelCount
-        PixelBuffer(Max7219_CurrPixelX) = 0
+    For Max7219_CurrPixelX = 1 to Max7219_PixelBytes
+        Max7219_Image_Buffer(Max7219_CurrPixelX) = 0
     Next
 
   End Sub
 
 
-  Sub Max7219_ScrollMessage( in OutMessage as string, In max7219_MessageTime As Word )
-
-    dim max7219_ScrollLen, max7219_ScrollPosition as word
-    max7219_ScrollLen = OutMessage(0) * GLCDFontWidth
-
-    For max7219_ScrollPosition = 1 to max7219_ScrollLen
-      Max7219_ClearBuffer ( Max7219_Image_Buffer() ,32)
-      GLCDPrint(0 - max7219_ScrollPosition, 0,  OutMessage)
-      Max7219_PaintFromBuffer ( Max7219_Image_Buffer() ,32)
-      Wait max7219_MessageTime ms
-    Next
-
-  End Sub
 
 
-  Sub Max7219_FlashMessage(OutMessage(), In max7219_MessageTime As Word)
-
-    Max7219_ClearBuffer
-    max7219_MessageLength = OutMessage(0)
-    For max7219_MessageChar = 1 to max7219_MessageLength
-      GLCDDrawChar(0, 0, OutMessage(max7219_MessageChar))
-      Max7219_LEDMATRIX_Update
-      Wait max7219_MessageTime ms
-    Next
-
-  End Sub
-
-#define Pset max7219_PSet_0
-Sub Max7219_PSet_90( max7219_LocX as word, max7219_LocY as word, PixelCol)
+Sub Max7219_LEDMatrix_PSet_90( max7219_LocX as word, max7219_LocY as word, PixelCol)
 
       'Protect the buffer - by extreme X Y locations
       if max7219_LocX > ( MAX7219_X_Devices * 8 ) -1  then exit sub
@@ -428,14 +335,13 @@ Sub Max7219_PSet_90( max7219_LocX as word, max7219_LocY as word, PixelCol)
 
   End Sub
 
-Sub Max7219_PSet_0( max7219_LocX as word, max7219_LocY as word, PixelCol)
+Sub Max7219_LEDMatrix_PSet_0( max7219_LocX as word, max7219_LocY as word, PixelCol)
 
 
       'Protect the buffer - by extreme X Y locations
-      if max7219_LocX > ( MAX7219_X_Devices * 8 ) -1  then exit sub
+      if max7219_LocX > ( MAX7219_X_Devices * 8 ) - 1  then Exit sub
       elementbit =  max7219_LocY / 8
-      if elementbit >  MAX7219_Y_Devices - 1 then exit sub
-
+      if elementbit >  MAX7219_Y_Devices - 1 then Exit Sub
 
       elementbit = max7219_LocX mod 8
       element = ( ( max7219_LocX / 8 ) * 8 ) + (8-max7219_LocY)
@@ -453,12 +359,12 @@ Sub Max7219_PSet_0( max7219_LocX as word, max7219_LocY as word, PixelCol)
 
 
 
-#define GLCDPrint max7219_GLCDPrint
+
   '''Displays a message
   '''@param PrintLocX X coordinate for message
   '''@param PrintLocY Y coordinate for message
   '''@param PrintData Message to display
-  Sub Max7219_GLCDPrint(In PrintLocX as word, In PrintLocY as word, in LCDPrintData as string )
+  Sub Max7219_LEDMatrix_GLCDPrint(In PrintLocX as word, In PrintLocY as word, in LCDPrintData as string )
 
     Dim GLCDPrintLoc as word
 
@@ -477,7 +383,7 @@ Sub Max7219_PSet_0( max7219_LocX as word, max7219_LocY as word, PixelCol)
   '''@param PrintLocX X coordinate for message
   '''@param PrintLocY Y coordinate for message
   '''@param LCDValue Number to display
-  Sub Max7219_GLCDPrint(In PrintLocX, In PrintLocY, In LCDValue As Long)
+  Sub Max7219_LEDMatrix_GLCDPrint(In PrintLocX, In PrintLocY, In LCDValue As Long)
     Dim SysCalcTempA As Long
     Dim SysPrintBuffer(10)
     SysPrintBuffLen = 0
@@ -498,13 +404,13 @@ Sub Max7219_PSet_0( max7219_LocX as word, max7219_LocY as word, PixelCol)
 
   End Sub
 
-#define GLCDDrawChar max7219_GLCDDrawChar
+
   '''Draws a character at the specified location on the ST7920 GLCD
   '''@param StringLocX X coordinate for message
   '''@param CharLocY Y coordinate for message
   '''@param Chars String to display
   '''@param LineColour Line Color, either 1 or 0
-  Sub max7219_GLCDDrawChar(In CharLocX as word, In CharLocY as word, In CharCode, Optional In LineColour as word = GLCDForeground )
+  Sub max7219_LEDMatrix_GLCDDrawChar(In CharLocX as word, In CharLocY as word, In CharCode, Optional In LineColour as word = GLCDForeground )
 
     'CharCode needs to have 16 subtracted, table starts at char 16 not char 0
     CharCode -= 15
