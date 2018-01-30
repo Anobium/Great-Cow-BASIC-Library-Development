@@ -49,7 +49,7 @@ To use an include from the distribution, use the following.   You must use the `
     #include <glcd.h>
 ----
 
-To use an include from the local installation, use the following.   You must use the `<` and `>` open and close brace to ensure you are using the distribution libraries.
+To use an include from the local installation, use the following.   You must use the `"` and `"` open and close quotes to ensure you are using the local installation libraries.
 
 ----
     'include a gamecontroller library from the local folder.
