@@ -2,6 +2,7 @@ Developing a library for Great Cow BASIC
 
 
 **Table of Contents**
+
 Contents
 
 Principles	3
@@ -70,6 +71,8 @@ To use an include from the local installation, use the following.   You must use
 
 ----
 
+Libaries are not inserted where you place the include directive.  The library is parsed, sorted and only methods used are included in the ASM file as appropiate.  The methods will be inserted when used in the ASM and therefore you WILL NOT find a complete listing of the source for all your methods unless you call everyone method in your program.  This optimisation cannot be changed as this is part of the compiler.
+
 **Structure of library**
 
 The structure of a library is a follows.  This is recommend structure and has a level of flexibiity where sections may be ommitted when no needed.
@@ -87,20 +90,28 @@ The next sections detail the of each part of the structure.
 
 Why is header needed?  As Great Cow BASIC uses the GNU license.  The header https://www.gnu.org/licenses/gpl-howto.en.html
 
-Something like this is adequate, depending on where you live:
+This is the correct header for the GNU license.  This must be at the top of library.
 
-/* Copyright (C) YoYoDyne Systems, Inc - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Elmer Fudd <efudd@yoyodyne.com>, September 1943
- */
-(2016 update: The phrase "All Rights Reserved" used to be required in some nations but is now not legally needed most places. In some countries it may help preserve some of the "moral rights.")
+'    Graphical Max7219 GLCD routines for the GCBASIC compiler
+'    Copyright (C) 2018 Your_Name
 
-This means you cant:
-Copy the file
-Print the file out, scan it and copy the image
-Print the file out, take pictures of it and distribute the film
-etc ...
+'    This library is free software; you can redistribute it and/or
+'    modify it under the terms of the GNU Lesser General Public
+'    License as published by the Free Software Foundation; either
+'    version 2.1 of the License, or (at your option) any later version.
+
+'    This library is distributed in the hope that it will be useful,
+'    but WITHOUT ANY WARRANTY; without even the implied warranty of
+'    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+'    Lesser General Public License for more details.
+
+'    You should have received a copy of the GNU Lesser General Public
+'    License along with this library; if not, write to the Free Software
+'    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+
+This means people can copy the file, print the file out and distribute the film as long as they retain the header.
+
 However, take care to note that in some countries, there is no such thing as copyright. This is also completely in addition to a strong license that you ship with your product, which should go into greater detail.
 
 These sort of 'license headers' are designed simply to alert someone who happens upon a file that they should not distribute it.
@@ -121,6 +132,9 @@ Naming
 
 **Initialisation**
 How to
+
+**Parsing of the library**
+scripts and constant(s) replacement
 
 **PIC and AVR coexistence**
 How to
