@@ -73,8 +73,29 @@ The next sections detail the of each part of the structure.
 
 **Header**
 
-Why is header needed?  The header 
+Why is header needed?  As Great Cow BASIC uses The header https://www.gnu.org/licenses/gpl-howto.en.html
 
+Something like this is adequate, depending on where you live:
+
+/* Copyright (C) YoYoDyne Systems, Inc - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Elmer Fudd <efudd@yoyodyne.com>, September 1943
+ */
+(2016 update: The phrase "All Rights Reserved" used to be required in some nations but is now not legally needed most places. In some countries it may help preserve some of the "moral rights.")
+
+This means you cant:
+Copy the file
+Print the file out, scan it and copy the image
+Print the file out, take pictures of it and distribute the film
+etc ...
+However, take care to note that in some countries, there is no such thing as copyright. This is also completely in addition to a strong license that you ship with your product, which should go into greater detail.
+
+These sort of 'license headers' are designed simply to alert someone who happens upon a file that they should not distribute it.
+
+We use something very much like that in stuff that we have that needs to stay behind closed doors. For instance, it alerts someone to not post functions on Stack Overflow.
+
+Someone who p0wns your dev server to get your code probably isn't going to pay attention to it, however. Note, again, what you're describing is NOT a license, it's a per file assertion of copyright and specifically stating that the code is proprietary.
 
 
 **Constants**
