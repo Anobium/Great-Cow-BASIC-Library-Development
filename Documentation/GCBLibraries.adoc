@@ -1,15 +1,26 @@
 Developing a library for Great Cow BASIC
  
+**Table of Contents**
 Contents
+
 Principles	3
+
 Include statements	4
+
 Header	5
+
 Constants	6
+
 Variables	7
+
 Methods	8
+
 Initialisation	9
+
 PIC and AVR coexistence	10
+
 Communication Protocols	11
+
 Acceptance to mainline release	12
 
 
