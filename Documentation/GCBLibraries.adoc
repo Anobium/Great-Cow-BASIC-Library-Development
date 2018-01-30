@@ -1,0 +1,99 @@
+Developing a library for Great Cow BASIC
+ 
+Contents
+Principles	3
+Include statements	4
+Header	5
+Constants	6
+Variables	7
+Methods	8
+Initialisation	9
+PIC and AVR coexistence	10
+Communication Protocols	11
+Acceptance to mainline release	12
+
+
+
+
+**Principles**
+
+There are some basic rules when developing libraries.  They are very obvious but I will state for clarity.
+----
+    Keep constants and variable names unique in the library.
+    Pass variables as parameter to the methods in the libraries – do not assume use of global variables.
+    Use Sub and Function with overload functionality to manage the differing parameters.
+    Use Macro(s) when required to improve performance.
+    Use a Script to calculate constant values.
+    Use an initialisation method to initialisation the library.
+----
+
+**Include statements**
+
+Great Cow BASIC like other programming languages have a directive, called include that causes the contents of a second file to be inserted into the original source file.   These included files are called copybooks or header files.   They are often used to define the physical layout of program data, pieces of procedural code and/or forward declarations while promoting encapsulation and the reuse of code.
+
+The include directive allows libraries of code to be developed which help to:
+
+1.	Ensure that everyone uses the same version of a data layout definition or methods throughout a program.
+2.	Simplify support by clearing identifying where components are used in a system.
+3.	To enable easy change programs when needed (only one master file to change).
+
+Includes provide additional capabilities to extend Great Cow BASIC.  There are two methods to include these capabilities.
+
+1.	Include from distribution
+2.	Include from a local installation
+
+To use an include from the distribution, use the following.   You must use the `<` and `>` open and close brace to ensure you are using the distribution libraries.
+
+----
+    'include the GLCD libraries
+    #include <glcd.h>
+----
+
+To use an include from the local installation, use the following.   You must use the `<` and `>` open and close brace to ensure you are using the distribution libraries.
+
+----
+    'include a gamecontroller library from the local folder.
+    'The specific source folder for the lirary is detetemined by the main user program source library.
+    #include "gamecontroller.h"
+
+----
+
+**Structure of library**
+
+The structure of a library is a follows.  This is recommend structure and has a level of flexibiity where sections may be ommitted when no needed.
+
+1. Header
+2. Constants
+3. Variables
+4. Script
+5. Methods - SUBs and FUNCTIONs
+6. Initialisation - a specific SUBroutine.
+
+The next sections detail the of each part of the structure.
+
+**Header**
+
+Why is header needed?  The header 
+
+
+
+**Constants**
+Naming and usage
+
+**Variables**
+Scope, naming and passing
+
+**Methods**
+Naming
+
+**Initialisation**
+How to
+
+**PIC and AVR coexistence**
+How to
+
+**Communication Protocols**
+SPI, I2C etc
+
+**Acceptance to mainline release**
+Testing and all 000 chips, Help, demos
