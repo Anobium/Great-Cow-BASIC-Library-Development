@@ -71,7 +71,7 @@ To use an include from the local installation, use the following.   You must use
 
 ----
 
-Libaries are not inserted where you place the include directive.  The library is parsed, sorted and only methods used are included in the ASM file as appropiate.  The methods will be inserted when used in the ASM and therefore you WILL NOT find a complete listing of the source for all your methods unless you call everyone method in your program.  This optimisation cannot be changed as this is part of the compiler.
+Libaries are not inserted where you place the include directive.  The library is parsed, sorted and only methods used are included in the ASM file as appropiate.  The methods will be inserted only when used in the ASM generated, and, therefore you WILL NOT find a complete listing of the library source unless you call every method in your program.  This optimisation cannot be changed as this is part of the compiler.
 
 **Structure of library**
 
