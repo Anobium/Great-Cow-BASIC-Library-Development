@@ -110,7 +110,7 @@ This is the correct header for the GNU license.  This must be at the top of libr
 '    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
-This means people can copy the file, print the file out and distribute the film as long as they retain the header.
+This means people can copy the file, print the file out and distribute the file as long as they retain the header.
 
 However, take care to note that in some countries, there is no such thing as copyright. This is also completely in addition to a strong license that you ship with your product, which should go into greater detail.
 
