@@ -179,10 +179,9 @@ End Sub
   sub Max7219_LEDMatrix_Brightness (  optional in Max7219_Brightness_Value = 7  )
 
     if Max7219_Brightness_Value > 0x0f then Max7219_Brightness_Value = 0x0f
-    Max7219_sendByte( MAX7219_REG_INTENSITY , Max7219_Brightness_Value )
-    Max7219_sendByte( MAX7219_REG_INTENSITY , Max7219_Brightness_Value )
-    Max7219_sendByte( MAX7219_REG_INTENSITY , Max7219_Brightness_Value )
-    Max7219_sendByte( MAX7219_REG_INTENSITY , Max7219_Brightness_Value )
+    repeat Max7219_Devices
+        Max7219_sendByte( MAX7219_REG_INTENSITY , Max7219_Brightness_Value )
+    end Repeat
 
   end sub
 
