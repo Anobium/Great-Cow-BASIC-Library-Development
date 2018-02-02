@@ -17,6 +17,7 @@
 
 'Notes:
 ' Supports Max7219 as a GLCD controller only.
+' 02/02/2018  Updated Max7219_LEDMatrix_Brightness to correct number of devices set.
 
   ' Include the GLCD.H to reuse the font tables
   #include <glcd.h>
