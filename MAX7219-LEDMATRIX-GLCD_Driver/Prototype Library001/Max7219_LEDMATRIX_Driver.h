@@ -181,9 +181,7 @@ End Sub
 
     if Max7219_Brightness_Value > 0x0f then Max7219_Brightness_Value = 0x0f
     Max7219_CS = 0
-    repeat Max7219_Devices
-        Max7219_SendByteStream( MAX7219_REG_INTENSITY , Max7219_Brightness_Value )
-    end Repeat
+    Max7219_SendByte( MAX7219_REG_INTENSITY , Max7219_Brightness_Value )
     Max7219_CS = 1
 
   end sub
