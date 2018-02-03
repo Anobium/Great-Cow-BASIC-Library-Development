@@ -179,10 +179,30 @@ End Sub
 
   sub Max7219_LEDMatrix_Brightness (  optional in Max7219_Brightness_Value = 7  )
 
-    if Max7219_Brightness_Value > 0x0f then Max7219_Brightness_Value = 0x0f
-    Max7219_CS = 0
-    Max7219_SendByte( MAX7219_REG_INTENSITY , Max7219_Brightness_Value )
-    Max7219_CS = 1
+    if Max7219_Brightness_Value > 0x0f then Max7219_Brightness_Value = 0x0F
+
+    For Max7219_CurrentMatrix = 1 to Max7219_Devices
+
+          Max7219_CS = 0
+
+          'Send a number of NOPS
+          Repeat ( Max7219_Devices - Max7219_CurrentMatrix )
+              Max7219_SendByteStream(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
+          End Repeat
+
+          'Send data to the specific Device and Row
+          Max7219_SendByteStream( MAX7219_REG_INTENSITY , Max7219_Brightness_Value )
+
+          'Send a number of NOPS
+          Repeat Max7219_CurrentMatrix - 1
+              Max7219_SendByteStream(MAX7219_REG_NOOP, MAX7219_REG_NOOP)
+          End Repeat
+
+          Max7219_CS = 1
+
+    Next
+
+    Max7219_LEDMatrix_SendBuffer
 
   end sub
 
@@ -194,39 +214,42 @@ End Sub
       FastHWSPITransfer  _MAX7219_reg
       FastHWSPITransfer  _MAX7219_ddata
       Max7219_CS = 1
-      exit sub
   #endif
 
-  'must be software SPI
-  Max7219_CS = 0
 
-  repeat 8
+  #ifndef MAX7219_LEDMatrix_HardwareSPI
+      'must be software SPI
+      Max7219_CS = 0
 
-    if _MAX7219_reg.7 = ON then
-      set Max7219_DO ON
-    else
-      set Max7219_DO OFF
-    end if
-    SET Max7219_SCK OFF
-    rotate _MAX7219_reg left
-    set Max7219_SCK ON
+      repeat 8
 
-  end Repeat
+        if _MAX7219_reg.7 = ON then
+          set Max7219_DO ON
+        else
+          set Max7219_DO OFF
+        end if
+        SET Max7219_SCK OFF
+        rotate _MAX7219_reg left
+        set Max7219_SCK ON
 
-  repeat 8
+      end Repeat
 
-    if _MAX7219_ddata.7 = ON then
-      set Max7219_DO ON
-    else
-      set Max7219_DO OFF
-    end if
-    SET Max7219_SCK OFF
-    rotate _MAX7219_ddata left
-    set Max7219_SCK ON
+      repeat 8
 
-  end Repeat
+        if _MAX7219_ddata.7 = ON then
+          set Max7219_DO ON
+        else
+          set Max7219_DO OFF
+        end if
+        SET Max7219_SCK OFF
+        rotate _MAX7219_ddata left
+        set Max7219_SCK ON
 
-  Max7219_CS = 1
+      end Repeat
+
+      Max7219_CS = 1
+
+  #endif
 
   end sub
 
@@ -235,37 +258,37 @@ End Sub
   #ifdef MAX7219_LEDMatrix_HardwareSPI
       FastHWSPITransfer  _MAX7219_reg
       FastHWSPITransfer  _MAX7219_ddata
-      exit sub
   #endif
 
+  #ifndef MAX7219_LEDMatrix_HardwareSPI
+      'must be software SPI
+      repeat 8
 
-  'must be software SPI
-  repeat 8
+        if _MAX7219_reg.7 = ON then
+          set Max7219_DO ON
+        else
+          set Max7219_DO OFF
+        end if
+        SET Max7219_SCK OFF
+        rotate _MAX7219_reg left
+        set Max7219_SCK ON
 
-    if _MAX7219_reg.7 = ON then
-      set Max7219_DO ON
-    else
-      set Max7219_DO OFF
-    end if
-    SET Max7219_SCK OFF
-    rotate _MAX7219_reg left
-    set Max7219_SCK ON
+      end Repeat
 
-  end Repeat
+      repeat 8
 
-  repeat 8
+        if _MAX7219_ddata.7 = ON then
+          set Max7219_DO ON
+        else
+          set Max7219_DO OFF
+        end if
+        SET Max7219_SCK OFF
+        rotate _MAX7219_ddata left
+        set Max7219_SCK ON
 
-    if _MAX7219_ddata.7 = ON then
-      set Max7219_DO ON
-    else
-      set Max7219_DO OFF
-    end if
-    SET Max7219_SCK OFF
-    rotate _MAX7219_ddata left
-    set Max7219_SCK ON
+      end Repeat
 
-  end Repeat
-
+  #endif
 
   end sub
 
@@ -300,7 +323,6 @@ End Sub
           Max7219_CS = 1
 
         Next
-        HSerPrintCRLF
 
     Next
 
