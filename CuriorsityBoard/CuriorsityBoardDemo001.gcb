@@ -1,0 +1,522 @@
+#chip 16f1709, 0.5
+#config WDTE = SWDTEN
+#option Explicit
+
+#define S1_PORT      portc.0
+#define LED_D4_LAT   portb.4
+#define LED_D5_LAT   portb.5
+#define LED_D6_LAT   portb.6
+#define LED_D7_LAT   portb.7
+#define CCP1_PORT    portc.5   'ccp1 port
+#define ADCPORT      AN2       'ADC port
+
+dir S1_PORT          In
+dir LED_D4_LAT       Out
+dir LED_D5_LAT       Out
+dir LED_D6_LAT       Out
+dir LED_D7_LAT       Out
+
+
+
+
+#define LED_D4_SetHigh  LED_D4_LAT = On
+#define LED_D4_Toggle   LED_D4_LAT = !LED_D4_LAT
+
+#define LOW                 0
+#define HIGH                1
+#define PRESSED             1
+#define NOT_PRESSED         0
+#define RUNNING             1
+#define NOT_RUNNING         0
+#define OVERFLOW            3
+#define LAST                16
+
+dim g_rotateReg, g_labNumber, g_switchEvent,g_labState, g_btnState  as byte
+g_labNumber = 0
+g_switchEvent = 0
+g_labState = NOT_RUNNING
+g_btnState = NOT_PRESSED
+
+' Main application
+
+  do forever
+
+        checkButtonS1()
+
+        select case g_labNumber
+            case 1:
+TimerLEDs'              HelloWorld()
+
+            case 2:
+              BlinkLED()
+
+            case 3:
+              RotateLEDS()
+
+            case 4:
+              ADC2LEDs()
+
+            case 5:
+              VSRLEDs()
+
+            case 6:
+              PWM2LEDs()
+
+            case 7:
+              TimerLEDs()
+
+            case 8:
+              Interrupt2LEDs()
+
+            case 9:
+              SleepWakeUp2LEDs()
+
+            case 10:
+              HEF2LEDs()
+
+        end select
+
+        if (g_switchEvent) then
+            nextLab()
+        end if
+
+  loop
+
+sub checkButtonS1
+    'Check if S1 is previously down (pressed).
+    if ( g_btnState = NOT_PRESSED ) then
+        'Check if S1 is LOW (pressed)
+        if ( S1_PORT = OFF ) then
+            g_btnState = PRESSED
+        end if
+
+    else
+        'Check if S1 is high (not pressed)
+        if ( S1_PORT = ON ) then
+            'Change the button's state to NOT_PRESSED
+            g_btnState = NOT_PRESSED
+            'Indicate a switch event
+            g_switchEvent = 1
+        end if
+
+    end if
+end sub
+
+sub nextLab
+    g_switchEvent = 0
+    g_labNumber++
+
+    if ( g_labNumber = 11 ) then
+        g_labNumber = 1
+    end if
+end sub
+
+sub HelloWorld()
+
+    if ( g_labState <> RUNNING )  then
+        LED_D4_LAT = OFF
+        LED_D5_LAT = OFF
+        LED_D6_LAT = OFF
+        LED_D7_LAT = OFF
+        g_labState = RUNNING
+    end if
+
+    if ( g_labState = RUNNING ) then
+        LED_D4_SetHigh
+    end if
+
+    ' Check if a switch event occurs
+    if ( g_switchEvent = 1 ) then
+        g_labState = NOT_RUNNING
+    end if
+end sub
+
+sub BlinkLED()
+
+    dim l_counter as byte
+
+    if ( g_labState <> RUNNING ) then
+        LED_D4_LAT = OFF
+        LED_D5_LAT = OFF
+        LED_D6_LAT = OFF
+        LED_D7_LAT = OFF
+        g_labState = RUNNING
+    end if
+
+    if ( g_labState = RUNNING ) then
+
+        'Wait for 1.5 sec delay
+        wait 1500 ms
+        LED_D4_Toggle
+
+    end if
+
+    'Check if a switch event occurs
+    if ( g_switchEvent = 1 ) then
+        g_labState = NOT_RUNNING
+    end if
+
+end sub
+
+sub RotateLEDs()
+
+    if ( g_labState <> RUNNING ) then
+        LED_D4_LAT = ON
+        LED_D5_LAT = OFF
+        LED_D6_LAT = OFF
+        LED_D7_LAT = OFF
+
+        'Initialize temporary register to begin at 1
+        g_rotateReg = 1
+
+        g_labState = RUNNING;
+    end if
+
+    if ( g_labState = RUNNING ) then
+
+        wait 500 ms
+
+        rotate g_rotateReg left simple
+
+        ' If the last LED has been lit, restart the pattern
+        if ( g_rotateReg = LAST ) then
+            g_rotateReg = 1
+        end if
+
+        'Determine which LED will light up
+        'ie. which bit in the register the 1 has rotated to.
+        LED_D4_LAT = g_rotateReg.0
+        LED_D5_LAT = g_rotateReg.1
+        LED_D6_LAT = g_rotateReg.2
+        LED_D7_LAT = g_rotateReg.3
+
+    end if
+
+    'Check if a switch event occurs
+    if ( g_switchEvent = 1 ) then
+        g_labState = NOT_RUNNING
+    end if
+
+end sub
+
+sub ADC2LEDs()
+
+    dim l_adcResult as byte
+
+    if ( g_labState <> RUNNING) then
+        LED_D4_LAT = OFF
+        LED_D5_LAT = OFF
+        LED_D6_LAT = OFF
+        LED_D7_LAT = OFF
+        g_labState = RUNNING
+    end if
+
+    if ( g_labState = RUNNING) then
+        'Get the top 4 MSBs and display it on the LEDs
+        l_adcResult = ReadAD( ADCPORT ) / 16
+
+        'Determine which LEDs will light up
+        LED_D4_LAT = l_adcResult.0
+        LED_D5_LAT = l_adcResult.1
+        LED_D6_LAT = l_adcResult.2
+        LED_D7_LAT = l_adcResult.3
+    end if
+
+    'Check if a switch event occurs
+    if ( g_switchEvent = 1 ) then
+        g_labState = NOT_RUNNING
+    end if
+
+end sub
+
+
+
+sub VSRLEDs()
+    dim l_delay as byte
+
+    if ( g_labState <> RUNNING ) then
+        LED_D4_LAT = OFF
+        LED_D5_LAT = OFF
+        LED_D6_LAT = OFF
+        LED_D7_LAT = OFF
+
+        'Initialize temporary register to begin at 1
+        g_rotateReg = 1
+
+        g_labState = RUNNING
+    end if
+
+    if ( g_labState = RUNNING ) then
+
+        l_delay = ReadAD( ADCPORT ) / 4
+
+        wait 5 ms
+
+        'Delay 2 ms until l_delay decrements to 0
+        do while ( l_delay <> 0)
+           wait 2 ms
+           l_delay--
+        loop
+
+        'Determine which LED will light up
+        'ie. which bit in the register the 1 has rotated to.
+        LED_D4_LAT = g_rotateReg.0
+        LED_D5_LAT = g_rotateReg.1
+        LED_D6_LAT = g_rotateReg.2
+        LED_D7_LAT = g_rotateReg.3
+
+        rotate g_rotateReg left simple
+
+        ' If the last LED has been lit, restart the pattern
+        if ( g_rotateReg = LAST ) then
+            g_rotateReg = 1
+        end if
+
+    end if
+
+    'Check if a switch event occurs
+    if ( g_switchEvent = 1 ) then
+        g_labState = NOT_RUNNING
+    end if
+
+end sub
+
+
+
+sub PWM2LEDs()
+
+    dim l_adcResult as byte
+
+    if ( g_labState <> RUNNING ) then
+        LED_D4_LAT = OFF
+        LED_D5_LAT = OFF
+        LED_D6_LAT = OFF
+        LED_D7_LAT = OFF
+        dir CCP1_PORT out
+        'Set LEDs as output of CCP1 using PPS
+        RC5PPS = 0x0C
+
+        'Module: CCP1
+        RB4PPS = 0x000C    'CCP1 > RB4
+        RB5PPS = 0x000C    'CCP1 > RB5
+        RB6PPS = 0x000C    'CCP1 > RB6
+        RB7PPS = 0x000C    'CCP1 > RB7
+
+        g_labState = RUNNING
+    end if
+
+    if ( g_labState = RUNNING ) then
+        'Start ADC conversion
+        l_adcResult = ReadAD( ADCPORT )
+
+        'Make the adcResult the PWM duty cycle
+        HPWM 1, 10, l_adcResult
+
+        'Make sure the ADC is every few nano seconds
+        wait 100 ms
+    end if
+
+    'Check if a switch event occurs
+    if ( g_switchEvent = 1 ) then
+        HPWMOff               'turn off CCP channel 1
+
+        'Restore to normal output
+        RC5PPS = 0x00
+
+        'Module: CCP1
+        RB4PPS = 0x0000
+        RB5PPS = 0x0000
+        RB6PPS = 0x0000
+        RB7PPS = 0x0000
+
+        g_labState = NOT_RUNNING
+    end if
+end sub
+
+
+sub TimerLEDs()
+
+    if ( g_labState <> RUNNING ) then
+        LED_D4_LAT = ON
+        LED_D5_LAT = ON
+        LED_D6_LAT = ON
+        LED_D7_LAT = ON
+
+        wait 100 ms
+
+
+        InitTimer1 Osc, PS_1
+        SetTimer 1, 0x0BDC
+        StartTimer 1
+        TMR1IE = 1
+
+        LED_D4_LAT = ON
+        LED_D5_LAT = OFF
+        LED_D6_LAT = OFF
+        LED_D7_LAT = OFF
+
+        'Initialize temporary register to begin at 1
+        g_rotateReg = 1
+
+        g_labState = RUNNING
+    end if
+
+    if ( g_labState = RUNNING ) then
+
+        'Wait for Timer1 to overflow
+        wait while ( TMR1IF <> 1 )
+
+        SetTimer 1, 0x0BDC
+
+        rotate g_rotateReg left simple
+
+        ' If the last LED has been lit, restart the pattern
+        if ( g_rotateReg = LAST ) then
+            g_rotateReg = 1
+        end if
+
+        'Determine which LEDs will light up
+        LED_D4_LAT = g_rotateReg.0
+        LED_D5_LAT = g_rotateReg.1
+        LED_D6_LAT = g_rotateReg.2
+        LED_D7_LAT = g_rotateReg.3
+
+        'Clear the timer
+        TMR1IF = 0
+
+    end if
+
+    'Check if a switch event occurs
+    if ( g_switchEvent = 1 ) then
+        StopTimer 1
+        g_labState = NOT_RUNNING
+    end if
+
+end sub
+
+Sub Interrupt2LEDs
+
+    if ( g_labState <> RUNNING ) then
+
+        LED_D4_LAT = ON
+        LED_D5_LAT = OFF
+        LED_D6_LAT = OFF
+        LED_D7_LAT = OFF
+
+        g_rotateReg = 1
+
+
+        On Interrupt Timer0Overflow call LAB_ISR
+
+        'Enable the TMR0 Interrupts
+        TMR0IE = 1
+
+        g_labState = RUNNING
+    end if
+
+    'Check if a switch event occurs
+    if ( g_switchEvent = 1 ) then
+        'Disable the TMR0 Interrupts
+        TMR0IE = 0
+        On Interrupt Timer0Overflow ignore
+
+        g_labState = NOT_RUNNING
+    end if
+end sub
+
+Sub LAB_ISR()
+    'If the last LED has been lit, restart the pattern
+    if ( g_rotateReg = 1 ) then
+        g_rotateReg = LAST
+    end if
+
+    rotate g_rotateReg right simple
+
+    'Determine which LEDs will light up
+    LED_D4_LAT = g_rotateReg.0
+    LED_D5_LAT = g_rotateReg.1
+    LED_D6_LAT = g_rotateReg.2
+    LED_D7_LAT = g_rotateReg.3
+
+end sub
+
+
+sub SleepWakeUp2LEDs()
+
+    if ( g_labState <> RUNNING )  then
+        LED_D4_LAT = ON
+        LED_D6_LAT = ON
+        LED_D5_LAT = OFF
+        LED_D7_LAT = OFF
+
+        'Enable Watchdog Timer
+        'Initially WDTPS 1:131072 & SWDTEN OFF by setting the register byte value
+         WDTCON = 0x18
+        'Enable SWDTEN by setting the bit value
+        WDTCON.SWDTEN = 1
+        Sleep
+
+        g_labState = RUNNING
+
+    end if
+
+    if ( g_labState = RUNNING ) then
+        'Wait 4 seconds for the WDT time out
+        'and reverse the states of the LEDs
+        LED_D4_LAT = !LED_D4_LAT
+        LED_D6_LAT = !LED_D6_LAT
+        LED_D5_LAT = !LED_D5_LAT
+        LED_D7_LAT = !LED_D7_LAT
+
+        'Disable Watchdog Timer
+        if ( WDTCON.SWDTEN = 1 ) then
+            WDTCON.SWDTEN = 0
+        end if
+    end if
+
+    'Check if a switch event occurs
+    if ( g_switchEvent = 1 ) then
+        g_labState = NOT_RUNNING
+    end if
+end sub
+
+
+sub HEF2LEDS ()
+
+    #include <heflash.h>
+
+    if ( g_labState <> RUNNING ) then
+        LED_D4_LAT = OFF
+        LED_D5_LAT = OFF
+        LED_D6_LAT = OFF
+        LED_D7_LAT = OFF
+
+        g_labState = RUNNING
+
+    end if
+
+    if ( g_labState = RUNNING)  Then
+        dim writeData as word
+        writeData = 0x0005
+        dim HefAddr as word
+        HefAddr = 0x1F80
+        dim data(HEFLASH_ROWSIZE)
+        'HEFwriteBlock(HefAddr,data,HEFLASH_ROWSIZE)
+
+
+        'Read back value and store to LED display
+        'HEFreadBlock(data,0,HEFLASH_ROWSIZE)
+
+        'Determine which LEDs will light up
+        LED_D4_LAT = g_rotateReg.0
+        LED_D5_LAT = g_rotateReg.1
+        LED_D6_LAT = g_rotateReg.2
+        LED_D7_LAT = g_rotateReg.3
+
+    end if
+
+    'Check if a switch event occurs
+    if ( g_switchEvent = 1 ) then
+        g_labState = NOT_RUNNING
+    end if
+end sub
