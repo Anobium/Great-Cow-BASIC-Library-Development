@@ -2,12 +2,21 @@
 #config WDTE = SWDTEN
 #option Explicit
 
+
+'Module: EUSART
+RC6PPS = 0x0014    'TX > RC6
+  'USART settings
+  #define USART_BAUD_RATE 9600
+  #define USART_TX_BLOCKING
+
+
+
 #define S1_PORT      portc.0
 #define LED_D4_LAT   portb.4
 #define LED_D5_LAT   portb.5
 #define LED_D6_LAT   portb.6
 #define LED_D7_LAT   portb.7
-#define CCP1_PORT    portc.5   'ccp1 port
+#define CCP1_PORT    portc.5   'CCP1 port
 #define ADCPORT      AN2       'ADC port
 
 dir S1_PORT          In
@@ -38,6 +47,9 @@ g_labState = NOT_RUNNING
 g_btnState = NOT_PRESSED
 
 ' Main application
+HSerPrintStringCRLF "Welcome"
+
+'  FlashLEDs()
 
   do forever
 
@@ -45,9 +57,12 @@ g_btnState = NOT_PRESSED
 
         select case g_labNumber
             case 1:
-TimerLEDs'              HelloWorld()
 
+              SleepWakeUp2LEDs()
+
+'              HelloWorld()
             case 2:
+HSerPrintStringCRLF "2"
               BlinkLED()
 
             case 3:
@@ -131,6 +146,29 @@ sub HelloWorld()
     end if
 end sub
 
+sub FlashLEDs()
+
+        LED_D4_LAT = OFF
+        LED_D5_LAT = OFF
+        LED_D6_LAT = OFF
+        LED_D7_LAT = OFF
+
+        wait 2 s
+
+        Repeat 20
+            LED_D4_LAT = !LED_D4_LAT
+            LED_D6_LAT = !LED_D6_LAT
+            LED_D5_LAT = !LED_D5_LAT
+            LED_D7_LAT = !LED_D7_LAT
+            wait 100 ms
+        end Repeat
+
+        LED_D4_LAT = OFF
+        LED_D5_LAT = OFF
+        LED_D6_LAT = OFF
+        LED_D7_LAT = OFF
+
+end sub
 sub BlinkLED()
 
     dim l_counter as byte
@@ -342,13 +380,11 @@ sub TimerLEDs()
         LED_D6_LAT = ON
         LED_D7_LAT = ON
 
-        wait 100 ms
-
-
+        ' Initialize the timer, set the initial value and start the timer.
         InitTimer1 Osc, PS_1
-        SetTimer 1, 0x0BDC
+        #define Timer1ReloadValue 0x0BDC
+        SetTimer 1, Timer1ReloadValue
         StartTimer 1
-        TMR1IE = 1
 
         LED_D4_LAT = ON
         LED_D5_LAT = OFF
@@ -363,10 +399,9 @@ sub TimerLEDs()
 
     if ( g_labState = RUNNING ) then
 
-        'Wait for Timer1 to overflow
+        'Wait for Timer1 to overflow. When timer1 overflows TMR1IF will be set to 1
         wait while ( TMR1IF <> 1 )
-
-        SetTimer 1, 0x0BDC
+        SetTimer 1, Timer1ReloadValue
 
         rotate g_rotateReg left simple
 
@@ -405,26 +440,30 @@ Sub Interrupt2LEDs
 
         g_rotateReg = 1
 
-
+        'Enable the TMR0 Interrupts
+        InitTimer0 Osc, PS0_256
         On Interrupt Timer0Overflow call LAB_ISR
 
-        'Enable the TMR0 Interrupts
-        TMR0IE = 1
-
         g_labState = RUNNING
+
     end if
+
+    'there is not middle handler?  why? The middle handler is the Interrupt routine LAB_ISR()
 
     'Check if a switch event occurs
     if ( g_switchEvent = 1 ) then
         'Disable the TMR0 Interrupts
-        TMR0IE = 0
         On Interrupt Timer0Overflow ignore
 
         g_labState = NOT_RUNNING
+
     end if
 end sub
 
 Sub LAB_ISR()
+    'Clear timer0 event
+    TMR0IF = 0
+
     'If the last LED has been lit, restart the pattern
     if ( g_rotateReg = 1 ) then
         g_rotateReg = LAST
@@ -454,8 +493,9 @@ sub SleepWakeUp2LEDs()
          WDTCON = 0x18
         'Enable SWDTEN by setting the bit value
         WDTCON.SWDTEN = 1
+        HSerPrintStringCRLF ">"
         Sleep
-
+        HSerPrintStringCRLF "<"
         g_labState = RUNNING
 
     end if
