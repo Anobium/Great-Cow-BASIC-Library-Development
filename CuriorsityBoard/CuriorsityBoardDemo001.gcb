@@ -13,13 +13,15 @@
 '''********************************************************************************
 
 
-#chip 16f1709, 0.5
-#config WDTE = SWDTEN
+#chip 16f1829, 0.5
+#config WDTE=SWDTEN
 #option Explicit
 
 'Initialise the hardware for serial communications
     'Initialise Module: USART
-    RC6PPS = 0x0014    'TX > RC6  this register may change for a specific microprocessor.
+    #ifdef var(PPSLOCK)
+        RC4PPS = 0x0014    'TX > RC6  this register may change for a specific microprocessor.
+    #endif
     'USART settings
     #define USART_BAUD_RATE 9600
     #define USART_TX_BLOCKING
@@ -109,7 +111,13 @@
                 SleepWakeUp2LEDs()
 
               case 10:
-                HEF2LEDs()
+                #ifdef ChipEEProm 0
+                  HEF2LEDs()
+                #endif
+                #ifndef ChipEEProm 0
+                  EEPROM2LEDs()
+                #endif
+
 
           end select
 
@@ -367,14 +375,15 @@
             LED_D7_LAT = OFF
             dir CCP1_PORT out
             'Set LEDs as output of CCP1 using PPS
-            RC5PPS = 0x000C                    'this register may change for a specific microprocessor.
+            #ifdef var(PPSLOCK)
+                RC5PPS = 0x000C                    'this register may change for a specific microprocessor.
 
-            'Module: CCP1
-            RB4PPS = 0x000C    'CCP1 > RB4      this register may change for a specific microprocessor.
-            RB5PPS = 0x000C    'CCP1 > RB5      this register may change for a specific microprocessor.
-            RB6PPS = 0x000C    'CCP1 > RB6      this register may change for a specific microprocessor.
-            RB7PPS = 0x000C    'CCP1 > RB7      this register may change for a specific microprocessor.
-
+                'Module: CCP1
+                RB4PPS = 0x000C    'CCP1 > RB4      this register may change for a specific microprocessor.
+                RB5PPS = 0x000C    'CCP1 > RB5      this register may change for a specific microprocessor.
+                RB6PPS = 0x000C    'CCP1 > RB6      this register may change for a specific microprocessor.
+                RB7PPS = 0x000C    'CCP1 > RB7      this register may change for a specific microprocessor.
+            #endif
             g_labState = RUNNING
         end if
 
@@ -395,14 +404,15 @@
             HPWMOff               'turn off CCP channel 1
 
             'Restore to normal output
-            RC5PPS = 0x00      'this register may change for a specific microprocessor.
+            #ifdef var(PPSLOCK)
+                RC5PPS = 0x00      'this register may change for a specific microprocessor.
 
-            'Module: CCP1
-            RB4PPS = 0x00      'this register may change for a specific microprocessor.
-            RB5PPS = 0x00      'this register may change for a specific microprocessor.
-            RB6PPS = 0x00      'this register may change for a specific microprocessor.
-            RB7PPS = 0x00      'this register may change for a specific microprocessor.
-
+                'Module: CCP1
+                RB4PPS = 0x00      'this register may change for a specific microprocessor.
+                RB5PPS = 0x00      'this register may change for a specific microprocessor.
+                RB6PPS = 0x00      'this register may change for a specific microprocessor.
+                RB7PPS = 0x00      'this register may change for a specific microprocessor.
+            #endif
             g_labState = NOT_RUNNING
         end if
     end sub
@@ -528,6 +538,7 @@
             'Initially WDTPS 1:131072 & SWDTEN OFF by setting the register byte value
              WDTCON = 0x18
             'Enable SWDTEN by setting the bit value
+            #samevar wdtcon, wdtcon0
             WDTCON.SWDTEN = 1
 
             Sleep
@@ -603,4 +614,9 @@
         if ( g_switchEvent = 1 ) then
             g_labState = NOT_RUNNING
         end if
+    end sub
+
+
+    sub EEPROM2LEDs()
+
     end sub
