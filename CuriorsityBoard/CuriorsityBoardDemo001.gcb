@@ -13,7 +13,7 @@
 '''********************************************************************************
 
 
-#chip 16f1829, 0.5
+#chip 16F1829, 0.5
 #config WDTE=SWDTEN, LVP=ON
 #option Explicit
 
@@ -111,11 +111,18 @@
                 SleepWakeUp2LEDs()
 
               case 10:
+                'increment the lab counter - do this because there are chips that do not support HEF or EEPROM
+                g_labNumber++
                 #ifdef ChipEEProm 0
-                  HEF2LEDs()
+                  'Check the HEF memory is avaiable
+                  #ifdef bit(CFGS)
+                      HEF2LEDs()
+                      g_labNumber---    'revert this counter as we executed a lab
+                  #endif
                 #endif
                 #ifndef ChipEEProm 0
                   EEPROM2LEDs()
+                  g_labNumber--    'revert this counter as we executed a lab
                 #endif
 
 
@@ -614,9 +621,51 @@
         if ( g_switchEvent = 1 ) then
             g_labState = NOT_RUNNING
         end if
+
     end sub
 
 
     sub EEPROM2LEDs()
+
+    dim l_adcResult as byte
+
+        if ( g_labState <> RUNNING ) then
+            LED_D4_LAT = OFF
+            LED_D5_LAT = OFF
+            LED_D6_LAT = OFF
+            LED_D7_LAT = OFF
+
+            g_labState = RUNNING
+
+        end if
+
+        if ( g_labState = RUNNING)  Then
+            dim l_eeAddr, writeData as byte
+
+            'EEProm location, a value between 0 and 127 for the 128 EEProm memory
+            l_eeAddr = 0x00
+
+            'Get the top 4 MSBs of the ADC and write them to EEPROM
+            l_adcResult = ReadAD( ADCPORT ) / 16
+            EPWrite l_eeAddr, l_adcResult
+
+            'ensure value is cleared
+            writeData = 0x00
+
+            'Read back value and then subsuently display on LEDs
+            EPWrite l_eeAddr, writeData
+
+            'Determine which LEDs will light up
+            LED_D4_LAT = writeData.0
+            LED_D5_LAT = writeData.1
+            LED_D6_LAT = writeData.2
+            LED_D7_LAT = writeData.3
+
+        end if
+
+        'Check if a switch event occurs
+        if ( g_switchEvent = 1 ) then
+            g_labState = NOT_RUNNING
+        end if
 
     end sub
