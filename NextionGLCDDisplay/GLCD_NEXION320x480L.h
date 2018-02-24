@@ -16,6 +16,7 @@
 '    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 '    https://nextion.itead.cc/resources/documents/instruction-set/#s1
+'    https://www.itead.cc/wiki/Nextion_Instruction_Set#tsw:_Enable.2Fdisable_component_touch_function
 
 'Notes:
 ' Supports NXN320x480L controller only.
@@ -46,8 +47,8 @@ Sub InitGLCD_NXN320x480L
 
   wait 100 ms
   'clear serial
-  GLCD_NEXIONSerialPrint "ÿÿÿ"
-  GLCD_NEXIONSerialPrint "ÿÿÿ"
+  GLCD_NEXIONSerialPrint "Ã¿Ã¿Ã¿"
+  GLCD_NEXIONSerialPrint "Ã¿Ã¿Ã¿"
   SendParam_NXN320x480L ( "rest", true )  '  reset the device
   GLCDBackground = TFT_BLACK
   GLCDForeground = TFT_WHITE
@@ -78,7 +79,7 @@ Sub GLCDCLS_NXN320x480L ( Optional In  GLCDBackground as word = GLCDBackground )
   #if GLCD_TYPE = GLCD_TYPE_NEXION320x480L
 
     GLCD_NEXIONSerialPrint "cls "+str(GLCDBackground)
-    GLCD_NEXIONSerialPrint "ÿÿÿ"
+    GLCD_NEXIONSerialPrint "Ã¿Ã¿Ã¿"
 
 
   #endif
@@ -92,7 +93,7 @@ Sub SendParam_NXN320x480L ( in outstring as string, Optional In outstate  = Fals
   if outstate = false then
       GLCD_NEXIONSerialSend 44
   else
-      GLCD_NEXIONSerialPrint "ÿÿÿ"
+      GLCD_NEXIONSerialPrint "Ã¿Ã¿Ã¿"
   end if
 
 end sub
@@ -104,7 +105,7 @@ Sub SendParam_NXN320x480L ( in outval as word, Optional In outstate  = False  )
   if outstate = false then
       GLCD_NEXIONSerialSend 44
   else
-      GLCD_NEXIONSerialPrint "ÿÿÿ"
+      GLCD_NEXIONSerialPrint "Ã¿Ã¿Ã¿"
   end if
 
 end sub
@@ -299,7 +300,7 @@ Sub GLCDPrint_NXN320x480L (In PrintLocX as word, In PrintLocY as word, in LCDPri
   GLCD_NEXIONSerialSend 34
   GLCD_NEXIONSerialPrint LCDPrintData
   GLCD_NEXIONSerialSend 34
-  GLCD_NEXIONSerialPrint "ÿÿÿ"
+  GLCD_NEXIONSerialPrint "Ã¿Ã¿Ã¿"
 
 End Sub
 
@@ -351,7 +352,7 @@ Sub GLCDPrint_NXN320x480L (In PrintLocX as word, In PrintLocY as word, In LCDVal
   GLCD_NEXIONSerialSend 34
   GLCD_NEXIONSerialPrint str(LCDValue)
   GLCD_NEXIONSerialSend 34
-  GLCD_NEXIONSerialPrint "ÿÿÿ"
+  GLCD_NEXIONSerialPrint "Ã¿Ã¿Ã¿"
 
 End Sub
 
@@ -417,7 +418,7 @@ sub GLCDUpdateObject_NXN320x480L ( in nextionobject as string , in nextionstring
   GLCD_NEXIONSerialSend 34
   GLCD_NEXIONSerialPrint nextionstringData
   GLCD_NEXIONSerialSend 34
-  GLCD_NEXIONSerialPrint "ÿÿÿ"
+  GLCD_NEXIONSerialPrint "Ã¿Ã¿Ã¿"
 
 end sub
 
@@ -427,7 +428,7 @@ sub GLCDUpdateObject_NXN320x480L ( in nextionobject as string , in nextionnumber
   GLCD_NEXIONSerialPrint nextionobject
   GLCD_NEXIONSerialPrint"="
   GLCD_NEXIONSerialPrint nextionnumberData
-  GLCD_NEXIONSerialPrint "ÿÿÿ"
+  GLCD_NEXIONSerialPrint "Ã¿Ã¿Ã¿"
 
 end sub
 
@@ -437,7 +438,7 @@ sub GLCDUpdateObject_NXN320x480L ( in nextionobject as string , in nextionnumber
   GLCD_NEXIONSerialPrint nextionobject
   GLCD_NEXIONSerialPrint"="
   GLCD_NEXIONSerialPrint nextionnumberData
-  GLCD_NEXIONSerialPrint "ÿÿÿ"
+  GLCD_NEXIONSerialPrint "Ã¿Ã¿Ã¿"
 
 end sub
 
@@ -447,6 +448,6 @@ sub GLCDSendOpInstruction_Nexion ( in nextionobject as string , in nextionstring
   GLCD_NEXIONSerialPrint nextionobject
   GLCD_NEXIONSerialPrint " "
   GLCD_NEXIONSerialPrint nextionstringData
-  GLCD_NEXIONSerialPrint "ÿÿÿ"
+  GLCD_NEXIONSerialPrint "Ã¿Ã¿Ã¿"
 
 end sub
