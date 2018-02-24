@@ -1,0 +1,182 @@
+'''
+'''******************************************************************
+'''
+'''
+'''
+'''  PIC: 16F18855
+'''  Compiler: GCB
+'''  IDE: GCB@SYN
+'''
+'''  Date: 13.3.2016
+'''
+
+
+' ----- Configuration
+    'Chip Settings.
+    #chip 16f18855,32
+    #option explicit
+    #include <glcd.h>
+    #define GLCD_TYPE GLCD_TYPE_NEXION320x480L
+    #define NextionFont0      0, 8, 16    'Arial 8x16
+    #define NextionFont1      1, 12, 24   '24point 12x24 charset
+    #define NextionFont2      2, 16, 32   '32point 16x32 charset
+
+
+
+    ; ----- Include library
+    #include <SoftSerial.h>
+
+    ; ----- Config Serial UART for sending:
+    #define SER1_BAUD 9600     ; baudrate must be defined
+    #define SER1_TXPORT PORTC ; I/O port (without .bit) must be defined
+    #define SER1_TXPIN 0       ; portbit  must be defined
+
+    #define GLCD_NEXIONSerialPrint        Ser1Print
+    #define GLCD_NEXIONSerialSend         Ser1Send
+
+
+    #define SWITCH_DOWN         0
+    #define SWITCH_UP           1
+
+    #define SWITCH      PORTA.5
+
+    #define USART_BAUD_RATE 9600
+'    #define USART_TX_BLOCKING
+    #define USART_BLOCKING
+    dim adcval as word
+    dim ScaledValue as Integer
+    dim myString as string * 32
+
+    'comment out these two gotos to change the demo
+     goto demo
+    ' goto ShowTouch
+
+
+    wait 1 s
+    GLCDSendOpInstruction_Nexion( "page",  "gauges" )
+
+    do
+
+          adcval = ReadAD( AN4 )
+          ScaledValue = scale( adcval, 0, 255, -135, 135 )
+
+          'Update Gauges with the values
+          GLCDUpdateObject_Nexion( "z0.val",  ( 360 + ScaledValue ) mod 360 )    ' a number value for a .val object
+          GLCDUpdateObject_Nexion( "z1.val",  (180-ScaledValue) )
+
+          'Update t0.txt object with the ADC and the Scaled value
+          myString = "ADC="+str(adcval)
+          myString = myString +":SCD="+str(( 360 + ScaledValue ) mod 360)
+          GLCDUpdateObject_Nexion( "t0.txt",  myString )
+
+          wait 1 ms
+
+    loop
+
+
+'''Re-maps a number from one range to another. That is, a value of fromLow would get mapped to toLow, a value of fromHigh to toHigh, values in-between to values in-between, etc.
+'''@param l_map:      the number to map
+'''@param l_fromLow:  the lower bound of the value?s current range
+'''@param l_fromHigh: the upper bound of the value?s current range
+'''@param l_toLow:    the lower bound of the value?s target range
+'''@param l_toHigh:   the upper bound of the value?s target range
+function xmap ( in l_map as word, in l_fromLow as word, in l_fromHigh as word, in l_toLow as word, in l_toHigh  as word) as word
+
+  dim l_syscalc as long
+  #define _mapFactor 10000
+  l_syscalc = ( l_toHigh - l_toLow ) +1
+  l_syscalc = [long]l_syscalc * _mapFactor
+  l_syscalc = [long]l_syscalc / ( l_fromHigh - l_fromLow )
+  l_syscalc = [long]l_syscalc * l_map
+  map = (l_syscalc / _mapFactor)
+
+end function
+
+
+function scale ( in l_map as word, in l_fromLow as integer, in l_fromHigh as integer, in l_toLow as integer, in l_toHigh  as integer) as integer
+  ;return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  dim l_syscalc as integer
+  dim l_syscalcF as long
+  l_syscalcf = 0
+  repeat (l_toHigh   - l_toLow)
+      l_syscalcf = l_syscalcf + ( l_map - l_fromLow )
+  end Repeat
+
+'  l_syscalcf =  ( l_map - l_fromLow ) * (l_toHigh   - l_toLow)
+  l_syscalc = (  l_fromHigh - l_fromLow )
+  scale = (l_syscalcf / l_syscalc) + l_toLow
+
+end function
+
+
+demo:
+    Dim CCOUNT, BYTENUMBER, OLDFONT, OLDFONT as Byte
+
+    CCount = 32
+    dim longNumber as long
+    longNumber = 0 ' max value = 4294967290
+    dim wordNumber as Word
+    wordNumber = 0
+    byteNumber = 0
+
+    wait 1 s
+    GLCDCLS TFT_BLACK
+
+    GLCDLocateString_Nexion 1,1
+    GLCDPrintDefaultFont_Nextion ( NextionFont0 )
+    GLCDPrintString_Nexion ( "Great Cow BASIC " )
+    GLCDLocateString_Nexion 130,1
+    GLCDPrintStringLn_Nexion ( "v0.98.02" )
+
+    GLCDPrint_Nexion ( 2, 18, "DrawStr",TFT_YELLOW)
+    GLCDPrint_Nexion ( 2, 52, "Long:", TFT_WHITE )
+    GLCDPrint_Nexion ( 2, 70, "Word:" )
+    GLCDPrint_Nexion ( 2, 88, "Byte:" )
+
+    GLCDPrint_Nexion ( 128, 18, "Asc:"+"  " )
+
+    box 0,0,GLCD_WIDTH-1, GLCD_HEIGHT-1, TFT_YELLOW
+    box GLCD_WIDTH-5, GLCD_HEIGHT-5,GLCD_WIDTH-1, GLCD_HEIGHT-1, TFT_WHITE
+
+    Circle( GLCD_WIDTH/2, GLCD_HEIGHT/2, 50, TFT_WHITE )            ;center
+    FilledCircle( GLCD_WIDTH/2, GLCD_HEIGHT/2, 25, TFT_DARKGREY  )
+
+    line 0,  GLCD_HEIGHT-1 , GLCD_WIDTH/2 +100,  (GLCD_HEIGHT /2) - 50, TFT_CYAN
+    line  0, (GLCD_HEIGHT /2) - 50, GLCD_WIDTH/2 +100, (GLCD_HEIGHT /2) - 50, TFT_CYAN
+
+    filledbox 2,GLCD_HEIGHT/2+10,42,GLCD_HEIGHT/2+50, TFT_RED
+
+    GLCDPrint_Nexion ( 70, GLCD_HEIGHT - 36 , "Great Cow BASIC" , TFT_WHITE, NextionFont2 )
+
+
+    GLCDPrint_Nexion ( GLCD_WIDTH - 78, 2 , "Feb 2018" , TFT_WHITE, NextionFont0 )
+
+    GLCDForeground = TFT_WHITE
+    GLCDPrint_Nexion ( 100 , GLCD_HEIGHT - 60 , "Nextion Driver", NextionFont1 )
+
+    DO forever
+
+      GLCDPrint_Nexion ( 64 , 52, longNumber, TFT_WHITE, NextionFont0 )
+      GLCDPrint_Nexion ( 124 , 52, longNumber, TFT_Yellow )
+
+      'Change the colour via the global GLCD variable
+      GLCDForeground = TFT_WHITE
+      GLCDPrint_Nexion ( 184 , 52, longNumber )
+
+      GLCDPrint_Nexion ( 64 , 70, pad( str(wordnumber),5))
+      GLCDPrint_Nexion ( 64 , 88, pad( str(bytenumber),3))
+
+      GLCDPrint_Nexion ( 101, 19, chr(CCount) )
+      Box 98,17,117,42, TFT_WHITE                                   'Draw a box around the Char below
+
+      GLCDPrint_Nexion ( 180, 18 , pad( str(CCount),3) )
+      CCount++
+      if CCount = 0 then CCount = 32
+      if CCount = 128 then CCount = 32
+      longNumber = longNumber + 7
+      wordNumber = wordNumber + 3
+      byteNumber++
+
+    LOOP
+
+
