@@ -2,7 +2,7 @@
 '''******************************************************************
 '''  Lesson 1 - "Hello World"
 '''
-'''  The LEDs are connected to input-outpins (I/O) RC0 through RC3. First, the I/O pin
+'''  As the LEDs are connected to input-outpins (I/O) RC0 through RC3. First, the I/O pin
 '''  must be configured for an output. In this case, when one of these pins is driven high
 '''  (RC0 =  1 ), the LED will turn on. These two logic levels are derived from the power pins
 '''  of the PIC MCU. Since the PIC device?s power pin (VDD) is connected to 5V and the
@@ -11,25 +11,36 @@
 '''
 '''  This turns on DS1 LED on the Low Pin Count Demo Board.
 '''
-'''  PIC: 16f18446
-'''  Compiler: GCB
-'''  IDE: GCB@SYN
 '''
 '''  Board: PICkit 2 Low Pin Count Demo Board
-'''  Date: 29.5.2015
+'''  Date: 02.04.2018
 '''
 ''''''******************************************************************
 ''' See Low Pin Count Demo Board User's Guide for Lesson Information*
 ''''''*****************************************************************
 '''
 
-#chip 16f18446,16
-#config MCLRE_OFF
 
-dir portc out
-portc = 0
-portc.0 = 1
+'''@author     Chris Roper
+'''@licence    GPL
+'''@version    1.00
+'''@date       02.04.2018
+'''********************************************************************************
 
-do
 
-loop
+
+    #chip 16f18446,16
+
+    'Set the port as an output
+    dir portc out
+
+    'Turn the port off
+    portc = 0
+
+    'Set the LED on
+    portc.0 = 1
+
+    'Do a loop forever
+    do forever
+
+    loop
