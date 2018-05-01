@@ -14,7 +14,7 @@
 ''' to change the display.
 '''
 '''
-'''  PIC: 16f18446
+'''  PIC: 16f18426
 '''  Compiler: GCB
 '''  IDE: GCB@SYN
 '''
@@ -27,7 +27,7 @@
 '''
 
 
- #Chip 16f18446, 8
+ #Chip 16f18426, 8
  #config MCLRE_OFF
 
     dir portc out

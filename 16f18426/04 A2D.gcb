@@ -17,7 +17,7 @@
 ''' to change the display.
 '''
 '''
-'''  PIC: 16f18446
+'''  PIC: 16f18426
 '''  Compiler: GCB
 '''  IDE: GCB@SYN
 '''
@@ -29,12 +29,8 @@
 ''''''*****************************************************************
 '''
 
-
-
-
- #Chip 16f18446, 8
+ #Chip 16f18426, 8
  #config MCLRE_OFF
-
 
  'This script allows for the voltage drop and compensates of any losses.
  #script
@@ -51,11 +47,13 @@
 
  #endscript
 
-    dir portc out
+  dir portc out
 
-    do
+  do
 
-        wait 5 ms
-        portc =  ( ReadAD10 ( AN0 )  / ADC_adjustment )
+      wait 5 ms
+      portc = ( ReadAD10 ( AN0 )  / ADC_adjustment )
 
-    loop
+  loop
+
+End

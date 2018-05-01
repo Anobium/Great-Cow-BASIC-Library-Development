@@ -3,24 +3,23 @@
 '''This program receive a character from Software-UART and sends it back.
 '''Typically, this sending device is a PC terminal program.
 '''
-'''@author  Evan R. Venn plus works of others
+'''@author  Chris Roper plus works of others
 '''@licence GPL
 '''@version 1.0a
-'''@date    31.01.2015
-'''********************************************************************************
+'''@date    29.04.2018
+'''******************************************************************************
 
 ; ----- Configuration
-  #chip 16f18446, 32
+  #chip 16f18426, 32
   #option explicit
 
   #startup InitPPS, 85
 
- Sub InitPPS
-        'Module: EUSART1
-        RB7PPS   = 0x000F    'TX1 > RB7
-        RX1DTPPS = 0x000D    'RB5 > RX1
-
-End Sub
+  Sub InitPPS
+    'Module: EUSART1
+    RC4PPS   = 0x000F    'TX1 > RC4
+    RX1DTPPS = 0x0015    'RC5 > RX1
+  End Sub
 
   'Config UART
   #define USART_BLOCKING
@@ -33,13 +32,12 @@ End Sub
 
 ; ----- Main body of program commences here.
   'Message after reset
-  HSerPrint "Hello World!"
-  HSerPrintCRLF
+  HSerPrintStringCRLF "Hello World!"
 
   'Main routine
-  Start:
-      'wait for char from UART
-      HSerReceive InChar
-      'send back char to UART
-      HSerSend InChar
-  Goto Start
+  Do
+    'wait for char from UART
+    HSerReceive InChar
+    'send back char to UART
+    HSerSend InChar
+  Loop

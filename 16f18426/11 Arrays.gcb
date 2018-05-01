@@ -16,7 +16,8 @@
 '''
 '''
 '''
-'''  PIC: 16f18446
+'''  PIC: 16F18426
+
 '''  Compiler: GCB
 '''  IDE: GCB@SYN
 '''
@@ -30,7 +31,7 @@
 
 
 
- #chip 16f18446
+ #chip 16F18426
  #config MCLRE_OFF
 
     #define NUM_READINGS 8

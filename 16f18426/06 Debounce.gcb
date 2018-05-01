@@ -16,7 +16,7 @@
 ''' LEDs are OFF.
 '''
 '''
-'''  PIC: 16f18446
+'''  PIC: 16f18426
 '''  Compiler: GCB
 '''  IDE: GCB@SYN
 '''
@@ -29,7 +29,7 @@
 '''
 
 
- #Chip 16f18446, 8
+ #Chip 16f18426, 8
  #config MCLRE_OFF
 
   #define DOWN        0

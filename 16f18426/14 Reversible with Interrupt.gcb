@@ -16,7 +16,7 @@
 '''  LEDs will rotate at a speed that is proportional to the ADC value. The switch will toggle
 '''  the direction of the LEDs
 '''
-'''  PIC: 16f18446,8
+'''  PIC: 16f18426,8
 '''  Compiler: GCB
 '''  IDE: GCB@SYN
 '''
@@ -29,7 +29,7 @@
 '''
 
 
- #Chip 16f18446, 8
+ #Chip 16f18426, 8
  #option explicit
  #config MCLRE_OFF
 
@@ -72,16 +72,7 @@
 
   do
       mydelay = ReadAD12 ( AN0 )
-
-      'The next Scale command scales the read value from the ReadAD12 operation to a simple 1 to 20 scale.      'The 1-20 scale is then used as a delay for the LEDs.
-      'However, your board may not read the full ReadAD12 range of 0 to 4095.  Why? maximum voltage of the ADC port may be less then 5v.
-      'Where 4095 is 5v on the ANO port... is yours is less then proportionally adjust
-      'newvalue = ( 4095/5.00)*YourMaxVoltageOnThePort)
-      'for example wher the operating voltage is 5.00v and the maximum voltage on the AD port is 4.08v
-      'newvalue = ( 4095/5.00v)*4.08v) -1
-      '3382 = ( 4095/5.00)*4.13) - 1
-      '3382 expressed as a hex number 0x0D36
-      mydelay = scale ( mydelay, 0, 0x0D36, 1 , 20)
+      mydelay = scale ( mydelay, 0, 0x0D3F, 1 , 20)
       do while ( mydelay <> 0 )
         mydelay--
         wait 20 ms

@@ -13,33 +13,35 @@
   #chip 16f18446, 32
   #option explicit
 
+
+  'Config PPS
   #startup InitPPS, 85
 
- Sub InitPPS
-        'Module: EUSART1
-        RB7PPS   = 0x000F    'TX1 > RB7
-        RX1DTPPS = 0x000D    'RB5 > RX1
 
-End Sub
+  Sub InitPPS
+    'Module: EUSART1
+    RB7PPS   = 0x000F    'TX1 > RB7
+    RX1DTPPS = 0x000D    'RB5 > RX1
+  End Sub
 
   'Config UART
   #define USART_BLOCKING
   #define USART_BAUD_RATE 9600
 
-  Wait 100 Ms
-
 ; ----- Variables
-  Dim INCHAR as Byte
+  dim MyVal as word
 
 ; ----- Main body of program commences here.
-  'Message after reset
-  HSerPrint "Hello World!"
-  HSerPrintCRLF
+  do
 
-  'Main routine
-  Start:
-      'wait for char from UART
-      HSerReceive InChar
-      'send back char to UART
-      HSerSend InChar
-  Goto Start
+    MyVal = ReadAD12(An0)
+
+    HSerPrint MyVal
+    hserprint " = "
+    HSerPrint scale(MyVal, 0, 3375, 1, 255)
+
+    wait 1 s
+
+  Loop
+
+End

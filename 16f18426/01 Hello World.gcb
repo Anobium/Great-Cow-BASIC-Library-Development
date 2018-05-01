@@ -11,7 +11,7 @@
 '''
 '''  This turns on DS1 LED on the Low Pin Count Demo Board.
 '''
-'''  PIC: 16f18446
+'''  PIC: 16f18426
 '''  Compiler: GCB
 '''  IDE: GCB@SYN
 '''
@@ -23,7 +23,7 @@
 ''''''*****************************************************************
 '''
 
-#chip 16f18446,16
+#chip 16f18426,16
 #config MCLRE_OFF
 
 dir portc out

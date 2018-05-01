@@ -10,7 +10,7 @@
 '''
 '''  DS1 blinks at a rate of approximately 1.5 seconds.
 '''
-'''  PIC: 16f18446
+'''  PIC: 16f18426
 '''  Compiler: GCB
 '''  IDE: GCB@SYN
 '''
@@ -22,7 +22,7 @@
 ''''''*****************************************************************
 '''
 
- #Chip 16f18446
+ #Chip 16f18426
 
  #option explicit
  #config MCLRE_OFF

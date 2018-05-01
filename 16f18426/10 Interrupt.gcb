@@ -16,7 +16,7 @@
 '''
 '''  LEDs rotate at a constant speed and the switch reverses their direction
 '''
-'''  PIC: 16F18446
+'''  PIC: 16f18426
 '''  Compiler: GCB
 '''  IDE: GCB@SYN
 '''
@@ -28,7 +28,7 @@
 ''''''*****************************************************************
 '''
 
- #chip 16F18446
+ #chip 16f18426
  #option explicit
  #config MCLRE_OFF
 

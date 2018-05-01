@@ -18,7 +18,7 @@
 
 ''' Demo1.  Rotating the POT will adjust the brightness of a single LED attached to portc.5/CCP1
 '''
-'''  PIC: 16f18446
+'''  PIC: 16f18426
 '''  Compiler: GCB
 '''  IDE: GCB@SYN
 '''
@@ -31,27 +31,26 @@
 '''
 
 
- #Chip 16f18446
+    #Chip 16f18426
 
- #config MCLRE_OFF
- #startup InitPPS, 85
+    #config MCLRE_OFF
+    #startup InitPPS, 85
 
+    Sub InitPPS
 
-  Sub InitPPS
+        'Module: CCP2
+        RC2PPS = 0x000A    'CCP2 > RC2
+        CCP2PPS = 0x0012    'RC2 > CCP2 (bi-directional)
 
-          'Module: CCP2
-          RC2PPS = 0x000A    'CCP2 > RC2
-          CCP2PPS = 0x0012    'RC2 > CCP2 (bi-directional)
+    End Sub
 
-  End Sub
+    dir portc.2 out
 
-
-  dir portc.2 out
-
-  do
-      wait 5 ms
-      HPWM 2, 40, scale(ReadAD12(An0), 0, 3375, 1, 255)
-  loop
+    do
+    wait 5 ms
+    HPWM 2, 40, scale(ReadAD12(An0), 0, 3375, 1, 255)
+    loop
 
 End
+
 

@@ -23,7 +23,7 @@
 '''  LEDs will rotate at a speed that is proportional to the ADC value. The switch will toggle
 '''  the direction of the LEDs
 '''
-'''  PIC: 16f18446,8
+'''  PIC: 16f18426,8
 '''  Compiler: GCB
 '''  IDE: GCB@SYN
 '''
@@ -36,7 +36,7 @@
 '''
 
 
- #Chip 16f18446, 8
+ #Chip 16f18426, 8
  #option explicit
  #config MCLRE_OFF
 
