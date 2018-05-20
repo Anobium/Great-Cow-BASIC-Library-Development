@@ -1,0 +1,1020 @@
+gpasm-1.5.0 #1285 (Sep 12 2016) bootloader.as   5-20-2018  14:07:01         PAGE  1
+
+
+LOC    OBJECT CODE    LINE  SOURCE TEXT
+  VALUE
+
+                      00001 ; vim:noet:sw=8:ts=8:ai:syn=pic
+                      00002 ;
+                      00003 ; this code is basically functional; it does need a USB VID:PID
+                      00004 ;
+                      00005 ; USB 512-Word DFU Bootloader for PIC16(L)F1454/5/9
+                      00006 ; Copyright (c) 2015, Peter Lawrence
+                      00007 ; derived from
+                      00008 ; USB 512-Word CDC Bootloader for PIC16(L)F1454/5/9
+                      00009 ; Copyright (c) 2015, Matt Sarnoff (msarnoff.org)
+                      00010 
+                      00011 ; Released under a 3-clause BSD license: see the accompanying LICENSE file.
+                      00012 ;
+                      00013 ; the download/upload file is a 16384 byte LSB-first binary (the entire program memory of PIC16F145x)
+                      00014 ; for writes, it doesn't matter what the first 1024 bytes are; _WRT_BOOT protects these
+                      00015 ; dfu-util syntax is:
+                      00016 ;  dfu-util -U read.bin -t 64
+                      00017 ;  dfu-util -D write.bin -t 64
+                      00018 ; the download file must incorporate a valid CRC-14 for the bootloader to consider it valid
+                      00019 ;
+                      00020 ; Bootloader is entered if:
+                      00021 ; - the MCLR/RA3 pin is grounded at power-up or reset,
+                      00022 ; (The internal pull-up is used; no external resistor is necessary.)
+                      00023 ; - there is no valid application programmed,
+                      00024 ; - the watchdog timed out
+                      00025 ;
+                      00026 ; A pre-computed CRC-14 at 0x1F7F confirms a valid application.
+                      00027 ;
+                      00028 ; At application start, the device is configured with a 48MHz CPU clock,
+                      00029 ; using the internal oscillator and 3x PLL. If a different oscillator
+                      00030 ; configuration is required, it must be set by the application.
+                      00031 ;
+                      00032 ; A serial number between 0 and 65535 should be specified during the build
+                      00033 ; by using the gpasm -D argument to set the SERIAL_NUMBER symbol, e.g.
+                      00034 ;   gpasm -D SERIAL_NUMBER=12345
+                      00035 ; If not specified, it will default to zero.
+                      00036 ; A host may not behave correctly if multiple PICs with the same serial number
+                      00037 ; are connected simultaneously.
+                      00038 ;
+                      00039 ; Code notes:
+                      00040 ; - Labels that do not begin with an underscore can be called as functions.
+                      00041 ;   Labels that begin with an underscore are not safe to call, they should only
+                      00042 ;   be reached via goto.
+                      00043 ;
+                      00044 ; - As much stuff as possible is packed into bank 0 of USB RAM. This includes the
+                      00045 ;   buffer descriptors, bootloader state, and endpoint 0 OUT and IN buffers
+                      00046 ;
+                      00047 ; - Using DFU has the substantive advantage of needing only EP0.  A backwards-
+                      00048 ;   compatible extension to the protocol is to use wBlockNum in DFU_DNLOAD and
+                      00049 ;   DFU_UPLOAD as the PIC flash row index (and optional PMCON1 CFGS select)
+                      00050 
+                      00051 
+                      00052 
+                      00053 ; With logging enabled, the bootloader will not fit in 512 words.
+gpasm-1.5.0 #1285 (Sep 12 2016) bootloader.as   5-20-2018  14:07:01         PAGE  2
+
+
+LOC    OBJECT CODE    LINE  SOURCE TEXT
+  VALUE
+
+                      00054 ; Use this only for debugging!
+                      00055 ; For more info, see log_macros.inc and log.asm.
+                      00056 
+  00000000            00057 LOGGING_ENABLED   equ 0
+                      00058 ; Overdrive data in descriptor by app
+  00000000            00059 ENABLE_POWER_CONFIG equ 0
+                      00060 
+                      00061 
+                      00062 ;USE_RA3_SWITCH and USE_RC3_SWITCH and USE_RC5_SWITCH are all mutually exclusive, 0 or 1
+                      00063 
+                      00064 ; Bootloader switch definition RA3
+  00000000            00065 USE_RA3_SWITCH    equ 0
+                      00066 ; Bootloader switch definition RC3 (external pull-up need for this pin)
+  00000000            00067 USE_RC3_SWITCH    equ 0
+                      00068 ; Bootloader switch definition RC5 (external pull-up need for this pin)
+  00000001            00069 USE_RC5_SWITCH    equ 1
+                      00070 
+                      00071 
+                      00072   radix dec
+                      00073   list n=0,st=off
+                      00074   include "p16f1455.inc"
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ; Build date : Aug 13 2015
+                      00005 ;  MPASM PIC16F1455 processor include
+                      00006 ; 
+                      00007 ;  (c) Copyright 1999-2015 Microchip Technology, All rights reserved
+                      00008 ;==========================================================================
+                      00009 
+                      01217         LIST
+                      00080   list
+                      00081   errorlevel -302
+                      00082 
+                      00083 
+                      00084 
+                      00085 ;;; Configuration
+                      00086   if LOGGING_ENABLED
+                      00087 WRT_CONFIG    equ _WRT_HALF
+                      00088   else
+  00003FFE            00089 WRT_CONFIG    equ _WRT_BOOT
+                      00090   endif
+                      00091 
+                      00092 
+                      00093 ;;; Compile options
+                      00094 ; there is a genuine upside to a globally unique serial number (in a known memory location) programmed a
+                            t the factory
+                      00095 ; however, for hobbyists compiling this code, it is highly problematic to ensure uniqueness
+                      00096 ; USB does not require serial numbers; their operational advantage is when resolving multiple devices pl
+                            ugged into the same computer
+                      00097 ; if multiple devices with the same serial number are inserted at the same time to a computer, problems 
+                            may result
+                      00098 ; so, the operationally safe solution for this bootloader is to enable "HIDE_SERIAL_NUMBER" to prevent p
+                            ossible conflicts
+  00000001            00099 HIDE_SERIAL_NUMBER  equ 1
+                      00100 
+                      00101 #if USE_RA3_SWITCH
+                      00102   __config _CONFIG1, _FOSC_INTOSC & _WDTE_SWDTEN & _PWRTE_ON & _MCLRE_OFF & _CP_OFF & _BOREN_ON & _IESO_
+                            OFF & _FCMEN_OFF
+                      00103 #else
+8007   0FCC           00104   __config _CONFIG1, _FOSC_INTOSC & _WDTE_SWDTEN & _PWRTE_ON & _MCLRE_ON & _CP_OFF & _BOREN_ON & _IESO_O
+                            FF & _FCMEN_OFF
+                      00105 #endif
+                      00106 
+8008   1FCE           00107   __config _CONFIG2, WRT_CONFIG & _CPUDIV_NOCLKDIV & _USBLSCLK_48MHz & _PLLMULT_3x & _PLLEN_ENABLED & _S
+                            TVREN_ON & _BORV_LO & _LVP_OFF
+                      00108 
+                      00109 ;;; Constants and variable addresses
+                      00110   ifndef SERIAL_NUMBER
+  0000                00111   variable SERIAL_NUMBER=0  ; Why doesnt 'equ' work here? Go figure
+                      00112   endif
+                      00113 
+                      00114 ; If your organization has its own vendor ID/product ID, substitute it here.
+                      00115 ; the VID:PID for the DFU bootloader must be distinct from the product itself, as Windows insists on it
+  00001209            00116 USB_VENDOR_ID   equ 0x1209
+  00002002            00117 USB_PRODUCT_ID    equ 0x2002
+                      00118 
+  00000008            00119 SERIAL_NUMBER_DIGIT_CNT equ 8 ; length (in unicode characters) of string in SN descriptor
+  00000012            00120 DEVICE_DESC_LEN   equ 18  ; device descriptor length
+  0000001B            00121 CONFIG_DESC_TOTAL_LEN equ 27  ; total length of configuration descriptor and sub-descriptors
+  0000000B            00122 EXTRAS_LEN    equ 11  ; total length of extras
+  00000012            00123 SERIAL_NUM_DESC_LEN equ 2+(SERIAL_NUMBER_DIGIT_CNT*2)
+  0000004A            00124 ALL_DESCS_TOTAL_LEN equ DEVICE_DESC_LEN+CONFIG_DESC_TOTAL_LEN+EXTRAS_LEN+SERIAL_NUM_DESC_LEN
+                      00125 
+  00000040            00126 EP0_BUF_SIZE    equ 64  ; endpoint 0 buffer size
+                      00127 
+                      00128 ; We're only using the USB minimum of 2 endpoints (EP0OUT and EP0IN); use the remaining BDT area for buf
+                            fers.
+                      00129 
+                      00130 ; Use the 4 bytes normally occupied by the EP1 OUT (immediately after EP0IN) buffer descriptor for varia
+                            bles.
+  00000028            00131 USB_STATE   equ BANKED_EP1OUT+0
+  00000029            00132 EP0_DATA_IN_PTR   equ BANKED_EP1OUT+1 ; pointer to descriptor to be sent (low byte only)
+  0000002A            00133 EP0_DATA_IN_COUNT equ BANKED_EP1OUT+2 ; remaining bytes to be sent
+                      00134 ;     equ BANKED_EP1OUT+3 ; spare
+                      00135 
+                      00136 ; USB data buffers go immediately after memory re-purposed for variables
+  0000200C            00137 EP0OUT_BUF    equ EP1IN
+  0000002C            00138 BANKED_EP0OUT_BUF equ BANKED_EP1IN
+  0000204C            00139 EP0IN_BUF   equ EP0OUT_BUF+EP0_BUF_SIZE
+  0000006C            00140 BANKED_EP0IN_BUF  equ BANKED_EP0OUT_BUF+EP0_BUF_SIZE
+  0000208C            00141 EP_DATA_BUF_END   equ EP0IN_BUF+EP0_BUF_SIZE
+                      00142 
+                      00143 ; High byte of all endpoint buffers.
+  00000020            00144 EPBUF_ADRH    equ (EP0OUT_BUF>>8)
+                      00145   if ((EP0IN_BUF>>8) != (EP0OUT_BUF>>8))
+                      00146   error "Endpoint buffers must be in the same 256-word region"
+                      00147   endif
+                      00148 
+                      00149 ; Total length of all RAM (variables, buffers, BDT entries) used by the bootloader,
+  0000008C            00150 USED_RAM_LEN    equ EP_DATA_BUF_END-BDT_START
+                      00151 
+  00000200            00152 BOOTLOADER_SIZE   equ 0x200
+                      00153 
+                      00154 ; Application code locations
+  00000200            00155 APP_ENTRY_POINT   equ 0x200
+  00000204            00156 APP_INTERRUPT   equ (APP_ENTRY_POINT+4)
+                      00157 
+                      00158 ; USB_STATE bit flags
+  00000000            00159 IS_CONTROL_WRITE  equ 0 ; current endpoint 0 transaction is a control write
+  00000001            00160 ADDRESS_PENDING   equ 1 ; need to set address in next IN transaction
+  00000002            00161 DEVICE_CONFIGURED equ 2 ; the device is configured
+  00000003            00162 IS_DFU_UPLOAD   equ 3 ; when active, ep0_read_in diverts to an alternate routine
+  00000004            00163 IS_DFU_DNLOAD   equ 4 ; when active, _its_an_out diverts to an alternate routine
+  00000005            00164 DFU_DNLOAD_ACTIVE equ 5 ; when inactive: state=dfuIDLE, when active: state=dfuDNLOAD-IDLE
+                      00165 
+                      00166 ; scratchpad variables for CRC calculation (which overlap with bootloader variables, but are not used co
+                            ncurrently)
+  00000070            00167 SCRATCHPAD    equ 0x70
+  00000071            00168 COUNTDOWN   equ 0x71
+  00000072            00169 CRCL      equ 0x72
+  00000073            00170 CRCH      equ 0x73
+  00000074            00171 ROW_COUNT   equ 0x74
+                      00172 
+                      00173 ;;; Vectors
+0000                  00174   org 0x0000
+0000                  00175 RESET_VECT
+                      00176 ; Enable weak pull-ups
+0000   0021           00177   banksel OPTION_REG
+0001   1395           00178   bcf OPTION_REG,NOT_WPUEN
+0002   0021           00179   banksel OSCCON
+0003   2948           00180   goto  bootloader_start  ; to be continued further down in the file
+                      00181 
+0004                  00182   org 0x0004
+0004                  00183 INTERRUPT_VECT
+0004   3182           00184   movlp high APP_INTERRUPT  ; XC8 *expects* this
+0005   2A04           00185   goto  APP_INTERRUPT
+                      00186 
+                      00187 ; perform flash unlock sequence
+                      00188 ; BSR=PMADRL
+0006                  00189 flash_unlock_sequence
+0006   3055           00190   movlw 0x55
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 3 from now on.
+0007   0096           00191   movwf PMCON2
+0008   30AA           00192   movlw 0xAA
+0009   0096           00193   movwf PMCON2
+000A   1495           00194   bsf PMCON1,WR
+000B   0000           00195   nop       ; mandatory nops
+000C   0000           00196   nop
+000D   0008           00197   return
+                      00198 
+000E                  00199 _its_an_out
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+000E   1E28           00200   btfss USB_STATE,IS_DFU_DNLOAD
+000F   2869           00201   goto  arm_ep0_out   ; it must be a status (or other message whose contents we are not concerned about)
+                      00202 
+                      00203   ; I'm genuinely unhappy with the present implementation below
+                      00204   ; dfu-util (or the USB library it uses) gets impatient and won't wait for multiple milliseconds for th
+                            e flash operation
+                      00205   ; this necessitates sending a STATUS, making a quick copy of the data, re-arming OUT, and then doing t
+                            he flash operation
+                      00206   ; I believe/hope that there is a better solution, but optimization will take more time
+                      00207 
+0010   13A4           00208   bcf BANKED_EP0IN_STAT,UOWN  ; ensure we have ownership of the buffer
+0011   01A5           00209   clrf  BANKED_EP0IN_CNT  ; we'll be sending a zero-length packet
+0012   3048           00210   movlw _DAT1|_DTSEN    ; arm IN buffer
+0013   00A4           00211   movwf BANKED_EP0IN_STAT
+0014   17A4           00212   bsf BANKED_EP0IN_STAT,UOWN
+                      00213 
+                      00214   ldfsr0d EP0OUT_BUF    ; set up source pointer
+0015   300C               M         movlw   low EP0OUT_BUF
+0016   0084               M         movwf   FSR0L
+0017   3020               M         movlw   (high EP0OUT_BUF) & 0x7F
+0018   0085               M         movwf   FSR0H
+                      00215   ldfsr1d EP_DATA_BUF_END   ; set up destination pointer
+0019   308C               M         movlw   low EP_DATA_BUF_END
+001A   0086               M         movwf   FSR1L
+001B   3020               M         movlw   (high EP_DATA_BUF_END) & 0x7F
+001C   0087               M         movwf   FSR1H
+001D                  00216 out_copy_loop
+001D   08A1           00217   tstf  BANKED_EP0OUT_CNT
+001E   1903 2824      00218   bz  out_finish
+0020   0012           00219   moviw FSR0++
+0021   001E           00220   movwi FSR1++
+0022   03A1           00221   decf  BANKED_EP0OUT_CNT,f
+0023   281D           00222   goto out_copy_loop
+0024                  00223 out_finish
+0024   300C           00224   movlw _DAT0|_DTSEN|_BSTALL  ; make OUT buffer ready for next SETUP packet
+0025   206A           00225   call  arm_ep0_out_with_flags
+                      00226 ; row of flash data to write is in BANKED_EP0OUT_BUF; PMADRL:PMADRH are already written
+                      00227   ldfsr0d EP_DATA_BUF_END   ; set up source pointer
+0026   308C               M         movlw   low EP_DATA_BUF_END
+0027   0084               M         movwf   FSR0L
+0028   3020               M         movlw   (high EP_DATA_BUF_END) & 0x7F
+0029   0085               M         movwf   FSR0H
+002A   0023           00228   banksel PMADRL
+                      00229 ; erase row
+002B   1615           00230   bsf PMCON1,FREE
+002C   1515           00231   bsf PMCON1,WREN
+002D   2006           00232   call  flash_unlock_sequence
+                      00233 ; write row
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 3 from now on.
+002E   1215           00234   bcf PMCON1,FREE
+002F   1695           00235   bsf PMCON1,LWLO
+0030   1515           00236   bsf PMCON1,WREN
+0031                  00237 _flash_write_loop
+0031   0012           00238   moviw FSR0++
+0032   0093           00239   movwf PMDATL
+0033   0012           00240   moviw FSR0++
+0034   0094           00241   movwf PMDATH
+0035   0811           00242   movfw PMADRL
+0036   391F           00243   andlw b'00011111' ; mask address to yield row element number
+0037   3C1F           00244   sublw 31
+0038   1903           00245   btfsc STATUS,Z
+0039   1295           00246   bcf PMCON1,LWLO ; we've now written to all the latches; this unlock is going to be special
+003A   2006           00247   call  flash_unlock_sequence
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 3 from now on.
+003B   0A91           00248   incf  PMADRL,f
+003C   0811           00249   movfw PMADRL
+003D   391F           00250   andlw b'00011111' ; mask address to yield row element number
+003E   1D03 2831      00251   bnz _flash_write_loop
+0040   0195           00252   clrf  PMCON1
+0041   0020           00253   banksel BANKED_EP0IN_STAT
+0042   0008           00254   return
+                      00255 
+                      00256 
+                      00257 ;;; Handles a control transfer on endpoint 0.
+                      00258 ;;; arguments:  expects USTAT value in FSR1H
+                      00259 ;;;   BSR=0
+                      00260 ;;; returns:  none
+                      00261 ;;; clobbers: W, FSR1H
+0043                  00262 usb_service_ep0
+0043   1907           00263   btfsc FSR1H,DIR ; is it an IN transfer or an OUT/SETUP?
+0044   28E1           00264   goto  _usb_ctrl_in
+                      00265 ; it's an OUT or SETUP transfer
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+0045   0820           00266   movfw BANKED_EP0OUT_STAT
+0046   393C           00267   andlw b'00111100' ; isolate PID bits
+0047   3C34           00268   sublw PID_SETUP ; is it a SETUP packet?
+0048   1D03 280E      00269   bnz _its_an_out ; if not, it's a regular OUT
+                      00270   ; it's a SETUP packet--fall through
+                      00271 
+                      00272 ; Handles a SETUP control transfer on endpoint 0.
+                      00273 ; BSR=0
+004A                  00274 _usb_ctrl_setup
+004A   1028           00275   bcf USB_STATE,IS_CONTROL_WRITE
+004B   11A8           00276   bcf USB_STATE,IS_DFU_UPLOAD
+004C   1228           00277   bcf USB_STATE,IS_DFU_DNLOAD
+                      00278 ; set IS_CONTROL_WRITE bit in USB_STATE according to MSB in bmRequestType
+004D   1FAC           00279   btfss BANKED_EP0OUT_BUF+bmRequestType,7 ; is this host->device?
+004E   1428           00280   bsf USB_STATE,IS_CONTROL_WRITE    ; if so, this is a control write
+                      00281 ; check if bmRequestType is DFU
+004F   3021           00282   movlw 0x21
+0050   022C           00283   subwf BANKED_EP0OUT_BUF+bmRequestType,w
+0051   397F           00284   andlw b'01111111' ; mask out MSB
+0052   1903 286F      00285   bz  _its_a_dfu_message
+                      00286 ; check request number: is it Get Descriptor?
+0054   3006           00287   movlw GET_DESCRIPTOR
+0055   022D           00288   subwf BANKED_EP0OUT_BUF+bRequest,w
+0056   1903 28BA      00289   bz  _usb_get_descriptor
+                      00290 ; is it Set Address?
+0058   3005           00291   movlw SET_ADDRESS
+0059   022D           00292   subwf BANKED_EP0OUT_BUF+bRequest,w
+005A   1903 28D3      00293   bz  _usb_set_address
+                      00294 ; is it Set_Configuration?
+005C   3009           00295   movlw SET_CONFIG
+005D   022D           00296   subwf BANKED_EP0OUT_BUF+bRequest,w
+005E   1903 28D5      00297   bz  _usb_set_configuration
+                      00298 ; is it Get Configuration?
+0060   3008           00299   movlw GET_CONFIG
+0061   022D           00300   subwf BANKED_EP0OUT_BUF+bRequest,w
+0062   1903 28DA      00301   bz  _usb_get_configuration
+                      00302 ; unhandled request? fall through to _usb_ctrl_invalid
+                      00303 
+                      00304 ; Finishes a rejected SETUP transaction: the endpoints are stalled
+0064                  00305 _usb_ctrl_invalid
+0064   003D           00306   banksel UCON
+0065   120E           00307   bcf UCON,PKTDIS ; reenable packet processing
+0066   0020           00308   banksel BANKED_EP0IN_STAT
+0067   300C           00309   movlw _DAT0|_DTSEN|_BSTALL
+0068   20B3           00310   call  arm_ep0_in_with_flags
+0069                  00311 arm_ep0_out
+0069   300C           00312   movlw _DAT0|_DTSEN|_BSTALL
+006A                  00313 arm_ep0_out_with_flags      ; W specifies STAT flags
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+006A   00A0           00314   movwf BANKED_EP0OUT_STAT
+006B   3040           00315   movlw EP0_BUF_SIZE    ; reset the buffer count
+006C   00A1           00316   movwf BANKED_EP0OUT_CNT
+006D   17A0           00317   bsf BANKED_EP0OUT_STAT,UOWN ; arm the OUT endpoint
+006E   0008           00318   return
+                      00319 
+006F                  00320 _its_a_dfu_message
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+006F   082D           00321   movfw BANKED_EP0OUT_BUF+bRequest
+0070   1903 28A6      00322   bz  _dfu_detach ; enum=0
+                      00323   decw
+0072   3EFF               M         addlw   255
+0073   1903 2885      00324   bz  _dfu_dnload ; enum=1
+                      00325   decw
+0075   3EFF               M         addlw   255
+0076   1903 28A0      00326   bz  _dfu_upload ; enum=2
+                      00327   decw
+0078   3EFF               M         addlw   255
+0079   1903 2896      00328   bz  _dfu_getstatus  ; enum=3
+                      00329   decw
+007B   3EFF               M         addlw   255
+007C   1903 28A6      00330   bz  _dfu_clrstatus  ; enum=4
+                      00331   decw
+007E   3EFF               M         addlw   255
+007F   1903 289C      00332   bz  _dfu_getstate ; enum=5
+                      00333   decw
+0081   3EFF               M         addlw   255
+0082   1903 28A6      00334   bz  _dfu_abort  ; enum=6
+0084   2864           00335   goto  _usb_ctrl_invalid
+                      00336 
+0085                  00337 _dfu_dnload
+0085   003D           00338   banksel UCON
+0086   120E           00339   bcf UCON,PKTDIS   ; reenable packet processing
+0087   0020           00340   banksel BANKED_EP0OUT_STAT
+0088   3048           00341   movlw _DAT1|_DTSEN
+0089   00A0           00342   movwf BANKED_EP0OUT_STAT
+008A   3040           00343   movlw EP0_BUF_SIZE    ; reset the buffer count
+008B   00A1           00344   movwf BANKED_EP0OUT_CNT
+008C   17A0           00345   bsf BANKED_EP0OUT_STAT,UOWN ; arm the OUT endpoint
+008D   08B2           00346   tstf  BANKED_EP0OUT_BUF+wLengthL
+008E   1903           00347   btfsc STATUS,Z
+008F   2894           00348   goto  _dfu_dnload_exit  ; wLength is zero, indicating end of download
+0090   2103           00349   call  set_pm_address
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+0091   16A8           00350   bsf USB_STATE,DFU_DNLOAD_ACTIVE
+0092   1628           00351   bsf USB_STATE,IS_DFU_DNLOAD
+0093   0008           00352   return
+0094                  00353 _dfu_dnload_exit
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+0094   12A8           00354   bcf USB_STATE,DFU_DNLOAD_ACTIVE
+0095   28B6           00355   goto  _cwrite     ; wLength is zero: there will be no data stage, so treat like control write
+0096                  00356 _dfu_getstatus
+0096   30E3           00357   movlw low DFU_STATUS_RESPONSE1
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+0097   1AA8           00358   btfsc USB_STATE,DFU_DNLOAD_ACTIVE
+0098   30E8           00359   movlw low DFU_STATUS_RESPONSE2
+0099   00A9           00360   movwf EP0_DATA_IN_PTR
+009A   3006           00361   movlw 6
+009B   28C4           00362   goto  _set_data_in_count_from_w
+009C                  00363 _dfu_getstate
+009C   30E7           00364   movlw low DFU_STATE_RESPONSE
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+009D   00A9           00365   movwf EP0_DATA_IN_PTR
+009E   3001           00366   movlw 1
+009F   28C4           00367   goto  _set_data_in_count_from_w
+00A0                  00368 _dfu_upload
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+00A0   08AF           00369   tstf  BANKED_EP0OUT_BUF+wValueH
+00A1   1D03 28A6      00370   bnz _dfu_zero     ; if wBlockNum is over 255, this is beyond the memory range of the device
+00A3   15A8           00371   bsf USB_STATE,IS_DFU_UPLOAD   ; set flag to divert the transfer
+00A4                  00372 _dfu_upload_already_happening
+00A4   3040           00373   movlw EP0_BUF_SIZE
+00A5   28C4           00374   goto  _set_data_in_count_from_w
+00A6                  00375 _dfu_detach
+00A6                  00376 _dfu_clrstatus
+00A6                  00377 _dfu_abort
+00A6                  00378 _dfu_zero
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+00A6   11A8           00379   bcf USB_STATE,IS_DFU_UPLOAD
+00A7   1228           00380   bcf USB_STATE,IS_DFU_DNLOAD
+00A8   3000           00381   movlw 0
+00A9   28C4           00382   goto  _set_data_in_count_from_w
+                      00383 
+                      00384 ; Finishes a successful SETUP transaction.
+00AA                  00385 _usb_ctrl_complete
+00AA   003D           00386   banksel UCON
+00AB   120E           00387   bcf UCON,PKTDIS   ; reenable packet processing
+00AC   0020           00388   banksel USB_STATE
+00AD   1828           00389   btfsc USB_STATE,IS_CONTROL_WRITE
+00AE   28B6           00390   goto  _cwrite
+                      00391 ; this is a control read; prepare the IN endpoint for the data stage
+                      00392 ; and the OUT endpoint for the status stage
+00AF   20EF           00393 _cread  call  ep0_read_in   ; read data into IN buffer
+00B0   3048           00394   movlw _DAT1|_DTSEN    ; OUT buffer will be ready for status stage
+                      00395 ; value in W is used to specify the EP0 OUT flags
+00B1   206A           00396 _armbfs call  arm_ep0_out_with_flags
+00B2   3048           00397   movlw _DAT1|_DTSEN    ; arm IN buffer
+00B3                  00398 arm_ep0_in_with_flags     ; W specifies STAT flags
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+00B3   00A4           00399   movwf BANKED_EP0IN_STAT
+00B4   17A4           00400   bsf BANKED_EP0IN_STAT,UOWN
+00B5   0008           00401   return
+                      00402 ; this is a control write: prepare the IN endpoint for the status stage
+                      00403 ; and the OUT endpoint for the next SETUP transaction
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+00B6   13A4           00404 _cwrite bcf BANKED_EP0IN_STAT,UOWN  ; ensure we have ownership of the buffer
+00B7   01A5           00405   clrf  BANKED_EP0IN_CNT  ; we'll be sending a zero-length packet
+00B8   300C           00406   movlw _DAT0|_DTSEN|_BSTALL  ; make OUT buffer ready for next SETUP packet
+00B9   28B1           00407   goto  _armbfs     ; arm OUT and IN buffers
+                      00408 
+                      00409 
+                      00410 
+                      00411 ; Handles a Get Descriptor request.
+                      00412 ; BSR=0
+00BA                  00413 _usb_get_descriptor
+                      00414 ; check descriptor type
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+00BA   032F           00415   decf  BANKED_EP0OUT_BUF+wValueH,w
+00BB   1903 28CB      00416   bz  _device_descriptor  ; 1=DESC_DEVICE
+                      00417   decw
+00BD   3EFF               M         addlw   255
+00BE   1903 28CF      00418   bz  _config_descriptor  ; 2=DESC_CONFIG
+                      00419   decw
+00C0   3EFF               M         addlw   255
+00C1   1D03 2864      00420   bnz _usb_ctrl_invalid
+00C3                  00421 _string_descriptor      ; 3=DESC_STRING
+                      00422 ; only one string descriptor (serial number) is supported,
+                      00423 ; so don't bother checking wValueL
+                      00424   if HIDE_SERIAL_NUMBER
+00C3   0103           00425     clrw
+                      00426   else
+                      00427     movlw low SERIAL_NUMBER_STRING_DESCRIPTOR
+                      00428     movwf EP0_DATA_IN_PTR
+                      00429     movlw SERIAL_NUM_DESC_LEN
+                      00430   endif
+00C4                  00431 _set_data_in_count_from_w
+00C4   00AA           00432   movwf EP0_DATA_IN_COUNT
+                      00433 ; the count needs to be set to the minimum of the descriptor's length (in W)
+                      00434 ; and the requested length
+00C5   0232           00435   subwf BANKED_EP0OUT_BUF+wLengthL,w  ; just ignore high byte...
+00C6   1803 28AA      00436   bc  _usb_ctrl_complete    ; if W <= f, no need to adjust
+00C8   0832           00437   movfw BANKED_EP0OUT_BUF+wLengthL
+00C9   00AA           00438   movwf EP0_DATA_IN_COUNT
+00CA   28AA           00439   goto  _usb_ctrl_complete
+00CB                  00440 _device_descriptor
+00CB   30B6           00441   movlw low DEVICE_DESCRIPTOR
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+00CC   00A9           00442   movwf EP0_DATA_IN_PTR
+00CD   3012           00443   movlw DEVICE_DESC_LEN
+00CE   28C4           00444   goto  _set_data_in_count_from_w
+00CF                  00445 _config_descriptor
+00CF   30C8           00446   movlw low CONFIGURATION_DESCRIPTOR
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+00D0   00A9           00447   movwf EP0_DATA_IN_PTR
+00D1   301B           00448   movlw CONFIG_DESC_TOTAL_LEN ; length includes all subordinate descriptors
+00D2   28C4           00449   goto  _set_data_in_count_from_w
+                      00450 
+                      00451 ; Handles a Set Address request.
+                      00452 ; The address is actually set in the IN status stage.
+00D3                  00453 _usb_set_address
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+00D3   14A8           00454   bsf USB_STATE,ADDRESS_PENDING ; address will be assigned in the status stage
+00D4   28AA           00455   goto  _usb_ctrl_complete
+                      00456 
+                      00457 ; Handles a Set Configuration request.
+                      00458 ; For now just accept any nonzero configuration.
+                      00459 ; BSR=0
+00D5                  00460 _usb_set_configuration
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+00D5   1128           00461   bcf USB_STATE,DEVICE_CONFIGURED ; temporarily clear flag
+00D6   08AE           00462   tstf  BANKED_EP0OUT_BUF+wValueL ; anything other than 0 is valid
+00D7   1D03           00463   skpz
+00D8   1528           00464   bsf USB_STATE,DEVICE_CONFIGURED
+00D9   28AA           00465   goto  _usb_ctrl_complete
+                      00466 
+                      00467 ; Handles a Get Configuration request.
+                      00468 ; BSR=0
+00DA                  00469 _usb_get_configuration
+                      00470 ; load a pointer to either a 0 or a 1 in ROM
+                      00471 ; the 0 and 1 have been chosen so that they are adjacent
+00DA   30B8           00472   movlw low OPPORTUNISTIC_0_CONSTANT
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+00DB   1928           00473   btfsc USB_STATE,DEVICE_CONFIGURED
+                      00474   incw
+00DC   3E01               M         addlw   1
+00DD   00A9           00475   movwf EP0_DATA_IN_PTR
+00DE   3001           00476   movlw 1
+00DF   00AA           00477   movwf EP0_DATA_IN_COUNT
+00E0   28AA           00478   goto  _usb_ctrl_complete
+                      00479 
+                      00480 ; Handles an IN control transfer on endpoint 0.
+                      00481 ; BSR=0
+00E1                  00482 _usb_ctrl_in
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+00E1   1828           00483   btfsc USB_STATE,IS_CONTROL_WRITE  ; is this a control read or write?
+00E2   28E8           00484   goto  _check_for_pending_address
+                      00485 ; fetch more data and re-arm the IN endpoint
+00E3   20EF           00486   call  ep0_read_in
+00E4   3008           00487   movlw _DTSEN
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+00E5   1F24           00488   btfss BANKED_EP0IN_STAT,DTS ; toggle DTS
+00E6   1709           00489   bsf WREG,DTS
+00E7   28B3           00490   goto  arm_ep0_in_with_flags ; arm the IN buffer
+                      00491 
+                      00492 ; if this is the status stage of a Set Address request, assign the address here.
+                      00493 ; The OUT buffer has already been armed for the next SETUP.
+00E8                  00494 _check_for_pending_address
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+00E8   1CA8           00495   btfss USB_STATE,ADDRESS_PENDING
+00E9   0008           00496   return
+                      00497 ; read the address out of the setup packed in the OUT buffer
+00EA   10A8           00498   bcf USB_STATE,ADDRESS_PENDING
+00EB   082E           00499   movfw BANKED_EP0OUT_BUF+wValueL
+00EC   003D           00500   banksel UADDR
+00ED   0096           00501   movwf UADDR
+00EE   0008           00502   return
+                      00503 
+                      00504   if ( (DEVICE_DESC_LEN > EP0_BUF_SIZE) || (CONFIG_DESC_TOTAL_LEN > EP0_BUF_SIZE) || (SERIAL_NUM_DESC_LE
+                            N > EP0_BUF_SIZE) )
+                      00505   error "descriptors must be no more than EP0_BUF_SIZE"
+                      00506   endif
+                      00507 
+                      00508 ;;; Reads descriptor data from EP0_DATA_IN_PTR, copies it to the EP0 IN buffer,
+                      00509 ;;; and decrements EP0_DATA_IN_COUNT.
+                      00510 ;;; function simplied since we are assured EP0_DATA_IN_COUNT <= EP0_BUF_SIZE
+                      00511 ;;; arguments:  BSR=0
+                      00512 ;;; returns:
+                      00513 ;;; clobbers: W, FSR0, FSR1
+00EF                  00514 ep0_read_in
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+00EF   13A4           00515   bcf BANKED_EP0IN_STAT,UOWN  ; make sure we have ownership of the buffer
+00F0   01A5           00516   clrf  BANKED_EP0IN_CNT  ; initialize transmit size to 0
+00F1   19A8           00517   btfsc USB_STATE,IS_DFU_UPLOAD
+00F2   2910           00518   goto  ep0_read_dfu_in
+00F3   0829           00519   movfw EP0_DATA_IN_PTR   ; set up source pointer
+00F4   0084           00520   movwf FSR0L
+00F5   3081           00521   movlw DESCRIPTOR_ADRH|0x80
+00F6   0085           00522   movwf FSR0H
+                      00523   ldfsr1d EP0IN_BUF   ; set up destination pointer
+00F7   304C               M         movlw   low EP0IN_BUF
+00F8   0086               M         movwf   FSR1L
+00F9   3020               M         movlw   (high EP0IN_BUF) & 0x7F
+00FA   0087               M         movwf   FSR1H
+                      00524 ; byte copy loop
+00FB   08AA           00525 _bcopy  tstf  EP0_DATA_IN_COUNT ; do nothing if there are 0 bytes to send
+                      00526   retz
+00FC   1903               M         skpnz
+00FD   0008               M         return
+00FE   0012           00527   moviw FSR0++
+00FF   001E           00528   movwi FSR1++
+0100   0AA5           00529   incf  BANKED_EP0IN_CNT,f  ; increase number of bytes copied
+0101   03AA           00530   decf  EP0_DATA_IN_COUNT,f ; decrement number of bytes remaining
+0102   28FB           00531   goto  _bcopy
+                      00532 
+                      00533 ;;; Reads wValue from SETUP in EP0 OUT buffer, converts to Physical Memory address,
+                      00534 ;;; and writes it to PMADRL:PMADRH
+                      00535 ;;; returns:  PMADRL, PMADRH, PMCON1
+                      00536 ;;; clobbers: W, BSL
+0103                  00537 set_pm_address
+                      00538   ; PMADRH:PMADRL = wValueL << 5
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+0103   082E           00539   movfw BANKED_EP0OUT_BUF+wValueL
+0104   0023           00540   banksel PMADRL
+0105   0195           00541   clrf  PMCON1
+0106   0191           00542   clrf  PMADRL
+0107   3689           00543   lsrf  WREG,f
+0108   0C91           00544   rrf PMADRL,f
+0109   3689           00545   lsrf  WREG,f
+010A   0C91           00546   rrf PMADRL,f
+010B   3689           00547   lsrf  WREG,f
+010C   0C91           00548   rrf PMADRL,f
+010D   0092           00549   movwf PMADRH
+010E   0020           00550   banksel BANKED_EP0OUT_STAT
+010F   0008           00551   return
+                      00552 
+                      00553 ; copy flash contents (PMDATH/PMDATL) to EP0IN_BUF (FSR1)
+0110                  00554 ep0_read_dfu_in
+                      00555 ; BANKED_EP0IN_CNT was already cleared in ep0_read_in
+                      00556   ldfsr1d EP0IN_BUF   ; set up destination pointer
+0110   304C               M         movlw   low EP0IN_BUF
+0111   0086               M         movwf   FSR1L
+0112   3020               M         movlw   (high EP0IN_BUF) & 0x7F
+0113   0087               M         movwf   FSR1H
+0114   2103           00557   call  set_pm_address
+0115                  00558 read_flash
+0115   0103           00559   clrw
+0116                  00560 _pmcopy
+0116   3C40           00561   sublw EP0_BUF_SIZE    ; have we filled the buffer?
+0117   1903 2923      00562   bz  _pmbail
+0119   2124           00563   call  _core_flash_read
+011A   001E           00564   movwi FSR1++
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 3 from now on.
+011B   0814           00565   movfw PMDATH
+011C   001E           00566   movwi FSR1++
+011D   0A91           00567   incf  PMADRL,f    ; increment LSB of Program Memory address
+011E   0020           00568   banksel BANKED_EP0OUT_STAT
+011F   0AA5           00569   incf  BANKED_EP0IN_CNT,f  ; increase number of bytes copied by two
+0120   0AA5           00570   incf  BANKED_EP0IN_CNT,f
+0121   0825           00571   movfw BANKED_EP0IN_CNT  ; save to test on the next iteration
+0122   2916           00572   goto  _pmcopy
+0123                  00573 _pmbail
+0123   0008           00574 ret return
+                      00575 
+0124                  00576 _core_flash_read
+0124   0023           00577   banksel PMADRL
+0125   1415           00578   bsf PMCON1,RD   ; read word from flash
+0126   0000           00579   nop       ; 2 required nops
+0127   0000           00580   nop
+0128   0813           00581   movfw PMDATL
+0129   0008           00582   return
+                      00583 
+012A                  00584 _crc_calc
+012A   2124           00585   call  _core_flash_read
+012B   2136           00586   call  _core_crc
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 3 from now on.
+012C   0814           00587   movfw PMDATH
+012D   2136           00588   call  _core_crc
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 3 from now on.
+012E   0A91           00589   incf  PMADRL,f    ; increment LSB of Program Memory address
+012F   1903           00590   btfsc   STATUS,Z
+0130   0A92           00591   incf  PMADRH,f    ; increment MSB of Program Memory address
+0131   0811           00592   movfw PMADRL
+0132   391F           00593   andlw b'00011111'
+0133   1D03 292A      00594   bnz _crc_calc
+0135   0008           00595   return
+                      00596 
+0136                  00597 _core_crc
+0136   00F0           00598   movwf SCRATCHPAD
+0137   3008           00599   movlw 8
+0138   00F1           00600   movwf COUNTDOWN
+0139                  00601 _crc_loop
+0139   36F3           00602   lsrf  CRCH,f
+013A   0CF2           00603   rrf CRCL,f
+013B   0D72           00604   rlf CRCL,w      ; burp C into LSB of WREG
+013C   0670           00605   xorwf SCRATCHPAD,w    ; XOR WREG with SCRATCHPAD (we only care about bit 0 result)
+013D   1C09           00606   btfss WREG,0
+013E   2943           00607   goto  _crc_no_xor
+013F   3023           00608   movlw 0x23
+0140   06F3           00609   xorwf CRCH,f
+0141   30B1           00610   movlw 0xB1
+0142   06F2           00611   xorwf CRCL,f
+0143                  00612 _crc_no_xor
+0143   36F0           00613   lsrf  SCRATCHPAD,f
+0144   03F1           00614   decf  COUNTDOWN,f
+0145   1D03 2939      00615   bnz _crc_loop
+0147   0008           00616   return
+                      00617 
+                      00618 
+                      00619 ;;; Main function
+                      00620 ;;; BSR=1 (OSCCON bank)
+0148                  00621 bootloader_start
+                      00622 ; Configure the oscillator (48MHz from INTOSC using 3x PLL)
+0148   30FC           00623   movlw (1<<SPLLEN)|(1<<SPLLMULT)|(1<<IRCF3)|(1<<IRCF2)|(1<<IRCF1)|(1<<IRCF0)
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 1 from now on.
+0149   0099           00624   movwf OSCCON
+                      00625 
+                      00626 ; Wait for the oscillator and PLL to stabilize
+                      00627 ; NOTE: remove in a pinch? the time taken below for the CRC calculation *should* be more than the worse 
+                            case here
+014A   3051           00628 _wosc movlw (1<<PLLRDY)|(1<<HFIOFR)|(1<<HFIOFS)
+014B   051A           00629   andwf OSCSTAT,w
+014C   3C51           00630   sublw (1<<PLLRDY)|(1<<HFIOFR)|(1<<HFIOFS)
+014D   1D03 294A      00631   bnz _wosc
+                      00632 
+                      00633 ; Enable active clock tuning
+014F   3090           00634   movlw (1<<ACTEN)|(1<<ACTSRC)
+0150   009B           00635   movwf ACTCON
+                      00636 
+                      00637 ; calc CRC of application (and provide enough delay for the pull-up on RA3/MCLR to work)
+0151   0023           00638   banksel PMADRL
+0152   3000           00639   movlw low APP_ENTRY_POINT ; set start address of read to beginning of app
+0153   0091           00640   movwf PMADRL
+0154   3002           00641   movlw high APP_ENTRY_POINT
+0155   0092           00642   movwf PMADRH
+0156   30EC           00643   movlw 236     ; total rows excluding bootloader and high-endurance flash
+0157   00F4           00644   movwf ROW_COUNT
+0158   01F2           00645   clrf  CRCL      ; initialize CRC value
+0159   01F3           00646   clrf  CRCH
+015A                  00647 app_check_loop
+015A   212A           00648   call  _crc_calc
+015B   03F4           00649   decf  ROW_COUNT,f
+015C   1D03 295A      00650   bnz app_check_loop
+                      00651 
+                      00652 ; do not run application if the CRC check fails
+015E   08F2           00653   tstf  CRCL
+015F   1D03 296B      00654   bnz _bootloader_main
+0161   08F3           00655   tstf  CRCH
+0162   1D03 296B      00656   bnz _bootloader_main
+                      00657 
+                      00658 ; do not run application if the watchdog timed out (providing a mechanism for the app to trigger a firmw
+                            are update)
+0164   1E03           00659   btfss STATUS,NOT_TO
+0165   296B           00660   goto  _bootloader_main
+                      00661 
+                      00662 ; We have a valid application? Check if the entry pin is grounded
+                      00663 #if USE_RC3_SWITCH
+                      00664   banksel ANSELC        ;disable analog function on pin
+                      00665   bcf   ANSELC,ANSC3
+                      00666 
+                      00667   banksel PORTC
+                      00668   btfss PORTC,RC3
+                      00669   goto  _bootloader_main  ; enter bootloader mode if input is low
+                      00670 #endif
+                      00671 
+                      00672 
+                      00673 #if USE_RC5_SWITCH
+0166   0020           00674   banksel PORTC
+0167   1E8E           00675   btfss PORTC,RC5
+0168   296B           00676   goto  _bootloader_main  ; enter bootloader mode if input is low
+                      00677 #endif
+                      00678 
+                      00679 
+                      00680 #if USE_RA3_SWITCH
+                      00681   banksel PORTA
+                      00682   btfss PORTA,RA3
+                      00683   goto  _bootloader_main  ; enter bootloader mode if input is low
+                      00684 
+                      00685 ; We have a valid application and the entry pin is high. Start the application.
+                      00686   banksel OPTION_REG
+                      00687   bsf OPTION_REG,NOT_WPUEN  ; but first, disable weak pullups
+                      00688 #endif
+                      00689 
+                      00690 #if USE_RC3_SWITCH
+                      00691   banksel ANSELC        ;enable analog function on pin
+                      00692   bsf   ANSELC,ANSC3
+                      00693 #endif
+                      00694 
+                      00695 #if USE_RC5_SWITCH
+                      00696   ;not an analog port
+                      00697 #endif
+                      00698 
+0169   3182           00699   movlp high APP_ENTRY_POINT  ; attempt to appease certain user apps
+016A   2A00           00700   goto  APP_ENTRY_POINT
+                      00701 
+                      00702 ; Not entering application code: initialize the USB interface and wait for commands.
+016B                  00703 _bootloader_main
+                      00704 
+                      00705 ; Initialize USB
+016B   2187           00706   call  usb_init
+                      00707 
+                      00708 
+                      00709 ; Attach to the bus (could be a subroutine, but inlining it saves 2 instructions)
+016C                  00710 _usb_attach
+016C   003D           00711   banksel UCON    ; reset UCON
+016D   018E           00712   clrf  UCON
+016E   003D           00713   banksel UCON
+016F   158E           00714 _usben  bsf UCON,USBEN  ; enable USB module and wait until ready
+0170   1D8E           00715   btfss UCON,USBEN
+0171   296F           00716   goto  _usben
+                      00717 
+0172                  00718 bootloader_main_loop
+0172   003D           00719   banksel UIR
+                      00720 ; reset?
+0173   1C10           00721   btfss UIR,URSTIF
+0174   2978           00722   goto  _utrans   ; not a reset? just start servicing transactions
+0175   2187           00723   call  usb_init  ; if so, reset the USB interface (clears interrupts)
+0176   003D           00724   banksel UIR
+0177   1010           00725   bcf UIR,URSTIF  ; clear the flag
+                      00726 ; service transactions
+0178   003D           00727 _utrans banksel UIR
+0179   1D90           00728   btfss UIR,TRNIF
+017A   2984           00729   goto  _usdone
+017B   080F           00730   movfw USTAT   ; stash the status in a temp register
+017C   0087           00731   movwf FSR1H
+017D   1190           00732   bcf UIR,TRNIF ; clear flag and advance USTAT fifo
+017E   0020           00733   banksel BANKED_EP0OUT_STAT
+017F   3978           00734   andlw b'01111000' ; check endpoint number
+0180   1D03 2984      00735   bnz _usdone   ; bail if not endpoint 0
+0182   2043           00736   call  usb_service_ep0 ; handle the control message
+0183   2978           00737   goto  _utrans
+                      00738 ; clear USB interrupt
+0184   0020           00739 _usdone banksel PIR2
+0185   1112           00740   bcf PIR2,USBIF
+0186   2972           00741   goto  bootloader_main_loop
+                      00742 
+                      00743 
+                      00744 ;;; Initializes the USB system and resets all associated registers.
+                      00745 ;;; arguments:  none
+                      00746 ;;; returns:  none
+                      00747 ;;; clobbers: W, BSR, FSR0, FSR1H
+0187                  00748 usb_init
+                      00749 ; clear USB registers
+0187   003D           00750   banksel UEIR
+0188   0193           00751   clrf  UEIR
+0189   0190           00752   clrf  UIR
+018A   3014           00753   movlw (1<<UPUEN)|(1<<FSEN)
+018B   0091           00754   movwf UCFG    ; enable pullups, full speed, no ping-pong buffering
+                      00755 ; clear all BDT entries, variables, and buffers
+018C   0184           00756   clrf  FSR0L
+018D   3020           00757   movlw high BDT_START  ; BDT starts at 0x2000
+018E   0085           00758   movwf FSR0H
+018F   308C           00759   movlw USED_RAM_LEN
+0190   0087           00760   movwf FSR1H   ; loop count
+0191   3000           00761   movlw 0
+0192   001A           00762 _ramclr movwi FSR0++
+0193   0B87           00763   decfsz  FSR1H,f
+0194   2992           00764   goto  _ramclr
+                      00765 ; reset ping-pong buffers and address
+0195   003D           00766   banksel UCON
+0196   170E           00767   bsf UCON,PPBRST
+0197   0196           00768   clrf  UADDR
+0198   120E           00769   bcf UCON,PKTDIS ; enable packet processing
+0199   130E           00770   bcf UCON,PPBRST ; clear ping-pong buffer reset flag
+                      00771 ; flush pending transactions
+019A   1D90           00772 _tflush btfss UIR,TRNIF
+019B   299F           00773   goto  _initep
+019C   1190           00774   bcf UIR,TRNIF
+019D   2123           00775   call  ret   ; need at least 6 cycles before checking TRNIF again
+019E   299A           00776   goto  _tflush
+                      00777 ; initialize endpoints:
+                      00778 ; EP0 (in and out) for control
+                      00779 ; my intuition was that I should wait until a SET_CONFIGURATION is received
+                      00780 ; before setting up endpoints 1 and 2... but there seemed to be a timing issue
+                      00781 ; when doing so, so I moved them here
+019F   3016           00782 _initep movlw (1<<EPHSHK)|(1<<EPOUTEN)|(1<<EPINEN)
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 29 from now on.
+01A0   0098           00783   movwf UEP0
+                      00784 ; initialize endpoint buffers and counts
+01A1   0020           00785   banksel BANKED_EP0OUT_ADRL
+01A2   300C           00786   movlw low EP0OUT_BUF  ; set endpoint 0 OUT address low
+01A3   00A2           00787   movwf BANKED_EP0OUT_ADRL
+01A4   304C           00788   movlw low EP0IN_BUF ; set endpoint 0 IN address low
+01A5   00A6           00789   movwf BANKED_EP0IN_ADRL
+01A6   3020           00790   movlw EPBUF_ADRH  ; set all ADRH values
+01A7   00A3           00791   movwf BANKED_EP0OUT_ADRH
+01A8   00A7           00792   movwf BANKED_EP0IN_ADRH
+01A9   2869           00793   goto  arm_ep0_out
+                      00794 
+                      00795 
+                      00796 
+                      00797 ;;; Descriptors
+                      00798 
+                      00799 ; Place all the descriptors at the end of the bootloader region.
+                      00800 ; This serves 2 purposes: 1) as long as the total length of all descriptors is
+                      00801 ; less than 256, we can address them with an 8-bit pointer,
+                      00802 ; and 2) the assembler will raise an error if space is exhausted.
+01B6                  00803   org BOOTLOADER_SIZE-ALL_DESCS_TOTAL_LEN
+  00000001            00804 DESCRIPTOR_ADRH equ high $
+01B6                  00805 DEVICE_DESCRIPTOR
+01B6   3412           00806   dt  DEVICE_DESC_LEN ; bLength
+01B7   3401           00807   dt  0x01    ; bDescriptorType
+                      00808   ; bcdUSB (USB 1.0)
+01B8                  00809 OPPORTUNISTIC_0_CONSTANT
+01B8   3400           00810   dt  0x00  ; bcdUSB LSB
+01B9                  00811 OPPORTUNISTIC_1_CONSTANT
+01B9   3401           00812   dt  0x01  ; bcdUSB MSB
+01BA   34FE           00813   dt  0xFE    ; bDeviceClass
+01BB   3401           00814   dt  0x01    ; bDeviceSubclass
+01BC   3400           00815   dt  0x00    ; bDeviceProtocol
+01BD   3440           00816   dt  EP0_BUF_SIZE  ; bMaxPacketSize0
+01BE   3409 3412      00817   dt  low USB_VENDOR_ID, high USB_VENDOR_ID ; idVendor
+01C0   3402 3420      00818   dt  low USB_PRODUCT_ID, high USB_PRODUCT_ID ; idProduct
+01C2   3401 3400      00819   dt  0x01, 0x00  ; bcdDevice (1)
+01C4   3400           00820   dt  0x00    ; iManufacturer
+01C5   3400           00821   dt  0x00    ; iProduct
+                      00822   if HIDE_SERIAL_NUMBER
+01C6   3400           00823     dt  0x00    ; iSerialNumber
+                      00824   else
+                      00825     dt  0x01    ; iSerialNumber
+                      00826   endif
+01C7   3401           00827   dt  0x01    ; bNumConfigurations
+                      00828 
+01C8                  00829 CONFIGURATION_DESCRIPTOR
+01C8   3409           00830   dt  0x09    ; bLength
+01C9   3402           00831   dt  0x02    ; bDescriptorType
+01CA   341B 3400      00832   dt  low CONFIG_DESC_TOTAL_LEN, high CONFIG_DESC_TOTAL_LEN ; wTotalLength
+01CC   3401           00833   dt  0x01    ; bNumInterfaces
+01CD   3401           00834   dt  0x01    ; bConfigurationValue
+01CE   3400           00835   dt  0x00    ; iConfiguration
+01CF   3480           00836   dt  0x80    ; bmAttributes
+01D0   3432           00837   dt  0x32    ; bMaxPower
+                      00838 
+01D1                  00839 INTERFACE_DESCRIPTOR
+01D1   3409           00840   dt  0x09    ; bLength
+01D2   3404           00841   dt  0x04    ; bDescriptorType (INTERFACE)
+01D3   3400           00842   dt  0x00    ; bInterfaceNumber
+01D4   3400           00843   dt  0x00    ; bAlternateSetting
+01D5   3400           00844   dt  0x00    ; bNumEndpoints
+01D6   34FE           00845   dt  0xFE    ; bInterfaceClass
+01D7   3401           00846   dt  0x01    ; bInterfaceSubclass
+01D8   3400           00847   dt  0x00    ; bInterfaceProtocol
+01D9   3400           00848   dt  0x00    ; iInterface
+                      00849 
+                      00850 ; omit in a pinch?  at nine words (plus change to CONFIG_DESC_TOTAL_LEN), this is a rather
+                      00851 ; expensive way to allow the user to omit the "-t 64" argument (and warning message) for dfu_utils
+01DA                  00852 FUNCTIONAL_DESCRIPTOR
+01DA   3409           00853   dt  0x09    ; bLength
+01DB   3421           00854   dt  0x21    ; bDescriptorType (DFU)
+01DC   3403           00855   dt  0x03    ; bmAttributes
+01DD   3400 3400      00856   dt  0x00, 0x00  ; wDetachTimeout
+01DF   3440 3400      00857   dt  low EP0_BUF_SIZE, high EP0_BUF_SIZE ; wTransferSize
+01E1   3400 3401      00858   dt  0x00, 0x01  ; bcdDFUversion
+                      00859 
+                      00860   if (OPPORTUNISTIC_0_CONSTANT>>8) != (OPPORTUNISTIC_1_CONSTANT>>8)
+                      00861   error "CONSTANT_0 and CONSTANT_1 must be in the same 256-word region"
+                      00862   endif
+                      00863 
+01E3                  00864 DFU_STATUS_RESPONSE1
+01E3   3400           00865   dt  0x00      ; bStatus = OK
+01E4   3400 3400 3400 00866   dt  0x00, 0x00, 0x00  ; bwPollTimeout
+01E7                  00867 DFU_STATE_RESPONSE
+01E7   3402           00868   dt  0x02      ; bState = dfuIDLE
+01E8                  00869 DFU_STATUS_RESPONSE2
+01E8   3400           00870   dt  0x00      ; iString / bStatus = OK
+01E9   3400 3400 3400 00871   dt  0x00, 0x00, 0x00  ; bwPollTimeout
+01EC   3405           00872   dt  0x05      ; bState = dfuDNLOAD-IDLE
+01ED   3400           00873   dt  0x00      ; iString
+                      00874 
+                      00875 ; extract nibbles from serial number
+  00000000            00876 SN1 equ (SERIAL_NUMBER>>12) & 0xF
+  00000000            00877 SN2 equ (SERIAL_NUMBER>>8) & 0xF
+  00000000            00878 SN3 equ (SERIAL_NUMBER>>4) & 0xF
+  00000000            00879 SN4 equ SERIAL_NUMBER & 0xF
+                      00880 
+                      00881 ; the objective here *SHOULD* be to SQTP program globally unique values in production
+                      00882 ; this data then doubles as a unique serial number that can be used by the user app
+01EE                  00883 SERIAL_NUMBER_STRING_DESCRIPTOR
+01EE   3412           00884   dt  SERIAL_NUM_DESC_LEN ; bLength
+01EF   3403           00885   dt  0x03    ; bDescriptorType (STRING)
+01F0   3430 3400      00886   dt  '0'                , 0x00
+01F2   3430 3400      00887   dt  '0'                , 0x00
+01F4   3430 3400      00888   dt  '0'                , 0x00
+01F6   3430 3400      00889   dt  '0'                , 0x00
+01F8   3430 3400      00890   dt  '0'+SN1+((SN1>9)*7), 0x00 ; convert hex digits to ASCII
+01FA   3430 3400      00891   dt  '0'+SN2+((SN2>9)*7), 0x00
+01FC   3430 3400      00892   dt  '0'+SN3+((SN3>9)*7), 0x00
+01FE   3430 3400      00893   dt  '0'+SN4+((SN4>9)*7), 0x00
+                      00894 
+                      00895 ; Raise an error if the descriptors aren't properly aligned. (This means you
+                      00896 ; changed the descriptors withouth updating the definition of ALL_DESCS_TOTAL_LEN.)
+                      00897   if $!=BOOTLOADER_SIZE
+                      00898   error "Descriptors must be aligned with the end of the bootloader region"
+                      00899   endif
+                      00900 
+                      00901   end
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+00C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0100 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0140 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0180 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXX------ ------XXXXXXXXXX
+01C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+8000 : -------XX------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:   500
+Program Memory Words Free:  7692
+
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :    31 reported,     0 suppressed
+
+

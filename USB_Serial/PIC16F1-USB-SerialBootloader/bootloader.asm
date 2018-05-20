@@ -54,11 +54,17 @@ LOGGING_ENABLED   equ 0
 ; Overdrive data in descriptor by app
 ENABLE_POWER_CONFIG equ 0
 
-;USE_RA3_SWITCH and USE_RC3_SWITCH are mutually exclusive, 0 or 1
+;USE_RA3_SWITCH and USE_RC3_SWITCH and USE_RC5_SWITCH are all mutually exclusive, 0 or 1
+
+
 ; Bootloader switch definition RA3
 USE_RA3_SWITCH    equ 0
 ; Bootloader switch definition RC3 (external pull-up need for this pin)
-USE_RC3_SWITCH    equ 1
+USE_RC3_SWITCH    equ 0
+; Bootloader switch definition RC5 (external pull-up need for this pin)
+USE_RC5_SWITCH    equ 1
+
+
 
   radix dec
   list n=0,st=off
@@ -101,8 +107,8 @@ SERIAL_NUMBER_DIGIT_CNT equ 4
 ; If your organization has its own vendor ID/product ID, substitute it here.
 ; The Openmoko vendor/product ID cannot be used in closed-source/non-open-hardware
 ; projects: see http://wiki.openmoko.org/wiki/USB_Product_IDs
-USB_VENDOR_ID   equ 0x1D50
-USB_PRODUCT_ID    equ 0xEEEE  ; to be filled in once I obtain a product ID
+USB_VENDOR_ID   equ 0x04D8
+USB_PRODUCT_ID    equ 0x000A  ; to be filled in once I obtain a product ID
 
 DEVICE_DESC_LEN   equ 18  ; device descriptor length
 CONFIG_DESC_TOTAL_LEN equ 67  ; total length of configuration descriptor and sub-descriptors
@@ -645,6 +651,17 @@ _wosc movlw (1<<PLLRDY)|(1<<HFIOFR)|(1<<HFIOFS)
   goto  _bootloader_main  ; enter bootloader mode if input is low
 #endif
 
+
+#if USE_RC5_SWITCH
+  banksel ANSELC        ;disable analog function on pin
+  bcf   ANSELC,ANSC5
+
+  banksel PORTC
+  btfss PORTC,RC5
+  goto  _bootloader_main  ; enter bootloader mode if input is low
+#endif
+
+
 #if USE_RA3_SWITCH
   banksel PORTA
   btfss PORTA,RA3
@@ -659,6 +676,12 @@ _wosc movlw (1<<PLLRDY)|(1<<HFIOFR)|(1<<HFIOFS)
   banksel ANSELC        ;enable analog function on pin
   bsf   ANSELC,ANSC3
 #endif
+
+#if USE_RC5_SWITCH
+  banksel ANSELC        ;enable analog function on pin
+  bsf   ANSELC,ANSC5
+#endif
+
 
   movlp high APP_ENTRY_POINT  ; attempt to appease certain user apps
   goto  APP_ENTRY_POINT

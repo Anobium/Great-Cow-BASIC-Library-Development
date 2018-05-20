@@ -48,4 +48,3 @@ LoadOrderGroup = Base
 MICROSOFT = "Microsoft, Inc."
 USB_CDC = "CDC USB to UART"
 Serial.SvcDesc = "USB Serial emulation driver"
-
