@@ -7,13 +7,10 @@ int main(int args, char* argv[]){
 	cout << "GCBASIC USB test\n";
 	
 	// Set up tester
-	USBTest* tester = new USBTest();
-	
-	printf ("Tester %c\n", tester );
-	
-	if ( dev != NULL )
-	{
-		cout << "USB Test object created\n";
+	try {
+		USBTest* tester = new USBTest();
+		//cout << "USB Test object created\n";
+		
 		// Do stuff
 		if (args < 2){
 			tester->demo(1);
@@ -21,8 +18,9 @@ int main(int args, char* argv[]){
 			tester->demo(atoi(argv[1]));
 		}
 		
-
 		delete tester;
+	} catch (const char* msg) {
+		cout << "Error occurred! " << msg << "\n";
 	}
 }
 

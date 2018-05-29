@@ -61,9 +61,7 @@ USBTest::USBTest(){
 		}
 		
     } else {
-		printf ("Test device not found\n");
-		dev = NULL;
-		
+		throw "Test device not found";
 	}
 }
 

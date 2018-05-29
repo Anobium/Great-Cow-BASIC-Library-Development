@@ -1,8 +1,5 @@
 #Make test program for GCBASIC USB Test
-CFLAGS = -fstack-protector -fstack-protector-all
-# CFLAGS = -O3
-
-all: all: test.o USBTest.o
+all: test.o USBTest.o
 	g++ -static -o test.exe test.o USBTest.o -lusb
 
 test.o: test.cpp USBTest.h
@@ -14,5 +11,4 @@ USBTest.o: USBTest.cpp USBTest.h
 clean:
 	rm -rf *.o
 	rm -f test.exe
-
 	
