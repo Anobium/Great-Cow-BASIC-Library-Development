@@ -41,10 +41,12 @@ static unsigned readhex(const char *text, unsigned digits);
 static unsigned calc_modified_crc14(unsigned data, unsigned crc);
 static unsigned crc32_calc(unsigned crc, unsigned char *buffer, unsigned length);
 
+
 int main(int argc, char *argv[])
 {
-  FILE *input, *output;
+  FILE *input, *output, *inifile, *errorfile, *logfile;
   char line[256];
+  char errorfilename[256], logfilename[256];
   unsigned address, upper_address;
   unsigned count, next_address, crc;
   const char *ptr;
@@ -55,7 +57,7 @@ int main(int argc, char *argv[])
   } flags;
   unsigned char *image, *suffix;
 
-  fprintf(stdout, "Great Cow BASIC - HEX2DFU v0.9a (2018)\n" );
+  fprintf(stdout, "Great Cow BASIC - hex2dfu.exe v0.9d (2018)\n" );
   //fprintf(stdout, "Convert HEX file to DFU format\n");
 
   if (argc < 2)
@@ -79,11 +81,104 @@ int main(int argc, char *argv[])
     return -1;
   }
 
+
+  //ini file
+
+  inifile = fopen( "hex2dfu.ini", "rb" );
+  if (NULL == inifile)
+  {
+      // fprintf(stderr, "ERROR: no ini file\n");
+
+  }
+  else
+  {
+      //read ini FILE
+      //find sections
+      //ERRORFILE=..\greatcowbasic\errors.txt
+      //LOGFILE=..\greatcowbasic\Programmer.log
+      //line by line
+
+      while (!feof(inifile))
+      {
+        //clean out the buffer
+        int i ;
+        i =0;
+        do
+        {
+            line[i] = 0;
+            i++;
+        }
+        while ( i < sizeof(line));
+
+        if (fgets(line, sizeof(line), inifile))
+        {
+
+
+         //tidy up the line
+        int i ;
+        i =0;
+        do
+        {
+            if ( line[i] == 13 || line[i] == 10  )
+            {
+                line[i] = 0;
+            }
+
+            i++;
+        }
+        while ( i < sizeof(line));
+
+
+          if (strncmp(line, "ERRORFILE=" , 10 ) == 0 )
+          {
+              //found errorfile
+              strncpy( errorfilename , line+10, 256 );
+              errorfile = fopen( errorfilename, "a" );
+              if (NULL == errorfile)
+              {
+                  fprintf(stderr, "ERROR: unable to access error log file\n");
+
+              }
+              // fwrite ("Finally\n",8,1,errorfile);
+          }
+          if (strncmp(line, "LOGFILE=" , 8 ) == 0 )
+          {
+              //found logfile
+              strncpy( logfilename , line+8, 256 );
+              logfile = fopen( logfilename, "w" );
+              if (NULL == logfile)
+              {
+                  fprintf(stderr, "ERROR: unable to access programmer log file\n");
+
+              }
+              //fwrite ("Finally\n",8,1,logfile);
+
+
+          }
+
+
+        }
+      }
+      fclose(inifile);
+  }
+
+
   image = (unsigned char *)malloc(PM_SIZE_IN_BYTES + DFU_SUFFIX);
 
   if (NULL == image)
   {
     fprintf(stderr, "ERROR: unable to allocate memory\n");
+
+    if (NULL != logfile)
+    {
+        fwrite ("ERROR: unable to allocate memory\n",33,1,logfile);
+    }
+
+    if (NULL != errorfile)
+    {
+        fwrite ("ERROR: unable to allocate memory\n",33,1,errorfile);
+    }
+
     return -1;
   }
 
@@ -92,7 +187,29 @@ int main(int argc, char *argv[])
   if (NULL == input)
   {
     fprintf(stderr, "ERROR: unable to open input file %s\n", argv[1]);
+
+    if (NULL != logfile)
+    {
+        fwrite ("ERROR: unable to open input file\n",32,1,logfile);
+    }
+
+    if (NULL != errorfile)
+    {
+        fwrite ("ERROR: unable to open input file\n",32,1,errorfile);
+    }
+
     return -1;
+  }
+  else
+  {
+    if (NULL != logfile)
+    {
+        fwrite ("HEX2DFU: Source Hexfile: ",25,1,logfile);
+        fwrite (argv[1],strlen(argv[1]),1,logfile);
+        fwrite ("\n",1,1,logfile);
+
+    }
+
   }
 
   //output = fopen(tmpfile(), "wb");
@@ -102,8 +219,22 @@ int main(int argc, char *argv[])
  if (NULL == output)
   {
     fprintf(stderr, "ERROR: unable to open the temporary output file\n");
+
+    if (NULL != logfile)
+    {
+        fwrite ("ERROR: unable to open the temporary output file\n",47,1,logfile);
+    }
+
+    if (NULL != errorfile)
+    {
+        fwrite ("ERROR: unable to open the temporary output file\n",47,1,errorfile);
+
+    }
+
+
     return -1;
   }
+
 
   for (address = 0; address < PM_SIZE_IN_BYTES; address += 2)
   {
@@ -206,7 +337,8 @@ int main(int argc, char *argv[])
   fclose(output);
 
   int errlevel;
-  if( access( "dfu-util.exe", F_OK ) != -1 ) {
+  if( access( "dfu-util.exe", F_OK ) != -1 )
+  {
       // file exists
     char buf[32];
     sprintf(buf, "dfu-util.exe -v -R -D %s", name1);
@@ -214,7 +346,36 @@ int main(int argc, char *argv[])
     errlevel = system(buf);
 
     if ( errlevel != 0 ) {
+
+        if (NULL != logfile)
+        {
+            char errlevelstr[3];
+            sprintf ( errlevelstr, "%d", errlevel );
+            fwrite ("GCBProgrammer:HEX2DFU: Error - dfu-util.exe returned error (",60,1,logfile);
+            fwrite (errlevelstr, strlen(errlevelstr) ,1,logfile);
+            fwrite (")\n",1 ,1,logfile);
+        }
+
+        if (NULL != errorfile)
+        {
+            char errlevelstr[3];
+            sprintf ( errlevelstr, "%d", errlevel );
+            fwrite ("GCBProgrammer:HEX2DFU: Error - dfu-util.exe returned error (",60,1,errorfile );
+            fwrite (errlevelstr, strlen(errlevelstr) ,1,errorfile);
+            fwrite (")\n",1 ,1,errorfile);
+        }
+
+
         fprintf(stdout, "dfu-util: Error(%i)", errlevel );
+    }
+    else
+    {
+        if (NULL != logfile)
+        {
+            fwrite ("GCBProgrammer:HEX2DFU: Programming completed with no errors\n",59,1,logfile);
+        }
+
+
     }
     //delete temp FILE
     int ret = remove(name1);
@@ -227,6 +388,12 @@ int main(int argc, char *argv[])
 
   } else {
       // file doesn't exist
+    if (NULL != logfile)
+    {
+        fwrite ("GCBProgrammer:HEX2DFU: Warning - dfu-util.exe not located. Part not programmed\n",78,1,logfile);
+    }
+
+    fprintf(stdout, "\nWarning: dfu-util.exe not located. Part not programmed\n");
   }
 
 
@@ -354,3 +521,5 @@ static unsigned crc32_calc(unsigned crc, unsigned char *buffer, unsigned length)
 
   return crc;
 }
+
+

@@ -1,0 +1,6 @@
+Warning[215] F:\PICASM1\INALAMBRICO USB 12F675\USB12F1822_USB16F18313_HID SERIAL W BAUD\USB12F1822_ボーレーエ可変_SRC\USB.ASM 7 : Processor superseded by command line.  Verify processor symbol.
+Message[301] C:\PROGRAM FILES\MICROCHIP\MPASM SUITE\P12F1822.INC 33 : MESSAGE: (Processor-header file mismatch.  Verify selected processor.)
+Message[303] F:\PICASM1\INALAMBRICO USB 12F675\USB12F1822_USB16F18313_HID SERIAL W BAUD\USB12F1822_ボーレーエ可変_SRC\USB.ASM 11 : Program word too large.  Truncated to core size. (C9A7)
+Message[303] F:\PICASM1\INALAMBRICO USB 12F675\USB12F1822_USB16F18313_HID SERIAL W BAUD\USB12F1822_ボーレーエ可変_SRC\USB.ASM 12 : Program word too large.  Truncated to core size. (DCFF)
+Message[303] F:\PICASM1\INALAMBRICO USB 12F675\USB12F1822_USB16F18313_HID SERIAL W BAUD\USB12F1822_ボーレーエ可変_SRC\USB.ASM 1257 : Program word too large.  Truncated to core size. (C9A7)
+Message[303] F:\PICASM1\INALAMBRICO USB 12F675\USB12F1822_USB16F18313_HID SERIAL W BAUD\USB12F1822_ボーレーエ可変_SRC\USB.ASM 1257 : Program word too large.  Truncated to core size. (DCFF)

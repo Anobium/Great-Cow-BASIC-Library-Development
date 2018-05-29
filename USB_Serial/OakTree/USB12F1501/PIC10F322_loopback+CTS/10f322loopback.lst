@@ -1,0 +1,593 @@
+MPASM  5.51                10F322LOOPBACK.ASM   3-16-2015  2:02:01         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001         radix   DEC
+                      00002         
+                      00003 #include "p10f322.inc"
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ;  MPASM PIC10F322 processor include
+                      00005 ; 
+                      00006 ;  (c) Copyright 1999-2013 Microchip Technology, All rights reserved
+                      00007 ;==========================================================================
+                      00008 
+                      00703         LIST
+                      00004         
+  007A1200            00005 xtal    EQU     8000000         ; you may also want to change: _HS_OSC _XT_OSC
+  00002580            00006 baud    EQU     9600            ; standard TinyBld baud rates: 115200 or 19200
+                      00007 
+                      00008         #define TX      0
+                      00009         #define CTS     1
+                      00010         #define RX      2
+                      00011 
+2007   3888           00012         __CONFIG        _FOSC_INTOSC & _BOREN_OFF & _WDTE_SWDTEN & _PWRTE_ON & _MCLRE_OFF & _CP_OFF & _L
+                            VP_OFF & _LPBOR_OFF & _BORV_HI & _WRT_OFF
+                      00013 
+                      00014 ;       errorlevel 1, -305              ; suppress warning msg that takes f as default
+                      00015 
+                      00016         cblock 0x7E
+  0000007E            00017         cn              ;0x7E
+  0000007F            00018         rxd             ;0x7F
+                      00019         endc
+                      00020 
+0000                  00021                 org     0x0000
+0000   0188           00022                 clrf    ANSELA          ; digital I/O
+0001   1006           00023                 bcf     TRISA,TX        ; set TX Port
+0002   1407           00024                 bsf     LATA,TX
+                      00025 
+0003                  00026 RcvL:
+                      00027 
+0003   1905           00028                 btfsc   PORTA,RX
+0004   2803           00029                 goto    RcvL
+                      00030 
+0005   201B           00031                 call    bwait2          ; wait 1/2 bit and W=9
+0006   00FE           00032                 movwf   cn              ; cn=9
+0007   0CFF           00033                 rrf     rxd,f           ; get bit data
+0008   201A           00034                 call    bwait           ; wait 1bit and Carry=1
+0009   1D05           00035                 btfss   PORTA,RX
+000A   1003           00036                 bcf     STATUS,C
+000B   0BFE           00037                 decfsz  cn,f            ; cn=0?
+000C   2807           00038                 goto    $-5             ; loop
+                      00039 
+000D                  00040 SendL:
+                      00041 
+000D   1885           00042                 btfsc   PORTA,CTS
+000E   280D           00043                 goto    SendL
+MPASM  5.51                10F322LOOPBACK.ASM   3-16-2015  2:02:01         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00044 
+000F   2019           00045                 call    bout+3  ; send start bit
+0010   00FE           00046                 movwf   cn      ; cn=9
+0011   0CFF           00047                 rrf     rxd,f   ; set Carry             ; 1
+0012   2016           00048                 call    bout    ; wait 1bit and Carry=1 ; 2+1+1+1+1+8N+6=8N+12
+0013   0BFE           00049                 decfsz  cn,f    ; send 10bits?          ; 1
+0014   2811           00050                 goto    $-3     ; loop                  ; 2(1) total:1+8N+12+1+2=8N+16
+                      00051 
+0015   2803           00052                 goto    RcvL
+                      00053 
+0016                  00054 bout:
+0016   1803           00055                 btfsc   STATUS,C
+0017   1407           00056                 bsf     LATA,TX
+0018   1C03           00057                 btfss   STATUS,C
+0019   1007           00058                 bcf     LATA,TX
+                      00059 
+001A                  00060 bwait:                          ; wait 1 bit
+001A   201B           00061                 call    bwait2                          ; 2+(4N+2)+(4N+2)=8N+6
+001B                  00062 bwait2:                         ; wait 1/2bit and Set Carry=1
+001B   30E8           00063                 movlw   .256-((xtal/.4)/baud-.15)/.8    ; 1
+001C   3E01           00064                 addlw   0x01                            ; 1
+001D   1D03           00065                 btfss   STATUS,Z                        ; 1
+001E   281C           00066                 goto    $-2                             ; 2(1)
+001F   3409           00067                 retlw   0x09                            ; 2 total:1+(1+1+2)*N-1+2=4N+2
+                      00068 
+                      00069                 end
+MPASM  5.51                10F322LOOPBACK.ASM   3-16-2015  2:02:01         PAGE  3
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ADCON                             0000001F
+ADCS0                             00000005
+ADCS1                             00000006
+ADCS2                             00000007
+ADFVR0                            00000000
+ADFVR1                            00000001
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRES                             0000001E
+ANSA0                             00000000
+ANSA1                             00000001
+ANSA2                             00000002
+ANSELA                            00000008
+BORCON                            0000003F
+BORFS                             00000006
+BORRDY                            00000000
+C                                 00000000
+CFGS                              00000006
+CHS0                              00000002
+CHS1                              00000003
+CHS2                              00000004
+CLC1CON                           00000031
+CLC1GLS0                          00000035
+CLC1GLS1                          00000036
+CLC1GLS2                          00000037
+CLC1GLS3                          00000038
+CLC1IE                            00000003
+CLC1IF                            00000003
+CLC1POL                           00000034
+CLC1SEL0                          00000032
+CLC1SEL1                          00000033
+CLKRCON                           00000026
+CLKROE                            00000006
+CTS                               1
+CWG1CON0                          00000039
+CWG1CON1                          0000003A
+CWG1CON2                          0000003B
+CWG1DBF                           0000003D
+CWG1DBF0                          00000000
+CWG1DBF1                          00000001
+CWG1DBF2                          00000002
+CWG1DBF3                          00000003
+CWG1DBF4                          00000004
+CWG1DBF5                          00000005
+CWG1DBR                           0000003C
+CWG1DBR0                          00000000
+CWG1DBR1                          00000001
+CWG1DBR2                          00000002
+CWG1DBR3                          00000003
+CWG1DBR4                          00000004
+CWG1DBR5                          00000005
+D1N                               00000000
+MPASM  5.51                10F322LOOPBACK.ASM   3-16-2015  2:02:01         PAGE  4
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+D1S0                              00000000
+D1S1                              00000001
+D1S2                              00000002
+D1T                               00000001
+D2N                               00000002
+D2S0                              00000004
+D2S1                              00000005
+D2S2                              00000006
+D2T                               00000003
+D3N                               00000004
+D3S0                              00000000
+D3S1                              00000001
+D3S2                              00000002
+D3T                               00000005
+D4N                               00000006
+D4S0                              00000004
+D4S1                              00000005
+D4S2                              00000006
+D4T                               00000007
+DC                                00000001
+F                                 00000001
+FREE                              00000004
+FSR                               00000004
+FVRCON                            0000001D
+FVREN                             00000007
+FVRRDY                            00000006
+G1ARSEN                           00000006
+G1ASDLA0                          00000004
+G1ASDLA1                          00000005
+G1ASDLB0                          00000006
+G1ASDLB1                          00000007
+G1ASDSCLC1                        00000001
+G1ASDSFLT                         00000000
+G1ASE                             00000007
+G1CS0                             00000000
+G1EN                              00000007
+G1IS0                             00000000
+G1IS1                             00000001
+G1OEA                             00000005
+G1OEB                             00000006
+G1POL                             00000000
+G1POLA                            00000003
+G1POLB                            00000004
+G2POL                             00000001
+G3POL                             00000002
+G4D1N                             00000000
+G4D1T                             00000001
+G4D2N                             00000002
+G4D2T                             00000003
+G4D3N                             00000004
+G4D3T                             00000005
+G4D4N                             00000006
+G4D4T                             00000007
+MPASM  5.51                10F322LOOPBACK.ASM   3-16-2015  2:02:01         PAGE  5
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+G4POL                             00000003
+GIE                               00000007
+GO_NOT_DONE                       00000001
+HFIOFR                            00000003
+HFIOFS                            00000000
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IOCAF                             0000001C
+IOCAF0                            00000000
+IOCAF1                            00000001
+IOCAF2                            00000002
+IOCAF3                            00000003
+IOCAN                             0000001B
+IOCAN0                            00000000
+IOCAN1                            00000001
+IOCAN2                            00000002
+IOCAN3                            00000003
+IOCAP                             0000001A
+IOCAP0                            00000000
+IOCAP1                            00000001
+IOCAP2                            00000002
+IOCAP3                            00000003
+IOCIE                             00000003
+IOCIF                             00000000
+IRCF0                             00000004
+IRCF1                             00000005
+IRCF2                             00000006
+IRP                               00000007
+LATA                              00000007
+LATA0                             00000000
+LATA1                             00000001
+LATA2                             00000002
+LC1D1S0                           00000000
+LC1D1S1                           00000001
+LC1D1S2                           00000002
+LC1D2S0                           00000004
+LC1D2S1                           00000005
+LC1D2S2                           00000006
+LC1D3S0                           00000000
+LC1D3S1                           00000001
+LC1D3S2                           00000002
+LC1D4S0                           00000004
+LC1D4S1                           00000005
+LC1D4S2                           00000006
+LC1EN                             00000007
+LC1G1D1N                          00000000
+LC1G1D1T                          00000001
+LC1G1D2N                          00000002
+LC1G1D2T                          00000003
+LC1G1D3N                          00000004
+MPASM  5.51                10F322LOOPBACK.ASM   3-16-2015  2:02:01         PAGE  6
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+LC1G1D3T                          00000005
+LC1G1D4N                          00000006
+LC1G1D4T                          00000007
+LC1G1POL                          00000000
+LC1G2D1N                          00000000
+LC1G2D1T                          00000001
+LC1G2D2N                          00000002
+LC1G2D2T                          00000003
+LC1G2D3N                          00000004
+LC1G2D3T                          00000005
+LC1G2D4N                          00000006
+LC1G2D4T                          00000007
+LC1G2POL                          00000001
+LC1G3D1N                          00000000
+LC1G3D1T                          00000001
+LC1G3D2N                          00000002
+LC1G3D2T                          00000003
+LC1G3D3N                          00000004
+LC1G3D3T                          00000005
+LC1G3D4N                          00000006
+LC1G3D4T                          00000007
+LC1G3POL                          00000002
+LC1G4D1N                          00000000
+LC1G4D1T                          00000001
+LC1G4D2N                          00000002
+LC1G4D2T                          00000003
+LC1G4D3N                          00000004
+LC1G4D3T                          00000005
+LC1G4D4N                          00000006
+LC1G4D4T                          00000007
+LC1G4POL                          00000003
+LC1INTN                           00000003
+LC1INTP                           00000004
+LC1MODE0                          00000000
+LC1MODE1                          00000001
+LC1MODE2                          00000002
+LC1OE                             00000006
+LC1OUT                            00000005
+LC1POL                            00000007
+LCEN                              00000007
+LCINTN                            00000003
+LCINTP                            00000004
+LCMODE0                           00000000
+LCMODE1                           00000001
+LCMODE2                           00000002
+LCOE                              00000006
+LCOUT                             00000005
+LFIOFR                            00000001
+LWLO                              00000005
+N1CKS0                            00000000
+N1CKS1                            00000001
+N1EN                              00000007
+N1OE                              00000006
+MPASM  5.51                10F322LOOPBACK.ASM   3-16-2015  2:02:01         PAGE  7
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+N1OUT                             00000005
+N1PFM                             00000000
+N1POL                             00000004
+N1PWS0                            00000005
+N1PWS1                            00000006
+N1PWS2                            00000007
+NCO1ACC                           00000027
+NCO1ACC0                          00000000
+NCO1ACC1                          00000001
+NCO1ACC10                         00000002
+NCO1ACC11                         00000003
+NCO1ACC12                         00000004
+NCO1ACC13                         00000005
+NCO1ACC14                         00000006
+NCO1ACC15                         00000007
+NCO1ACC16                         00000000
+NCO1ACC17                         00000001
+NCO1ACC18                         00000002
+NCO1ACC19                         00000003
+NCO1ACC2                          00000002
+NCO1ACC3                          00000003
+NCO1ACC4                          00000004
+NCO1ACC5                          00000005
+NCO1ACC6                          00000006
+NCO1ACC7                          00000007
+NCO1ACC8                          00000000
+NCO1ACC9                          00000001
+NCO1ACCH                          00000028
+NCO1ACCL                          00000027
+NCO1ACCU                          00000029
+NCO1CLK                           0000002E
+NCO1CON                           0000002D
+NCO1IE                            00000004
+NCO1IF                            00000004
+NCO1INC                           0000002A
+NCO1INC0                          00000000
+NCO1INC1                          00000001
+NCO1INC10                         00000002
+NCO1INC11                         00000003
+NCO1INC12                         00000004
+NCO1INC13                         00000005
+NCO1INC14                         00000006
+NCO1INC15                         00000007
+NCO1INC2                          00000002
+NCO1INC3                          00000003
+NCO1INC4                          00000004
+NCO1INC5                          00000005
+NCO1INC6                          00000006
+NCO1INC7                          00000007
+NCO1INC8                          00000000
+NCO1INC9                          00000001
+NCO1INCH                          0000002B
+NCO1INCL                          0000002A
+MPASM  5.51                10F322LOOPBACK.ASM   3-16-2015  2:02:01         PAGE  8
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+NCO1INCU                          0000002C
+NOT_BOR                           00000000
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_TO                            00000004
+NOT_WPUEN                         00000007
+OPTION_REG                        0000000E
+OSCCON                            00000010
+PCL                               00000002
+PCLATH                            0000000A
+PCLH0                             00000000
+PCON                              0000000F
+PEIE                              00000006
+PIE1                              0000000D
+PIR1                              0000000C
+PMADR                             00000020
+PMADR8                            00000000
+PMADRH                            00000021
+PMADRL                            00000020
+PMCON1                            00000024
+PMCON2                            00000025
+PMDAT                             00000022
+PMDATH                            00000023
+PMDATL                            00000022
+POL                               00000007
+PORTA                             00000005
+PR2                               00000012
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+PWM1CON                           00000016
+PWM1CON0                          00000016
+PWM1DCH                           00000015
+PWM1DCH0                          00000000
+PWM1DCH1                          00000001
+PWM1DCH2                          00000002
+PWM1DCH3                          00000003
+PWM1DCH4                          00000004
+PWM1DCH5                          00000005
+PWM1DCH6                          00000006
+PWM1DCH7                          00000007
+PWM1DCL                           00000014
+PWM1DCL0                          00000006
+PWM1DCL1                          00000007
+PWM1EN                            00000007
+PWM1OE                            00000006
+PWM1OUT                           00000005
+PWM1POL                           00000004
+PWM2CON                           00000019
+PWM2CON0                          00000019
+PWM2DCH                           00000018
+PWM2DCH0                          00000000
+MPASM  5.51                10F322LOOPBACK.ASM   3-16-2015  2:02:01         PAGE  9
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PWM2DCH1                          00000001
+PWM2DCH2                          00000002
+PWM2DCH3                          00000003
+PWM2DCH4                          00000004
+PWM2DCH5                          00000005
+PWM2DCH6                          00000006
+PWM2DCH7                          00000007
+PWM2DCL                           00000017
+PWM2DCL0                          00000006
+PWM2DCL1                          00000007
+PWM2EN                            00000007
+PWM2OE                            00000006
+PWM2OUT                           00000005
+PWM2POL                           00000004
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RD                                00000000
+RP0                               00000005
+RP1                               00000006
+RX                                2
+RcvL                              00000003
+SBOREN                            00000007
+STATUS                            00000003
+SWDTEN                            00000000
+SendL                             0000000D
+T0CS                              00000005
+T0SE                              00000004
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000013
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000006
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TSEN                              00000005
+TSRNG                             00000004
+TX                                0
+VREGCON                           0000003E
+VREGPM0                           00000000
+VREGPM1                           00000001
+MPASM  5.51                10F322LOOPBACK.ASM   3-16-2015  2:02:01         PAGE 10
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+W                                 00000000
+WDTCON                            00000030
+WDTPS0                            00000001
+WDTPS1                            00000002
+WDTPS2                            00000003
+WDTPS3                            00000004
+WDTPS4                            00000005
+WPUA                              00000009
+WPUA0                             00000000
+WPUA1                             00000001
+WPUA2                             00000002
+WPUA3                             00000003
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_BOREN_NSLEEP                     00003FFD
+_BOREN_OFF                        00003FF9
+_BOREN_ON                         00003FFF
+_BOREN_SBODEN                     00003FFB
+_BORV_24                          00003FFF
+_BORV_27                          00003BFF
+_BORV_HI                          00003BFF
+_BORV_LO                          00003FFF
+_CONFIG                           00002007
+_CP_OFF                           00003FFF
+_CP_ON                            00003F7F
+_DEVID1                           00002006
+_FOSC_EC                          00003FFF
+_FOSC_INTOSC                      00003FFE
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_LPBOR_OFF                        00003DFF
+_LPBOR_ON                         00003FFF
+_LVP_OFF                          00003EFF
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FBF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FDF
+_WDTE_NSLEEP                      00003FF7
+_WDTE_OFF                         00003FE7
+_WDTE_ON                          00003FFF
+_WDTE_SWDTEN                      00003FEF
+_WRT_ALL                          000027FF
+_WRT_BOOT                         000037FF
+_WRT_HALF                         00002FFF
+_WRT_OFF                          00003FFF
+__10F322                          00000001
+__DEBUG                           1
+baud                              00002580
+MPASM  5.51                10F322LOOPBACK.ASM   3-16-2015  2:02:01         PAGE 11
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+bout                              00000016
+bwait                             0000001A
+bwait2                            0000001B
+cn                                0000007E
+rxd                               0000007F
+xtal                              007A1200
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX ---------------- ----------------
+2000 : -------X-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:    32
+Program Memory Words Free:   480
+
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

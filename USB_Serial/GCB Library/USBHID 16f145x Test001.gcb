@@ -1,0 +1,102 @@
+'Very basic first program for USB
+
+#chip 16f1459, 48
+
+
+
+#include <usb.h>
+
+#define USB_VID 0xF055
+#define USB_PID 0x1000
+
+#define USB_ERROR_HANDLER ErrorHandler
+#define USB_SETUP_HANDLER SetupHandler
+#define USB_DESCRIPTOR_HANDLER DescriptorHandler
+#define USB_PRODUCT_NAME "GCBASIC USB Test"
+
+#define LED PORTB.0
+dir portb.5 out
+
+repeat 20
+
+PORTB.5=!PORTB.5
+wait 20 ms
+end Repeat
+
+#define ADSpeed LowSpeed
+Dim SensorValue1 As Word
+Dim SensorValue2 As Word
+Dim SensorValue3 As Word
+Dim SensorValue4 As Word
+
+'USART
+#define USART_BAUD_RATE 115200
+#define USART_BLOCKING
+Dir PORTC.6 Out
+
+dir led out
+Set LED ON
+
+
+
+HSerPrint "USB CGB"
+HSerPrintCRLF
+LED=!LED
+
+InitUSB
+
+'Main loop, read from ADC and cache
+Do
+  SensorValue1 = ReadAD10(AN0)
+  Wait 1 ms
+  SensorValue2 = ReadAD10(AN1)
+  Wait 1 ms
+  SensorValue3 = ReadAD10(AN2)
+  Wait 1 ms
+  SensorValue4 = ReadAD10(AN3)
+Loop
+
+Sub ErrorHandler
+  HSerPrint "E"
+  HSerPrint Hex(UEIR)
+  HSerPrintCRLF
+End Sub
+
+Sub SetupHandler
+  Select Case USBTempBuffer(1)
+    'Control transfer 131, turn on LED
+    Case 131
+      Set PORTB.5 On
+      USBSendData1Ack
+
+    'Control transfer 132, turn off LED
+    Case 132
+      Set PORTB.5 Off
+      USBSendData1Ack
+
+    'Control transfer 133, send back ADC readings
+    Case 133
+      USB_IN0_CNT = 8
+      Poke USB_IN0_ADDR, SensorValue1
+      Poke USB_IN0_ADDR + 1, SensorValue1_H
+      Poke USB_IN0_ADDR + 2, SensorValue2
+      Poke USB_IN0_ADDR + 3, SensorValue2_H
+      Poke USB_IN0_ADDR + 4, SensorValue3
+      Poke USB_IN0_ADDR + 5, SensorValue3_H
+      Poke USB_IN0_ADDR + 6, SensorValue4
+      Poke USB_IN0_ADDR + 7, SensorValue4_H
+      USBStartSend
+
+    'It broke
+    Case Else
+      HSerPrint "Req "
+      HSerPrint USBTempBuffer(1)
+      HSerPrintCRLF
+  End Select
+End Sub
+
+Sub DescriptorHandler
+  HSerPrint "Desc "
+  HSerPrint USBDescType
+  HSerPrintCRLF
+End Sub

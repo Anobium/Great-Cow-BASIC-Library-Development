@@ -1,0 +1,42 @@
+MPLINK 4.49, Linker
+Linker Map File - Created Mon Mar 16 02:02:04 2015
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000040
+.config_2007_10F322LOOPBACK.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x00001f      
+                            0x002007    0x002007      
+            33 out of 518 program addresses used, program memory utilization is 6%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                     RcvL   0x000003    program     static C:\picasm1\10f322_loopback+CTS\10f322loopback.asm
+                    SendL   0x00000d    program     static C:\picasm1\10f322_loopback+CTS\10f322loopback.asm
+                     bout   0x000016    program     static C:\picasm1\10f322_loopback+CTS\10f322loopback.asm
+                    bwait   0x00001a    program     static C:\picasm1\10f322_loopback+CTS\10f322loopback.asm
+                   bwait2   0x00001b    program     static C:\picasm1\10f322_loopback+CTS\10f322loopback.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                     RcvL   0x000003    program     static C:\picasm1\10f322_loopback+CTS\10f322loopback.asm
+                    SendL   0x00000d    program     static C:\picasm1\10f322_loopback+CTS\10f322loopback.asm
+                     bout   0x000016    program     static C:\picasm1\10f322_loopback+CTS\10f322loopback.asm
+                    bwait   0x00001a    program     static C:\picasm1\10f322_loopback+CTS\10f322loopback.asm
+                   bwait2   0x00001b    program     static C:\picasm1\10f322_loopback+CTS\10f322loopback.asm
+
+

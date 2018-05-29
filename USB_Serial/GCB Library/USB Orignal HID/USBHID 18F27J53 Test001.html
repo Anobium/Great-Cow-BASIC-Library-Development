@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.02 2018-05-10</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 9.0625 seconds)</p>
+<p> (Assembly time: 0.625 seconds)</p>
+<p> (Download time: 0 seconds)</p>
+<p> (Total time: 9.6875 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 18F27J53</p>
+<p>Program Memory: 1613/65536 words (2.46%)</p>
+<p>RAM: 151/3800 bytes (3.97%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>44</td><td>119</td><td>INITUSART(6), USBINTERRUPTHANDLER(1), SYSREADSTRING(1), Delay_MS(4), Delay_S(1), READAD10(4), INITUSB(35), HSERPRINTCRLF(1), HSERPRINT(1), INITSYS(28)</td></tr>
+<tr><td>ERRORHANDLER</td><td>3</td><td>34</td><td>SYSREADSTRING(1), HSERPRINTCRLF(1), HEX(1), HSERPRINT(2)</td></tr>
+<tr><td>SETUPHANDLER</td><td>23</td><td>167</td><td>SYSREADSTRING(1), HSERPRINTCRLF(1), HSERPRINT(1), HSERPRINT(1), POKE(8), USBSENDDATA1ACK(2)</td></tr>
+<tr><td>DESCRIPTORHANDLER</td><td>3</td><td>28</td><td>SYSREADSTRING(1), HSERPRINTCRLF(1), HSERPRINT(1), HSERPRINT(1)</td></tr>
+<tr><td>INITUSB</td><td>18</td><td>55</td><td>Delay_MS(1)</td></tr>
+<tr><td>USBINTERRUPTHANDLER</td><td>69</td><td>185</td><td>SYSDIVSUB(1), USBPROCESSSETUP(1), PEEK(1), USBSENDDESCRIPTOR(1), ERRORHANDLER(1)</td></tr>
+<tr><td>USBPROCESSSETUP</td><td>34</td><td>75</td><td>SETUPHANDLER(2), USBSENDDESCRIPTOR(1), USBSENDDATA1ACK(2)</td></tr>
+<tr><td>USBSENDDESCRIPTOR</td><td>96</td><td>406</td><td>SYSREADSTRING(3), DESCRIPTORHANDLER(1), POKE(11)</td></tr>
+<tr><td>USBSENDDATA1ACK</td><td>2</td><td>6</td><td></td></tr>
+<tr><td>READAD10</td><td>41</td><td>43</td><td>Delay_10US(1)</td></tr>
+<tr><td>POKE</td><td>19</td><td>3</td><td></td></tr>
+<tr><td>PEEK</td><td>20</td><td>7</td><td></td></tr>
+<tr><td>INITSYS</td><td>650</td><td>14</td><td></td></tr>
+<tr><td>SYSREADSTRING</td><td>101</td><td>21</td><td></td></tr>
+<tr><td>SYSDIVSUB</td><td>48</td><td>22</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN</td><td>23</td><td>5</td><td></td></tr>
+<tr><td>HEX</td><td>14</td><td>41</td><td></td></tr>
+<tr><td>HSERPRINTCRLF</td><td>6</td><td>28</td><td>Delay_MS(2), HSERSEND(2)</td></tr>
+<tr><td>INITUSART</td><td>139</td><td>12</td><td></td></tr>
+<tr><td>HSERSEND</td><td>147</td><td>17</td><td></td></tr>
+<tr><td>HSERPRINT</td><td>15</td><td>38</td><td>Delay_MS(1), HSERSEND(1)</td></tr>
+<tr><td>HSERPRINT</td><td>23</td><td>77</td><td>SYSDIVSUB(2), SYSCOMPLESSTHAN(2), Delay_MS(3), HSERSEND(3)</td></tr>
+<tr><td>Delay_10US</td><td>0</td><td>9</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>18</td><td></td></tr>
+<tr><td>Delay_S</td><td>0</td><td>10</td><td>Delay_MS(1)</td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>26</td><td></td></tr>
+<tr><td>USBDEVICEDESCRIPTOR</td><td>0</td><td>23</td><td></td></tr>
+<tr><td>USBDEVICEQUALDESCRIPTOR</td><td>0</td><td>18</td><td></td></tr>
+<tr><td>USBCONFIGDESCRIPTOR</td><td>0</td><td>22</td><td></td></tr>
+<tr><td>Interrupt</td><td>0</td><td>84</td><td></td></tr>
+</table>
+</body>
+</html>

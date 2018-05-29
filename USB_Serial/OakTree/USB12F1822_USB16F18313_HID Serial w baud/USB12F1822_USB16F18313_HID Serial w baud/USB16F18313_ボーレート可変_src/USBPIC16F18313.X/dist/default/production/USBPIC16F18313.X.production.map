@@ -1,0 +1,235 @@
+MPLINK 5.08, LINKER
+Linker Map File - Created Thu Oct 06 13:20:05 2016
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000006
+                   .org_1       code   0x000004    program   0x0007b2
+                   .cinit    romdata   0x0003dd    program   0x000004
+.config_8007_BUILD/DEFAULT/PRODUCTION/USB.O       code   0x008007    program   0x000002
+.config_8008_BUILD/DEFAULT/PRODUCTION/USB.O       code   0x008008    program   0x000002
+.config_8009_BUILD/DEFAULT/PRODUCTION/USB.O       code   0x008009    program   0x000002
+.config_800A_BUILD/DEFAULT/PRODUCTION/USB.O       code   0x00800a    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000002      
+                            0x000004    0x0003de      
+                            0x008007    0x00800a      
+            994 out of 2313 program addresses used, program memory utilization is 42%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+         ACKTokenRecibido   0x0000a7    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+              AddressNRZI   0x000282    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+      AsignarNuevoAddress   0x0000ca    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            CLEAR_FEATURE   0x000279    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            CalcularCRC16   0x0001bf    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             ConfEntradas   0x000145    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+               Configurar   0x000010    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                ContTabla   0x00022b    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+       ContinuoRecibiendo   0x00006a    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             DATARecibido   0x0000d2    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+              DescTimeOut   0x00004a    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+         DesencriptarNRZI   0x000183    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+          EscribirUSBDATA   0x00014d    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+           EscribirUSBPID   0x000117    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                   EspInt   0x000045    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                   Espero   0x00014c    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+       EsperoContinuacion   0x000041    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+        GET_CONFIGURATION   0x0002cb    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            GET_INTERFACE   0x0002d4    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+       GET_SET_DESCRIPTOR   0x00028c    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+               GET_STATUS   0x000272    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                    GINSR   0x0002db    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  INToken   0x0000b1    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+        IdentificarStdReq   0x000263    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+          Identificar_PID   0x000088    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+      InsertarBitStuffing   0x0001ef    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            InsertarCRC16   0x0001e7    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+        InterruptTransfer   0x00010a    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_0   0x00019a    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_1   0x0001a7    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_2   0x0001b0    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_3   0x0001b6    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_4   0x0001c9    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_5   0x0001fa    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_6   0x000207    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_7   0x00020e    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_8   0x000215    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_9   0x000222    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_A   0x0002dc    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+           LeerDescriptor   0x000231    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            LevantarTabla   0x00031b    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+       LimpioInterrupcion   0x0000ee    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            LoopPrincipal   0x00003c    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                     Main   0x000300    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                MandarACK   0x000116    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+               MandarDATA   0x00010c    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                MandarNAK   0x000114    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+              MandarSTALL   0x000110    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            MandarSigByte   0x000164    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                MandarZLP   0x0000ce    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+Mandar_CONFIGURATION_Descriptor   0x0002a8    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+ Mandar_DEVICE_Descriptor   0x0002a3    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+Mandar_HIDReport_Descriptor   0x0002b2    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+    Mandar_HID_Descriptor   0x0002ad    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+Mandar_STRING_Descriptors   0x0002b7    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                 OUTToken   0x00009b    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+       PrepararDescriptor   0x00023f    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             ProcesarDATA   0x0000e2    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            ProcesarSetup   0x000250    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+               ProcessOut   0x0002e1    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             RecepcionUSB   0x00004f    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+      RegresardeInterrupt   0x00009d    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+              ResponderIN   0x0000c7    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+               SETUPToken   0x00009f    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+              SET_ADDRESS   0x00027d    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+        SET_CONFIGURATION   0x0002d0    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+              SET_FEATURE   0x00027b    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            SET_INTERFACE   0x0002d8    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+              SYNCH_FRAME   0x0002d9    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                   Set_BR   0x0002f2    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             Set_RTS_High   0x0002fc    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+              Set_RTS_Low   0x0002fe    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  SigNRZI   0x000188    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+       SiguienteDatoTabla   0x000236    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                 SincUSB1   0x000120    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                 SincUSB2   0x00015a    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+        StringDescriptor0   0x0002bc    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+        StringDescriptor1   0x0002c1    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+        StringDescriptor2   0x0002c6    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                    TMovf   0x000006    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                TodaviaNO   0x000099    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                      ZLP   0x000141    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             ZLPPendiente   0x0000d0    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_004F   0x00004f    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0052   0x000052    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0055   0x000055    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0058   0x000058    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_005B   0x00005b    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0066   0x000066    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0069   0x000069    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0070   0x000070    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0129   0x000129    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_012C   0x00012c    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_012F   0x00012f    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0132   0x000132    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0135   0x000135    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0138   0x000138    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_013B   0x00013b    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                   bReqNS   0x0002da    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                    TMovf   0x000006    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+               Configurar   0x000010    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            LoopPrincipal   0x00003c    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+       EsperoContinuacion   0x000041    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                   EspInt   0x000045    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+              DescTimeOut   0x00004a    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_004F   0x00004f    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             RecepcionUSB   0x00004f    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0052   0x000052    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0055   0x000055    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0058   0x000058    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_005B   0x00005b    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0066   0x000066    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0069   0x000069    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+       ContinuoRecibiendo   0x00006a    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0070   0x000070    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+          Identificar_PID   0x000088    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                TodaviaNO   0x000099    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                 OUTToken   0x00009b    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+      RegresardeInterrupt   0x00009d    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+               SETUPToken   0x00009f    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+         ACKTokenRecibido   0x0000a7    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  INToken   0x0000b1    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+              ResponderIN   0x0000c7    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+      AsignarNuevoAddress   0x0000ca    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                MandarZLP   0x0000ce    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             ZLPPendiente   0x0000d0    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             DATARecibido   0x0000d2    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             ProcesarDATA   0x0000e2    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+       LimpioInterrupcion   0x0000ee    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+        InterruptTransfer   0x00010a    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+               MandarDATA   0x00010c    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+              MandarSTALL   0x000110    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                MandarNAK   0x000114    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                MandarACK   0x000116    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+           EscribirUSBPID   0x000117    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                 SincUSB1   0x000120    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0129   0x000129    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_012C   0x00012c    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_012F   0x00012f    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0132   0x000132    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0135   0x000135    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_0138   0x000138    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             _.org_1_013B   0x00013b    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                      ZLP   0x000141    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             ConfEntradas   0x000145    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                   Espero   0x00014c    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+          EscribirUSBDATA   0x00014d    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                 SincUSB2   0x00015a    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            MandarSigByte   0x000164    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+         DesencriptarNRZI   0x000183    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  SigNRZI   0x000188    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_0   0x00019a    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_1   0x0001a7    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_2   0x0001b0    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_3   0x0001b6    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            CalcularCRC16   0x0001bf    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_4   0x0001c9    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            InsertarCRC16   0x0001e7    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+      InsertarBitStuffing   0x0001ef    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_5   0x0001fa    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_6   0x000207    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_7   0x00020e    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_8   0x000215    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_9   0x000222    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                ContTabla   0x00022b    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+           LeerDescriptor   0x000231    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+       SiguienteDatoTabla   0x000236    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+       PrepararDescriptor   0x00023f    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            ProcesarSetup   0x000250    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+        IdentificarStdReq   0x000263    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+               GET_STATUS   0x000272    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            CLEAR_FEATURE   0x000279    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+              SET_FEATURE   0x00027b    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+              SET_ADDRESS   0x00027d    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+              AddressNRZI   0x000282    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+       GET_SET_DESCRIPTOR   0x00028c    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+ Mandar_DEVICE_Descriptor   0x0002a3    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+Mandar_CONFIGURATION_Descriptor   0x0002a8    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+    Mandar_HID_Descriptor   0x0002ad    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+Mandar_HIDReport_Descriptor   0x0002b2    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+Mandar_STRING_Descriptors   0x0002b7    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+        StringDescriptor0   0x0002bc    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+        StringDescriptor1   0x0002c1    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+        StringDescriptor2   0x0002c6    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+        GET_CONFIGURATION   0x0002cb    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+        SET_CONFIGURATION   0x0002d0    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            GET_INTERFACE   0x0002d4    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            SET_INTERFACE   0x0002d8    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+              SYNCH_FRAME   0x0002d9    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                   bReqNS   0x0002da    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                    GINSR   0x0002db    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                  Label_A   0x0002dc    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+               ProcessOut   0x0002e1    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                   Set_BR   0x0002f2    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+             Set_RTS_High   0x0002fc    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+              Set_RTS_Low   0x0002fe    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+                     Main   0x000300    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+            LevantarTabla   0x00031b    program     static C:\Documents and Settings\Administrator\MPLABXProjects\USBPIC16F18313.X\usb.asm
+
+

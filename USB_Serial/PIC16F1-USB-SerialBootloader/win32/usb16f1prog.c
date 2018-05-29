@@ -2,13 +2,15 @@
 // usb16f1prog
 // Copyright (c) 2017, David Pribyl
 // v1.0, 28.8.2017
+// Copyright (c) 2018, Evan R. Venn
+// v1.1 for Great Cow BASIC
 //
 // This file is distributed  under the terms of the GNU
 // General Public License (GPL).   See the accompanying file "COPYING"
 // for more details.
 //
 // Uploads firmware to a PIC16F1xxx microcontroller programmed with
-// Matt Sarnoff's USB bootloader.
+// Matt Sarnoff's USB serial bootloader.
 //
 // Accepts 16-bit Intel HEX files as input.
 // Can only be used to write to program memory; the bootloader does not support
@@ -207,13 +209,13 @@ void device_error(unsigned char Status) {
 /*
   switch (Status) {
   case STATUS_INVALID_COMMAND:     printf("  Invalid command\n");
-    fprintf(el, "GCBProgrammer:USB16f1Prog: %s : USB Programming unsuccessful - invalid command\n",argv[2] );
+    fprintf(el, "GCBProgrammer:USB16f1Prog: %s : USB CDC Programming unsuccessful - Invalid command\n",argv[2] );
     break;
   case STATUS_INVALID_CHECKSUM:    printf("  Checksum failed; data not written\n");
-    fprintf(el, "GCBProgrammer:USB16f1Prog: %s : USB Programming unsuccessful - checksum failed; data not written\n",argv[2] );
+    fprintf(el, "GCBProgrammer:USB16f1Prog: %s : USB CDC Programming unsuccessful - Checksum failed; data not written\n",argv[2] );
     break;
   case STATUS_VERIFY_FAILED:       printf("  Write verification failed\n");
-    fprintf(el, "GCBProgrammer:USB16f1Prog: %s : USB Programming unsuccessful - write verification failed\n",argv[2] );
+    fprintf(el, "GCBProgrammer:USB16f1Prog: %s : USB CDC Programming unsuccessful - Write verification failed\n",argv[2] );
     break;
   }
 */
@@ -313,6 +315,9 @@ void ShowProgressLine(int Addr,char Action) {
 
 }
 
+
+
+//Main program commences
 int main(int argc, char *argv[]) {
 
   int ret=-1;
@@ -320,20 +325,15 @@ int main(int argc, char *argv[]) {
   FILE *el;
   char *fsp = argv[3];
 
-
-
-
   int startaddr=0;
   int endaddr=0;
   int i;
   HANDLE ComPort;
 
-  printf ("\nGreat Cow BASIC 2018 - Serial Bootloader for 16f145x Family v0.9a\n");
+  printf ("\nGreat Cow BASIC 2018 - USB CDC Programmer for 16f145x Family v1.1\n");
 
 
   if (argc > 3  ) {
-    // printf ("usb16f1prog:\n");
-
     printf ("  Loading hex file\n");
     fp=fopen(argv[2],"r");
     if (fp!=NULL) {
@@ -341,18 +341,24 @@ int main(int argc, char *argv[]) {
       fclose(fp);
     }
 
-    strcat( fsp,"\\Programmer.log");
-    el=fopen(fsp,"a");
+  //create programmer log file
+  strcat( fsp,"\\Programmer.log");
+  el=fopen(fsp,"w");
 
   if (ret!=0) {
-                  printf("\nError - unable to read '%s' file\n",argv[2]);
-                  fprintf(el, "GCBProgrammer:USB16f1Prog: %s : USB Programming unsuccessful, unable to read source file\n",argv[2]);
-                  fflush(el);
-                  fclose(el);
+      printf("\nError - unable to read '%s' Hexfile\n",argv[2]);
+      fprintf(el, "GCBProgrammer:USB16f1Prog: %s : USB CDC Programming unsuccessful - Unable to read Hexfile\n",argv[2]);
+      fflush(el);
+      fclose(el);
 
 
-    } else  { //Analize progmem
-      for (i=0;i<MAXPROG;i+=64) {
+    }
+
+    else
+
+    { //Analize progmem
+      for (i=0;i<MAXPROG;i+=64)
+      {
         int usedblock;
 
         usedblock=testblock(progmem+i);
@@ -364,33 +370,34 @@ int main(int argc, char *argv[]) {
       printf("  Start: 0x%04x / End: 0x%04x\n",startaddr/2,endaddr/2);
       PrepareProgressLine();
 
-      if (startaddr/2<0x200) {
+      if (startaddr/2<0x200)
+      {
         printf("\nError - code start is within bootloader memory sector\n");
-        fprintf(el, "GCBProgrammer:USB16f1Prog: %s : USB Programming unsuccessful, code start is within bootloader memory sector\n",argv[2]);
+        //pass message to IDE
+        fprintf(el, "GCBProgrammer:USB16f1Prog: %s : USB CDC Programming unsuccessful - Code start is within bootloader memory sector\n",argv[2]);
         fflush(el);
         fclose(el);
+      }
+      else
+      {
+        //patch for com10 to comNN, before we open the port!!  Add escape and address
+        char portIn [16] = "\\\\.\\";
+        strcat(portIn, argv[1]);
 
-
-      } else {
-
-  /*
-        for (i=startaddr;i<=endaddr;i+=64) {
-          CompBlockChKSum(progmem+i);
-        }
-  */
-
-        ComPort = sp_open(argv[1], 9600, 1000);
-        if (ComPort==INVALID_HANDLE_VALUE) {
-
+        //open comm port
+        ComPort = sp_open(portIn, 9600, 1000);
+        if (ComPort==INVALID_HANDLE_VALUE)
+        {
            printf("\nError - unable to open '%s' serial port\n",argv[1]);
-           fprintf(el, "GCBProgrammer:USB16f1Prog: %s : USB Programming unsuccessful, unable to open %s serial port",argv[2],argv[1]);
+           fprintf(el, "GCBProgrammer:USB16f1Prog: %s : USB CDC Programming unsuccessful - Unable to open %s serial port",argv[2],argv[1]);
            fflush(el);
            fclose(el);
-
-        }else {
+        }
+        else
+        {
           int ret=0;
 
-          printf("  Programming\n");
+          printf("  USB CDC Programming via port %s\n", argv[1] );
 
           for (i=startaddr;i<=endaddr;i+=64) {
             unsigned char checksum;
@@ -424,18 +431,18 @@ int main(int argc, char *argv[]) {
 
         if (!ret) {
           printf("\nCompleted.\n");
-          fprintf(el, "GCBProgrammer:USB16f1Prog: %s : USB Programming successful",argv[2]);
+          fprintf(el, "GCBProgrammer:USB16f1Prog: %s : USB CDC Programming successful",argv[2]);
           fflush(el);
           fclose(el);
-        } else {
+        }
+        else
+        {
           printf("\nError at address: 0x%04x.\n",i/2);
           printf("Programming failed\n");
 
-    //      if (el!=NULL) {
-                  fprintf(el, "GCBProgrammer:USB16f1Prog: %s : USB Programming failed at address: 0x%04x.\n",argv[2],i/2);
-                  fflush(el);
-                  fclose(el);
-     //     }
+          fprintf(el, "GCBProgrammer:USB16f1Prog: %s : USB CDC Programming - Failed at address: 0x%04x.\n",argv[2],i/2);
+          fflush(el);
+          fclose(el);
 
         }
 
@@ -445,18 +452,25 @@ int main(int argc, char *argv[]) {
       }
     }
 
-  } else {   //argc >2
+  }
+  else
+  {   //argc >2
         printf ("\nUsage:\n");
         printf ("   usb16f1prog com1 file.hex  errorlogFolder\n");
         printf ("     com1            .. bootloader serial port\n");
         printf ("     file.hex        .. program to write\n");
-        printf ("     folder location .. to write programmer log\n");
+        printf ("     errorlogFolder  .. folder used to write the programmer log\n");
 
         printf ("\n");
+        printf ("Copyright(s):\n");
+        printf ("     2017, David Pribyl - ");
+        printf ("v1.0, 28.8.2017\n");
+        printf ("     2018, Evan R. Venn - ");
+        printf ("for Great Cow BASIC v1.1, 22.05.2018\n\n");
+
   }
 
 
   sleep(1);
   return 0;
 }
-

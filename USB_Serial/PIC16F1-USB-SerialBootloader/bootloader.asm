@@ -68,7 +68,7 @@ USE_RC5_SWITCH    equ 1
 
   radix dec
   list n=0,st=off
-  include "p16f1454.inc"
+  include "p16f1455.inc"
   nolist
   include "macros.inc"
   include "bdt.inc"
@@ -653,8 +653,10 @@ _wosc movlw (1<<PLLRDY)|(1<<HFIOFR)|(1<<HFIOFS)
 
 
 #if USE_RC5_SWITCH
-  banksel ANSELC        ;disable analog function on pin
-  bcf   ANSELC,ANSC5
+  #ifdef  ANSC5
+    banksel ANSELC        ;disable analog function on pin
+    bcf   ANSELC,ANSC5
+  #endif
 
   banksel PORTC
   btfss PORTC,RC5
@@ -678,8 +680,10 @@ _wosc movlw (1<<PLLRDY)|(1<<HFIOFR)|(1<<HFIOFS)
 #endif
 
 #if USE_RC5_SWITCH
-  banksel ANSELC        ;enable analog function on pin
-  bsf   ANSELC,ANSC5
+  #ifdef  ANSC5
+    banksel ANSELC        ;enable analog function on pin
+    bsf   ANSELC,ANSC5
+  #endif
 #endif
 
 

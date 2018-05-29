@@ -1,0 +1,225 @@
+MPLINK 4.49, Linker
+Linker Map File - Created Mon Mar 16 02:09:49 2015
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000006
+                   .org_2       code   0x000004    program   0x0007f6
+       .config_8007_USB.O       code   0x008007    program   0x000002
+       .config_8008_USB.O       code   0x008008    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000002      
+                            0x000004    0x0003fe      
+                            0x008007    0x008008      
+            1024 out of 1031 program addresses used, program memory utilization is 99%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+         ACKTokenRecibido   0x0000a1    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+              AddressNRZI   0x000299    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+      AsignarNuevoAddress   0x0000c4    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            CLEAR_FEATURE   0x000290    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            CalcularCRC16   0x0001e6    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+             ConfEntradas   0x00014a    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+               Configurar   0x000011    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                ContTabla   0x000252    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+       ContinuoRecibiendo   0x000054    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+             DATARecibido   0x0000cc    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+              DescTimeOut   0x00002a    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+         DesencriptarNRZI   0x0001aa    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+          EscribirUSBDATA   0x00016c    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+           EscribirUSBPID   0x000112    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                   EspInt   0x000024    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                   Espero   0x000152    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+       EsperoContinuacion   0x000021    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+        GET_CONFIGURATION   0x0002dc    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            GET_INTERFACE   0x0002e3    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+       GET_SET_DESCRIPTOR   0x0002a3    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+               GET_STATUS   0x00028a    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                    GINSR   0x0002ea    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  INToken   0x0000ab    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+        IdentificarStdReq   0x00027b    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+          Identificar_PID   0x000082    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+      InsertarBitStuffing   0x000216    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            InsertarCRC16   0x00020e    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+        InterruptTransfer   0x000105    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_0   0x0001c1    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_1   0x0001ce    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_2   0x0001d7    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_3   0x0001dd    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_4   0x0001f0    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_5   0x000221    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_6   0x00022e    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_7   0x000235    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_8   0x00023c    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_9   0x000249    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_A   0x0002eb    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+           LeerDescriptor   0x000259    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            LevantarTabla   0x0002f0    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                LimpioINT   0x000097    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+       LimpioInterrupcion   0x0000e8    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            LoopPrincipal   0x00001d    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                MandarACK   0x000111    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+               MandarDATA   0x000107    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                MandarNAK   0x00010f    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+              MandarSTALL   0x00010b    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            MandarSigByte   0x000184    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                MandarZLP   0x0000c8    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+Mandar_CONFIGURATION_Descriptor   0x0002be    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+ Mandar_DEVICE_Descriptor   0x0002ba    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+Mandar_HIDReport_Descriptor   0x0002c6    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+    Mandar_HID_Descriptor   0x0002c2    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+Mandar_STRING_Descriptors   0x0002ca    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                 OUTToken   0x000095    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+       PrepararDescriptor   0x000265    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+             ProcesarDATA   0x0000dc    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            ProcesarSetup   0x000268    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+               ProcessOut   0x0003ea    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                     RcvL   0x000156    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+             RecepcionUSB   0x000031    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+          Recupero_PCLATH   0x000097    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+          Recupero_STATUS   0x000097    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+               Recupero_W   0x000097    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+      RegresardeInterrupt   0x000097    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+              ResponderIN   0x0000c1    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+               SETUPToken   0x000099    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+              SET_ADDRESS   0x000294    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+        SET_CONFIGURATION   0x0002df    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+              SET_FEATURE   0x000292    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            SET_INTERFACE   0x0002e7    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+              SYNCH_FRAME   0x0002e8    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                    SendL   0x0003ed    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  SigNRZI   0x0001af    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+       SiguienteDatoTabla   0x00025c    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                 SincUSB1   0x00011d    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                SincUSB10   0x0003b2    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                 SincUSB2   0x000179    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+        StringDescriptor0   0x0002cf    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+        StringDescriptor1   0x0002d3    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+        StringDescriptor2   0x0002d7    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                    TMovf   0x000007    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                TodaviaNO   0x000093    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                      ZLP   0x000146    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+             ZLPPendiente   0x0000ca    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                     _GI1   0x0002e4    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                     _GI2   0x0002e5    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                      _PD   0x0003da    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                     _SD2   0x0002da    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                   bReqNS   0x0002e9    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                     bout   0x0003f5    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                    bwait   0x0003f9    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                   bwait2   0x0003fa    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  timeout   0x00016a    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                    TMovf   0x000007    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+               Configurar   0x000011    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            LoopPrincipal   0x00001d    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+       EsperoContinuacion   0x000021    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                   EspInt   0x000024    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+              DescTimeOut   0x00002a    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+             RecepcionUSB   0x000031    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+       ContinuoRecibiendo   0x000054    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+          Identificar_PID   0x000082    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                TodaviaNO   0x000093    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                 OUTToken   0x000095    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                LimpioINT   0x000097    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+          Recupero_PCLATH   0x000097    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+          Recupero_STATUS   0x000097    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+               Recupero_W   0x000097    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+      RegresardeInterrupt   0x000097    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+               SETUPToken   0x000099    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+         ACKTokenRecibido   0x0000a1    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  INToken   0x0000ab    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+              ResponderIN   0x0000c1    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+      AsignarNuevoAddress   0x0000c4    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                MandarZLP   0x0000c8    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+             ZLPPendiente   0x0000ca    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+             DATARecibido   0x0000cc    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+             ProcesarDATA   0x0000dc    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+       LimpioInterrupcion   0x0000e8    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+        InterruptTransfer   0x000105    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+               MandarDATA   0x000107    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+              MandarSTALL   0x00010b    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                MandarNAK   0x00010f    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                MandarACK   0x000111    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+           EscribirUSBPID   0x000112    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                 SincUSB1   0x00011d    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                      ZLP   0x000146    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+             ConfEntradas   0x00014a    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                   Espero   0x000152    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                     RcvL   0x000156    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  timeout   0x00016a    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+          EscribirUSBDATA   0x00016c    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                 SincUSB2   0x000179    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            MandarSigByte   0x000184    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+         DesencriptarNRZI   0x0001aa    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  SigNRZI   0x0001af    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_0   0x0001c1    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_1   0x0001ce    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_2   0x0001d7    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_3   0x0001dd    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            CalcularCRC16   0x0001e6    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_4   0x0001f0    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            InsertarCRC16   0x00020e    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+      InsertarBitStuffing   0x000216    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_5   0x000221    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_6   0x00022e    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_7   0x000235    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_8   0x00023c    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_9   0x000249    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                ContTabla   0x000252    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+           LeerDescriptor   0x000259    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+       SiguienteDatoTabla   0x00025c    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+       PrepararDescriptor   0x000265    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            ProcesarSetup   0x000268    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+        IdentificarStdReq   0x00027b    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+               GET_STATUS   0x00028a    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            CLEAR_FEATURE   0x000290    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+              SET_FEATURE   0x000292    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+              SET_ADDRESS   0x000294    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+              AddressNRZI   0x000299    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+       GET_SET_DESCRIPTOR   0x0002a3    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+ Mandar_DEVICE_Descriptor   0x0002ba    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+Mandar_CONFIGURATION_Descriptor   0x0002be    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+    Mandar_HID_Descriptor   0x0002c2    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+Mandar_HIDReport_Descriptor   0x0002c6    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+Mandar_STRING_Descriptors   0x0002ca    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+        StringDescriptor0   0x0002cf    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+        StringDescriptor1   0x0002d3    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+        StringDescriptor2   0x0002d7    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                     _SD2   0x0002da    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+        GET_CONFIGURATION   0x0002dc    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+        SET_CONFIGURATION   0x0002df    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            GET_INTERFACE   0x0002e3    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                     _GI1   0x0002e4    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                     _GI2   0x0002e5    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            SET_INTERFACE   0x0002e7    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+              SYNCH_FRAME   0x0002e8    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                   bReqNS   0x0002e9    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                    GINSR   0x0002ea    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                  Label_A   0x0002eb    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+            LevantarTabla   0x0002f0    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                SincUSB10   0x0003b2    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                      _PD   0x0003da    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+               ProcessOut   0x0003ea    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                    SendL   0x0003ed    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                     bout   0x0003f5    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                    bwait   0x0003f9    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+                   bwait2   0x0003fa    program     static C:\picasm1\極小ブートローダー\HID-Serial\HID-Serial Adapter\HIDseril Adapter_PIC12F1501\USB.asm
+
+

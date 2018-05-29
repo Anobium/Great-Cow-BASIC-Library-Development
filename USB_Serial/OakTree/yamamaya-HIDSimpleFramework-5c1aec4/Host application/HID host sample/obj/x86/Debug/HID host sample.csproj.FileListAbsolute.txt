@@ -1,0 +1,17 @@
+C:\Users\evan_\Desktop\Development\OakTree\yamamaya-HIDSimpleFramework-5c1aec4\Host application\HID host sample\bin\Debug\HID host sample.exe
+C:\Users\evan_\Desktop\Development\OakTree\yamamaya-HIDSimpleFramework-5c1aec4\Host application\HID host sample\bin\Debug\HID host sample.pdb
+C:\Users\evan_\Desktop\Development\OakTree\yamamaya-HIDSimpleFramework-5c1aec4\Host application\HID host sample\obj\x86\Debug\HID host sample.csprojResolveAssemblyReference.cache
+C:\Users\evan_\Desktop\Development\OakTree\yamamaya-HIDSimpleFramework-5c1aec4\Host application\HID host sample\obj\x86\Debug\HID_host_sample.Form1.resources
+C:\Users\evan_\Desktop\Development\OakTree\yamamaya-HIDSimpleFramework-5c1aec4\Host application\HID host sample\obj\x86\Debug\HID_host_sample.Properties.Resources.resources
+C:\Users\evan_\Desktop\Development\OakTree\yamamaya-HIDSimpleFramework-5c1aec4\Host application\HID host sample\obj\x86\Debug\HID host sample.csproj.GenerateResource.Cache
+C:\Users\evan_\Desktop\Development\OakTree\yamamaya-HIDSimpleFramework-5c1aec4\Host application\HID host sample\obj\x86\Debug\HID host sample.exe
+C:\Users\evan_\Desktop\Development\OakTree\yamamaya-HIDSimpleFramework-5c1aec4\Host application\HID host sample\obj\x86\Debug\HID host sample.pdb
+D:\Great-Cow-BASIC-Library-Development\trunk\USB_Serial\OakTree\yamamaya-HIDSimpleFramework-5c1aec4\Host application\HID host sample\obj\x86\Debug\HID host sample.exe
+D:\Great-Cow-BASIC-Library-Development\trunk\USB_Serial\OakTree\yamamaya-HIDSimpleFramework-5c1aec4\Host application\HID host sample\obj\x86\Debug\HID host sample.pdb
+D:\Great-Cow-BASIC-Library-Development\trunk\USB_Serial\OakTree\yamamaya-HIDSimpleFramework-5c1aec4\Host application\HID host sample\bin\Debug\HID host sample.exe
+D:\Great-Cow-BASIC-Library-Development\trunk\USB_Serial\OakTree\yamamaya-HIDSimpleFramework-5c1aec4\Host application\HID host sample\bin\Debug\HID host sample.pdb
+D:\Great-Cow-BASIC-Library-Development\trunk\USB_Serial\OakTree\yamamaya-HIDSimpleFramework-5c1aec4\Host application\HID host sample\obj\x86\Debug\HID_host_sample.Form1.resources
+D:\Great-Cow-BASIC-Library-Development\trunk\USB_Serial\OakTree\yamamaya-HIDSimpleFramework-5c1aec4\Host application\HID host sample\obj\x86\Debug\HID_host_sample.Properties.Resources.resources
+D:\Great-Cow-BASIC-Library-Development\trunk\USB_Serial\OakTree\yamamaya-HIDSimpleFramework-5c1aec4\Host application\HID host sample\obj\x86\Debug\HID host sample.csproj.GenerateResource.Cache
+D:\Great-Cow-BASIC-Library-Development\trunk\USB_Serial\OakTree\yamamaya-HIDSimpleFramework-5c1aec4\Host application\HID host sample\bin\Debug\HID host sample.exe.config
+D:\Great-Cow-BASIC-Library-Development\trunk\USB_Serial\OakTree\yamamaya-HIDSimpleFramework-5c1aec4\Host application\HID host sample\obj\x86\Debug\HID host sample.csprojResolveAssemblyReference.cache
