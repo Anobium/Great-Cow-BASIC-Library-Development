@@ -293,7 +293,7 @@ SysRepeatLoopEnd1
 	movlw	1
 	movwf	COMPORT
 	banksel	STATUS
-	call	HSERPRINT264
+	call	HSERPRINT274
 	movlw	1
 	banksel	HSERPRINTCRLFCOUNT
 	movwf	HSERPRINTCRLFCOUNT
@@ -325,7 +325,7 @@ SysDoLoop_S1
 	banksel	ADREADPORT
 	clrf	ADREADPORT
 	banksel	STATUS
-	call	FN_READAD1016
+	call	FN_READAD1026
 	banksel	SYSREADAD10WORD
 	movf	SYSREADAD10WORD,W
 	movwf	SENSORVALUE1
@@ -340,7 +340,7 @@ SysDoLoop_S1
 	banksel	ADREADPORT
 	movwf	ADREADPORT
 	banksel	STATUS
-	call	FN_READAD1016
+	call	FN_READAD1026
 	banksel	SYSREADAD10WORD
 	movf	SYSREADAD10WORD,W
 	movwf	SENSORVALUE2
@@ -355,7 +355,7 @@ SysDoLoop_S1
 	banksel	ADREADPORT
 	movwf	ADREADPORT
 	banksel	STATUS
-	call	FN_READAD1016
+	call	FN_READAD1026
 	banksel	SYSREADAD10WORD
 	movf	SYSREADAD10WORD,W
 	movwf	SENSORVALUE3
@@ -370,7 +370,7 @@ SysDoLoop_S1
 	banksel	ADREADPORT
 	movwf	ADREADPORT
 	banksel	STATUS
-	call	FN_READAD1016
+	call	FN_READAD1026
 	banksel	SYSREADAD10WORD
 	movf	SYSREADAD10WORD,W
 	movwf	SENSORVALUE4
@@ -393,7 +393,7 @@ DESCRIPTORHANDLER
 	movlw	1
 	movwf	COMPORT
 	banksel	STATUS
-	call	HSERPRINT264
+	call	HSERPRINT274
 	banksel	USBDESCTYPE
 	movf	USBDESCTYPE,W
 	banksel	SERPRINTVAL
@@ -401,7 +401,7 @@ DESCRIPTORHANDLER
 	movlw	1
 	movwf	COMPORT
 	banksel	STATUS
-	call	HSERPRINT265
+	call	HSERPRINT275
 	movlw	1
 	banksel	HSERPRINTCRLFCOUNT
 	movwf	HSERPRINTCRLFCOUNT
@@ -455,7 +455,7 @@ ERRORHANDLER
 	movlw	1
 	movwf	COMPORT
 	banksel	STATUS
-	call	HSERPRINT264
+	call	HSERPRINT274
 	banksel	UEIR
 	movf	UEIR,W
 	banksel	SYSVALTEMP
@@ -470,7 +470,7 @@ ERRORHANDLER
 	movlw	1
 	movwf	COMPORT
 	banksel	STATUS
-	call	HSERPRINT264
+	call	HSERPRINT274
 	movlw	1
 	banksel	HSERPRINTCRLFCOUNT
 	movwf	HSERPRINTCRLFCOUNT
@@ -529,7 +529,7 @@ ENDIF46
 ;********************************************************************************
 
 ;Overloaded signature: STRING:byte:
-HSERPRINT264
+HSERPRINT274
 	banksel	SYSPRINTDATAHANDLER
 	movf	SysPRINTDATAHandler,W
 	movwf	AFSR0
@@ -576,7 +576,7 @@ ENDIF40
 ;********************************************************************************
 
 ;Overloaded signature: BYTE:byte:
-HSERPRINT265
+HSERPRINT275
 	banksel	OUTVALUETEMP
 	clrf	OUTVALUETEMP
 	movlw	100
@@ -843,7 +843,7 @@ POKE
 ;********************************************************************************
 
 ;Overloaded signature: BYTE:
-FN_READAD1016
+FN_READAD1026
 	banksel	ADCON1
 	bsf	ADCON1,ADFM
 SysSelect6Case1
@@ -1148,7 +1148,7 @@ SysSelect7Case4
 	movlw	1
 	movwf	COMPORT
 	banksel	STATUS
-	call	HSERPRINT264
+	call	HSERPRINT274
 	banksel	SYSUSBTEMPBUFFER_1
 	movf	SYSUSBTEMPBUFFER_1,W
 	banksel	SERPRINTVAL
@@ -1156,7 +1156,7 @@ SysSelect7Case4
 	movlw	1
 	movwf	COMPORT
 	banksel	STATUS
-	call	HSERPRINT265
+	call	HSERPRINT275
 	movlw	1
 	banksel	HSERPRINTCRLFCOUNT
 	movwf	HSERPRINTCRLFCOUNT

@@ -1,0 +1,4 @@
+[GENERAL]
+ERRORFILE=..\greatcowbasic\errors.txt
+LOGFILE=..\greatcowbasic\Programmer.log
+

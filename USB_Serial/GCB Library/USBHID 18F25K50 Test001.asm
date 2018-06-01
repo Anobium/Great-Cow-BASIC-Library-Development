@@ -1,4 +1,4 @@
-;Program compiled by Great Cow BASIC (0.98.<<>> 2018-05-28)
+;Program compiled by Great Cow BASIC (0.98.<<>> 2018-05-30)
 ;Need help? See the GCBASIC forums at http://sourceforge.net/projects/gcbasic/forums,
 ;check the documentation or email w_cholmondeley at users dot sourceforge dot net.
 
@@ -12,93 +12,58 @@
 ;********************************************************************************
 
 ;Set aside memory locations for variables
-ADREADPORT	EQU	10
-COMPORT	EQU	11
 DELAYTEMP	EQU	0
 DELAYTEMP2	EQU	1
-GCBBUILDSTR	EQU	1901
-GCBBUILDTIMESTR	EQU	1944
-HEX	EQU	1897
-HSERPRINTCRLFCOUNT	EQU	12
-MEMDATA	EQU	13
-OUTVALUETEMP	EQU	16
-PEEK	EQU	17
-PRINTLEN	EQU	18
-READAD10	EQU	19
-READAD10_H	EQU	20
-SAVEDELAYTEMP2	EQU	21
-SAVEFSR0H	EQU	22
-SAVEFSR0L	EQU	23
-SAVEFSR1H	EQU	24
-SAVEFSR1L	EQU	25
-SAVESYSBYTETEMPA	EQU	26
-SAVESYSBYTETEMPB	EQU	27
-SAVESYSBYTETEMPX	EQU	28
-SAVESYSDIVLOOP	EQU	29
-SAVESYSSTRINGA	EQU	30
-SAVESYSSTRINGLENGTH	EQU	31
-SAVESYSTEMP1	EQU	32
-SAVESYSTEMP2	EQU	33
-SAVESYSWAITTEMPMS	EQU	34
-SAVESYSWAITTEMPMS_H	EQU	35
-SENSORVALUE1	EQU	36
-SENSORVALUE1_H	EQU	37
-SENSORVALUE2	EQU	38
-SENSORVALUE2_H	EQU	39
-SENSORVALUE3	EQU	40
-SENSORVALUE3_H	EQU	41
-SENSORVALUE4	EQU	42
-SENSORVALUE4_H	EQU	43
-SERDATA	EQU	44
-SERPRINTVAL	EQU	45
-STRINGPOINTER	EQU	46
-SYSBSR	EQU	47
+MEMDATA	EQU	10
+PEEK	EQU	11
+SAVEFSR0H	EQU	12
+SAVEFSR0L	EQU	13
+SAVEFSR1H	EQU	16
+SAVEFSR1L	EQU	17
+SAVESYSBYTETEMPA	EQU	18
+SAVESYSBYTETEMPB	EQU	19
+SAVESYSBYTETEMPX	EQU	20
+SAVESYSDIVLOOP	EQU	21
+SAVESYSSTRINGA	EQU	22
+SAVESYSSTRINGLENGTH	EQU	23
+SAVESYSTEMP1	EQU	24
+SAVESYSTEMP2	EQU	25
+STRINGPOINTER	EQU	26
+SYSBSR	EQU	27
 SYSBYTETEMPA	EQU	5
 SYSBYTETEMPB	EQU	9
 SYSBYTETEMPX	EQU	0
 SYSCALCTEMPA	EQU	5
-SYSCALCTEMPX	EQU	0
 SYSDIVLOOP	EQU	4
-SYSPRINTDATAHANDLER	EQU	48
-SYSPRINTDATAHANDLER_H	EQU	49
-SYSPRINTTEMP	EQU	50
-SYSREPEATTEMP1	EQU	51
-SYSREPEATTEMP2	EQU	52
 SYSSTATUS	EQU	15
 SYSSTRINGA	EQU	7
 SYSSTRINGA_H	EQU	8
 SYSSTRINGLENGTH	EQU	6
-SYSSTRINGPARAM1	EQU	1917
-SYSSTRINGPARAM2	EQU	1907
-SYSSTRINGTEMP	EQU	53
-SYSTEMP1	EQU	54
-SYSTEMP1_H	EQU	55
-SYSTEMP2	EQU	56
-SYSVALTEMP	EQU	57
+SYSTEMP1	EQU	28
+SYSTEMP1_H	EQU	29
+SYSTEMP2	EQU	30
 SYSW	EQU	14
-SYSWAITTEMP10US	EQU	5
 SYSWAITTEMPMS	EQU	2
 SYSWAITTEMPMS_H	EQU	3
-USBBMREQUESTTYPE	EQU	58
-USBBUFFERSTAT	EQU	59
-USBCURRBYTE	EQU	60
-USBCURRCONFIGURATION	EQU	61
-USBCURRENDPOINT	EQU	62
-USBDESCINDEX	EQU	63
-USBDESCSIZEIN	EQU	64
-USBDESCSTART	EQU	65
-USBDESCTYPE	EQU	66
-USBHASDATA	EQU	67
-USBLASTCONTROL	EQU	68
-USBNEWADDRESS	EQU	69
-USBPID	EQU	70
+USBBMREQUESTTYPE	EQU	31
+USBBUFFERSTAT	EQU	32
+USBCURRBYTE	EQU	33
+USBCURRCONFIGURATION	EQU	34
+USBCURRENDPOINT	EQU	35
+USBDESCINDEX	EQU	36
+USBDESCSIZEIN	EQU	37
+USBDESCSTART	EQU	38
+USBDESCTYPE	EQU	39
+USBHASDATA	EQU	40
+USBLASTCONTROL	EQU	41
+USBNEWADDRESS	EQU	42
+USBPID	EQU	43
 USBRAM	EQU	1024
-USBSIZE	EQU	71
-USBSTATE	EQU	72
-USBTEMPBUFFER	EQU	1927
-USBTEMPBYTE	EQU	73
+USBSIZE	EQU	44
+USBSTATE	EQU	45
+USBTEMPBUFFER	EQU	1988
+USBTEMPBYTE	EQU	46
 USBTEMPSTRING	EQU	2005
-VERSIONSTRING	EQU	1964
 
 ;********************************************************************************
 
@@ -107,16 +72,11 @@ AFSR0	EQU	4073
 AFSR0_H	EQU	4074
 MEMADR	EQU	4073
 MEMADR_H	EQU	4074
-SYSHEX_0	EQU	1897
-SYSHEX_1	EQU	1898
-SYSHEX_2	EQU	1899
-SYSREADAD10WORD	EQU	19
-SYSREADAD10WORD_H	EQU	20
-SYSUSBTEMPBUFFER_0	EQU	1927
-SYSUSBTEMPBUFFER_1	EQU	1928
-SYSUSBTEMPBUFFER_2	EQU	1929
-SYSUSBTEMPBUFFER_3	EQU	1930
-SYSUSBTEMPBUFFER_6	EQU	1933
+SYSUSBTEMPBUFFER_0	EQU	1988
+SYSUSBTEMPBUFFER_1	EQU	1989
+SYSUSBTEMPBUFFER_2	EQU	1990
+SYSUSBTEMPBUFFER_3	EQU	1991
+SYSUSBTEMPBUFFER_6	EQU	1994
 SYSUSBTEMPSTRING_0	EQU	2005
 USB_IN0_ADDR	EQU	1030
 USB_IN0_ADDR_H	EQU	1031
@@ -142,134 +102,14 @@ USB_OUT0_STAT	EQU	1024
 BASPROGRAMSTART
 ;Call initialisation routines
 	rcall	INITSYS
-	rcall	INITUSART
 	rcall	INITUSB
 ;Enable interrupts
 	bsf	INTCON,GIE,ACCESS
 	bsf	INTCON,PEIE,ACCESS
-;Automatic pin direction setting
-	bcf	TRISB,5,ACCESS
 
 ;Start of the main program
 	bcf	TRISC,6,ACCESS
-	bcf	TRISB,0,ACCESS
-	bsf	LATB,0,ACCESS
-	movlw	15
-	movwf	SysRepeatTemp1,BANKED
-SysRepeatLoop1
-	clrf	SysTemp1,BANKED
-	btfsc	PORTB,0,ACCESS
-	incf	SysTemp1,F,BANKED
-ENDIF1
-	comf	SysTemp1,F,BANKED
-	bcf	LATB,0,ACCESS
-	btfsc	SysTemp1,0,BANKED
-	bsf	LATB,0,ACCESS
-ENDIF2
-	movlw	50
-	movwf	SysWaitTempMS,ACCESS
-	clrf	SysWaitTempMS_H,ACCESS
-	rcall	Delay_MS
-	clrf	SysTemp1,BANKED
-	btfsc	PORTB,0,ACCESS
-	incf	SysTemp1,F,BANKED
-ENDIF3
-	comf	SysTemp1,F,BANKED
-	bcf	LATB,0,ACCESS
-	btfsc	SysTemp1,0,BANKED
-	bsf	LATB,0,ACCESS
-ENDIF4
-	movlw	100
-	movwf	SysWaitTempMS,ACCESS
-	clrf	SysWaitTempMS_H,ACCESS
-	rcall	Delay_MS
-	decfsz	SysRepeatTemp1,F,BANKED
-	bra	SysRepeatLoop1
-SysRepeatLoopEnd1
-	rcall	FN_GCBBUILDSTR
-	lfsr	1,VERSIONSTRING
-	clrf	SysStringLength,ACCESS
-	movlw	low StringTable3
-	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable3
-	movwf	TBLPTRH,ACCESS
-	rcall	SysReadStringPart
-	lfsr	0,GCBBUILDSTR
-	rcall	SysCopyStringPart
-	lfsr	0,VERSIONSTRING
-	movff	SysStringLength, INDF0
-	rcall	FN_GCBBUILDTIMESTR
-	lfsr	1,VERSIONSTRING
-	clrf	SysStringLength,ACCESS
-	lfsr	0,VERSIONSTRING
-	rcall	SysCopyStringPart
-	movlw	low StringTable4
-	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable4
-	movwf	TBLPTRH,ACCESS
-	rcall	SysReadStringPart
-	lfsr	0,GCBBUILDTIMESTR
-	rcall	SysCopyStringPart
-	lfsr	0,VERSIONSTRING
-	movff	SysStringLength, INDF0
-	lfsr	1,SYSSTRINGPARAM1
-	movlw	low StringTable5
-	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable5
-	movwf	TBLPTRH,ACCESS
-	rcall	SysReadString
-	movlw	low SYSSTRINGPARAM1
-	movwf	SysPRINTDATAHandler,BANKED
-	movlw	high SYSSTRINGPARAM1
-	movwf	SysPRINTDATAHandler_H,BANKED
-	movlw	1
-	movwf	COMPORT,BANKED
-	rcall	HSERPRINT266
-	movlw	low VERSIONSTRING
-	movwf	SysPRINTDATAHandler,BANKED
-	movlw	high VERSIONSTRING
-	movwf	SysPRINTDATAHandler_H,BANKED
-	movlw	1
-	movwf	COMPORT,BANKED
-	rcall	HSERPRINT266
-	movlw	1
-	movwf	HSERPRINTCRLFCOUNT,BANKED
-	movlw	1
-	movwf	COMPORT,BANKED
-	rcall	HSERPRINTCRLF
-	rcall	INITUSB
 SysDoLoop_S1
-	clrf	ADREADPORT,BANKED
-	rcall	FN_READAD1018
-	movff	SYSREADAD10WORD,SENSORVALUE1
-	movff	SYSREADAD10WORD_H,SENSORVALUE1_H
-	movlw	1
-	movwf	SysWaitTempMS,ACCESS
-	clrf	SysWaitTempMS_H,ACCESS
-	rcall	Delay_MS
-	movlw	1
-	movwf	ADREADPORT,BANKED
-	rcall	FN_READAD1018
-	movff	SYSREADAD10WORD,SENSORVALUE2
-	movff	SYSREADAD10WORD_H,SENSORVALUE2_H
-	movlw	1
-	movwf	SysWaitTempMS,ACCESS
-	clrf	SysWaitTempMS_H,ACCESS
-	rcall	Delay_MS
-	movlw	2
-	movwf	ADREADPORT,BANKED
-	rcall	FN_READAD1018
-	movff	SYSREADAD10WORD,SENSORVALUE3
-	movff	SYSREADAD10WORD_H,SENSORVALUE3_H
-	movlw	1
-	movwf	SysWaitTempMS,ACCESS
-	clrf	SysWaitTempMS_H,ACCESS
-	rcall	Delay_MS
-	movlw	3
-	movwf	ADREADPORT,BANKED
-	rcall	FN_READAD1018
-	movff	SYSREADAD10WORD,SENSORVALUE4
-	movff	SYSREADAD10WORD_H,SENSORVALUE4_H
 	bra	SysDoLoop_S1
 SysDoLoop_E1
 BASPROGRAMEND
@@ -279,40 +119,6 @@ BASPROGRAMEND
 ;********************************************************************************
 
 DESCRIPTORHANDLER
-	lfsr	1,SYSSTRINGPARAM2
-	movlw	low StringTable8
-	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable8
-	movwf	TBLPTRH,ACCESS
-	rcall	SysReadString
-	movlw	low SYSSTRINGPARAM2
-	movwf	SysPRINTDATAHandler,BANKED
-	movlw	high SYSSTRINGPARAM2
-	movwf	SysPRINTDATAHandler_H,BANKED
-	movlw	1
-	movwf	COMPORT,BANKED
-	rcall	HSERPRINT266
-	movff	USBDESCTYPE,SERPRINTVAL
-	movlw	1
-	movwf	COMPORT,BANKED
-	rcall	HSERPRINT267
-	movlw	1
-	movwf	HSERPRINTCRLFCOUNT,BANKED
-	movlw	1
-	movwf	COMPORT,BANKED
-	bra	HSERPRINTCRLF
-
-;********************************************************************************
-
-Delay_10US
-D10US_START
-	movlw	39
-	movwf	DELAYTEMP,ACCESS
-DelayUS0
-	decfsz	DELAYTEMP,F,ACCESS
-	bra	DelayUS0
-	decfsz	SysWaitTemp10US, F,ACCESS
-	bra	D10US_START
 	return
 
 ;********************************************************************************
@@ -339,246 +145,6 @@ DMS_INNER
 ;********************************************************************************
 
 ERRORHANDLER
-	lfsr	1,SYSSTRINGPARAM2
-	movlw	low StringTable6
-	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable6
-	movwf	TBLPTRH,ACCESS
-	rcall	SysReadString
-	movlw	low SYSSTRINGPARAM2
-	movwf	SysPRINTDATAHandler,BANKED
-	movlw	high SYSSTRINGPARAM2
-	movwf	SysPRINTDATAHandler_H,BANKED
-	movlw	1
-	movwf	COMPORT,BANKED
-	rcall	HSERPRINT266
-	movff	UEIR,SYSVALTEMP
-	rcall	FN_HEX
-	movlw	low HEX
-	movwf	SysPRINTDATAHandler,BANKED
-	movlw	high HEX
-	movwf	SysPRINTDATAHandler_H,BANKED
-	movlw	1
-	movwf	COMPORT,BANKED
-	rcall	HSERPRINT266
-	movlw	1
-	movwf	HSERPRINTCRLFCOUNT,BANKED
-	movlw	1
-	movwf	COMPORT,BANKED
-	bra	HSERPRINTCRLF
-
-;********************************************************************************
-
-FN_GCBBUILDSTR
-	lfsr	1,GCBBUILDSTR
-	movlw	low StringTable20
-	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable20
-	movwf	TBLPTRH,ACCESS
-	bra	SysReadString
-
-;********************************************************************************
-
-FN_GCBBUILDTIMESTR
-	lfsr	1,GCBBUILDTIMESTR
-	movlw	low StringTable21
-	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable21
-	movwf	TBLPTRH,ACCESS
-	bra	SysReadString
-
-;********************************************************************************
-
-FN_HEX
-	movlw	2
-	banksel	SYSHEX_0
-	movwf	SYSHEX_0,BANKED
-	movlw	15
-	banksel	SYSVALTEMP
-	andwf	SYSVALTEMP,W,BANKED
-	movwf	SYSSTRINGTEMP,BANKED
-	sublw	9
-	btfsc	STATUS, C,ACCESS
-	bra	ENDIF44
-	movlw	7
-	addwf	SYSSTRINGTEMP,F,BANKED
-ENDIF44
-	movlw	48
-	addwf	SYSSTRINGTEMP,W,BANKED
-	banksel	SYSHEX_2
-	movwf	SYSHEX_2,BANKED
-	banksel	SYSSTRINGTEMP
-	clrf	SYSSTRINGTEMP,BANKED
-SysForLoop7
-	incf	SYSSTRINGTEMP,F,BANKED
-	rrcf	SYSVALTEMP,F,BANKED
-	movlw	4
-	subwf	SYSSTRINGTEMP,W,BANKED
-	btfss	STATUS, C,ACCESS
-	bra	SysForLoop7
-ENDIF45
-SysForLoopEnd7
-	movlw	15
-	andwf	SYSVALTEMP,W,BANKED
-	movwf	SYSSTRINGTEMP,BANKED
-	sublw	9
-	btfsc	STATUS, C,ACCESS
-	bra	ENDIF46
-	movlw	7
-	addwf	SYSSTRINGTEMP,F,BANKED
-ENDIF46
-	movlw	48
-	addwf	SYSSTRINGTEMP,W,BANKED
-	banksel	SYSHEX_1
-	movwf	SYSHEX_1,BANKED
-	banksel	0
-	return
-
-;********************************************************************************
-
-;Overloaded signature: STRING:byte:
-HSERPRINT266
-	movff	SysPRINTDATAHandler,AFSR0
-	movff	SysPRINTDATAHandler_H,AFSR0_H
-	movff	INDF0,PRINTLEN
-	movf	PRINTLEN,F,BANKED
-	btfsc	STATUS, Z,ACCESS
-	bra	ENDIF40
-	clrf	SYSPRINTTEMP,BANKED
-	movlw	1
-	subwf	PRINTLEN,W,BANKED
-	btfss	STATUS, C,ACCESS
-	bra	SysForLoopEnd6
-ENDIF41
-SysForLoop6
-	incf	SYSPRINTTEMP,F,BANKED
-	movf	SYSPRINTTEMP,W,BANKED
-	addwf	SysPRINTDATAHandler,W,BANKED
-	movwf	AFSR0,ACCESS
-	movlw	0
-	addwfc	SysPRINTDATAHandler_H,W,BANKED
-	movwf	AFSR0_H,ACCESS
-	movff	INDF0,SERDATA
-	rcall	HSERSEND
-	movlw	1
-	movwf	SysWaitTempMS,ACCESS
-	clrf	SysWaitTempMS_H,ACCESS
-	rcall	Delay_MS
-	movf	PRINTLEN,W,BANKED
-	subwf	SYSPRINTTEMP,W,BANKED
-	btfss	STATUS, C,ACCESS
-	bra	SysForLoop6
-ENDIF42
-SysForLoopEnd6
-ENDIF40
-	return
-
-;********************************************************************************
-
-;Overloaded signature: BYTE:byte:
-HSERPRINT267
-	clrf	OUTVALUETEMP,BANKED
-	movlw	100
-	subwf	SERPRINTVAL,W,BANKED
-	btfss	STATUS, C,ACCESS
-	bra	ENDIF47
-	movff	SERPRINTVAL,SysBYTETempA
-	movlw	100
-	movwf	SysBYTETempB,ACCESS
-	rcall	SysDivSub
-	movff	SysBYTETempA,OUTVALUETEMP
-	movff	SYSCALCTEMPX,SERPRINTVAL
-	movlw	48
-	addwf	OUTVALUETEMP,W,BANKED
-	movwf	SERDATA,BANKED
-	rcall	HSERSEND
-	movlw	1
-	movwf	SysWaitTempMS,ACCESS
-	clrf	SysWaitTempMS_H,ACCESS
-	rcall	Delay_MS
-ENDIF47
-	movff	OUTVALUETEMP,SysBYTETempB
-	clrf	SysBYTETempA,ACCESS
-	rcall	SysCompLessThan
-	movff	SysByteTempX,SysTemp2
-	movff	SERPRINTVAL,SysBYTETempA
-	movlw	10
-	movwf	SysBYTETempB,ACCESS
-	rcall	SysCompLessThan
-	comf	SysByteTempX,F,ACCESS
-	movf	SysTemp2,W,BANKED
-	iorwf	SysByteTempX,W,ACCESS
-	movwf	SysTemp1,BANKED
-	btfss	SysTemp1,0,BANKED
-	bra	ENDIF48
-	movff	SERPRINTVAL,SysBYTETempA
-	movlw	10
-	movwf	SysBYTETempB,ACCESS
-	rcall	SysDivSub
-	movff	SysBYTETempA,OUTVALUETEMP
-	movff	SYSCALCTEMPX,SERPRINTVAL
-	movlw	48
-	addwf	OUTVALUETEMP,W,BANKED
-	movwf	SERDATA,BANKED
-	rcall	HSERSEND
-	movlw	1
-	movwf	SysWaitTempMS,ACCESS
-	clrf	SysWaitTempMS_H,ACCESS
-	rcall	Delay_MS
-ENDIF48
-	movlw	48
-	addwf	SERPRINTVAL,W,BANKED
-	movwf	SERDATA,BANKED
-	rcall	HSERSEND
-	movlw	1
-	movwf	SysWaitTempMS,ACCESS
-	clrf	SysWaitTempMS_H,ACCESS
-	bra	Delay_MS
-
-;********************************************************************************
-
-HSERPRINTCRLF
-	movff	HSERPRINTCRLFCOUNT,SysRepeatTemp2
-	movf	SYSREPEATTEMP2,F,BANKED
-	btfsc	STATUS, Z,ACCESS
-	bra	SysRepeatLoopEnd2
-SysRepeatLoop2
-	movlw	13
-	movwf	SERDATA,BANKED
-	rcall	HSERSEND
-	movlw	1
-	movwf	SysWaitTempMS,ACCESS
-	clrf	SysWaitTempMS_H,ACCESS
-	rcall	Delay_MS
-	movlw	10
-	movwf	SERDATA,BANKED
-	rcall	HSERSEND
-	movlw	1
-	movwf	SysWaitTempMS,ACCESS
-	clrf	SysWaitTempMS_H,ACCESS
-	rcall	Delay_MS
-	decfsz	SysRepeatTemp2,F,BANKED
-	bra	SysRepeatLoop2
-SysRepeatLoopEnd2
-	return
-
-;********************************************************************************
-
-HSERSEND
-	decf	COMPORT,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	ENDIF39
-SysWaitLoop4
-	btfss	PIR1,TXIF,ACCESS
-	bra	SysWaitLoop4
-SysWaitLoop5
-	btfss	PIR1,TX1IF,ACCESS
-	bra	SysWaitLoop5
-	movff	SERDATA,TXREG
-	return
-	movff	SERDATA,TXREG1
-	return
-ENDIF39
 	return
 
 ;********************************************************************************
@@ -591,9 +157,9 @@ INITSYS
 	bsf	OSCCON,IRCF0,ACCESS
 	bsf	OSCTUNE,SPLLMULT,ACCESS
 	bsf	OSCCON2,PLLEN,ACCESS
-SysWaitLoop3
+SysWaitLoop2
 	btfss	OSCCON2,PLLRDY,ACCESS
-	bra	SysWaitLoop3
+	bra	SysWaitLoop2
 	clrf	BSR,ACCESS
 	clrf	TBLPTRU,ACCESS
 	bcf	ADCON2,ADFM,ACCESS
@@ -609,22 +175,6 @@ SysWaitLoop3
 	clrf	PORTC,ACCESS
 	clrf	PORTE,ACCESS
 	banksel	0
-	return
-
-;********************************************************************************
-
-INITUSART
-	movlw	1
-	movwf	COMPORT,BANKED
-	movlw	103
-	movwf	SPBRG,ACCESS
-	clrf	SPBRGH,ACCESS
-	bsf	BAUDCON,BRG16,ACCESS
-	bsf	TXSTA,BRGH,ACCESS
-	bcf	TXSTA,SYNC,ACCESS
-	bsf	RCSTA,SPEN,ACCESS
-	bsf	RCSTA,CREN,ACCESS
-	bsf	TXSTA,TXEN,ACCESS
 	return
 
 ;********************************************************************************
@@ -696,14 +246,11 @@ Interrupt
 	movff	FSR0H,SaveFSR0H
 	movff	SysByteTempX,SaveSysByteTempX
 	movff	SysDivLoop,SaveSysDivLoop
+	movff	SysStringA,SaveSysStringA
 	movff	FSR1L,SaveFSR1L
 	movff	FSR1H,SaveFSR1H
-	movff	SysStringLength,SaveSysStringLength
-	movff	SysWaitTempMS,SaveSysWaitTempMS
-	movff	SysWaitTempMS_H,SaveSysWaitTempMS_H
-	movff	DelayTemp2,SaveDelayTemp2
 	movff	SysTemp2,SaveSysTemp2
-	movff	SysStringA,SaveSysStringA
+	movff	SysStringLength,SaveSysStringLength
 ;On Interrupt handlers
 	btfss	PIE3,USBIE,ACCESS
 	bra	NotUSBIF
@@ -724,14 +271,11 @@ INTERRUPTDONE
 	movff	SaveFSR0H,FSR0H
 	movff	SaveSysByteTempX,SysByteTempX
 	movff	SaveSysDivLoop,SysDivLoop
+	movff	SaveSysStringA,SysStringA
 	movff	SaveFSR1L,FSR1L
 	movff	SaveFSR1H,FSR1H
-	movff	SaveSysStringLength,SysStringLength
-	movff	SaveSysWaitTempMS,SysWaitTempMS
-	movff	SaveSysWaitTempMS_H,SysWaitTempMS_H
-	movff	SaveDelayTemp2,DelayTemp2
 	movff	SaveSysTemp2,SysTemp2
-	movff	SaveSysStringA,SysStringA
+	movff	SaveSysStringLength,SysStringLength
 	movff	SysW,WREG
 	movff	SysSTATUS,STATUS
 	movff	SysBSR,BSR
@@ -753,359 +297,7 @@ POKE
 
 ;********************************************************************************
 
-;Overloaded signature: BYTE:
-FN_READAD1018
-	bsf	ADCON2,ADFM,ACCESS
-SysSelect6Case1
-	movf	ADREADPORT,F,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case2
-	banksel	ANSELA
-	bsf	ANSELA,0,BANKED
-	bra	SysSelectEnd6
-SysSelect6Case2
-	decf	ADREADPORT,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case3
-	banksel	ANSELA
-	bsf	ANSELA,1,BANKED
-	bra	SysSelectEnd6
-SysSelect6Case3
-	movlw	2
-	subwf	ADREADPORT,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case4
-	banksel	ANSELA
-	bsf	ANSELA,2,BANKED
-	bra	SysSelectEnd6
-SysSelect6Case4
-	movlw	3
-	subwf	ADREADPORT,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case5
-	banksel	ANSELA
-	bsf	ANSELA,3,BANKED
-	bra	SysSelectEnd6
-SysSelect6Case5
-	movlw	4
-	subwf	ADREADPORT,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case6
-	banksel	ANSELA
-	bsf	ANSELA,5,BANKED
-	bra	SysSelectEnd6
-SysSelect6Case6
-	movlw	12
-	subwf	ADREADPORT,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case7
-	banksel	ANSELB
-	bsf	ANSELB,0,BANKED
-	bra	SysSelectEnd6
-SysSelect6Case7
-	movlw	10
-	subwf	ADREADPORT,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case8
-	banksel	ANSELB
-	bsf	ANSELB,1,BANKED
-	bra	SysSelectEnd6
-SysSelect6Case8
-	movlw	8
-	subwf	ADREADPORT,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case9
-	banksel	ANSELB
-	bsf	ANSELB,2,BANKED
-	bra	SysSelectEnd6
-SysSelect6Case9
-	movlw	9
-	subwf	ADREADPORT,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case10
-	banksel	ANSELB
-	bsf	ANSELB,3,BANKED
-	bra	SysSelectEnd6
-SysSelect6Case10
-	movlw	11
-	subwf	ADREADPORT,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case11
-	banksel	ANSELB
-	bsf	ANSELB,4,BANKED
-	bra	SysSelectEnd6
-SysSelect6Case11
-	movlw	13
-	subwf	ADREADPORT,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case12
-	banksel	ANSELB
-	bsf	ANSELB,5,BANKED
-	bra	SysSelectEnd6
-SysSelect6Case12
-	movlw	14
-	subwf	ADREADPORT,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case13
-	banksel	ANSELC
-	bsf	ANSELC,2,BANKED
-	bra	SysSelectEnd6
-SysSelect6Case13
-	movlw	15
-	subwf	ADREADPORT,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case14
-	banksel	ANSELC
-	bsf	ANSELC,3,BANKED
-	bra	SysSelectEnd6
-SysSelect6Case14
-	movlw	16
-	subwf	ADREADPORT,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case15
-	banksel	ANSELC
-	bsf	ANSELC,4,BANKED
-	bra	SysSelectEnd6
-SysSelect6Case15
-	movlw	17
-	subwf	ADREADPORT,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case16
-	banksel	ANSELC
-	bsf	ANSELC,5,BANKED
-	bra	SysSelectEnd6
-SysSelect6Case16
-	movlw	18
-	subwf	ADREADPORT,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case17
-	banksel	ANSELC
-	bsf	ANSELC,6,BANKED
-	bra	SysSelectEnd6
-SysSelect6Case17
-	movlw	19
-	subwf	ADREADPORT,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelectEnd6
-	banksel	ANSELC
-	bsf	ANSELC,7,BANKED
-SysSelectEnd6
-	bcf	ADCON2,ADCS2,ACCESS
-	bsf	ADCON2,ADCS1,ACCESS
-	bcf	ADCON2,ADCS0,ACCESS
-	bcf	ADCON0,CHS0,ACCESS
-	bcf	ADCON0,CHS1,ACCESS
-	bcf	ADCON0,CHS2,ACCESS
-	bcf	ADCON0,CHS3,ACCESS
-	bcf	ADCON0,CHS4,ACCESS
-	banksel	ADREADPORT
-	btfsc	ADREADPORT,0,BANKED
-	bsf	ADCON0,CHS0,ACCESS
-ENDIF34
-	btfsc	ADREADPORT,1,BANKED
-	bsf	ADCON0,CHS1,ACCESS
-ENDIF35
-	btfsc	ADREADPORT,2,BANKED
-	bsf	ADCON0,CHS2,ACCESS
-ENDIF36
-	btfsc	ADREADPORT,3,BANKED
-	bsf	ADCON0,CHS3,ACCESS
-ENDIF37
-	btfsc	ADREADPORT,4,BANKED
-	bsf	ADCON0,CHS4,ACCESS
-ENDIF38
-	bsf	ADCON0,ADON,ACCESS
-	movlw	2
-	movwf	SysWaitTemp10US,ACCESS
-	rcall	Delay_10US
-	bsf	ADCON0,GO_NOT_DONE,ACCESS
-	nop
-SysWaitLoop2
-	btfsc	ADCON0,GO_NOT_DONE,ACCESS
-	bra	SysWaitLoop2
-	bcf	ADCON0,ADON,ACCESS
-	banksel	ANSELA
-	clrf	ANSELA,BANKED
-	clrf	ANSELB,BANKED
-	clrf	ANSELC,BANKED
-	movff	ADRESL,READAD10
-	banksel	READAD10_H
-	clrf	READAD10_H,BANKED
-	movff	ADRESH,READAD10_H
-	bcf	ADCON2,ADFM,ACCESS
-	return
-
-;********************************************************************************
-
 SETUPHANDLER
-SysSelect7Case1
-	movlw	131
-	banksel	SYSUSBTEMPBUFFER_1
-	subwf	SYSUSBTEMPBUFFER_1,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect7Case2
-	bsf	LATB,5,ACCESS
-	banksel	0
-	rcall	USBSENDDATA1ACK
-	bra	SysSelectEnd7
-SysSelect7Case2
-	movlw	132
-	subwf	SYSUSBTEMPBUFFER_1,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect7Case3
-	bcf	LATB,5,ACCESS
-	banksel	0
-	rcall	USBSENDDATA1ACK
-	bra	SysSelectEnd7
-SysSelect7Case3
-	movlw	133
-	subwf	SYSUSBTEMPBUFFER_1,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect7Case4
-	movlw	8
-	banksel	USB_IN0_CNT
-	movwf	USB_IN0_CNT,BANKED
-	movff	USB_IN0_ADDR,MEMADR
-	movff	USB_IN0_ADDR_H,MEMADR_H
-	movff	SENSORVALUE1,MEMDATA
-	banksel	0
-	rcall	POKE
-	movlw	1
-	banksel	USB_IN0_ADDR
-	addwf	USB_IN0_ADDR,W,BANKED
-	movwf	MEMADR,ACCESS
-	movlw	0
-	addwfc	USB_IN0_ADDR_H,W,BANKED
-	movwf	MEMADR_H,ACCESS
-	movff	SENSORVALUE1_H,MEMDATA
-	banksel	0
-	rcall	POKE
-	movlw	2
-	banksel	USB_IN0_ADDR
-	addwf	USB_IN0_ADDR,W,BANKED
-	movwf	MEMADR,ACCESS
-	movlw	0
-	addwfc	USB_IN0_ADDR_H,W,BANKED
-	movwf	MEMADR_H,ACCESS
-	movff	SENSORVALUE2,MEMDATA
-	banksel	0
-	rcall	POKE
-	movlw	3
-	banksel	USB_IN0_ADDR
-	addwf	USB_IN0_ADDR,W,BANKED
-	movwf	MEMADR,ACCESS
-	movlw	0
-	addwfc	USB_IN0_ADDR_H,W,BANKED
-	movwf	MEMADR_H,ACCESS
-	movff	SENSORVALUE2_H,MEMDATA
-	banksel	0
-	rcall	POKE
-	movlw	4
-	banksel	USB_IN0_ADDR
-	addwf	USB_IN0_ADDR,W,BANKED
-	movwf	MEMADR,ACCESS
-	movlw	0
-	addwfc	USB_IN0_ADDR_H,W,BANKED
-	movwf	MEMADR_H,ACCESS
-	movff	SENSORVALUE3,MEMDATA
-	banksel	0
-	rcall	POKE
-	movlw	5
-	banksel	USB_IN0_ADDR
-	addwf	USB_IN0_ADDR,W,BANKED
-	movwf	MEMADR,ACCESS
-	movlw	0
-	addwfc	USB_IN0_ADDR_H,W,BANKED
-	movwf	MEMADR_H,ACCESS
-	movff	SENSORVALUE3_H,MEMDATA
-	banksel	0
-	rcall	POKE
-	movlw	6
-	banksel	USB_IN0_ADDR
-	addwf	USB_IN0_ADDR,W,BANKED
-	movwf	MEMADR,ACCESS
-	movlw	0
-	addwfc	USB_IN0_ADDR_H,W,BANKED
-	movwf	MEMADR_H,ACCESS
-	movff	SENSORVALUE4,MEMDATA
-	banksel	0
-	rcall	POKE
-	movlw	7
-	banksel	USB_IN0_ADDR
-	addwf	USB_IN0_ADDR,W,BANKED
-	movwf	MEMADR,ACCESS
-	movlw	0
-	addwfc	USB_IN0_ADDR_H,W,BANKED
-	movwf	MEMADR_H,ACCESS
-	movff	SENSORVALUE4_H,MEMDATA
-	banksel	0
-	rcall	POKE
-	banksel	USB_IN0_STAT
-	btfss	USB_IN0_STAT,6,BANKED
-	bra	ELSE43_1
-	movlw	136
-	movwf	USB_IN0_STAT,BANKED
-	bra	ENDIF43
-ELSE43_1
-	movlw	200
-	movwf	USB_IN0_STAT,BANKED
-ENDIF43
-	bra	SysSelectEnd7
-SysSelect7Case4
-	lfsr	1,SYSSTRINGPARAM2
-	movlw	low StringTable7
-	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable7
-	movwf	TBLPTRH,ACCESS
-	banksel	0
-	rcall	SysReadString
-	movlw	low SYSSTRINGPARAM2
-	movwf	SysPRINTDATAHandler,BANKED
-	movlw	high SYSSTRINGPARAM2
-	movwf	SysPRINTDATAHandler_H,BANKED
-	movlw	1
-	movwf	COMPORT,BANKED
-	rcall	HSERPRINT266
-	movff	SYSUSBTEMPBUFFER_1,SERPRINTVAL
-	movlw	1
-	movwf	COMPORT,BANKED
-	rcall	HSERPRINT267
-	movlw	1
-	movwf	HSERPRINTCRLFCOUNT,BANKED
-	movlw	1
-	movwf	COMPORT,BANKED
-	rcall	HSERPRINTCRLF
-SysSelectEnd7
-	banksel	0
-	return
-
-;********************************************************************************
-
-SYSCOMPLESSTHAN
-	setf	SYSBYTETEMPX,ACCESS
-	movf	SYSBYTETEMPB, W,ACCESS
-	cpfslt	SYSBYTETEMPA,ACCESS
-	clrf	SYSBYTETEMPX,ACCESS
-	return
-
-;********************************************************************************
-
-SYSCOPYSTRING
-	movff	INDF0, SYSCALCTEMPA
-	movff	SYSCALCTEMPA, INDF1
-	bra	SYSCOPYSTRINGCHECK
-SYSCOPYSTRINGPART
-	movf	INDF0, W,ACCESS
-	movwf	SYSCALCTEMPA,ACCESS
-	addwf	SYSSTRINGLENGTH, F,ACCESS
-SYSCOPYSTRINGCHECK
-	movf	SYSCALCTEMPA,F,ACCESS
-	btfsc	STATUS,Z,ACCESS
-	return
-SYSSTRINGCOPY
-	movff	PREINC0, PREINC1
-	decfsz	SYSCALCTEMPA, F,ACCESS
-	bra	SYSSTRINGCOPY
 	return
 
 ;********************************************************************************
@@ -1165,44 +357,12 @@ StringTable1
 	db	17,71,67,66,65,83,73,67,32,85,83,66,32,84,101,115,116,58
 
 
-StringTable3
-	db	5,66,117,105,108,100
-
-
-StringTable4
-	db	1,64
-
-
-StringTable5
-	db	9,85,83,66,32,67,71,66,32,32
-
-
-StringTable6
-	db	1,69
-
-
-StringTable7
-	db	4,82,101,113,32
-
-
-StringTable8
-	db	5,68,101,115,99,32
-
-
-StringTable9
+StringTable2
 	db	9,71,114,101,97,116,32,67,111,119
 
 
-StringTable13
+StringTable6
 	db	0
-
-
-StringTable20
-	db	2,53,57
-
-
-StringTable21
-	db	19,48,53,45,50,56,45,50,48,49,56,32,49,54,58,51,54,58,52,52
 
 
 ;********************************************************************************
@@ -1266,7 +426,7 @@ TableUSBDEVICEQUALDESCRIPTOR
 
 USBINTERRUPTHANDLER
 	btfss	UIR,URSTIF,ACCESS
-	bra	ENDIF5
+	bra	ENDIF2
 	movlw	8
 	banksel	USB_OUT0_STAT
 	movwf	USB_OUT0_STAT,BANKED
@@ -1309,20 +469,20 @@ SysWaitLoop1
 	movlw	1
 	movwf	USBSTATE,BANKED
 	clrf	USBCURRCONFIGURATION,BANKED
-ENDIF5
+ENDIF2
 	btfss	UIR,UERRIF,ACCESS
-	bra	ENDIF6
+	bra	ENDIF3
 	rcall	ERRORHANDLER
 	clrf	UEIR,ACCESS
 	bcf	UIR,UERRIF,ACCESS
-ENDIF6
+ENDIF3
 	btfss	UIR,ACTVIF,ACCESS
-	bra	ENDIF7
+	bra	ENDIF4
 	bcf	UCON,SUSPND,ACCESS
 	bcf	UIR,ACTVIF,ACCESS
-ENDIF7
+ENDIF4
 	btfss	UIR,TRNIF,ACCESS
-	bra	ENDIF8
+	bra	ENDIF5
 	movlw	120
 	andwf	USTAT,W,ACCESS
 	movwf	SysTemp1,BANKED
@@ -1332,14 +492,14 @@ ENDIF7
 	rcall	SysDivSub
 	movff	SysBYTETempA,USBCURRENDPOINT
 	btfss	USTAT,DIR,ACCESS
-	bra	ELSE12_1
+	bra	ELSE9_1
 	movff	USB_IN0_STAT,USBBUFFERSTAT
-	bra	ENDIF12
-ELSE12_1
+	bra	ENDIF9
+ELSE9_1
 	movff	USB_OUT0_STAT,USBBUFFERSTAT
 	banksel	USB_OUT0_STAT
 	bcf	USB_OUT0_STAT,7,BANKED
-ENDIF12
+ENDIF9
 	movlw	60
 	banksel	USBBUFFERSTAT
 	andwf	USBBUFFERSTAT,W,BANKED
@@ -1411,7 +571,7 @@ SysForLoop1
 	subwf	USBCURRBYTE,W,BANKED
 	btfss	STATUS, C,ACCESS
 	bra	SysForLoop1
-ENDIF13
+ENDIF10
 SysForLoopEnd1
 	movlw	8
 	banksel	USB_IN0_STAT
@@ -1428,16 +588,16 @@ SysSelectEnd1
 	banksel	USBHASDATA
 	setf	USBHASDATA,BANKED
 	bcf	UIR,TRNIF,ACCESS
-ENDIF8
+ENDIF5
 	btfsc	UIR,IDLEIF,ACCESS
 	bcf	UIR,IDLEIF,ACCESS
-ENDIF9
+ENDIF6
 	btfsc	UIR,STALLIF,ACCESS
 	bcf	UIR,STALLIF,ACCESS
-ENDIF10
+ENDIF7
 	btfsc	UIR,SOFIF,ACCESS
 	bcf	UIR,SOFIF,ACCESS
-ENDIF11
+ENDIF8
 	return
 
 ;********************************************************************************
@@ -1451,7 +611,7 @@ USBPROCESSSETUP
 	bcf	UCON,PKTDIS,ACCESS
 	movf	USBBMREQUESTTYPE,F,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	ELSE14_1
+	bra	ELSE11_1
 	setf	USBLASTCONTROL,BANKED
 SysSelect3Case1
 	movlw	5
@@ -1488,24 +648,24 @@ SysSelect3Case3
 	banksel	USBCURRCONFIGURATION
 	movf	USBCURRCONFIGURATION,F,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	ELSE15_1
+	bra	ELSE12_1
 	movlw	2
 	movwf	USBSTATE,BANKED
-	bra	ENDIF15
-ELSE15_1
+	bra	ENDIF12
+ELSE12_1
 	movlw	3
 	movwf	USBSTATE,BANKED
-ENDIF15
+ENDIF12
 	rcall	USBSENDDATA1ACK
 	bra	SysSelectEnd3
 SysSelect3Case4
 	banksel	0
 	rcall	SETUPHANDLER
 SysSelectEnd3
-	bra	ENDIF14
-ELSE14_1
+	bra	ENDIF11
+ELSE11_1
 	rcall	SETUPHANDLER
-ENDIF14
+ENDIF11
 	return
 
 ;********************************************************************************
@@ -1533,24 +693,24 @@ SysSelect4Case1
 	subwf	USBDESCSIZEIN,W,BANKED
 	btfss	STATUS, C,ACCESS
 	movff	USBDESCSIZEIN,USBSIZE
-ENDIF16
+ENDIF13
 	movf	USBSIZE,W,BANKED
 	subwf	USBDESCSTART,W,BANKED
 	btfss	STATUS, C,ACCESS
-	bra	ELSE17_1
+	bra	ELSE14_1
 	clrf	USBSIZE,BANKED
 	setf	USBLASTCONTROL,BANKED
-	bra	ENDIF17
-ELSE17_1
+	bra	ENDIF14
+ELSE14_1
 	movf	USBDESCSTART,W,BANKED
 	subwf	USBSIZE,F,BANKED
-ENDIF17
+ENDIF14
 	clrf	USBCURRBYTE,BANKED
 	movlw	1
 	subwf	USBSIZE,W,BANKED
 	btfss	STATUS, C,ACCESS
 	bra	SysForLoopEnd2
-ENDIF18
+ENDIF15
 SysForLoop2
 	incf	USBCURRBYTE,F,BANKED
 	movf	USBDESCSTART,W,BANKED
@@ -1573,7 +733,7 @@ SysForLoop2
 	subwf	USBCURRBYTE,W,BANKED
 	btfss	STATUS, C,ACCESS
 	bra	SysForLoop2
-ENDIF19
+ENDIF16
 SysForLoopEnd2
 	movff	USBSIZE,USB_IN0_CNT
 	movf	USBSIZE,W,BANKED
@@ -1589,24 +749,24 @@ SysSelect4Case2
 	subwf	USBDESCSIZEIN,W,BANKED
 	btfss	STATUS, C,ACCESS
 	movff	USBDESCSIZEIN,USBSIZE
-ENDIF20
+ENDIF17
 	movf	USBSIZE,W,BANKED
 	subwf	USBDESCSTART,W,BANKED
 	btfss	STATUS, C,ACCESS
-	bra	ELSE21_1
+	bra	ELSE18_1
 	clrf	USBSIZE,BANKED
 	setf	USBLASTCONTROL,BANKED
-	bra	ENDIF21
-ELSE21_1
+	bra	ENDIF18
+ELSE18_1
 	movf	USBDESCSTART,W,BANKED
 	subwf	USBSIZE,F,BANKED
-ENDIF21
+ENDIF18
 	clrf	USBCURRBYTE,BANKED
 	movlw	1
 	subwf	USBSIZE,W,BANKED
 	btfss	STATUS, C,ACCESS
 	bra	SysForLoopEnd3
-ENDIF22
+ENDIF19
 SysForLoop3
 	incf	USBCURRBYTE,F,BANKED
 	movf	USBDESCSTART,W,BANKED
@@ -1629,7 +789,7 @@ SysForLoop3
 	subwf	USBCURRBYTE,W,BANKED
 	btfss	STATUS, C,ACCESS
 	bra	SysForLoop3
-ENDIF23
+ENDIF20
 SysForLoopEnd3
 	movff	USBSIZE,USB_IN0_CNT
 	movf	USBSIZE,W,BANKED
@@ -1645,24 +805,24 @@ SysSelect4Case3
 	subwf	USBDESCSIZEIN,W,BANKED
 	btfss	STATUS, C,ACCESS
 	movff	USBDESCSIZEIN,USBSIZE
-ENDIF24
+ENDIF21
 	movf	USBSIZE,W,BANKED
 	subwf	USBDESCSTART,W,BANKED
 	btfss	STATUS, C,ACCESS
-	bra	ELSE25_1
+	bra	ELSE22_1
 	clrf	USBSIZE,BANKED
 	setf	USBLASTCONTROL,BANKED
-	bra	ENDIF25
-ELSE25_1
+	bra	ENDIF22
+ELSE22_1
 	movf	USBDESCSTART,W,BANKED
 	subwf	USBSIZE,F,BANKED
-ENDIF25
+ENDIF22
 	clrf	USBCURRBYTE,BANKED
 	movlw	1
 	subwf	USBSIZE,W,BANKED
 	btfss	STATUS, C,ACCESS
 	bra	SysForLoopEnd4
-ENDIF26
+ENDIF23
 SysForLoop4
 	incf	USBCURRBYTE,F,BANKED
 	movf	USBDESCSTART,W,BANKED
@@ -1685,7 +845,7 @@ SysForLoop4
 	subwf	USBCURRBYTE,W,BANKED
 	btfss	STATUS, C,ACCESS
 	bra	SysForLoop4
-ENDIF27
+ENDIF24
 SysForLoopEnd4
 	movff	USBSIZE,USB_IN0_CNT
 	movf	USBSIZE,W,BANKED
@@ -1698,7 +858,7 @@ SysSelect4Case4
 	bra	SysSelect4Case5
 	movf	USBDESCINDEX,F,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	ELSE28_1
+	bra	ELSE25_1
 	setf	USBLASTCONTROL,BANKED
 	movff	USB_IN0_ADDR,MEMADR
 	movff	USB_IN0_ADDR_H,MEMADR_H
@@ -1741,16 +901,16 @@ SysSelect4Case4
 	movlw	4
 	banksel	USB_IN0_CNT
 	movwf	USB_IN0_CNT,BANKED
-	bra	ENDIF28
-ELSE28_1
+	bra	ENDIF25
+ELSE25_1
 SysSelect5Case1
 	decf	USBDESCINDEX,W,BANKED
 	btfss	STATUS, Z,ACCESS
 	bra	SysSelect5Case2
 	lfsr	1,USBTEMPSTRING
-	movlw	low StringTable9
+	movlw	low StringTable2
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable9
+	movlw	high StringTable2
 	movwf	TBLPTRH,ACCESS
 	rcall	SysReadString
 	bra	SysSelectEnd5
@@ -1768,9 +928,9 @@ SysSelect5Case2
 	bra	SysSelectEnd5
 SysSelect5Case3
 	lfsr	1,USBTEMPSTRING
-	movlw	low StringTable13
+	movlw	low StringTable6
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable13
+	movlw	high StringTable6
 	movwf	TBLPTRH,ACCESS
 	rcall	SysReadString
 SysSelectEnd5
@@ -1788,17 +948,17 @@ SysSelectEnd5
 	banksel	USB_IN0_CNT
 	subwf	USB_IN0_CNT,W,BANKED
 	btfsc	STATUS, C,ACCESS
-	bra	ELSE30_1
+	bra	ELSE27_1
 	clrf	USB_IN0_CNT,BANKED
 	banksel	USBLASTCONTROL
 	setf	USBLASTCONTROL,BANKED
-	bra	ENDIF30
-ELSE30_1
+	bra	ENDIF27
+ELSE27_1
 	banksel	USBDESCSTART
 	movf	USBDESCSTART,W,BANKED
 	banksel	USB_IN0_CNT
 	subwf	USB_IN0_CNT,F,BANKED
-ENDIF30
+ENDIF27
 	movff	USB_IN0_ADDR,MEMADR
 	movff	USB_IN0_ADDR_H,MEMADR_H
 	movff	USB_IN0_CNT,MEMDATA
@@ -1821,7 +981,7 @@ ENDIF30
 	subwf	SYSUSBTEMPSTRING_0,W,BANKED
 	btfss	STATUS, C,ACCESS
 	bra	SysForLoopEnd5
-ENDIF31
+ENDIF28
 SysForLoop5
 	banksel	USBCURRBYTE
 	incf	USBCURRBYTE,F,BANKED
@@ -1864,7 +1024,7 @@ SysForLoop5
 	subwf	USBCURRBYTE,W,BANKED
 	btfss	STATUS, C,ACCESS
 	bra	SysForLoop5
-ENDIF32
+ENDIF29
 SysForLoopEnd5
 	banksel	USB_IN0_CNT
 	movf	USB_IN0_CNT,W,BANKED
@@ -1872,27 +1032,27 @@ SysForLoopEnd5
 	subwf	USBDESCSIZEIN,W,BANKED
 	btfss	STATUS, C,ACCESS
 	movff	USBDESCSIZEIN,USB_IN0_CNT
-ENDIF33
+ENDIF30
 	banksel	USB_IN0_CNT
 	movf	USB_IN0_CNT,W,BANKED
 	banksel	USBDESCSTART
 	addwf	USBDESCSTART,F,BANKED
-ENDIF28
+ENDIF25
 	bra	SysSelectEnd4
 SysSelect4Case5
-	call	DESCRIPTORHANDLER
+	rcall	DESCRIPTORHANDLER
 	return
 SysSelectEnd4
 	banksel	USB_IN0_STAT
 	btfss	USB_IN0_STAT,6,BANKED
-	bra	ELSE29_1
+	bra	ELSE26_1
 	movlw	136
 	movwf	USB_IN0_STAT,BANKED
-	bra	ENDIF29
-ELSE29_1
+	bra	ENDIF26
+ELSE26_1
 	movlw	200
 	movwf	USB_IN0_STAT,BANKED
-ENDIF29
+ENDIF26
 	banksel	0
 	return
 

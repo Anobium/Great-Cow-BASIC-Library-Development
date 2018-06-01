@@ -51,12 +51,12 @@ Set LED ON
   versionString = "Build"+GCBBuildStr
   versionString = versionString + "@"+GCBBuildTimeStr
 
-HSerPrint "USB CGB  "
-HSerPrint versionString
+'HSerPrint "USB CGB  "
+'HSerPrint versionString
 HSerPrintCRLF
 
 
-InitUSB
+
 
 'Main loop, read from ADC and cache
 Do
