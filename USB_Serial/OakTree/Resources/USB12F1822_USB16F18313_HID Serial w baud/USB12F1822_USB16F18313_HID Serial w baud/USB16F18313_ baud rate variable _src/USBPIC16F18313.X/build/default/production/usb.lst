@@ -1,0 +1,3057 @@
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;*****************************************************************************************************
+                      00002 ;
+                      00003 ;       USB PIC12F18313
+                      00004 ;
+                      00005 ;*****************************************************************************************************
+                      00006 
+                      00007         list            p=16F18313      ; list directive to define processor
+                      00008         #include        <p16F18313.inc> ; processor specific variable definitions
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ; Build date : May 15 2016
+                      00005 ;  MPASM PIC16F18313 processor include
+                      00006 ; 
+                      00007 ;  (c) Copyright 1999-2016 Microchip Technology, All rights reserved
+                      00008 ;==========================================================================
+                      00009 
+                      02267         LIST
+                      00009         errorlevel      -302
+                      00010 
+8007   1F8C           00011         __CONFIG _CONFIG1, _FEXTOSC_OFF & _RSTOSC_HFINT32 & _CLKOUTEN_OFF & _CSWEN_ON & _FCMEN_OFF
+                      00012 
+8008   2530           00013         __CONFIG _CONFIG2, _MCLRE_OFF & _PWRTE_ON & _WDTE_OFF & _LPBOREN_OFF & _BOREN_OFF & _BORV_HIGH &
+                             _PPS1WAY_OFF & _STVREN_OFF
+                      00014 
+8009   1FFF           00015         __CONFIG _CONFIG3, _WRT_OFF & _LVP_OFF
+                      00016 
+800A   3FFF           00017         __CONFIG _CONFIG4, _CP_OFF & _CPD_OFF
+                      00018 
+                      00019 #define INDF            INDF0
+                      00020 #define FSR             FSR0L
+                      00021 #define TRISIO          TRISA
+                      00022 #define GPIO            PORTA
+                      00023 #define ANSEL           ANSELA
+                      00024 
+                      00025 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                            ;;;;;;;;;;;;
+                      00026 ;
+                      00027 ;       <HID Data Format>
+                      00028 ;
+                      00029 ;       HOST to Device                                 Device to HOST
+                      00030 ;       +-----------+-------+---------------------+    +-------+-------+---------------+
+                      00031 ;       |   Upper   | Lower |     Command/Data    |    | Upper | Lower |      Data     |
+                      00032 ;       +===========+=======+=====================+    +=======+=======+===============+
+                      00033 ;       |0x80|SPBRGH| SPBRGL| Set Baud rate       |    |  any  | RData | Received Data |
+                      00034 ;       +-----------+-------+---------------------+    +-------+-------+---------------+
+                      00035 ;       |   0x20    |  any  | Set RTS High        |
+                      00036 ;       +-----------+-------+---------------------+
+                      00037 ;       |   0x10    |  any  | Set RTS Low         |
+                      00038 ;       +-----------+-------+---------------------+
+                      00039 ;       |   0x00    | SData | Sending Serial Data |    Default: 8bit, No parity, 1 stop bit, 115200bps, 
+                            RTS=High
+                      00040 ;       +-----------+-------+---------------------+   ==================================================
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                            =========
+                      00041 ;
+                      00042 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                            ;;;;;;;;;;;;
+                      00043 
+                      00044 ;****************************************************************************
+                      00045 ;
+                      00046 ;       DEFINICION DE ETIQUETAS Y VARIABLES
+                      00047 ;
+                      00048 ;****************************************************************************
+                      00049 ;PORT/PIN
+  00000000            00050 TX                      EQU             0       ;output
+  00000001            00051 RX                      EQU             1       ;input
+  00000002            00052 RTS                     EQU             2       ;output
+  00000003            00053 SE0                     EQU             3       ;D-.or.D+
+  00000004            00054 DataMenos               EQU             4       ;D-
+  00000005            00055 DataMas                 EQU             5       ;D+
+                      00056 
+                      00057 ;RAM-Variables
+  00000020            00058 Banderas_0              EQU             0x20
+  00000021            00059 Banderas_1              EQU             0x21
+  00000022            00060 ByteAMandar             EQU             0x22
+  00000023            00061 Veces                   EQU             0x23
+  00000024            00062 RecNRZI_0               EQU             0x24
+  00000025            00063 RecNRZI_1               EQU             0x25
+  00000026            00064 RecNRZI_2               EQU             0x26
+  00000027            00065 RecNRZI_3               EQU             0x27
+  00000028            00066 RecNRZI_4               EQU             0x28
+  00000029            00067 RecNRZI_5               EQU             0x29
+  0000002A            00068 RecNRZI_6               EQU             0x2A
+  0000002B            00069 RecNRZI_7               EQU             0x2B
+  0000002C            00070 RecNRZI_8               EQU             0x2C
+  0000002D            00071 RecNRZI_9               EQU             0x2D
+  0000002E            00072 RecNRZI_A               EQU             0x2E
+  0000002F            00073 RecNRZI_B               EQU             0x2F
+  00000030            00074 RecNRZI_C               EQU             0x30
+  00000031            00075 BytesRecibidos          EQU             0x31
+  00000032            00076 NuevoAddress            EQU             0x32
+  00000033            00077 PID                     EQU             0x33
+  00000034            00078 Recibido_1              EQU             0x34
+  00000035            00079 Recibido_2              EQU             0x35
+  00000036            00080 Recibido_3              EQU             0x36
+  00000037            00081 Recibido_4              EQU             0x37
+  00000038            00082 Recibido_5              EQU             0x38
+  00000039            00083 Recibido_6              EQU             0x39
+  0000003A            00084 Recibido_7              EQU             0x3A
+  0000003B            00085 Recibido_8              EQU             0x3B
+  0000003C            00086 Recibido_9              EQU             0x3C
+  0000003D            00087 Recibido_A              EQU             0x3D
+  0000003E            00088 Recibido_B              EQU             0x3E
+  0000003F            00089 Recibido_C              EQU             0x3F
+  00000040            00090 Var_0                   EQU             0x40
+  00000041            00091 Var_1                   EQU             0x41
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+  00000042            00092 Posicion                EQU             0x42
+  00000043            00093 RespPID                 EQU             0x43
+  00000044            00094 Resp_0                  EQU             0x44
+  00000045            00095 Resp_1                  EQU             0x45
+  00000046            00096 Resp_2                  EQU             0x46
+  00000047            00097 Resp_3                  EQU             0x47
+  00000048            00098 Resp_4                  EQU             0x48
+  00000049            00099 Resp_5                  EQU             0x49
+  0000004A            00100 Resp_6                  EQU             0x4A
+  0000004B            00101 Resp_7                  EQU             0x4B
+  0000004C            00102 Resp_8                  EQU             0x4C
+  0000004D            00103 Resp_9                  EQU             0x4D
+  0000004E            00104 Resp_A                  EQU             0x4E
+  0000004F            00105 Resp_B                  EQU             0x4F
+  00000050            00106 Var_2                   EQU             0x50
+  00000051            00107 Var_3                   EQU             0x51
+  00000052            00108 Var_4                   EQU             0x52
+  00000053            00109 Var_5                   EQU             0x53
+  00000054            00110 Var_6                   EQU             0x54
+  00000055            00111 Var_7                   EQU             0x55
+  00000056            00112 Var_8                   EQU             0x56
+  00000057            00113 Var_9                   EQU             0x57
+  00000058            00114 DeviceAddress           EQU             0x58
+  00000059            00115 UltAddressRec           EQU             0x59
+  0000005A            00116 PosicionPID             EQU             0x5A
+  0000005B            00117 Banderas_2              EQU             0x5B
+                      00118 
+                      00119 #define AddrAsignOK             Banderas_0, 0
+                      00120 #define Ocupado                 Banderas_0, 3
+                      00121 #define Setup                   Banderas_0, 5
+                      00122 #define AsignAddress            Banderas_1, 0
+                      00123 #define Data1                   Banderas_1, 1
+                      00124 #define INPend                  Banderas_1, 3
+                      00125 #define InterruptIN             Banderas_1, 4
+                      00126 #define Stall                   Banderas_1, 5
+                      00127 #define ZLPPend                 Banderas_1, 6
+                      00128 
+                      00129 
+                      00130 ;****************************************************************************
+                      00131 ;
+                      00132 ;               +++++++++++++ ASIGNACION DE MEMORIA DE PROGRAMA ++++++++++++++
+                      00133 ;
+                      00134 ;****************************************************************************
+                      00135 
+                      00136 ; Programa
+                      00137 
+                      00138         ORG     0x0000                          ;Vector de Reset
+                      00139 
+0000   0020           00140         movlb   0                               ;Selecciono Banco 0
+0001   018C           00141         CLRF    GPIO                            ;Limpio GPIO
+0002   2???           00142         GOTO    Configurar
+                      00143 
+                      00144         ORG     0x0004                          ;Vector de Interrupción
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00145 
+0004   0000           00146         nop
+0005   2???           00147         GOTO    RecepcionUSB
+                      00148 
+0006                  00149 TMovf
+0006   30CF           00150         MOVLW   ~((1<<DataMenos)|(1<<DataMas))  ;'11111001'
+0007   058C           00151         ANDWF   GPIO, F                         ;Limpio D+ y D- y dejo el puerto como esta...
+0008   111F           00152         bcf     T2CON,TMR2ON
+0009   1091           00153         bcf     PIR1,TMR2IF
+000A   1720           00154         BSF     Banderas_0, 6
+000B   0021           00155         movlb   1                                       ;Selecciono Banco 1
+000C   3038           00156         MOVLW   ((1<<DataMenos)|(1<<SE0)|(1<<DataMas))  ;'00001110' SE0, D+, D- entradas
+000D   048C           00157         IORWF   TRISIO,F                                ;SE0, D+, D- en Tristate
+000E   0020           00158         movlb   0                                       ;Selecciono Banco 0
+000F   2???           00159         GOTO    EsperoContinuacion
+                      00160 
+0010                  00161 Configurar
+0010   3090           00162         movlw   PIE0                            ;+ FSR1=PIE0
+0011   0086           00163         movwf   FSR1L                           ;+
+                      00164 ;       bsf     INTCON,INTEDG                   ;+ INT=Rising edge
+                      00165 
+0012   0032           00166         movlb   .18                             ;+ Clock
+0013   3005           00167         movlw   B'00000101'                     ;+ 16x2 --> 12x2
+0014   009F           00168         movwf   OSCFRQ                          ;+ 24MHz
+0015   303C           00169         movlw   B'00111100'                     ;+ Adjust Freq
+0016   009E           00170         movwf   OSCTUNE                         ;+
+                      00171 
+0017   003C           00172         movlb   .28                             ;+ PPS unlock
+0018   3055           00173         movlw   0x55                            ;+
+0019   008F           00174         movwf   PPSLOCK                         ;+
+001A   30AA           00175         movlw   0xAA                            ;+
+001B   008F           00176         movwf   PPSLOCK                         ;+
+001C   100F           00177         bcf     PPSLOCK,PPSLOCKED               ;+
+001D   003D           00178         movlb   .29                             ;+ PPS(Output)
+001E   3014           00179         movlw   B'00010100'                     ;+ set TX
+001F   0090           00180         movwf   RA0PPS+TX                       ;+
+0020   003C           00181         movlb   .28                             ;+ PPS(Input)
+                      00182 ;       movlw   RX                              ;+ set RX
+                      00183 ;       movwf   RXPPS                           ;+
+0021   3005           00184         movlw   DataMas                         ;+ set INT
+0022   0090           00185         movwf   INTPPS                          ;+
+0023   3055           00186         movlw   0x55                            ;+ PPS lock
+0024   008F           00187         movwf   PPSLOCK                         ;+
+0025   30AA           00188         movlw   0xAA                            ;+
+0026   008F           00189         movwf   PPSLOCK                         ;+
+0027   140F           00190         bsf     PPSLOCK,PPSLOCKED               ;+
+                      00191 
+0028   0021           00192         movlb   1                                       ;Selecciono Banco 1
+0029   3038           00193         MOVLW   ((1<<DataMenos)|(1<<SE0)|(1<<DataMas))  ;SE0, D+, D- entradas
+002A   048C           00194         IORWF   TRISIO,F                                ;Entrada
+002B   110C           00195         bcf     TRISA,RTS                       ;+ RTS=Output
+                      00196 ;-      MOVLW   0xC1
+                      00197 ;-      MOVWF   OPTION_REG                      ;Cargo el registro OPTION
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00198 
+002C   0023           00199         movlb   3
+002D   018C           00200         CLRF    ANSEL                           ;Selector Analogo deshabilitado
+002E   3024           00201         movlw   B'00100100'                     ;CSRC=0,TX9=0,TXEN=1,SYNC=0(Async mode)
+002F   009E           00202         movwf   TXSTA                           ;SENDB=0,BRGH=1,TRMT=0,TX9D=0
+0030   3008           00203         movlw   B'00001000'                     ;ABDOVF=0,RCIDL=0,SCKP=0,
+0031   009F           00204         movwf   BAUDCON                         ;BRG16=1,WUE=0,ABDEN=0
+0032   3033           00205         movlw   0x33                            ;115200bps X=(24M/115.2K)/4-1=51=0x0033
+0033   009B           00206         movwf   SPBRGL                          ;
+0034   3000           00207         movlw   0x00                            ;
+0035   009C           00208         movwf   SPBRGH                          ;
+0036   3090           00209         movlw   B'10010000'                     ;SPEN=1.RX9=0,SREN=0,CREN=1
+0037   009D           00210         movwf   RCSTA                           ;ADDEN=0,FERR=0,OERR=0,RX9D=0
+                      00211 
+0038   0020           00212         movlb   0                               ;Selecciono Banco 0
+0039   3001           00213         movlw   B'00000001'                     ;Prescaler=1:4
+003A   009F           00214         movwf   T2CON                           ;
+003B   150C           00215         bsf     PORTA,RTS                       ;+ RTS=High
+                      00216 
+003C                  00217 LoopPrincipal
+003C   01A0           00218         CLRF    Banderas_0
+003D   01A1           00219         CLRF    Banderas_1
+003E   01DB           00220         CLRF    Banderas_2
+003F   302A           00221         MOVLW   0x2A                            ;'00101010'  Address 0x00 inicialmente en NRZI (7 bits)
+0040   00D8           00222         MOVWF   DeviceAddress
+0041                  00223 EsperoContinuacion
+0041   11A0           00224         BCF     Ocupado
+                      00225 ;-      bcf     INTCON, INTF
+0042   1010           00226         bcf     PIR0, INTF                      ;+
+                      00227 ;-      bsf     INTCON, INTE
+0043   1401           00228         bsf     INDF1, INTE                     ;+
+0044   178B           00229         bsf     INTCON, GIE
+0045                  00230 EspInt
+0045   2???           00231         call    Main
+0046   198C           00232         BTFSC   GPIO, SE0                       ;SE0 en "0"?
+0047   2???           00233         GOTO    EspInt
+0048   3002           00234         MOVLW   0x02
+0049   00D2           00235         MOVWF   Var_4                           ;Cargo mi variable con 2 de TimeOut...
+004A                  00236 DescTimeOut
+004A   198C           00237         BTFSC   GPIO, SE0                       ;SE0 en "0"
+004B   2???           00238         GOTO    EspInt                          ;Tedria que haber Interrupción..., la espero...
+004C   0BD2           00239         DECFSZ  Var_4, F
+004D   2???           00240         GOTO    DescTimeOut
+004E   2???           00241         GOTO    LoopPrincipal                   ;TimeOut, espero otro Token
+                      00242 
+004F                  00243 RecepcionUSB
+004F   2???           00244         GOTO    $ + 1                           ;D+ en "0"?             (2)
+0050   1E8C           00245         BTFSS   GPIO, DataMas                   ;D+ en "1"?             (3)
+0051   2???           00246         GOTO    RegresardeInterrupt
+0052   2???           00247         GOTO    $ + 1
+0053   1A8C           00248         BTFSC   GPIO, DataMas                   ;D+ en "0"?             (4)
+0054   2???           00249         GOTO    RegresardeInterrupt
+0055   2???           00250         GOTO    $ + 1
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0056   1E8C           00251         BTFSS   GPIO, DataMas                   ;D+ en "1"?             (5)
+0057   2???           00252         GOTO    RegresardeInterrupt
+0058   2???           00253         GOTO    $ + 1
+0059   1A8C           00254         BTFSC   GPIO, DataMas                   ;D+ en "0"?             (6)
+005A   2???           00255         GOTO    RegresardeInterrupt
+005B   2???           00256         GOTO    $ + 1
+005C   1E8C           00257         BTFSS   GPIO, DataMas                   ;D+ en "1"?             (7)
+005D   2???           00258         GOTO    RegresardeInterrupt
+005E   3024           00259         MOVLW   RecNRZI_0
+005F   0084           00260         MOVWF   FSR
+0060   1E8C           00261         BTFSS   GPIO, DataMas                   ;D+ en "1"?             (8)
+0061   2???           00262         GOTO    RegresardeInterrupt
+0062   0180           00263         CLRF    INDF
+0063   018A           00264         CLRF    PCLATH                          ;Limpio PCLATH
+0064   1A8C           00265         BTFSC   GPIO, DataMas                   ;D+ en "0"?
+0065   1400           00266         BSF     INDF, 0
+0066   2???           00267         GOTO    $ + 1
+0067   1A8C           00268         BTFSC   GPIO, DataMas                   ;D+ en "0"?
+0068   1480           00269         BSF     INDF, 1
+0069   2???           00270         GOTO    $ + 1
+006A                  00271 ContinuoRecibiendo
+006A   1A8C           00272         BTFSC   GPIO, DataMas                   ;D+ en "0"?
+006B   1500           00273         BSF     INDF, 2
+006C   1D8C           00274         BTFSS   GPIO, SE0                       ;SE0 en "1"?
+006D   2???           00275         GOTO    Identificar_PID
+006E   1A8C           00276         BTFSC   GPIO, DataMas                   ;D+ en "0"?
+006F   1580           00277         BSF     INDF, 3
+0070   2???           00278         GOTO    $ + 1                           ;Pierdo dos ciclo...
+0071   1A8C           00279         BTFSC   GPIO, DataMas                   ;D+ en "0"?
+0072   1600           00280         BSF     INDF, 4
+0073   1D8C           00281         BTFSS   GPIO, SE0                       ;SE0 en "1"?
+0074   2???           00282         GOTO    Identificar_PID
+0075   1A8C           00283         BTFSC   GPIO, DataMas                   ;D+ en "0"?
+0076   1680           00284         BSF     INDF, 5
+0077   0824           00285         MOVFW   RecNRZI_0                       ;Lo primero que recibo es el PID + PID Inverso (Verifica
+                            ción)
+0078   390F           00286         ANDLW   0x0F                            ;Solo el PID sin verificación...
+0079   1A8C           00287         BTFSC   GPIO, DataMas                   ;D+ en "0"?
+007A   1700           00288         BSF     INDF, 6
+007B   1D8C           00289         BTFSS   GPIO, SE0                       ;SE0 en "1"?
+007C   2???           00290         GOTO    Identificar_PID
+007D   1A8C           00291         BTFSC   GPIO, DataMas                   ;D+ en "0"?
+007E   1780           00292         BSF     INDF, 7
+007F   0A84           00293         INCF    FSR, F
+0080   0180           00294         CLRF    INDF
+0081   1A8C           00295         BTFSC   GPIO, DataMas                   ;D+ en "0"?
+0082   1400           00296         BSF     INDF, 0
+0083   1D8C           00297         BTFSS   GPIO, SE0                       ;SE0 en "1"?
+0084   2???           00298         GOTO    Identificar_PID
+0085   1A8C           00299         BTFSC   GPIO, DataMas                   ;D+ en "0"?
+0086   1480           00300         BSF     INDF, 1
+0087   2???           00301         GOTO    ContinuoRecibiendo
+                      00302 
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0088                  00303 Identificar_PID
+0088   000B           00304         brw
+0089   2???           00305         GOTO    RegresardeInterrupt             ;NRZI = 1110    STALL
+008A   2???           00306         GOTO    SETUPToken                      ;NRZI = 1101    SETUP
+008B   2???           00307         GOTO    RegresardeInterrupt             ;NRZI = 1000    SPLIT
+008C   2???           00308         GOTO    DATARecibido                    ;NRZI = 1011    DATA1
+008D   2???           00309         GOTO    ACKTokenRecibido                ;NRZI = 0010    ACK
+008E   2???           00310         GOTO    OUTToken                        ;NRZI = 0001    OUT
+008F   2???           00311         GOTO    RegresardeInterrupt             ;NRZI = 0100    PING
+0090   2???           00312         GOTO    RegresardeInterrupt             ;NRZI = 0111    DATA2
+0091   2???           00313         GOTO    RegresardeInterrupt             ;NRZI = 0110    NYET
+0092   2???           00314         GOTO    RegresardeInterrupt             ;NRZI = 0101    SOF
+0093   2???           00315         GOTO    RegresardeInterrupt             ;NRZI = 0000    Reserved PID
+0094   2???           00316         GOTO    DATARecibido                    ;NRZI = 0011    DATA0
+0095   2???           00317         GOTO    RegresardeInterrupt             ;NRZI = 1010    NAK
+0096   2???           00318         GOTO    INToken                         ;NRZI = 1001    IN
+0097   2???           00319         GOTO    RegresardeInterrupt             ;NRZI = 1100    PRE
+0098   2???           00320         GOTO    RegresardeInterrupt             ;NRZI = 1111    MDATA
+                      00321 
+0099                  00322 TodaviaNO
+0099   2???           00323         CALL    MandarNAK                       ;La respuesta no esta lista, mando NAK Handshake
+009A   2???           00324         GOTO    RegresardeInterrupt
+                      00325 
+009B                  00326 OUTToken
+009B   0825           00327         MOVFW   RecNRZI_1
+009C   00D9           00328         MOVWF   UltAddressRec
+                      00329 
+009D                  00330 RegresardeInterrupt                             ;Recupero todos los Registros...
+                      00331 ;-      BCF     INTCON, INTF
+009D   1010           00332         bcf     PIR0, INTF                      ;+
+009E   0009           00333         RETFIE
+                      00334 
+009F                  00335 SETUPToken
+009F   0825           00336         MOVFW   RecNRZI_1
+00A0   00D9           00337         MOVWF   UltAddressRec                   ;Guardo el Address recibido en UltAddressRec
+00A1   397F           00338         ANDLW   0x7F                            ;Solamente 7 bits de address
+00A2   0658           00339         XORWF   DeviceAddress, W                ;Comparo con mi address actual
+00A3   1D03           00340         BTFSS   STATUS, Z                       ;Mi address es igual al address recibido?
+00A4   2???           00341         GOTO    RegresardeInterrupt             ;NO me hablan a mi, descarto paquete...
+00A5   16A0           00342         BSF     Setup
+00A6   2???           00343         GOTO    EsperoContinuacion
+                      00344 
+00A7                  00345 ACKTokenRecibido
+00A7   1F20           00346         BTFSS   Banderas_0, 6
+00A8   2???           00347         GOTO    RegresardeInterrupt
+00A9   1320           00348         BCF     Banderas_0, 6
+00AA   1B21           00349         BTFSC   ZLPPend
+00AB   12A0           00350         BCF     Setup
+00AC   1321           00351         BCF     ZLPPend
+00AD   11A1           00352         BCF     INPend
+00AE   1EA0           00353         BTFSS   Setup
+00AF   1221           00354         BCF     InterruptIN
+00B0   2???           00355         GOTO    EsperoContinuacion
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00356 
+00B1                  00357 INToken
+00B1   307F           00358         MOVLW   0x7F                            ;Solamente 7 bits de address
+00B2   0525           00359         ANDWF   RecNRZI_1, W
+00B3   0658           00360         XORWF   DeviceAddress, W
+00B4   1D03           00361         BTFSS   STATUS, Z                       ;Address Recibido es igual al address con el que estoy t
+                            rabajando?
+00B5   2???           00362         GOTO    RegresardeInterrupt             ;Address no coincide descarto paquete...
+00B6   19A0           00363         BTFSC   Ocupado
+00B7   2???           00364         GOTO    TodaviaNO
+00B8   1403           00365         BSF     STATUS, C                       ;Cargo el Carry con "1"
+00B9   0D25           00366         RLF     RecNRZI_1, W                    ;Inserto en "1" de Carry por la Derecha y lo guardo en W
+00BA   06A5           00367         XORWF   RecNRZI_1, F
+00BB   09A5           00368         COMF    RecNRZI_1, F                    ;Decripto Address en NRZI
+00BC   1BA5           00369         BTFSC   RecNRZI_1, 7                    ;ENDPOINT = 0?
+00BD   2???           00370         GOTO    ResponderIN                     ;NO
+00BE   1821           00371         BTFSC   AsignAddress
+00BF   2???           00372         GOTO    AsignarNuevoAddress
+00C0   1AA1           00373         BTFSC   Stall
+00C1   2???           00374         GOTO    MandarSTALL
+00C2   1B21           00375         BTFSC   ZLPPend
+00C3   2???           00376         GOTO    MandarZLP
+00C4   19A1           00377         BTFSC   INPend
+00C5   2???           00378         GOTO    EscribirUSBDATA                 ;Mandar USB...
+00C6   2???           00379         GOTO    ContTabla                       ;Levantar mas tabla...
+                      00380 
+00C7                  00381 ResponderIN
+00C7   1E21           00382         BTFSS   InterruptIN
+00C8   2???           00383         GOTO    TodaviaNO
+00C9   2???           00384         GOTO    EscribirUSBDATA
+                      00385 
+00CA                  00386 AsignarNuevoAddress
+00CA   0832           00387         MOVFW   NuevoAddress
+00CB   00D8           00388         MOVWF   DeviceAddress
+00CC   1021           00389         BCF     AsignAddress
+00CD   1420           00390         BSF     AddrAsignOK
+                      00391 
+00CE                  00392 MandarZLP
+00CE   2???           00393         CALL    MandarDATA
+00CF   2???           00394         GOTO    EsperoContinuacion
+                      00395 
+00D0                  00396 ZLPPendiente                                    ;Zero length packet
+00D0   1721           00397         BSF     ZLPPend
+00D1   2???           00398         GOTO    EsperoContinuacion
+                      00399 
+00D2                  00400 DATARecibido
+00D2   307F           00401         MOVLW   0x7F                            ;Solamente 7 bits de address
+00D3   0559           00402         ANDWF   UltAddressRec, W
+00D4   0658           00403         XORWF   DeviceAddress, W
+00D5   1D03           00404         BTFSS   STATUS, Z                       ;Address Recibido es igual al address con el que estoy t
+                            rabajando?
+00D6   2???           00405         GOTO    RegresardeInterrupt             ;Address no coincide descarto paquete...
+00D7   19A0           00406         BTFSC   Ocupado
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00D8   2???           00407         GOTO    TodaviaNO
+00D9   3024           00408         MOVLW   RecNRZI_0                       ;Posición del primer paquete recibido...
+00DA   0204           00409         SUBWF   FSR, W                          ;Resto la posición del ultimo recibido menos la posición
+                             del primero...
+00DB   3A03           00410         XORLW   0x03
+00DC   1D03           00411         BTFSS   STATUS, Z
+00DD   2???           00412         GOTO    ProcesarDATA                    ;NO...
+00DE   2???           00413         CALL    MandarACK
+00DF   13DB           00414         BCF     Banderas_2, 7
+00E0   12A0           00415         BCF     Setup
+00E1   2???           00416         GOTO    EsperoContinuacion
+                      00417 
+00E2                  00418 ProcesarDATA
+00E2   0824           00419         MOVFW   RecNRZI_0
+00E3   00B3           00420         MOVWF   PID
+00E4   0825           00421         MOVFW   RecNRZI_1
+00E5   00B4           00422         MOVWF   Recibido_1
+00E6   0826           00423         MOVFW   RecNRZI_2
+00E7   00B5           00424         MOVWF   Recibido_2
+00E8   0827           00425         MOVFW   RecNRZI_3
+00E9   00B6           00426         MOVWF   Recibido_3
+00EA   0828           00427         MOVFW   RecNRZI_4
+00EB   00B7           00428         MOVWF   Recibido_4
+00EC   2???           00429         CALL    MandarACK
+00ED   15A0           00430         BSF     Ocupado
+00EE                  00431 LimpioInterrupcion
+                      00432 ;-      BCF     INTCON, INTF
+00EE   1010           00433         bcf     PIR0, INTF                      ;+
+00EF   0829           00434         MOVFW   RecNRZI_5
+00F0   00B8           00435         MOVWF   Recibido_5
+00F1   082A           00436         MOVFW   RecNRZI_6
+00F2   00B9           00437         MOVWF   Recibido_6
+00F3   082B           00438         MOVFW   RecNRZI_7
+00F4   00BA           00439         MOVWF   Recibido_7
+00F5   082C           00440         MOVFW   RecNRZI_8
+00F6   00BB           00441         MOVWF   Recibido_8
+00F7   082D           00442         MOVFW   RecNRZI_9
+00F8   00BC           00443         MOVWF   Recibido_9
+00F9   082E           00444         MOVFW   RecNRZI_A
+00FA   00BD           00445         MOVWF   Recibido_A
+00FB   082F           00446         MOVFW   RecNRZI_B
+00FC   00BE           00447         MOVWF   Recibido_B
+00FD   0830           00448         MOVFW   RecNRZI_C
+00FE   00BF           00449         MOVWF   Recibido_C
+00FF   3023           00450         MOVLW   RecNRZI_0 - 1                   ;Posición del primer dato recibido - 1
+0100   0204           00451         SUBWF   FSR, W
+0101   00B1           00452         MOVWF   BytesRecibidos
+0102   2???           00453         CALL    DesencriptarNRZI
+0103   1EA0           00454         BTFSS   Setup                           ;Salta si es Control Transfer
+0104   2???           00455         GOTO    InterruptTransfer
+0105   1F5B           00456         BTFSS   Banderas_2, 6
+0106   2???           00457         GOTO    ProcesarSetup                   ; it's SETUP
+0107   2???           00458         CALL    ProcessOut                      ; it's OUT
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0108   135B           00459         BCF     Banderas_2, 6
+0109   2???           00460         GOTO    ZLPPendiente
+                      00461 
+010A                  00462 InterruptTransfer
+010A   2???           00463         CALL    ProcessOut
+010B   2???           00464         GOTO    EsperoContinuacion
+                      00465 
+010C                  00466 MandarDATA
+010C   304B           00467         MOVLW   0x4B                            ;'01001011' DATA1
+010D   1CA1           00468         BTFSS   Data1
+010E   30C3           00469         MOVLW   0xC3                            ;'11000011' DATA0
+010F   2???           00470         GOTO    EscribirUSBPID
+                      00471 
+0110                  00472 MandarSTALL
+0110   12A1           00473         BCF     Stall
+0111   301E           00474         MOVLW   0x1E                            ;'00011110' STALL Handshake
+0112   2???           00475         CALL    EscribirUSBPID
+0113   2???           00476         GOTO    EsperoContinuacion
+                      00477 
+0114                  00478 MandarNAK
+0114   305A           00479         MOVLW   0x5A                            ;'01011010' NAK Handshake
+0115   2???           00480         GOTO    EscribirUSBPID
+                      00481 
+0116                  00482 MandarACK
+0116   30D2           00483         MOVLW   0xD2                            ;'11010010' ACK Handshake
+                      00484 
+0117                  00485 EscribirUSBPID
+0117   00A2           00486         MOVWF   ByteAMandar
+0118   160C           00487         BSF     GPIO, DataMenos                 ;D- en "1"
+0119   0021           00488         movlb   1                               ;Selecciono Banco 1
+011A   30CF           00489         MOVLW   ~((1<<DataMenos)|(1<<DataMas))  ;'00001000' Todas Salidas menos SE0
+011B   058C           00490         ANDWF   TRISIO,F                        ;SE0 en Tristate
+011C   0020           00491         movlb   0                               ;Selecciono Banco 0
+011D   3007           00492         MOVLW   0x07                            ;
+011E   00A3           00493         MOVWF   Veces                           ;Cargo Variable con 7
+011F   3030           00494         MOVLW   ((1<<DataMenos)|(1<<DataMas))   ;Solamente los bits D- y D+
+0120                  00495 SincUSB1
+0120   068C           00496         XORWF   GPIO, F                         ;Invierto D- y D+
+0121   0BA3           00497         DECFSZ  Veces, F                        ;Decremento mi variable...
+0122   2???           00498         GOTO    SincUSB1                        ;Sigo hasta terminar los 7 cambios...
+0123   3010           00499         MOVLW   0x10                            ;
+0124   00A3           00500         MOVWF   Veces                           ;Cargo Variable con 16
+0125   3030           00501         MOVLW   ((1<<DataMenos)|(1<<DataMas))   ;Solamente los bits D- y D+
+0126   0000           00502         NOP
+0127   1C22           00503         BTFSS   ByteAMandar, 0                  ;Si el bit 0 del Dato a mandar es...
+0128   068C           00504         XORWF   GPIO, F                         ;..."0" invierto D- y D+
+0129   2???           00505         GOTO    $ + 1
+012A   1CA2           00506         BTFSS   ByteAMandar, 1                  ;Si el bit 1 del Dato a mandar es...
+012B   068C           00507         XORWF   GPIO, F                         ;..."0" invierto D- y D+
+012C   2???           00508         GOTO    $ + 1
+012D   1D22           00509         BTFSS   ByteAMandar, 2                  ;Si el bit 2 del Dato a mandar es...
+012E   068C           00510         XORWF   GPIO, F                         ;..."0" invierto D- y D+
+012F   2???           00511         GOTO    $ + 1
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 11
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0130   1DA2           00512         BTFSS   ByteAMandar, 3                  ;Si el bit 3 del Dato a mandar es...
+0131   068C           00513         XORWF   GPIO, F                         ;..."0" invierto D- y D+
+0132   2???           00514         GOTO    $ + 1
+0133   1E22           00515         BTFSS   ByteAMandar, 4                  ;Si el bit 4 del Dato a mandar es...
+0134   068C           00516         XORWF   GPIO, F                         ;..."0" invierto D- y D+
+0135   2???           00517         GOTO    $ + 1
+0136   1EA2           00518         BTFSS   ByteAMandar, 5                  ;Si el bit 5 del Dato a mandar es...
+0137   068C           00519         XORWF   GPIO, F                         ;..."0" invierto D- y D+
+0138   2???           00520         GOTO    $ + 1
+0139   1F22           00521         BTFSS   ByteAMandar, 6                  ;Si el bit 6 del Dato a mandar es...
+013A   068C           00522         XORWF   GPIO, F                         ;..."0" invierto D- y D+
+013B   2???           00523         GOTO    $ + 1
+013C   1FA2           00524         BTFSS   ByteAMandar, 7                  ;Si el bit 7 del Dato a mandar es...
+013D   068C           00525         XORWF   GPIO, F                         ;..."0" invierto D- y D+
+013E   1F21           00526         BTFSS   ZLPPend
+013F   2???           00527         GOTO    ConfEntradas
+0140   1720           00528         BSF     Banderas_0, 6
+0141                  00529 ZLP
+0141   068C           00530         XORWF   GPIO, F                         ;Zero Length Packet
+0142   0BA3           00531         DECFSZ  Veces, F
+0143   2???           00532         GOTO    ZLP
+0144   0000           00533         NOP
+0145                  00534 ConfEntradas
+0145   30CF           00535         MOVLW   ~((1<<DataMenos)|(1<<DataMas))          ;Todo menos D- y D+
+0146   058C           00536         ANDWF   GPIO, F                                 ;Borro los valores de D- y D+ y dejo el puerto c
+                            omo esta...
+0147   2???           00537         CALL    Espero                                  ;Hago tiempo???
+0148   0021           00538         movlb   1                                       ;Selecciono Banco 1
+0149   3038           00539         MOVLW   ((1<<DataMenos)|(1<<SE0)|(1<<DataMas))  ;'00001110' SE0, D+, D- en Tristate
+014A   048C           00540         IORWF   TRISIO,F                                ;SE0, D+, D- = Entradas
+014B   0020           00541         movlb   0                                       ;Selecciono Banco 0
+014C                  00542 Espero
+014C   0008           00543         RETURN
+                      00544 
+014D                  00545 EscribirUSBDATA
+014D   160C           00546         BSF     GPIO, DataMenos                 ;D- en "1"
+014E   0021           00547         movlb   1                               ;Selecciono Banco 1
+014F   30CF           00548         MOVLW   ~((1<<DataMenos)|(1<<DataMas))  ;'00001000' Todas salidas menos SE0
+0150   058C           00549         ANDWF   TRISIO,F                        ;SE0 Entrada
+0151   0020           00550         movlb   0                               ;Selecciono Banco 0
+0152   0850           00551         movf    Var_2, W
+0153   009E           00552         movwf   PR2
+0154   019D           00553         clrf    TMR2
+0155   151F           00554         bsf     T2CON,TMR2ON
+0156   0000           00555         nop
+0157   3007           00556         MOVLW   0x07
+0158   00A3           00557         MOVWF   Veces                           ;Cargo Variable con 7
+0159   3030           00558         MOVLW   ((1<<DataMenos)|(1<<DataMas))   ;Solamente los bits D- y D+
+015A                  00559 SincUSB2
+015A   068C           00560         XORWF   GPIO, F                         ;invierto D- y D+
+015B   0BA3           00561         DECFSZ  Veces, F
+015C   2???           00562         GOTO    SincUSB2
+015D   3043           00563         MOVLW   RespPID                         ;Registro Indirecto
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 12
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+015E   0084           00564         MOVWF   FSR
+015F   3030           00565         MOVLW   ((1<<DataMenos)|(1<<DataMas))   ;Solamente los bits D- y D+
+0160   0000           00566         NOP
+0161   1C00           00567         BTFSS   INDF, 0                         ;Si el bit 0 del Dato a mandar es...
+0162   068C           00568         XORWF   GPIO, F                         ;..."0" invierto D- y D+
+0163   2???           00569         GOTO    MandarSigByte
+0164                  00570 MandarSigByte
+0164   1C80           00571         BTFSS   INDF, 1                         ;Si el bit 1 del Dato a mandar es...
+0165   068C           00572         XORWF   GPIO, F                         ;..."0" invierto D- y D+
+0166   1891           00573         btfsc   PIR1,TMR2IF                     ;
+0167   2???           00574         goto    TMovf                           ;
+0168   1D00           00575         BTFSS   INDF, 2                         ;Si el bit 2 del Dato a mandar es...
+0169   068C           00576         XORWF   GPIO, F                         ;..."0" invierto D- y D+
+016A   1891           00577         btfsc   PIR1,TMR2IF                     ;
+016B   2???           00578         goto    TMovf                           ;
+016C   1D80           00579         BTFSS   INDF, 3                         ;Si el bit 3 del Dato a mandar es...
+016D   068C           00580         XORWF   GPIO, F                         ;..."0" invierto D- y D+
+016E   1891           00581         btfsc   PIR1,TMR2IF                     ;
+016F   2???           00582         goto    TMovf                           ;
+0170   1E00           00583         BTFSS   INDF, 4                         ;Si el bit 4 del Dato a mandar es...
+0171   068C           00584         XORWF   GPIO, F                         ;..."0" invierto D- y D+
+0172   1891           00585         btfsc   PIR1,TMR2IF                     ;
+0173   2???           00586         goto    TMovf                           ;
+0174   1E80           00587         BTFSS   INDF, 5                         ;Si el bit 5 del Dato a mandar es...
+0175   068C           00588         XORWF   GPIO, F                         ;..."0" invierto D- y D+
+0176   1891           00589         btfsc   PIR1,TMR2IF                     ;
+0177   2???           00590         goto    TMovf                           ;
+0178   1F00           00591         BTFSS   INDF, 6                         ;Si el bit 6 del Dato a mandar es...
+0179   068C           00592         XORWF   GPIO, F                         ;..."0" invierto D- y D+
+017A   1891           00593         btfsc   PIR1,TMR2IF                     ;
+017B   2???           00594         goto    TMovf                           ;
+017C   1F80           00595         BTFSS   INDF, 7                         ;Si el bit 7 del Dato a mandar es...
+017D   068C           00596         XORWF   GPIO, F                         ;..."0" invierto D- y D+
+017E   0A84           00597         INCF    FSR, F                          ;Incremento el Dato y sigo mandando hasta que halla desb
+                            ordamiento...
+017F   0000           00598         NOP
+0180   1C00           00599         BTFSS   INDF, 0                         ;Si el bit 0 del Dato a mandar es...
+0181   068C           00600         XORWF   GPIO, F                         ;..."0" invierto D- y D+
+0182   2???           00601         GOTO    MandarSigByte
+                      00602 
+0183                  00603 DesencriptarNRZI
+0183   3033           00604         MOVLW   PID                             ;Cargo la dirección del primer paquete recibido (PID) NR
+                            ZI
+0184   0084           00605         MOVWF   FSR                             ;en el registro indirecto para pasarlos a binario...
+0185   0831           00606         MOVFW   BytesRecibidos
+0186   00D2           00607         MOVWF   Var_4
+0187   1403           00608         BSF     STATUS, C                       ;Cargo el Carry con "1"
+0188                  00609 SigNRZI
+0188   0D00           00610         RLF     INDF, W
+0189   0680           00611         XORWF   INDF, F
+018A   0980           00612         COMF    INDF, F
+018B   0A84           00613         INCF    FSR, F
+018C   0BD2           00614         DECFSZ  Var_4, F                        ;Desencripto siguente registro NRZI recibido...
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 13
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+018D   2???           00615         GOTO    SigNRZI
+018E   3033           00616         MOVLW   PID                             ;PID Indirecto
+018F   00D3           00617         MOVWF   Var_5
+0190   3033           00618         MOVLW   PID                             ;PID Indirecto
+0191   00D2           00619         MOVWF   Var_4
+0192   0084           00620         MOVWF   FSR
+0193   0831           00621         MOVFW   BytesRecibidos
+0194   00C4           00622         MOVWF   Resp_0                          ;Uso el buffer de repuesta como variable...
+0195   01C3           00623         CLRF    RespPID
+0196   01D4           00624         CLRF    Var_6
+0197   01D5           00625         CLRF    Var_7
+0198   01D6           00626         CLRF    Var_8
+0199   01D7           00627         CLRF    Var_9
+019A                  00628 Label_0
+019A   0C80           00629         RRF     INDF, F                         ;Exraigo el bit menos significativo...
+019B   0CD4           00630         RRF     Var_6, F                        ;Lo inserto por la izquierda...
+019C   0AD6           00631         INCF    Var_8, F                        ;Cuento el bit...
+019D   1054           00632         BCF     Var_6, 0
+019E   307E           00633         MOVLW   0x7E
+019F   0654           00634         XORWF   Var_6, W
+01A0   1903           00635         BTFSC   STATUS, Z
+01A1   2???           00636         GOTO    Label_2
+01A2   0D54           00637         RLF     Var_6, W
+01A3   0CD5           00638         RRF     Var_7, F
+01A4   0AD7           00639         INCF    Var_9, F
+01A5   19D7           00640         BTFSC   Var_9, 3
+01A6   2???           00641         CALL    Label_3
+01A7                  00642 Label_1
+01A7   1DD6           00643         BTFSS   Var_8, 3
+01A8   2???           00644         GOTO    Label_0
+01A9   01D6           00645         CLRF    Var_8
+01AA   0AD2           00646         INCF    Var_4, F
+01AB   0852           00647         MOVFW   Var_4
+01AC   0084           00648         MOVWF   FSR
+01AD   0BC4           00649         DECFSZ  Resp_0, F                       ;Uso el buffer de repuesta como variable...
+01AE   2???           00650         GOTO    Label_0
+01AF   3400           00651         RETLW   0x00
+01B0                  00652 Label_2
+01B0   0AC3           00653         INCF    RespPID, F                      ;Uso el buffer de repuesta como variable... Incremento v
+                            ariable...
+01B1   1DC3           00654         BTFSS   RespPID, 3                      ;Fueron 8 veces?
+01B2   2???           00655         GOTO    Label_1                         ;No
+01B3   03B1           00656         DECF    BytesRecibidos, F
+01B4   01C3           00657         CLRF    RespPID                         ;Limpio variable...
+01B5   2???           00658         GOTO    Label_1
+                      00659 
+01B6                  00660 Label_3
+01B6   01D7           00661         CLRF    Var_9
+01B7   0853           00662         MOVFW   Var_5
+01B8   0084           00663         MOVWF   FSR
+01B9   0855           00664         MOVFW   Var_7
+01BA   0080           00665         MOVWF   INDF
+01BB   0AD3           00666         INCF    Var_5, F
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 14
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01BC   0852           00667         MOVFW   Var_4
+01BD   0084           00668         MOVWF   FSR
+01BE   0008           00669         RETURN
+                      00670 
+01BF                  00671 CalcularCRC16
+01BF   0A84           00672         INCF    FSR, F
+01C0   0851           00673         MOVFW   Var_3
+01C1   00D6           00674         MOVWF   Var_8
+01C2   30FF           00675         MOVLW   0xFF
+01C3   00D2           00676         MOVWF   Var_4
+01C4   00D3           00677         MOVWF   Var_5
+01C5   0800           00678         MOVFW   INDF
+01C6   00D4           00679         MOVWF   Var_6
+01C7   3008           00680         MOVLW   0x08
+01C8   00D5           00681         MOVWF   Var_7
+01C9                  00682 Label_4
+01C9   0800           00683         MOVFW   INDF
+01CA   0652           00684         XORWF   Var_4, W
+01CB   00D4           00685         MOVWF   Var_6
+01CC   0853           00686         MOVFW   Var_5
+01CD   00D2           00687         MOVWF   Var_4
+01CE   01D5           00688         CLRF    Var_7
+01CF   1003           00689         BCF     STATUS, C
+01D0   0C54           00690         RRF     Var_6, W
+01D1   06D4           00691         XORWF   Var_6, F
+01D2   0CD5           00692         RRF     Var_7, F
+01D3   0C54           00693         RRF     Var_6, W
+01D4   00D3           00694         MOVWF   Var_5
+01D5   0CD5           00695         RRF     Var_7, F
+01D6   0DD4           00696         RLF     Var_6, F
+01D7   06D4           00697         XORWF   Var_6, F
+01D8   0E54           00698         SWAPF   Var_6, W
+01D9   06D4           00699         XORWF   Var_6, F
+01DA   0855           00700         MOVFW   Var_7
+01DB   18D4           00701         BTFSC   Var_6, 1
+01DC   3A01           00702         XORLW   0x01
+01DD   06D2           00703         XORWF   Var_4, F
+01DE   30C0           00704         MOVLW   0xC0
+01DF   18D4           00705         BTFSC   Var_6, 1
+01E0   06D3           00706         XORWF   Var_5, F
+01E1   0A84           00707         INCF    FSR, F
+01E2   0BD6           00708         DECFSZ  Var_8, F
+01E3   2???           00709         GOTO    Label_4
+01E4   09D2           00710         COMF    Var_4, F
+01E5   09D3           00711         COMF    Var_5, F
+01E6   3400           00712         RETLW   0x00
+                      00713 
+01E7                  00714 InsertarCRC16
+01E7   0852           00715         MOVFW   Var_4
+01E8   0080           00716         MOVWF   INDF
+01E9   0A84           00717         INCF    FSR, F
+01EA   0853           00718         MOVFW   Var_5
+01EB   0080           00719         MOVWF   INDF
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 15
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01EC   3002           00720         MOVLW   0x02
+01ED   07D1           00721         ADDWF   Var_3, F
+01EE   3400           00722         RETLW   0x00
+                      00723 
+01EF                  00724 InsertarBitStuffing
+01EF   3043           00725         MOVLW   RespPID                         ;Registro Indirecto
+01F0   00D3           00726         MOVWF   Var_5
+01F1   085A           00727         MOVFW   PosicionPID
+01F2   00D2           00728         MOVWF   Var_4
+01F3   0084           00729         MOVWF   FSR
+01F4   01D4           00730         CLRF    Var_6
+01F5   01D5           00731         CLRF    Var_7
+01F6   01D6           00732         CLRF    Var_8
+01F7   0851           00733         MOVFW   Var_3
+01F8   00D7           00734         MOVWF   Var_9
+01F9   01D0           00735         CLRF    Var_2
+01FA                  00736 Label_5
+01FA   0C80           00737         RRF     INDF, F
+01FB   0AD5           00738         INCF    Var_7, F
+01FC   0CD4           00739         RRF     Var_6, F
+01FD   0AD6           00740         INCF    Var_8, F
+01FE   19D6           00741         BTFSC   Var_8, 3
+01FF   2???           00742         CALL    Label_9
+0200   30FC           00743         MOVLW   0xFC
+0201   0254           00744         SUBWF   Var_6, W
+0202   1803           00745         BTFSC   STATUS, C
+0203   2???           00746         CALL    Label_6
+0204   19D5           00747         BTFSC   Var_7, 3
+0205   2???           00748         GOTO    Label_7
+0206   2???           00749         GOTO    Label_5
+                      00750 
+0207                  00751 Label_6
+0207   1003           00752         BCF     STATUS, C
+0208   0CD4           00753         RRF     Var_6, F
+0209   0AD6           00754         INCF    Var_8, F
+020A   19D6           00755         BTFSC   Var_8, 3
+020B   2???           00756         CALL    Label_9
+020C   0AD0           00757         INCF    Var_2, F
+020D   0008           00758         RETURN
+020E                  00759 Label_7
+020E   01D5           00760         CLRF    Var_7
+020F   0AD2           00761         INCF    Var_4, F
+0210   0852           00762         MOVFW   Var_4
+0211   0084           00763         MOVWF   FSR
+0212   0BD7           00764         DECFSZ  Var_9, F
+0213   2???           00765         GOTO    Label_5
+0214   1003           00766         BCF     STATUS, C
+0215                  00767 Label_8
+0215   0CD4           00768         RRF     Var_6, F
+0216   0AD6           00769         INCF    Var_8, F
+0217   1DD6           00770         BTFSS   Var_8, 3
+0218   2???           00771         GOTO    Label_8
+0219   2???           00772         CALL    Label_9
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 16
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+021A   0851           00773         MOVFW   Var_3
+021B   00D7           00774         MOVWF   Var_9
+021C   1003           00775         BCF     STATUS, C
+021D   0DD7           00776         RLF     Var_9, F
+021E   0DD7           00777         RLF     Var_9, F
+021F   0D57           00778         RLF     Var_9, W
+0220   07D0           00779         ADDWF   Var_2, F
+0221   3400           00780         RETLW   0x00
+                      00781 
+0222                  00782 Label_9
+0222   01D6           00783         CLRF    Var_8
+0223   0853           00784         MOVFW   Var_5
+0224   0084           00785         MOVWF   FSR
+0225   0854           00786         MOVFW   Var_6
+0226   0080           00787         MOVWF   INDF
+0227   0AD3           00788         INCF    Var_5, F
+0228   0852           00789         MOVFW   Var_4
+0229   0084           00790         MOVWF   FSR
+022A   0008           00791         RETURN
+                      00792 
+022B                  00793 ContTabla
+022B   0840           00794         MOVFW   Var_0
+022C   0441           00795         IORWF   Var_1, W
+022D   1903           00796         BTFSC   STATUS, Z
+022E   2???           00797         GOTO    ZLPPendiente
+022F   15A0           00798         BSF     Ocupado
+                      00799 ;-      BCF     INTCON, INTF
+0230   1010           00800         bcf     PIR0, INTF                      ;+
+0231                  00801 LeerDescriptor
+0231   3034           00802         MOVLW   Recibido_1                      ;Address Indirecto
+0232   0084           00803         MOVWF   FSR
+0233   01D1           00804         CLRF    Var_3                           ;Limpio registro contador (principio de la tabla)
+0234   3033           00805         MOVLW   PID                             ;PID Indirecto
+0235   00DA           00806         MOVWF   PosicionPID
+0236                  00807 SiguienteDatoTabla
+0236   2???           00808         CALL    LevantarTabla
+0237   0080           00809         MOVWF   INDF
+0238   0AD1           00810         INCF    Var_3, F                        ;Incremento contador...
+0239   0A84           00811         INCF    FSR, F                          ;Incremento Dirección de registro indirecto
+023A   0AC2           00812         INCF    Posicion, F
+023B   0BC0           00813         DECFSZ  Var_0, F
+023C   19D1           00814         BTFSC   Var_3, 3
+023D   2???           00815         GOTO    PrepararDescriptor              ;SI!
+023E   2???           00816         GOTO    SiguienteDatoTabla
+                      00817 
+023F                  00818 PrepararDescriptor
+023F   085A           00819         MOVFW   PosicionPID
+0240   0084           00820         MOVWF   FSR
+0241   304B           00821         MOVLW   0x4B                            ;'01001011' DATA1
+0242   1CA1           00822         BTFSS   Data1
+0243   30C3           00823         MOVLW   0xC3                            ;'11000011' DATA0
+0244   0080           00824         MOVWF   INDF
+0245   10A1           00825         BCF     Data1
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 17
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0246   1D80           00826         BTFSS   INDF, 3
+0247   14A1           00827         BSF     Data1
+0248   2???           00828         CALL    CalcularCRC16
+0249   2???           00829         CALL    InsertarCRC16
+024A   0AD1           00830         INCF    Var_3, F
+024B   2???           00831         CALL    InsertarBitStuffing
+024C   3008           00832         MOVLW   0x08
+024D   07D0           00833         ADDWF   Var_2, F
+024E   15A1           00834         BSF     INPend
+024F   2???           00835         GOTO    EsperoContinuacion
+                      00836 
+0250                  00837 ProcesarSetup
+0250   14A1           00838         BSF     Data1                           ;Respuesta a (Setup + Data0) = Data1
+0251   0834           00839         MOVFW   Recibido_1                      ;Cargo Address en W
+0252   3960           00840         ANDLW   0x60                            ;Standard Request (Bit5 y Bit6 en "0")
+0253   1903           00841         BTFSC   STATUS, Z                       ;Si los bits 5 y 6 de Recibido_1 son igual a 0 es Standa
+                            rd Request
+0254   2???           00842         GOTO    IdentificarStdReq
+0255   0835           00843         MOVFW   Recibido_2
+0256   3A01           00844         XORLW   0x01                            ;CLEAR_FEATURE no Standard Request
+0257   1903           00845         BTFSC   STATUS, Z                       ;Si Recibido_2 es igual a CLEAR_FEATURE...
+0258   2???           00846         GOTO    bReqNS
+0259   0835           00847         MOVFW   Recibido_2
+025A   3A09           00848         XORLW   0x09                            ;SET_CONFIGURATION no Standard Request
+025B   1903           00849         BTFSC   STATUS, Z                       ;Si Recibido_2 es igual a SET_CONFIGURATION...
+025C   2???           00850         GOTO    bReqNS
+025D   0835           00851         MOVFW   Recibido_2
+025E   3A0A           00852         XORLW   0x0A                            ;GET_INTERFACE no Standard Request
+025F   1903           00853         BTFSC   STATUS, Z                       ;Si Recibido_2 es igual a GET_INTERFACE...
+0260   2???           00854         GOTO    GINSR
+0261   16A1           00855         BSF     Stall                           ;Levanto bandera de STALL (atascado)
+0262   2???           00856         GOTO    EsperoContinuacion
+                      00857 
+0263                  00858 IdentificarStdReq
+0263   0835           00859         MOVFW   Recibido_2                      ;Cargo en W Recibido_2
+0264   000B           00860         brw                                     ;Se lo agrego a PCL
+                      00861 
+0265   2???           00862         GOTO    GET_STATUS                      ;GET_STATUS
+0266   2???           00863         GOTO    CLEAR_FEATURE                   ;CLEAR_FEATURE
+0267   2???           00864         GOTO    EsperoContinuacion              ;Reserved for future use
+0268   2???           00865         GOTO    SET_FEATURE                     ;SET_FEATURE
+0269   2???           00866         GOTO    EsperoContinuacion              ;Reserved for future use
+026A   2???           00867         GOTO    SET_ADDRESS                     ;SET_ADDRESS
+026B   2???           00868         GOTO    GET_SET_DESCRIPTOR              ;GET_DESCRIPTOR
+026C   2???           00869         GOTO    GET_SET_DESCRIPTOR              ;SET_DESCRIPTOR
+026D   2???           00870         GOTO    GET_CONFIGURATION               ;GET_CONFIGURATION
+026E   2???           00871         GOTO    SET_CONFIGURATION               ;SET_CONFIGURATION
+026F   2???           00872         GOTO    GET_INTERFACE                   ;GET_INTERFACE
+0270   2???           00873         GOTO    SET_INTERFACE                   ;SET_INTERFACE
+0271   2???           00874         GOTO    SYNCH_FRAME                     ;SYNCH_FRAME
+                      00875 
+0272                  00876 GET_STATUS
+0272   01B4           00877         CLRF    Recibido_1
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 18
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0273   01B5           00878         CLRF    Recibido_2
+0274   1920           00879         BTFSC   Banderas_0, 2
+0275   1434           00880         BSF     Recibido_1, 0
+0276   3002           00881         MOVLW   0x02
+0277   00D1           00882         MOVWF   Var_3
+0278   2???           00883         GOTO    PrepararDescriptor
+                      00884 
+0279                  00885 CLEAR_FEATURE
+0279   1120           00886         BCF     Banderas_0, 2
+027A   2???           00887         GOTO    ZLPPendiente
+                      00888 
+027B                  00889 SET_FEATURE
+027B   1520           00890         BSF     Banderas_0, 2
+027C   2???           00891         GOTO    ZLPPendiente
+                      00892 
+027D                  00893 SET_ADDRESS
+027D   0836           00894         MOVFW   Recibido_3
+027E   00B2           00895         MOVWF   NuevoAddress
+027F   01D2           00896         CLRF    Var_4
+0280   15D2           00897         BSF     Var_4, 3
+0281   1403           00898         BSF     STATUS, C
+0282                  00899 AddressNRZI
+0282   3080           00900         MOVLW   0x80
+0283   0CB2           00901         RRF     NuevoAddress, F
+0284   1C03           00902         BTFSS   STATUS, C
+0285   06B2           00903         XORWF   NuevoAddress, F
+0286   0D32           00904         RLF     NuevoAddress, W
+0287   0BD2           00905         DECFSZ  Var_4, F
+0288   2???           00906         GOTO    AddressNRZI
+0289   13B2           00907         BCF     NuevoAddress, 7
+028A   1421           00908         BSF     AsignAddress
+028B   2???           00909         GOTO    ZLPPendiente
+                      00910 
+028C                  00911 GET_SET_DESCRIPTOR
+028C   083A           00912         MOVFW   Recibido_7
+028D   00C0           00913         MOVWF   Var_0
+028E   083B           00914         MOVFW   Recibido_8
+028F   00C1           00915         MOVWF   Var_1
+0290   30FF           00916         MOVLW   0xFF
+0291   08BB           00917         MOVF    Recibido_8, F
+0292   1903           00918         BTFSC   STATUS, Z                       ;Me fijo si Recibido_8 es distinto de "0"
+0293   083A           00919         MOVFW   Recibido_7                      ;Es igual a "0", Cargo W con Recibido_7
+0294   00D2           00920         MOVWF   Var_4
+0295   0837           00921         MOVFW   Recibido_4
+0296   3A21           00922         XORLW   0x21
+0297   1903           00923         BTFSC   STATUS, Z                       ;Si Recibido_4 es igual a 0x21...
+0298   2???           00924         GOTO    Mandar_HID_Descriptor           ;Es igual a 0x21, Mando Descriptor (HID)
+0299   0837           00925         MOVFW   Recibido_4
+029A   3A22           00926         XORLW   0x22
+029B   1903           00927         BTFSC   STATUS, Z                       ;Si Recibido_4 es igual a 0x22...
+029C   2???           00928         GOTO    Mandar_HIDReport_Descriptor     ;Es igual a 0x22, Mando HID Report Descriptor
+029D   0837           00929         MOVFW   Recibido_4                      ;Cargo en W Recibido_4
+029E   000B           00930         brw                                     ;Se lo agrego a PCL
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 19
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+029F   2???           00931         GOTO    EsperoContinuacion              ;Posición de PC = 2B3 (PCLATH = 0x02) (PCL = 0xB3)
+02A0   2???           00932         GOTO    Mandar_DEVICE_Descriptor
+02A1   2???           00933         GOTO    Mandar_CONFIGURATION_Descriptor
+02A2   2???           00934         GOTO    Mandar_STRING_Descriptors
+                      00935 
+02A3                  00936 Mandar_DEVICE_Descriptor
+02A3   3012           00937         MOVLW   0x12                            ;Tamaño del Descriptor (18 Bytes)
+02A4   2???           00938         CALL    Label_A
+02A5   3000           00939         MOVLW   0x00                            ;Posición del Descriptor (0)
+02A6   00C2           00940         MOVWF   Posicion
+02A7   2???           00941         GOTO    LeerDescriptor
+                      00942 
+02A8                  00943 Mandar_CONFIGURATION_Descriptor
+02A8   3029           00944         MOVLW   0x29                            ;Tamaño del Descriptor (41 Bytes)
+02A9   2???           00945         CALL    Label_A
+02AA   3012           00946         MOVLW   0x12                            ;Posición del Descriptor (18)
+02AB   00C2           00947         MOVWF   Posicion
+02AC   2???           00948         GOTO    LeerDescriptor
+                      00949 
+02AD                  00950 Mandar_HID_Descriptor
+02AD   3009           00951         MOVLW   0x09                            ;Tamaño del Descriptor (9 Bytes)
+02AE   2???           00952         CALL    Label_A
+02AF   3024           00953         MOVLW   0x24                            ;Posición del Descriptor (36)
+02B0   00C2           00954         MOVWF   Posicion
+02B1   2???           00955         GOTO    LeerDescriptor
+                      00956 
+02B2                  00957 Mandar_HIDReport_Descriptor
+02B2   3019           00958         MOVLW   0x19                            ;Tamaño del Descriptor (25 Bytes)
+02B3   2???           00959         CALL    Label_A
+02B4   303B           00960         MOVLW   0x3B                            ;Posición del Descriptor (59)
+02B5   00C2           00961         MOVWF   Posicion
+02B6   2???           00962         GOTO    LeerDescriptor
+                      00963 
+02B7                  00964 Mandar_STRING_Descriptors
+02B7   0836           00965         MOVFW   Recibido_3                      ;Cargo en W Recibido_3
+02B8   000B           00966         brw                                     ;Se lo agrego a PCL
+02B9   2???           00967         GOTO    StringDescriptor0               ;Posición de PC = 2D3 (PCLATH = 0x02) (PCL = 0xD3)
+02BA   2???           00968         GOTO    StringDescriptor1
+02BB   2???           00969         GOTO    StringDescriptor2
+                      00970 
+02BC                  00971 StringDescriptor0
+02BC   3004           00972         MOVLW   0x04                            ;Tamaño 4 Bytes (String Descriptor)
+02BD   2???           00973         CALL    Label_A
+02BE   3054           00974         MOVLW   0x54                            ;Posición en la tabla (84)...
+02BF   00C2           00975         MOVWF   Posicion
+02C0   2???           00976         GOTO    LeerDescriptor
+                      00977 
+02C1                  00978 StringDescriptor1
+02C1   3012           00979         MOVLW   0x12                            ;Tamaño 18 Bytes (String Descriptor)
+02C2   2???           00980         CALL    Label_A
+02C3   3058           00981         MOVLW   0x58                            ;Posición en la tabla (88)...
+02C4   00C2           00982         MOVWF   Posicion
+02C5   2???           00983         GOTO    LeerDescriptor
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 20
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00984 
+02C6                  00985 StringDescriptor2
+02C6   3056           00986         MOVLW   0x56                            ;Tamaño 86 Bytes (String Descriptor)
+02C7   2???           00987         CALL    Label_A
+02C8   306A           00988         MOVLW   0x6A                            ;Posición en la tabla (106)...
+02C9   00C2           00989         MOVWF   Posicion
+02CA   2???           00990         GOTO    LeerDescriptor
+                      00991 
+02CB                  00992 GET_CONFIGURATION
+02CB   0832           00993         MOVFW   NuevoAddress
+02CC   00B4           00994         MOVWF   Recibido_1
+02CD   3001           00995         MOVLW   0x01
+02CE   00D1           00996         MOVWF   Var_3
+02CF   2???           00997         GOTO    PrepararDescriptor
+                      00998 
+02D0                  00999 SET_CONFIGURATION
+02D0   0836           01000         MOVFW   Recibido_3
+02D1   00B2           01001         MOVWF   NuevoAddress
+02D2   14A0           01002         BSF     Banderas_0, 1
+02D3   2???           01003         GOTO    ZLPPendiente
+                      01004 
+02D4                  01005 GET_INTERFACE
+02D4   01B4           01006         CLRF    Recibido_1
+02D5   3001           01007         MOVLW   0x01
+02D6   00D1           01008         MOVWF   Var_3
+02D7   2???           01009         GOTO    PrepararDescriptor
+                      01010 
+02D8                  01011 SET_INTERFACE
+02D8   2???           01012         GOTO    ZLPPendiente
+                      01013 
+02D9                  01014 SYNCH_FRAME
+02D9   2???           01015         GOTO    EsperoContinuacion
+                      01016 
+02DA                  01017 bReqNS
+02DA   2???           01018         GOTO    EsperoContinuacion
+                      01019 
+02DB                  01020 GINSR
+02DB   2???           01021         GOTO    ZLPPendiente
+                      01022 
+02DC                  01023 Label_A
+02DC   02D2           01024         SUBWF   Var_4, F
+02DD   1C03           01025         BTFSS   STATUS, C
+02DE   083A           01026         MOVFW   Recibido_7
+02DF   00C0           01027         MOVWF   Var_0
+02E0   0008           01028         RETURN
+                      01029 
+02E1                  01030 ProcessOut                              ; Custom code goes here
+                      01031                                         ; Interrupt transfer found, put first byte nibble of
+                      01032                                         ; Output Report and Send one byte.
+02E1   01D2           01033         CLRF    Var_4                   ; Limpio
+02E2   0AD2           01034         INCF    Var_4, F                ; Incremento
+02E3   1BB5           01035         btfsc   Recibido_2,7            ;!(Recibido_2 > 0x80) ?
+02E4   2???           01036         goto    Set_BR
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 21
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+02E5   1AB5           01037         btfsc   Recibido_2,5            ;!(Recibido_2 = 0x20) ?
+02E6   2???           01038         goto    Set_RTS_High
+02E7   1A35           01039         btfsc   Recibido_2,4            ;!(Recibido_2 = 0x10) ?
+02E8   2???           01040         goto    Set_RTS_Low
+02E9   08B5           01041         movf    Recibido_2,F            ;Recibido_2 = 0x00 ?
+02EA   1D03           01042         skpz
+02EB   3400           01043         retlw   0x00
+02EC   0834           01044         movf    Recibido_1,W
+02ED   0023           01045         movlb   3
+02EE   189E           01046         btfsc   TXSTA,TRMT
+02EF   009A           01047         movwf   TXREG
+02F0   0020           01048         movlb   0
+02F1   3400           01049         retlw   0x00
+                      01050 
+02F2                  01051 Set_BR
+02F2   0834           01052         movf    Recibido_1,W
+02F3   0023           01053         movlb   3
+02F4   009B           01054         movwf   SPBRGL
+02F5   0020           01055         movlb   0
+02F6   0835           01056         movf    Recibido_2,W
+02F7   1389           01057         bcf     WREG,7
+02F8   0023           01058         movlb   3
+02F9   009C           01059         movwf   SPBRGH
+02FA   0020           01060         movlb   0
+02FB   3400           01061         retlw   0x00
+                      01062 
+02FC                  01063 Set_RTS_High
+02FC   150C           01064         bsf     PORTA,RTS
+02FD   3400           01065         retlw   0x00
+                      01066 
+02FE                  01067 Set_RTS_Low
+02FE   110C           01068         bcf     PORTA,RTS
+02FF   3400           01069         retlw   0x00
+                      01070 
+0300                  01071 Main                                    ; Custom code goes here
+0300   1E91           01072         btfss   PIR1,RCIF
+0301   3400           01073         retlw   0x00
+                      01074 
+0302   0023           01075         movlb   3
+0303   0819           01076         movf    RCREG,W
+0304   0020           01077         movlb   0
+                      01078 
+0305   00B4           01079         MOVWF   Recibido_1
+0306   3002           01080         MOVLW   0x02
+0307   00D1           01081         MOVWF   Var_3
+0308   3033           01082         MOVLW   PID
+0309   00DA           01083         MOVWF   PosicionPID
+030A   085A           01084         MOVFW   PosicionPID
+030B   0084           01085         MOVWF   FSR
+030C   304B           01086         MOVLW   0x4B                    ;'01001011' DATA1
+030D   1CA1           01087         BTFSS   Data1
+030E   30C3           01088         MOVLW   0xC3                    ;'11000011' DATA0
+030F   0080           01089         MOVWF   INDF
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 22
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0310   10A1           01090         BCF     Data1
+0311   1D80           01091         BTFSS   INDF, 3
+0312   14A1           01092         BSF     Data1
+0313   2???           01093         CALL    CalcularCRC16
+0314   2???           01094         CALL    InsertarCRC16
+0315   0AD1           01095         INCF    Var_3, F
+0316   2???           01096         CALL    InsertarBitStuffing
+0317   3008           01097         MOVLW   0x08
+0318   07D0           01098         ADDWF   Var_2, F
+0319   1621           01099         BSF     InterruptIN
+031A   3400           01100         RETLW   0x00
+                      01101 
+031B                  01102 LevantarTabla
+031B   0842           01103         MOVFW   Posicion                        ;Cargo Posicion en W
+031C   000B           01104         brw                                     ;Se lo agrego a PCL
+                      01105 
+031D   3412           01106         RETLW   0x12                            ;1 Size of this descriptor in bytes     Posición de PC =
+                             306
+031E   3401           01107         RETLW   0x01                            ;2 Descriptor Type (1 = DEVICE)
+031F   3410           01108         RETLW   0x10                            ;3 (This field identifies the release of the USB Specifi
+                            cation 
+0320   3401           01109         RETLW   0x01                            ;4 with which the device and its descriptors are complia
+                            nt.)
+0321   3400           01110         RETLW   0x00                            ;5 Class code (assigned by the USB-IF).
+0322   3400           01111         RETLW   0x00                            ;6 Subclass code (assigned by the USB-IF).
+0323   3400           01112         RETLW   0x00                            ;7 Protocol code (assigned by the USB-IF).
+0324   3408           01113         RETLW   0x08                            ;8 Maximum packet size for endpoint zero
+0325   34D8           01114         RETLW   0xD8                            ;9 Vendor ID (assigned by the USB-IF) Low
+0326   3404           01115         RETLW   0x04                            ;10 Vendor ID (assigned by the USB-IF) High
+0327   3428           01116         RETLW   0x28                            ;11 Product ID (assigned by the manufacturer) Low
+0328   3406           01117         RETLW   0x06                            ;12 Product ID (assigned by the manufacturer) High
+0329   3416           01118         RETLW   0x16                            ;13 Device release number in binary-coded decimal Low
+032A   3408           01119         RETLW   0x08                            ;14 Device release number in binary-coded decimal High
+032B   3401           01120         RETLW   0x01                            ;15 Index of string descriptor describing manufacturer
+032C   3402           01121         RETLW   0x02                            ;16 Index of string descriptor describing product
+032D   3400           01122         RETLW   0x00                            ;17 Index of string descriptor describing the device’s s
+                            erial number
+032E   3401           01123         RETLW   0x01                            ;18 Number of possible configurations
+                      01124 
+032F   3409           01125         RETLW   0x09                            ;1 Size of this descriptor in bytes
+0330   3402           01126         RETLW   0x02                            ;2 Descriptor Type (2 = CONFIGURATION)
+0331   3429           01127         RETLW   0x29                            ;3 wTotalLength Low
+0332   3400           01128         RETLW   0x00                            ;4 wTotalLength High
+0333   3401           01129         RETLW   0x01                            ;5 bNumInterfaces
+0334   3401           01130         RETLW   0x01                            ;6 bConfigurationValue
+0335   3400           01131         RETLW   0x00                            ;7 Index of string descriptor describing this configurat
+                            ion
+0336   3480           01132         RETLW   0x80                            ;8 bmAttributes
+0337   3432           01133         RETLW   0x32                            ;9 bMaxPower
+                      01134                                                 
+0338   3409           01135         RETLW   0x09                            ;1 Size of this descriptor in bytes
+0339   3404           01136         RETLW   0x04                            ;2 Descriptor Type (4 = INTERFACE)
+033A   3400           01137         RETLW   0x00                            ;3 bInterfaceNumber
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 23
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+033B   3400           01138         RETLW   0x00                            ;4 bAlternateSetting
+033C   3402           01139         RETLW   0x02                            ;5 bNumEndpoints
+033D   3403           01140         RETLW   0x03                            ;6 bInterfaceClass
+033E   3400           01141         RETLW   0x00                            ;7 bInterfaceSubClass
+033F   3400           01142         RETLW   0x00                            ;8 bInterfaceProtocol
+0340   3400           01143         RETLW   0x00                            ;9 iInterface
+                      01144 
+0341   3409           01145         RETLW   0x09                            ;1 Size of this descriptor in bytes
+0342   3421           01146         RETLW   0x21                            ;2 Descriptor Type (21 = HID)
+0343   3400           01147         RETLW   0x00                            ;3 HID Class Specification release number in binary Low
+0344   3401           01148         RETLW   0x01                            ;4 HID Class Specification release number in binary High
+0345   3400           01149         RETLW   0x00                            ;5 Hardware target country
+0346   3401           01150         RETLW   0x01                            ;6 Number of HID class descriptors to follow
+0347   3422           01151         RETLW   0x22                            ;7 Report Type Descriptor
+0348   3419           01152         RETLW   0x19                            ;8 Total length of Report descriptor Low
+0349   3400           01153         RETLW   0x00                            ;9 Total length of Report descriptor High
+                      01154 
+034A   3407           01155         RETLW   0x07                            ;1 Size of this descriptor in bytes
+034B   3405           01156         RETLW   0x05                            ;2 Descriptor Type (5 = ENDPOINT)
+034C   3481           01157         RETLW   0x81                            ;3 bEndpointAddress (Bit 7: 1 IN, Bits 0..3 = 1 Endpoint
+                             Address 1)
+034D   3403           01158         RETLW   0x03                            ;4 bmAttributes (3 = INTERRUPT TRANSFER)
+034E   3408           01159         RETLW   0x08                            ;5 wMaxPacketSize Low
+034F   3400           01160         RETLW   0x00                            ;6 wMaxPacketSize High
+0350   340A           01161         RETLW   0x0A                            ;7 bInterval
+                      01162 
+0351   3407           01163         RETLW   0x07                            ;1 Size of this descriptor in bytes
+0352   3405           01164         RETLW   0x05                            ;2 Descriptor Type (5 = ENDPOINT)
+0353   3401           01165         RETLW   0x01                            ;3 bEndpointAddress (Bit 7: 0 OUT, Bits 0..3 = 1 Endpoin
+                            t Address 1)
+0354   3403           01166         RETLW   0x03                            ;4 bmAttributes (3 = INTERRUPT TRANSFER)
+0355   3408           01167         RETLW   0x08                            ;5 wMaxPacketSize Low
+0356   3400           01168         RETLW   0x00                            ;6 wMaxPacketSize High
+0357   340A           01169         RETLW   0x0A                            ;7 bInterval
+                      01170 
+0358   3406           01171         RETLW   0x06                            ;1 HID Report Descriptor
+0359   34A0           01172         RETLW   0xA0                            ;2
+035A   34FF           01173         RETLW   0xFF                            ;3
+035B   3409           01174         RETLW   0x09                            ;4
+035C   3401           01175         RETLW   0x01                            ;5
+035D   34A1           01176         RETLW   0xA1                            ;6
+035E   3401           01177         RETLW   0x01                            ;7
+035F   3409           01178         RETLW   0x09                            ;8
+0360   3403           01179         RETLW   0x03                            ;9
+0361   3415           01180         RETLW   0x15                            ;10
+0362   3400           01181         RETLW   0x00                            ;11
+0363   3426           01182         RETLW   0x26                            ;12
+0364   34FF           01183         RETLW   0xFF                            ;13
+0365   3400           01184         RETLW   0x00                            ;14
+0366   3475           01185         RETLW   0x75                            ;15
+0367   3408           01186         RETLW   0x08                            ;16
+0368   3495           01187         RETLW   0x95                            ;17
+0369   3402           01188         RETLW   0x02                            ;18
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 24
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+036A   3481           01189         RETLW   0x81                            ;19
+036B   3402           01190         RETLW   0x02                            ;20
+036C   3409           01191         RETLW   0x09                            ;21
+036D   3404           01192         RETLW   0x04                            ;22
+036E   3491           01193         RETLW   0x91                            ;23
+036F   3402           01194         RETLW   0x02                            ;24
+0370   34C0           01195         RETLW   0xC0                            ;25
+                      01196 
+0371   3404           01197         RETLW   0x04                            ;1 String Descriptors
+0372   3403           01198         RETLW   0x03                            ;2
+0373   3409           01199         RETLW   0x09                            ;3
+0374   3404           01200         RETLW   0x04                            ;4
+                      01201 
+0375   3412           01202         RETLW   0x12                            ;1
+0376   3403           01203         RETLW   0x03                            ;2
+0377   3444           01204         RETLW   0x44                            ;3
+0378   3400           01205         RETLW   0x00                            ;4
+0379   344D           01206         RETLW   0x4D                            ;5
+037A   3400           01207         RETLW   0x00                            ;6
+037B   344C           01208         RETLW   0x4C                            ;7
+037C   3400           01209         RETLW   0x00                            ;8
+037D   3440           01210         RETLW   0x40                            ;9
+037E   3400           01211         RETLW   0x00                            ;10
+037F   3432           01212         RETLW   0x32                            ;11
+0380   3400           01213         RETLW   0x00                            ;12
+0381   3430           01214         RETLW   0x30                            ;13
+0382   3400           01215         RETLW   0x00                            ;14
+0383   3431           01216         RETLW   0x31                            ;15
+0384   3400           01217         RETLW   0x00                            ;16
+0385   3433           01218         RETLW   0x33                            ;17
+0386   3400           01219         RETLW   0x00                            ;18
+                      01220 
+0387   3456           01221         RETLW   0x56                            ;1
+0388   3403           01222         RETLW   0x03                            ;2
+0389   3443           01223         RETLW   0x43                            ;3
+038A   3400           01224         RETLW   0x00                            ;4
+038B   346F           01225         RETLW   0x6F                            ;5
+038C   3400           01226         RETLW   0x00                            ;6
+038D   346E           01227         RETLW   0x6E                            ;7
+038E   3400           01228         RETLW   0x00                            ;8
+038F   3465           01229         RETLW   0x65                            ;9
+0390   3400           01230         RETLW   0x00                            ;10
+0391   3463           01231         RETLW   0x63                            ;11
+0392   3400           01232         RETLW   0x00                            ;12
+0393   3463           01233         RETLW   0x63                            ;13
+0394   3400           01234         RETLW   0x00                            ;14
+0395   3469           01235         RETLW   0x69                            ;15
+0396   3400           01236         RETLW   0x00                            ;16
+0397   34F3           01237         RETLW   0xF3                            ;17
+0398   3400           01238         RETLW   0x00                            ;18
+0399   346E           01239         RETLW   0x6E                            ;19
+039A   3400           01240         RETLW   0x00                            ;20
+039B   3420           01241         RETLW   0x20                            ;21
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 25
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+039C   3400           01242         RETLW   0x00                            ;22
+039D   3455           01243         RETLW   0x55                            ;23
+039E   3400           01244         RETLW   0x00                            ;24
+039F   3453           01245         RETLW   0x53                            ;25
+03A0   3400           01246         RETLW   0x00                            ;26
+03A1   3442           01247         RETLW   0x42                            ;27
+03A2   3400           01248         RETLW   0x00                            ;28
+03A3   3420           01249         RETLW   0x20                            ;29
+03A4   3400           01250         RETLW   0x00                            ;30
+03A5   3461           01251         RETLW   0x61                            ;31
+03A6   3400           01252         RETLW   0x00                            ;32
+03A7   3474           01253         RETLW   0x74                            ;33
+03A8   3400           01254         RETLW   0x00                            ;34
+03A9   3472           01255         RETLW   0x72                            ;35
+03AA   3400           01256         RETLW   0x00                            ;36
+03AB   3461           01257         RETLW   0x61                            ;37
+03AC   3400           01258         RETLW   0x00                            ;38
+03AD   3476           01259         RETLW   0x76                            ;39
+03AE   3400           01260         RETLW   0x00                            ;40
+03AF   3465           01261         RETLW   0x65                            ;41
+03B0   3400           01262         RETLW   0x00                            ;42
+03B1   347A           01263         RETLW   0x7A                            ;43
+03B2   3400           01264         RETLW   0x00                            ;44
+03B3   3420           01265         RETLW   0x20                            ;45
+03B4   3400           01266         RETLW   0x00                            ;46
+03B5   3464           01267         RETLW   0x64                            ;47
+03B6   3400           01268         RETLW   0x00                            ;48
+03B7   3465           01269         RETLW   0x65                            ;49
+03B8   3400           01270         RETLW   0x00                            ;50
+03B9   3420           01271         RETLW   0x20                            ;51
+03BA   3400           01272         RETLW   0x00                            ;52
+03BB   3450           01273         RETLW   0x50                            ;53
+03BC   3400           01274         RETLW   0x00                            ;54
+03BD   3449           01275         RETLW   0x49                            ;55
+03BE   3400           01276         RETLW   0x00                            ;56
+03BF   3443           01277         RETLW   0x43                            ;57
+03C0   3400           01278         RETLW   0x00                            ;58
+03C1   3431           01279         RETLW   0x31                            ;59
+03C2   3400           01280         RETLW   0x00                            ;60
+03C3   3432           01281         RETLW   0x32                            ;61
+03C4   3400           01282         RETLW   0x00                            ;62
+03C5   3446           01283         RETLW   0x46                            ;63
+03C6   3400           01284         RETLW   0x00                            ;64
+03C7   3436           01285         RETLW   0x36                            ;65
+03C8   3400           01286         RETLW   0x00                            ;66
+03C9   3437           01287         RETLW   0x37                            ;67
+03CA   3400           01288         RETLW   0x00                            ;68
+03CB   3435           01289         RETLW   0x35                            ;69
+03CC   3400           01290         RETLW   0x00                            ;70
+03CD   3420           01291         RETLW   0x20                            ;71
+03CE   3400           01292         RETLW   0x00                            ;72
+03CF   3470           01293         RETLW   0x70                            ;73
+03D0   3400           01294         RETLW   0x00                            ;74
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 26
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+03D1   346F           01295         RETLW   0x6F                            ;75
+03D2   3400           01296         RETLW   0x00                            ;76
+03D3   3472           01297         RETLW   0x72                            ;77
+03D4   3400           01298         RETLW   0x00                            ;78
+03D5   3420           01299         RETLW   0x20                            ;79
+03D6   3400           01300         RETLW   0x00                            ;80
+03D7   3444           01301         RETLW   0x44                            ;81
+03D8   3400           01302         RETLW   0x00                            ;82
+03D9   344D           01303         RETLW   0x4D                            ;83
+03DA   3400           01304         RETLW   0x00                            ;84
+03DB   344C           01305         RETLW   0x4C                            ;85
+03DC   3400           01306         RETLW   0x00                            ;86
+                      01307 
+                      01308 
+                      01309 
+                      01310 
+                      01311 
+                      01312 
+                      01313 
+1F8C 2530 1FFF 3FFF   01314         END
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 27
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ABDEN                             00000000
+ABDOVF                            00000007
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ACKTIM                            00000007
+ACKTokenRecibido                  000000A7
+ADACT                             0000009F
+ADACT0                            00000000
+ADACT1                            00000001
+ADACT2                            00000002
+ADACT3                            00000003
+ADCMD                             00000005
+ADCON0                            0000009D
+ADCON1                            0000009E
+ADCS0                             00000004
+ADCS1                             00000005
+ADCS2                             00000006
+ADD0                              00000000
+ADD1                              00000001
+ADD2                              00000002
+ADD3                              00000003
+ADD4                              00000004
+ADD5                              00000005
+ADD6                              00000006
+ADD7                              00000007
+ADDEN                             00000003
+ADFM                              00000007
+ADFVR0                            00000000
+ADFVR1                            00000001
+ADGO                              00000001
+ADIE                              00000006
+ADIF                              00000006
+ADNREF                            00000002
+ADOEN                             00000002
+ADON                              00000000
+ADOR                              00000002
+ADPREF0                           00000000
+ADPREF1                           00000001
+ADRES                             0000009B
+ADRESH                            0000009C
+ADRESL                            0000009B
+AHEN                              00000001
+ANSA0                             00000000
+ANSA1                             00000001
+ANSA2                             00000002
+ANSA4                             00000004
+ANSA5                             00000005
+ANSEL                             ANSELA
+ANSELA                            0000018C
+AS0E                              00000000
+AS1E                              00000001
+AS3E                              00000003
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 28
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+AddrAsignOK                       Banderas_0, 0
+AddressNRZI                       00000282
+AsignAddress                      Banderas_1, 0
+AsignarNuevoAddress               000000CA
+BAUD1CON                          0000019F
+BAUDCON                           0000019F
+BAUDCON1                          0000019F
+BAUDCTL                           0000019F
+BAUDCTL1                          0000019F
+BCL1IE                            00000002
+BCL1IF                            00000002
+BF                                00000000
+BOEN                              00000004
+BORCON                            00000116
+BORRDY                            00000000
+BRG16                             00000003
+BRGH                              00000002
+BSR                               00000008
+BSR0                              00000000
+BSR1                              00000001
+BSR2                              00000002
+BSR3                              00000003
+BSR4                              00000004
+BSR_SHAD                          00000FE6
+BUF0                              00000000
+BUF1                              00000001
+BUF2                              00000002
+BUF3                              00000003
+BUF4                              00000004
+BUF5                              00000005
+BUF6                              00000006
+BUF7                              00000007
+Banderas_0                        00000020
+Banderas_1                        00000021
+Banderas_2                        0000005B
+ByteAMandar                       00000022
+BytesRecibidos                    00000031
+C                                 00000000
+C1HYS                             00000001
+C1IE                              00000005
+C1IF                              00000005
+C1INTN                            00000006
+C1INTP                            00000007
+C1NCH0                            00000000
+C1NCH1                            00000001
+C1NCH2                            00000002
+C1ON                              00000007
+C1OUT                             00000006
+C1PCH0                            00000003
+C1PCH1                            00000004
+C1PCH2                            00000005
+C1POL                             00000004
+C1SP                              00000002
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 29
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+C1SYNC                            00000000
+C1TSEL                            00000000
+C2TSEL                            00000002
+CCDCON                            0000041F
+CCDEN                             00000007
+CCDNA                             0000040C
+CCDNA0                            00000000
+CCDNA1                            00000001
+CCDNA2                            00000002
+CCDNA4                            00000004
+CCDNA5                            00000005
+CCDPA                             0000048C
+CCDPA0                            00000000
+CCDPA1                            00000001
+CCDPA2                            00000002
+CCDPA4                            00000004
+CCDPA5                            00000005
+CCDS0                             00000000
+CCDS1                             00000001
+CCP1CAP                           00000294
+CCP1CON                           00000293
+CCP1CTS0                          00000000
+CCP1CTS1                          00000001
+CCP1CTS2                          00000002
+CCP1EN                            00000007
+CCP1FMT                           00000004
+CCP1IE                            00000000
+CCP1IF                            00000000
+CCP1MD                            00000000
+CCP1MODE0                         00000000
+CCP1MODE1                         00000001
+CCP1MODE2                         00000002
+CCP1MODE3                         00000003
+CCP1OUT                           00000005
+CCP1PPS                           00000E14
+CCP1PPS0                          00000000
+CCP1PPS1                          00000001
+CCP1PPS2                          00000002
+CCP1PPS3                          00000003
+CCP1PPS4                          00000004
+CCP2CAP                           00000298
+CCP2CON                           00000297
+CCP2CTS0                          00000000
+CCP2CTS1                          00000001
+CCP2CTS2                          00000002
+CCP2EN                            00000007
+CCP2FMT                           00000004
+CCP2IE                            00000001
+CCP2IF                            00000001
+CCP2MD                            00000001
+CCP2MODE0                         00000000
+CCP2MODE1                         00000001
+CCP2MODE2                         00000002
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 30
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CCP2MODE3                         00000003
+CCP2OUT                           00000005
+CCP2PPS                           00000E15
+CCP2PPS0                          00000000
+CCP2PPS1                          00000001
+CCP2PPS2                          00000002
+CCP2PPS3                          00000003
+CCP2PPS4                          00000004
+CCPR1                             00000291
+CCPR1H                            00000292
+CCPR1L                            00000291
+CCPR2                             00000295
+CCPR2H                            00000296
+CCPR2L                            00000295
+CCPTMRS                           0000029F
+CDAFVR0                           00000002
+CDAFVR1                           00000003
+CDIV0                             00000000
+CDIV1                             00000001
+CDIV2                             00000002
+CDIV3                             00000003
+CHS0                              00000002
+CHS1                              00000003
+CHS2                              00000004
+CHS3                              00000005
+CHS4                              00000006
+CHS5                              00000007
+CKE                               00000006
+CKP                               00000004
+CLC1CON                           00000F10
+CLC1GLS0                          00000F16
+CLC1GLS1                          00000F17
+CLC1GLS2                          00000F18
+CLC1GLS3                          00000F19
+CLC1IE                            00000000
+CLC1IF                            00000000
+CLC1MD                            00000001
+CLC1POL                           00000F11
+CLC1SEL0                          00000F12
+CLC1SEL1                          00000F13
+CLC1SEL2                          00000F14
+CLC1SEL3                          00000F15
+CLC2CON                           00000F1A
+CLC2GLS0                          00000F20
+CLC2GLS1                          00000F21
+CLC2GLS2                          00000F22
+CLC2GLS3                          00000F23
+CLC2IE                            00000001
+CLC2IF                            00000001
+CLC2MD                            00000002
+CLC2POL                           00000F1B
+CLC2SEL0                          00000F1C
+CLC2SEL1                          00000F1D
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 31
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CLC2SEL2                          00000F1E
+CLC2SEL3                          00000F1F
+CLCDATA                           00000F0F
+CLCIN0PPS                         00000E28
+CLCIN0PPS0                        00000000
+CLCIN0PPS1                        00000001
+CLCIN0PPS2                        00000002
+CLCIN0PPS3                        00000003
+CLCIN0PPS4                        00000004
+CLCIN1PPS                         00000E29
+CLCIN1PPS0                        00000000
+CLCIN1PPS1                        00000001
+CLCIN1PPS2                        00000002
+CLCIN1PPS3                        00000003
+CLCIN1PPS4                        00000004
+CLCIN2PPS                         00000E2A
+CLCIN2PPS0                        00000000
+CLCIN2PPS1                        00000001
+CLCIN2PPS2                        00000002
+CLCIN2PPS3                        00000003
+CLCIN2PPS4                        00000004
+CLCIN3PPS                         00000E2B
+CLCIN3PPS0                        00000000
+CLCIN3PPS1                        00000001
+CLCIN3PPS2                        00000002
+CLCIN3PPS3                        00000003
+CLCIN3PPS4                        00000004
+CLEAR_FEATURE                     00000279
+CLKRCON                           0000039A
+CLKRDC0                           00000003
+CLKRDC1                           00000004
+CLKRDIV0                          00000000
+CLKRDIV1                          00000001
+CLKRDIV2                          00000002
+CLKREN                            00000007
+CLKRMD                            00000001
+CM1CON0                           00000111
+CM1CON1                           00000112
+CMOUT                             00000115
+CMP1MD                            00000001
+COSC0                             00000004
+COSC1                             00000005
+COSC2                             00000006
+CPUDOZE                           00000918
+CREN                              00000004
+CS                                00000000
+CSRC                              00000007
+CSWHOLD                           00000007
+CSWIE                             00000006
+CSWIF                             00000006
+CWG1AS0                           00000697
+CWG1AS1                           00000698
+CWG1CLKCON                        00000691
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 32
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CWG1CON0                          00000695
+CWG1CON1                          00000696
+CWG1CS                            00000000
+CWG1DAT                           00000692
+CWG1DAT0                          00000000
+CWG1DAT1                          00000001
+CWG1DAT2                          00000002
+CWG1DAT3                          00000003
+CWG1DBF                           00000694
+CWG1DBF0                          00000000
+CWG1DBF1                          00000001
+CWG1DBF2                          00000002
+CWG1DBF3                          00000003
+CWG1DBF4                          00000004
+CWG1DBF5                          00000005
+CWG1DBR                           00000693
+CWG1DBR0                          00000000
+CWG1DBR1                          00000001
+CWG1DBR2                          00000002
+CWG1DBR3                          00000003
+CWG1DBR4                          00000004
+CWG1DBR5                          00000005
+CWG1EN                            00000007
+CWG1IE                            00000006
+CWG1IF                            00000006
+CWG1IN                            00000005
+CWG1LD                            00000006
+CWG1LSAC0                         00000002
+CWG1LSAC1                         00000003
+CWG1LSBD0                         00000004
+CWG1LSBD1                         00000005
+CWG1MD                            00000006
+CWG1MODE0                         00000000
+CWG1MODE1                         00000001
+CWG1MODE2                         00000002
+CWG1OVRA                          00000004
+CWG1OVRB                          00000005
+CWG1OVRC                          00000006
+CWG1OVRD                          00000007
+CWG1POLA                          00000000
+CWG1POLB                          00000001
+CWG1POLC                          00000002
+CWG1POLD                          00000003
+CWG1PPS                           00000E18
+CWG1PPS0                          00000000
+CWG1PPS1                          00000001
+CWG1PPS2                          00000002
+CWG1PPS3                          00000003
+CWG1PPS4                          00000004
+CWG1REN                           00000006
+CWG1SHUTDOWN                      00000007
+CWG1STR                           00000699
+CWG1STRA                          00000000
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 33
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CWG1STRB                          00000001
+CWG1STRC                          00000002
+CWG1STRD                          00000003
+C_SHAD                            00000000
+CalcularCRC16                     000001BF
+ConfEntradas                      00000145
+Configurar                        00000010
+ContTabla                         0000022B
+ContinuoRecibiendo                0000006A
+D1N                               00000000
+D1S0                              00000000
+D1S1                              00000001
+D1S2                              00000002
+D1S3                              00000003
+D1S4                              00000004
+D1T                               00000001
+D2N                               00000002
+D2S0                              00000000
+D2S1                              00000001
+D2S2                              00000002
+D2S3                              00000003
+D2S4                              00000004
+D2T                               00000003
+D3N                               00000004
+D3S0                              00000000
+D3S1                              00000001
+D3S2                              00000002
+D3S3                              00000003
+D3S4                              00000004
+D3T                               00000005
+D4N                               00000006
+D4S0                              00000000
+D4S1                              00000001
+D4S2                              00000002
+D4S3                              00000003
+D4S4                              00000004
+D4T                               00000007
+DAC1EN                            00000007
+DAC1NSS                           00000000
+DAC1OE                            00000005
+DAC1PSS0                          00000002
+DAC1PSS1                          00000003
+DAC1R0                            00000000
+DAC1R1                            00000001
+DAC1R2                            00000002
+DAC1R3                            00000003
+DAC1R4                            00000004
+DACCON0                           00000118
+DACCON1                           00000119
+DACMD                             00000006
+DATARecibido                      000000D2
+DBF0                              00000000
+DBF1                              00000001
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 34
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+DBF2                              00000002
+DBF3                              00000003
+DBF4                              00000004
+DBF5                              00000005
+DBR0                              00000000
+DBR1                              00000001
+DBR2                              00000002
+DBR3                              00000003
+DBR4                              00000004
+DBR5                              00000005
+DC                                00000001
+DC_SHAD                           00000001
+DHEN                              00000000
+DOE                               00000004
+DOZE0                             00000000
+DOZE1                             00000001
+DOZE2                             00000002
+DOZEN                             00000006
+DSMMD                             00000000
+D_NOT_A                           00000005
+Data1                             Banderas_1, 1
+DataMas                           00000005
+DataMenos                         00000004
+DescTimeOut                       0000004A
+DesencriptarNRZI                  00000183
+DeviceAddress                     00000058
+EN                                00000007
+EXTOEN                            00000007
+EXTOR                             00000007
+EscribirUSBDATA                   0000014D
+EscribirUSBPID                    00000117
+EspInt                            00000045
+Espero                            0000014C
+EsperoContinuacion                00000041
+F                                 00000001
+FERR                              00000002
+FREE                              00000004
+FSR                               FSR0L
+FSR0                              00000004
+FSR0H                             00000005
+FSR0H_SHAD                        00000FE9
+FSR0L                             00000004
+FSR0L_SHAD                        00000FE8
+FSR1                              00000006
+FSR1H                             00000007
+FSR1H_SHAD                        00000FEB
+FSR1L                             00000006
+FSR1L_SHAD                        00000FEA
+FVRCON                            00000117
+FVREN                             00000007
+FVRMD                             00000006
+FVRRDY                            00000006
+G1EN                              00000007
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 35
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+G1POL                             00000000
+G2POL                             00000001
+G3POL                             00000002
+G4D1N                             00000000
+G4D1T                             00000001
+G4D2N                             00000002
+G4D2T                             00000003
+G4D3N                             00000004
+G4D3T                             00000005
+G4D4N                             00000006
+G4D4T                             00000007
+G4POL                             00000003
+GCEN                              00000007
+GET_CONFIGURATION                 000002CB
+GET_INTERFACE                     000002D4
+GET_SET_DESCRIPTOR                0000028C
+GET_STATUS                        00000272
+GIE                               00000007
+GINSR                             000002DB
+GO                                00000001
+GO_NOT_DONE                       00000001
+GPIO                              PORTA
+HFFRQ0                            00000000
+HFFRQ1                            00000001
+HFFRQ2                            00000002
+HFFRQ3                            00000003
+HFOEN                             00000006
+HFOR                              00000006
+HFTUN0                            00000000
+HFTUN1                            00000001
+HFTUN2                            00000002
+HFTUN3                            00000003
+HFTUN4                            00000004
+HFTUN5                            00000005
+IDLEN                             00000007
+IN                                00000005
+INDF                              INDF0
+INDF0                             00000000
+INDF1                             00000001
+INLVLA                            0000038C
+INLVLA0                           00000000
+INLVLA1                           00000001
+INLVLA2                           00000002
+INLVLA3                           00000003
+INLVLA4                           00000004
+INLVLA5                           00000005
+INPend                            Banderas_1, 3
+INTCON                            0000000B
+INTE                              00000000
+INTEDG                            00000000
+INTF                              00000000
+INTN                              00000003
+INTP                              00000004
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 36
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+INTPPS                            00000E10
+INTPPS0                           00000000
+INTPPS1                           00000001
+INTPPS2                           00000002
+INTPPS3                           00000003
+INTPPS4                           00000004
+INToken                           000000B1
+IOCAF                             00000393
+IOCAF0                            00000000
+IOCAF1                            00000001
+IOCAF2                            00000002
+IOCAF3                            00000003
+IOCAF4                            00000004
+IOCAF5                            00000005
+IOCAN                             00000392
+IOCAN0                            00000000
+IOCAN1                            00000001
+IOCAN2                            00000002
+IOCAN3                            00000003
+IOCAN4                            00000004
+IOCAN5                            00000005
+IOCAP                             00000391
+IOCAP0                            00000000
+IOCAP1                            00000001
+IOCAP2                            00000002
+IOCAP3                            00000003
+IOCAP4                            00000004
+IOCAP5                            00000005
+IOCIE                             00000004
+IOCIF                             00000004
+IOCMD                             00000000
+IdentificarStdReq                 00000263
+Identificar_PID                   00000088
+InsertarBitStuffing               000001EF
+InsertarCRC16                     000001E7
+InterruptIN                       Banderas_1, 4
+InterruptTransfer                 0000010A
+LATA                              0000010C
+LATA0                             00000000
+LATA1                             00000001
+LATA2                             00000002
+LATA4                             00000004
+LATA5                             00000005
+LC1D1S0                           00000000
+LC1D1S1                           00000001
+LC1D1S2                           00000002
+LC1D1S3                           00000003
+LC1D1S4                           00000004
+LC1D2S0                           00000000
+LC1D2S1                           00000001
+LC1D2S2                           00000002
+LC1D2S3                           00000003
+LC1D2S4                           00000004
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 37
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+LC1D3S0                           00000000
+LC1D3S1                           00000001
+LC1D3S2                           00000002
+LC1D3S3                           00000003
+LC1D3S4                           00000004
+LC1D4S0                           00000000
+LC1D4S1                           00000001
+LC1D4S2                           00000002
+LC1D4S3                           00000003
+LC1D4S4                           00000004
+LC1EN                             00000007
+LC1G1D1N                          00000000
+LC1G1D1T                          00000001
+LC1G1D2N                          00000002
+LC1G1D2T                          00000003
+LC1G1D3N                          00000004
+LC1G1D3T                          00000005
+LC1G1D4N                          00000006
+LC1G1D4T                          00000007
+LC1G1POL                          00000000
+LC1G2D1N                          00000000
+LC1G2D1T                          00000001
+LC1G2D2N                          00000002
+LC1G2D2T                          00000003
+LC1G2D3N                          00000004
+LC1G2D3T                          00000005
+LC1G2D4N                          00000006
+LC1G2D4T                          00000007
+LC1G2POL                          00000001
+LC1G3D1N                          00000000
+LC1G3D1T                          00000001
+LC1G3D2N                          00000002
+LC1G3D2T                          00000003
+LC1G3D3N                          00000004
+LC1G3D3T                          00000005
+LC1G3D4N                          00000006
+LC1G3D4T                          00000007
+LC1G3POL                          00000002
+LC1G4D1N                          00000000
+LC1G4D1T                          00000001
+LC1G4D2N                          00000002
+LC1G4D2T                          00000003
+LC1G4D3N                          00000004
+LC1G4D3T                          00000005
+LC1G4D4N                          00000006
+LC1G4D4T                          00000007
+LC1G4POL                          00000003
+LC1INTN                           00000003
+LC1INTP                           00000004
+LC1MODE0                          00000000
+LC1MODE1                          00000001
+LC1MODE2                          00000002
+LC1OUT                            00000005
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 38
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+LC1POL                            00000007
+LC2D1S0                           00000000
+LC2D1S1                           00000001
+LC2D1S2                           00000002
+LC2D1S3                           00000003
+LC2D1S4                           00000004
+LC2D2S0                           00000000
+LC2D2S1                           00000001
+LC2D2S2                           00000002
+LC2D2S3                           00000003
+LC2D2S4                           00000004
+LC2D3S0                           00000000
+LC2D3S1                           00000001
+LC2D3S2                           00000002
+LC2D3S3                           00000003
+LC2D3S4                           00000004
+LC2D4S0                           00000000
+LC2D4S1                           00000001
+LC2D4S2                           00000002
+LC2D4S3                           00000003
+LC2D4S4                           00000004
+LC2EN                             00000007
+LC2G1D1N                          00000000
+LC2G1D1T                          00000001
+LC2G1D2N                          00000002
+LC2G1D2T                          00000003
+LC2G1D3N                          00000004
+LC2G1D3T                          00000005
+LC2G1D4N                          00000006
+LC2G1D4T                          00000007
+LC2G1POL                          00000000
+LC2G2D1N                          00000000
+LC2G2D1T                          00000001
+LC2G2D2N                          00000002
+LC2G2D2T                          00000003
+LC2G2D3N                          00000004
+LC2G2D3T                          00000005
+LC2G2D4N                          00000006
+LC2G2D4T                          00000007
+LC2G2POL                          00000001
+LC2G3D1N                          00000000
+LC2G3D1T                          00000001
+LC2G3D2N                          00000002
+LC2G3D2T                          00000003
+LC2G3D3N                          00000004
+LC2G3D3T                          00000005
+LC2G3D4N                          00000006
+LC2G3D4T                          00000007
+LC2G3POL                          00000002
+LC2G4D1N                          00000000
+LC2G4D1T                          00000001
+LC2G4D2N                          00000002
+LC2G4D2T                          00000003
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 39
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+LC2G4D3N                          00000004
+LC2G4D3T                          00000005
+LC2G4D4N                          00000006
+LC2G4D4T                          00000007
+LC2G4POL                          00000003
+LC2INTN                           00000003
+LC2INTP                           00000004
+LC2MODE0                          00000000
+LC2MODE1                          00000001
+LC2MODE2                          00000002
+LC2OUT                            00000005
+LC2POL                            00000007
+LD                                00000006
+LFOEN                             00000004
+LFOR                              00000004
+LSAC0                             00000002
+LSAC1                             00000003
+LSBD0                             00000004
+LSBD1                             00000005
+LWLO                              00000005
+Label_0                           0000019A
+Label_1                           000001A7
+Label_2                           000001B0
+Label_3                           000001B6
+Label_4                           000001C9
+Label_5                           000001FA
+Label_6                           00000207
+Label_7                           0000020E
+Label_8                           00000215
+Label_9                           00000222
+Label_A                           000002DC
+LeerDescriptor                    00000231
+LevantarTabla                     0000031B
+LimpioInterrupcion                000000EE
+LoopPrincipal                     0000003C
+MC1OUT                            00000000
+MDBIT                             00000000
+MDCARH                            0000039E
+MDCARL                            0000039F
+MDCH0                             00000000
+MDCH1                             00000001
+MDCH2                             00000002
+MDCH3                             00000003
+MDCHPOL                           00000006
+MDCHSYNC                          00000005
+MDCIN1PPS                         00000E1A
+MDCIN1PPS0                        00000000
+MDCIN1PPS1                        00000001
+MDCIN1PPS2                        00000002
+MDCIN1PPS3                        00000003
+MDCIN1PPS4                        00000004
+MDCIN2PPS                         00000E1B
+MDCIN2PPS0                        00000000
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 40
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+MDCIN2PPS1                        00000001
+MDCIN2PPS2                        00000002
+MDCIN2PPS3                        00000003
+MDCIN2PPS4                        00000004
+MDCL0                             00000000
+MDCL1                             00000001
+MDCL2                             00000002
+MDCL3                             00000003
+MDCLPOL                           00000006
+MDCLSYNC                          00000005
+MDCON                             0000039C
+MDEN                              00000007
+MDMINPPS                          00000E1C
+MDMINPPS0                         00000000
+MDMINPPS1                         00000001
+MDMINPPS2                         00000002
+MDMINPPS3                         00000003
+MDMINPPS4                         00000004
+MDMS0                             00000000
+MDMS1                             00000001
+MDMS2                             00000002
+MDMS3                             00000003
+MDOPOL                            00000004
+MDOUT                             00000003
+MDSRC                             0000039D
+MLC1OUT                           00000000
+MLC2OUT                           00000001
+MODE0                             00000000
+MODE1                             00000001
+MODE2                             00000002
+MSK0                              00000000
+MSK1                              00000001
+MSK2                              00000002
+MSK3                              00000003
+MSK4                              00000004
+MSK5                              00000005
+MSK6                              00000006
+MSK7                              00000007
+MSSP1MD                           00000001
+Main                              00000300
+MandarACK                         00000116
+MandarDATA                        0000010C
+MandarNAK                         00000114
+MandarSTALL                       00000110
+MandarSigByte                     00000164
+MandarZLP                         000000CE
+Mandar_CONFIGURATION_Descriptor   000002A8
+Mandar_DEVICE_Descriptor          000002A3
+Mandar_HIDReport_Descriptor       000002B2
+Mandar_HID_Descriptor             000002AD
+Mandar_STRING_Descriptors         000002B7
+N1EN                              00000007
+N1OUT                             00000005
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 41
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+N1PFM                             00000000
+N1POL                             00000004
+NCO1ACC                           00000498
+NCO1ACCH                          00000499
+NCO1ACCL                          00000498
+NCO1ACCU                          0000049A
+NCO1CLK                           0000049F
+NCO1CON                           0000049E
+NCO1IE                            00000000
+NCO1IF                            00000000
+NCO1INC                           0000049B
+NCO1INCH                          0000049C
+NCO1INCL                          0000049B
+NCO1INCU                          0000049D
+NCOMD                             00000007
+NDIV0                             00000000
+NDIV1                             00000001
+NDIV2                             00000002
+NDIV3                             00000003
+NOSC0                             00000004
+NOSC1                             00000005
+NOSC2                             00000006
+NOSCR                             00000003
+NOT_BOR                           00000000
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RI                            00000002
+NOT_RMCLR                         00000003
+NOT_RWDT                          00000004
+NOT_TO                            00000004
+NVMADR                            00000891
+NVMADR0                           00000000
+NVMADR1                           00000001
+NVMADR10                          00000002
+NVMADR11                          00000003
+NVMADR12                          00000004
+NVMADR13                          00000005
+NVMADR14                          00000006
+NVMADR2                           00000002
+NVMADR3                           00000003
+NVMADR4                           00000004
+NVMADR5                           00000005
+NVMADR6                           00000006
+NVMADR7                           00000007
+NVMADR8                           00000000
+NVMADR9                           00000001
+NVMADRH                           00000892
+NVMADRL                           00000891
+NVMCON1                           00000895
+NVMCON2                           00000896
+NVMDAT                            00000893
+NVMDAT0                           00000000
+NVMDAT1                           00000001
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 42
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+NVMDAT10                          00000002
+NVMDAT11                          00000003
+NVMDAT12                          00000004
+NVMDAT13                          00000005
+NVMDAT2                           00000002
+NVMDAT3                           00000003
+NVMDAT4                           00000004
+NVMDAT5                           00000005
+NVMDAT6                           00000006
+NVMDAT7                           00000007
+NVMDAT8                           00000000
+NVMDAT9                           00000001
+NVMDATH                           00000894
+NVMDATL                           00000893
+NVMIE                             00000004
+NVMIF                             00000004
+NVMMD                             00000002
+NVMREGS                           00000006
+NuevoAddress                      00000032
+ODCA0                             00000000
+ODCA1                             00000001
+ODCA2                             00000002
+ODCA4                             00000004
+ODCA5                             00000005
+ODCONA                            0000028C
+OERR                              00000001
+ORDY                              00000004
+OSCCON1                           00000919
+OSCCON2                           0000091A
+OSCCON3                           0000091B
+OSCEN                             0000091D
+OSCFRQ                            0000091F
+OSCSTAT1                          0000091C
+OSCTUNE                           0000091E
+OSFIE                             00000007
+OSFIF                             00000007
+OUT                               00000005
+OUTToken                          0000009B
+OVRA                              00000004
+OVRB                              00000005
+OVRC                              00000006
+OVRD                              00000007
+Ocupado                           Banderas_0, 3
+P                                 00000004
+PCIE                              00000006
+PCL                               00000002
+PCLATH                            0000000A
+PCLATH_SHAD                       00000FE7
+PCON0                             0000089B
+PEIE                              00000006
+PEN                               00000002
+PID                               00000033
+PIE0                              00000090
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 43
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PIE1                              00000091
+PIE2                              00000092
+PIE3                              00000093
+PIE4                              00000094
+PIR0                              00000010
+PIR1                              00000011
+PIR2                              00000012
+PIR3                              00000013
+PIR4                              00000014
+PLLR                              00000000
+PMD0                              00000911
+PMD1                              00000912
+PMD2                              00000913
+PMD3                              00000914
+PMD4                              00000915
+PMD5                              00000916
+POL                               00000007
+POLA                              00000000
+POLB                              00000001
+POLC                              00000002
+POLD                              00000003
+PORTA                             0000000C
+PPSLOCK                           00000E0F
+PPSLOCKED                         00000000
+PR2                               0000001E
+PWM5CON                           00000619
+PWM5CON0                          00000619
+PWM5DCH                           00000618
+PWM5DCH0                          00000000
+PWM5DCH1                          00000001
+PWM5DCH2                          00000002
+PWM5DCH3                          00000003
+PWM5DCH4                          00000004
+PWM5DCH5                          00000005
+PWM5DCH6                          00000006
+PWM5DCH7                          00000007
+PWM5DCL                           00000617
+PWM5DCL0                          00000006
+PWM5DCL1                          00000007
+PWM5EN                            00000007
+PWM5MD                            00000004
+PWM5OUT                           00000005
+PWM5POL                           00000004
+PWM6CON                           0000061C
+PWM6CON0                          0000061C
+PWM6DCH                           0000061B
+PWM6DCH0                          00000000
+PWM6DCH1                          00000001
+PWM6DCH2                          00000002
+PWM6DCH3                          00000003
+PWM6DCH4                          00000004
+PWM6DCH5                          00000005
+PWM6DCH6                          00000006
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 44
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PWM6DCH7                          00000007
+PWM6DCL                           0000061A
+PWM6DCL0                          00000006
+PWM6DCL1                          00000007
+PWM6EN                            00000007
+PWM6MD                            00000005
+PWM6OUT                           00000005
+PWM6POL                           00000004
+Posicion                          00000042
+PosicionPID                       0000005A
+PrepararDescriptor                0000023F
+ProcesarDATA                      000000E2
+ProcesarSetup                     00000250
+ProcessOut                        000002E1
+RA0                               00000000
+RA0PPS                            00000E90
+RA0PPS0                           00000000
+RA0PPS1                           00000001
+RA0PPS2                           00000002
+RA0PPS3                           00000003
+RA0PPS4                           00000004
+RA1                               00000001
+RA1PPS                            00000E91
+RA1PPS0                           00000000
+RA1PPS1                           00000001
+RA1PPS2                           00000002
+RA1PPS3                           00000003
+RA1PPS4                           00000004
+RA2                               00000002
+RA2PPS                            00000E92
+RA2PPS0                           00000000
+RA2PPS1                           00000001
+RA2PPS2                           00000002
+RA2PPS3                           00000003
+RA2PPS4                           00000004
+RA3                               00000003
+RA4                               00000004
+RA4PPS                            00000E94
+RA4PPS0                           00000000
+RA4PPS1                           00000001
+RA4PPS2                           00000002
+RA4PPS3                           00000003
+RA4PPS4                           00000004
+RA5                               00000005
+RA5PPS                            00000E95
+RA5PPS0                           00000000
+RA5PPS1                           00000001
+RA5PPS2                           00000002
+RA5PPS3                           00000003
+RA5PPS4                           00000004
+RC1REG                            00000199
+RC1STA                            0000019D
+RCEN                              00000003
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 45
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+RCIDL                             00000006
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             00000199
+RCREG1                            00000199
+RCSTA                             0000019D
+RCSTA1                            0000019D
+RD                                00000000
+REN                               00000006
+ROI                               00000005
+RSEN                              00000001
+RTS                               00000002
+RX                                00000001
+RX9                               00000006
+RX9D                              00000000
+RXPPS                             00000E24
+RXPPS0                            00000000
+RXPPS1                            00000001
+RXPPS2                            00000002
+RXPPS3                            00000003
+RXPPS4                            00000004
+R_NOT_W                           00000002
+RecNRZI_0                         00000024
+RecNRZI_1                         00000025
+RecNRZI_2                         00000026
+RecNRZI_3                         00000027
+RecNRZI_4                         00000028
+RecNRZI_5                         00000029
+RecNRZI_6                         0000002A
+RecNRZI_7                         0000002B
+RecNRZI_8                         0000002C
+RecNRZI_9                         0000002D
+RecNRZI_A                         0000002E
+RecNRZI_B                         0000002F
+RecNRZI_C                         00000030
+RecepcionUSB                      0000004F
+Recibido_1                        00000034
+Recibido_2                        00000035
+Recibido_3                        00000036
+Recibido_4                        00000037
+Recibido_5                        00000038
+Recibido_6                        00000039
+Recibido_7                        0000003A
+Recibido_8                        0000003B
+Recibido_9                        0000003C
+Recibido_A                        0000003D
+Recibido_B                        0000003E
+Recibido_C                        0000003F
+RegresardeInterrupt               0000009D
+RespPID                           00000043
+Resp_0                            00000044
+Resp_1                            00000045
+Resp_2                            00000046
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 46
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+Resp_3                            00000047
+Resp_4                            00000048
+Resp_5                            00000049
+Resp_6                            0000004A
+Resp_7                            0000004B
+Resp_8                            0000004C
+Resp_9                            0000004D
+Resp_A                            0000004E
+Resp_B                            0000004F
+ResponderIN                       000000C7
+S                                 00000003
+SBCDE                             00000002
+SBOREN                            00000007
+SCIE                              00000005
+SCKP                              00000004
+SDAHT                             00000003
+SE0                               00000003
+SEN                               00000000
+SENDB                             00000003
+SETUPToken                        0000009F
+SET_ADDRESS                       0000027D
+SET_CONFIGURATION                 000002D0
+SET_FEATURE                       0000027B
+SET_INTERFACE                     000002D8
+SHUTDOWN                          00000007
+SLRA0                             00000000
+SLRA1                             00000001
+SLRA2                             00000002
+SLRA4                             00000004
+SLRA5                             00000005
+SLRCONA                           0000030C
+SMP                               00000007
+SOR                               00000003
+SOSCBE                            00000005
+SOSCEN                            00000003
+SOSCPWR                           00000006
+SP1BRG                            0000019B
+SP1BRGH                           0000019C
+SP1BRGL                           0000019B
+SPBRG                             0000019B
+SPBRG1                            0000019B
+SPBRGH                            0000019C
+SPBRGH1                           0000019C
+SPBRGL                            0000019B
+SPEN                              00000007
+SREN                              00000005
+SSP1ADD                           00000212
+SSP1ADD0                          00000000
+SSP1ADD1                          00000001
+SSP1ADD2                          00000002
+SSP1ADD3                          00000003
+SSP1ADD4                          00000004
+SSP1ADD5                          00000005
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 47
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+SSP1ADD6                          00000006
+SSP1ADD7                          00000007
+SSP1BUF                           00000211
+SSP1BUF0                          00000000
+SSP1BUF1                          00000001
+SSP1BUF2                          00000002
+SSP1BUF3                          00000003
+SSP1BUF4                          00000004
+SSP1BUF5                          00000005
+SSP1BUF6                          00000006
+SSP1BUF7                          00000007
+SSP1CLKPPS                        00000E20
+SSP1CLKPPS0                       00000000
+SSP1CLKPPS1                       00000001
+SSP1CLKPPS2                       00000002
+SSP1CLKPPS3                       00000003
+SSP1CLKPPS4                       00000004
+SSP1CON                           00000215
+SSP1CON1                          00000215
+SSP1CON2                          00000216
+SSP1CON3                          00000217
+SSP1DATPPS                        00000E21
+SSP1DATPPS0                       00000000
+SSP1DATPPS1                       00000001
+SSP1DATPPS2                       00000002
+SSP1DATPPS3                       00000003
+SSP1DATPPS4                       00000004
+SSP1IE                            00000003
+SSP1IF                            00000003
+SSP1MSK                           00000213
+SSP1MSK0                          00000000
+SSP1MSK1                          00000001
+SSP1MSK2                          00000002
+SSP1MSK3                          00000003
+SSP1MSK4                          00000004
+SSP1MSK5                          00000005
+SSP1MSK6                          00000006
+SSP1MSK7                          00000007
+SSP1SSPPS                         00000E22
+SSP1SSPPS0                        00000000
+SSP1SSPPS1                        00000001
+SSP1SSPPS2                        00000002
+SSP1SSPPS3                        00000003
+SSP1SSPPS4                        00000004
+SSP1STAT                          00000214
+SSPADD                            00000212
+SSPBUF                            00000211
+SSPCON                            00000215
+SSPCON1                           00000215
+SSPCON2                           00000216
+SSPCON3                           00000217
+SSPEN                             00000005
+SSPM0                             00000000
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 48
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPMSK                            00000213
+SSPOV                             00000006
+SSPSTAT                           00000214
+STATUS                            00000003
+STATUS_SHAD                       00000FE4
+STKOVF                            00000007
+STKPTR                            00000FED
+STKUNF                            00000006
+STRA                              00000000
+STRB                              00000001
+STRC                              00000002
+STRD                              00000003
+SWDTEN                            00000000
+SYNC                              00000004
+SYNCH_FRAME                       000002D9
+SYSCMD                            00000007
+Set_BR                            000002F2
+Set_RTS_High                      000002FC
+Set_RTS_Low                       000002FE
+Setup                             Banderas_0, 5
+SigNRZI                           00000188
+SiguienteDatoTabla                00000236
+SincUSB1                          00000120
+SincUSB2                          0000015A
+Stall                             Banderas_1, 5
+StringDescriptor0                 000002BC
+StringDescriptor1                 000002C1
+StringDescriptor2                 000002C6
+T016BIT                           00000004
+T0ASYNC                           00000004
+T0CKIPPS                          00000E11
+T0CKIPPS0                         00000000
+T0CKIPPS1                         00000001
+T0CKIPPS2                         00000002
+T0CKIPPS3                         00000003
+T0CKIPPS4                         00000004
+T0CKPS0                           00000000
+T0CKPS1                           00000001
+T0CKPS2                           00000002
+T0CKPS3                           00000003
+T0CON0                            00000017
+T0CON1                            00000018
+T0CS0                             00000005
+T0CS1                             00000006
+T0CS2                             00000007
+T0EN                              00000007
+T0OUT                             00000005
+T0OUTPS0                          00000000
+T0OUTPS1                          00000001
+T0OUTPS2                          00000002
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 49
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+T0OUTPS3                          00000003
+T1CKIPPS                          00000E12
+T1CKIPPS0                         00000000
+T1CKIPPS1                         00000001
+T1CKIPPS2                         00000002
+T1CKIPPS3                         00000003
+T1CKIPPS4                         00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             0000001B
+T1GCON                            0000001C
+T1GGO_NOT_DONE                    00000003
+T1GPOL                            00000006
+T1GPPS                            00000E13
+T1GPPS0                           00000000
+T1GPPS1                           00000001
+T1GPPS2                           00000002
+T1GPPS3                           00000003
+T1GPPS4                           00000004
+T1GSPM                            00000004
+T1GSS0                            00000000
+T1GSS1                            00000001
+T1GTM                             00000005
+T1GVAL                            00000002
+T1SOSC                            00000003
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             0000001F
+T2OUTPS0                          00000003
+T2OUTPS1                          00000004
+T2OUTPS2                          00000005
+T2OUTPS3                          00000006
+TMR00                             00000000
+TMR01                             00000001
+TMR010                            00000002
+TMR011                            00000003
+TMR012                            00000004
+TMR013                            00000005
+TMR014                            00000006
+TMR015                            00000007
+TMR02                             00000002
+TMR03                             00000003
+TMR04                             00000004
+TMR05                             00000005
+TMR06                             00000006
+TMR07                             00000007
+TMR08                             00000000
+TMR09                             00000001
+TMR0H                             00000016
+TMR0IE                            00000005
+TMR0IF                            00000005
+TMR0L                             00000015
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 50
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TMR0MD                            00000000
+TMR1                              00000019
+TMR1CS0                           00000006
+TMR1CS1                           00000007
+TMR1GE                            00000007
+TMR1GIE                           00000007
+TMR1GIF                           00000007
+TMR1H                             0000001A
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             00000019
+TMR1MD                            00000001
+TMR1ON                            00000000
+TMR2                              0000001D
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2MD                            00000002
+TMR2ON                            00000002
+TMovf                             00000006
+TOSH                              00000FEF
+TOSL                              00000FEE
+TRISA                             0000008C
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA4                            00000004
+TRISA5                            00000005
+TRISIO                            TRISA
+TRMT                              00000001
+TSEN                              00000005
+TSRNG                             00000004
+TX                                00000000
+TX1REG                            0000019A
+TX1STA                            0000019E
+TX9                               00000006
+TX9D                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXPPS                             00000E25
+TXPPS0                            00000000
+TXPPS1                            00000001
+TXPPS2                            00000002
+TXPPS3                            00000003
+TXPPS4                            00000004
+TXREG                             0000019A
+TXREG1                            0000019A
+TXSTA                             0000019E
+TXSTA1                            0000019E
+TodaviaNO                         00000099
+UA                                00000001
+UART1MD                           00000005
+UltAddressRec                     00000059
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 51
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+VREGCON                           00000197
+VREGPM                            00000001
+Var_0                             00000040
+Var_1                             00000041
+Var_2                             00000050
+Var_3                             00000051
+Var_4                             00000052
+Var_5                             00000053
+Var_6                             00000054
+Var_7                             00000055
+Var_8                             00000056
+Var_9                             00000057
+Veces                             00000023
+W                                 00000000
+WCOL                              00000007
+WDTCON                            00000097
+WDTPS0                            00000001
+WDTPS1                            00000002
+WDTPS2                            00000003
+WDTPS3                            00000004
+WDTPS4                            00000005
+WPUA                              0000020C
+WPUA0                             00000000
+WPUA1                             00000001
+WPUA2                             00000002
+WPUA3                             00000003
+WPUA4                             00000004
+WPUA5                             00000005
+WR                                00000001
+WREG                              00000009
+WREG_SHAD                         00000FE5
+WREN                              00000002
+WRERR                             00000003
+WUE                               00000001
+Z                                 00000002
+ZLP                               00000141
+ZLPPend                           Banderas_1, 6
+ZLPPendiente                      000000D0
+Z_SHAD                            00000002
+_.org_1_004F                      0000004F
+_.org_1_0052                      00000052
+_.org_1_0055                      00000055
+_.org_1_0058                      00000058
+_.org_1_005B                      0000005B
+_.org_1_0066                      00000066
+_.org_1_0069                      00000069
+_.org_1_0070                      00000070
+_.org_1_0129                      00000129
+_.org_1_012C                      0000012C
+_.org_1_012F                      0000012F
+_.org_1_0132                      00000132
+_.org_1_0135                      00000135
+_.org_1_0138                      00000138
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 52
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_.org_1_013B                      0000013B
+_BOREN_OFF                        00003F3F
+_BOREN_ON                         00003FFF
+_BOREN_SBOREN                     00003F7F
+_BOREN_SLEEP                      00003FBF
+_BORV_HIGH                        00003DFF
+_BORV_LOW                         00003FFF
+_CLKOUTEN_OFF                     00003FFF
+_CLKOUTEN_ON                      00003EFF
+_CONFIG1                          00008007
+_CONFIG2                          00008008
+_CONFIG3                          00008009
+_CONFIG4                          0000800A
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003FFD
+_CP_OFF                           00003FFF
+_CP_ON                            00003FFE
+_CSWEN_OFF                        000037FF
+_CSWEN_ON                         00003FFF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         00001FFF
+_DEVID1                           00008006
+_FCMEN_OFF                        00001FFF
+_FCMEN_ON                         00003FFF
+_FEXTOSC_ECH                      00003FFF
+_FEXTOSC_ECL                      00003FFD
+_FEXTOSC_ECM                      00003FFE
+_FEXTOSC_HS                       00003FFA
+_FEXTOSC_LP                       00003FF8
+_FEXTOSC_OFF                      00003FFC
+_FEXTOSC_XT                       00003FF9
+_IDLOC0                           00008000
+_IDLOC1                           00008001
+_IDLOC2                           00008002
+_IDLOC3                           00008003
+_LPBOREN_OFF                      00003FFF
+_LPBOREN_ON                       00003FDF
+_LVP_OFF                          00001FFF
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FFE
+_MCLRE_ON                         00003FFF
+_PPS1WAY_OFF                      000037FF
+_PPS1WAY_ON                       00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FFD
+_RSTOSC_EXT1X                     00003FFF
+_RSTOSC_EXT4X                     00003F9F
+_RSTOSC_HFINT1                    00003FEF
+_RSTOSC_HFINT32                   00003F8F
+_RSTOSC_LFINT                     00003FCF
+_RSTOSC_SOSC                      00003FBF
+_STVREN_OFF                       00002FFF
+_STVREN_ON                        00003FFF
+MPASM 5.68                           USB.ASM   10-6-2016  13:19:48         PAGE 53
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_WDTE_OFF                         00003FF3
+_WDTE_ON                          00003FFF
+_WDTE_SLEEP                       00003FFB
+_WDTE_SWDTEN                      00003FF7
+_WRT_ALL                          00003FFC
+_WRT_BOOT                         00003FFE
+_WRT_HALF                         00003FFD
+_WRT_OFF                          00003FFF
+__16F18313                        00000001
+bReqNS                            000002DA
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,    27 suppressed
+
+

@@ -1,0 +1,806 @@
+gpasm-1.5.0 #1285 (Sep 12 2016)       USB.ASM   6-1-2018  10:48:12          PAGE  1
+
+
+LOC    OBJECT CODE    LINE  SOURCE TEXT
+  VALUE
+
+                      00001 ;**********************************************************************
+                      00002 ;   16FUSB - USB 1.1 implemetation for PIC16F628/628A                 *
+                      00003 ;                                                                     *
+                      00004 ;   Copyright (C) 2011-2012  Emanuel Paz <efspaz@gmail.com>           *
+                      00005 ;                                                                     *
+                      00006 ;   This program is free software; you can redistribute it and/or     *
+                      00007 ;   modify it under the terms of the GNU General Public License as    *
+                      00008 ;   published by the Free Software Foundation; either version 2 of    *
+                      00009 ;   the License, or (at your option) any later version.               *
+                      00010 ;                                                                     *
+                      00011 ;**********************************************************************
+                      00012 ;                                                                     *
+                      00013 ;    Filename:        usb.asm                                         *
+                      00014 ;    Date:                                                            *
+                      00015 ;    Author:          Emanuel Paz                                     *
+                      00016 ;                                                                     *
+                      00017 ;**********************************************************************
+                      00018 ;                                                                     *
+                      00019 ;    Notes: This file contains the code of the main loop of the       *
+                      00020 ;           the firmware. Main  loop  is  liable  for decode packets, *
+                      00021 ;           check the ACTION_FLAG and, based in it's value, take the  *
+                      00022 ;           flow to correct point. The main loop is also the glue     *
+                      00023 ;           between core and the custom code.                         *
+                      00024 ;                                                                     *
+                      00025 ;**********************************************************************
+                      00026  
+2007   3F0A           00027     __config 0x3F0A
+                      00028     #include    "def.inc"
+                      00001  ;**********************************************************************
+                      00002 ;   16FUSB - USB 1.1 implemetation for PIC16F628/628A                 *
+                      00003 ;                                                                     *
+                      00004 ;   Copyright (C) 2011-2012  Emanuel Paz <efspaz@gmail.com>           *
+                      00005 ;                                                                     *
+                      00006 ;   This program is free software; you can redistribute it and/or     *
+                      00007 ;   modify it under the terms of the GNU General Public License as    *
+                      00008 ;   published by the Free Software Foundation; either version 2 of    *
+                      00009 ;   the License, or (at your option) any later version.               *
+                      00010 ;                                                                     *
+                      00011 ;**********************************************************************
+                      00012 ;                                                                     *
+                      00013 ;    Filename:        def.inc                                         *
+                      00014 ;    Date:                                                            *
+                      00015 ;    Author:          Emanuel Paz                                     *
+                      00016 ;                                                                     *
+                      00017 ;**********************************************************************
+                      00018 ;                                                                     *
+                      00019 ;    Notes: Default definitions. Do not edit! Edit "def.inc" in       *
+                      00020 ;           application directory instead.                            *
+                      00021 ;                                                                     *
+                      00022 ;                                                                     *
+                      00023 ;**********************************************************************
+                      00024         
+Warning[215]: Processor superseded by command line.
+gpasm-1.5.0 #1285 (Sep 12 2016)       USB.ASM   6-1-2018  10:48:12          PAGE  2
+
+
+LOC    OBJECT CODE    LINE  SOURCE TEXT
+  VALUE
+
+                      00025     list        p=16F628
+Warning[215]: Processor superseded by command line.
+                      00026     processor   16F628
+                      00027     errorlevel  -302
+                      00028 
+                      00029     #include    <P16F628.INC>
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ; Build date : Oct 21 2015
+                      00005 ;  MPASM PIC16F628 processor include
+                      00006 ; 
+                      00007 ;  (c) Copyright 1999-2015 Microchip Technology, All rights reserved
+                      00008 ;==========================================================================
+                      00009 
+Message[301]: MESSAGE: "Processor-header file mismatch.  Verify selected processor."
+                      00382         LIST
+                      00030 
+                      00031 
+                      00032 ;====================================================================
+                      00033 ;   The port and pins below cannot be reassigned. Don't change it.
+                      00034 ;   These 'defines' are just for a better readability of the code.
+                      00035 
+                      00036 #define USB_PORT    PORTB
+                      00037 #define USB_DPLUS   PORTB,0
+                      00038 #define USB_DMINUS  PORTB,1
+                      00039 #define USB_EOPCHK  PORTB,2
+                      00040 
+                      00041 ;====================================================================
+                      00042 ;   ActionFlag definition (state of device).
+                      00043 
+                      00044 #define AF_BIT_BUSY             ACTION_FLAG,0   ; Busy (bit 0): 0=free; 1=busy
+                      00045 #define AF_BIT_DECODING         ACTION_FLAG,1   ; Mode (bit 1): 0=processing; 1=decoding
+                      00046 #define AF_BIT_INTERRUPT        ACTION_FLAG,2   ; Transfer type (bit 2): 0=control; 1=interrupt
+                      00047 #define AF_BIT_PEND_BYTES       ACTION_FLAG,3   ; Pending Bytes (bit 3): 0=no pending; 1=pending
+                      00048 #define AF_BIT_INT_TX_READY     ACTION_FLAG,5
+                      00049 #define AF_BIT_TX_READY         ACTION_FLAG,6
+                      00050 #define AF_BIT_PID_OUT          ACTION_FLAG,7   ; PID (bit 7): 0=SETUP; 1=OUT
+                      00051 
+                      00052 ;====================================================================
+                      00053 ;   Descriptors constant values.
+                      00054     
+  0001                00055     CONSTANT    DESCRIPTOR_TYPE_DEVICE          =   0x01
+  0002                00056     CONSTANT    DESCRIPTOR_TYPE_CONFIGURATION   =   0x02
+  0003                00057         CONSTANT    DESCRIPTOR_TYPE_STRING          =   0x03
+  0004                00058         CONSTANT    DESCRIPTOR_TYPE_INTERFACE       =   0x04
+  0005                00059         CONSTANT    DESCRIPTOR_TYPE_ENDPOINT        =   0x05
+                      00060 
+  0021                00061     CONSTANT    DESCRIPTOR_TYPE_HID             =   0x21
+  0022                00062     CONSTANT    DESCRIPTOR_TYPE_REPORT          =   0x22
+                      00063 
+                      00064 ;====================================================================
+                      00065 ;   Standard request constant values.
+gpasm-1.5.0 #1285 (Sep 12 2016)       USB.ASM   6-1-2018  10:48:12          PAGE  3
+
+
+LOC    OBJECT CODE    LINE  SOURCE TEXT
+  VALUE
+
+                      00066 
+  0001                00067     CONSTANT    CLEAR_FEATURE                       =   0x01
+  0008                00068     CONSTANT    GET_CONFIGURATION                   =   0x08
+  0006                00069     CONSTANT    GET_DESCRIPTOR                      =   0x06
+  000A                00070     CONSTANT    GET_INTERFACE                       =   0x0A
+  0000                00071     CONSTANT    GET_STATUS                              =   0x00
+  0005                00072     CONSTANT    SET_ADDRESS                             =   0x05
+  0009                00073     CONSTANT    SET_CONFIGURATION                   =   0x09
+  0003                00074     CONSTANT    SET_FEATURE                             =   0x03
+  000B                00075     CONSTANT    SET_INTERFACE                       =   0x0B
+                      00076 
+                      00077 ;====================================================================
+                      00078 ;   Data and Handshake PID constants.
+                      00079 
+  00D2                00080     CONSTANT    USB_PID_ACK                     =   0xD2
+  005A                00081     CONSTANT    USB_PID_NAK                     =   0x5A
+                      00082 
+  00C3                00083     CONSTANT    USB_PID_DATA0                   =   0xC3
+  004B                00084     CONSTANT    USB_PID_DATA1                   =   0x4B
+                      00085 
+                      00086 ;====================================================================
+                      00087 ;   NRZI coded Data, Initial address ,Handshake and Token PIDs constants.
+                      00088 ;   All values are based in state of D+ after Sync.
+                      00089 
+  002A                00090     CONSTANT    USB_NRZI_ZERO_ADDR              =   0x2A
+  00EB                00091     CONSTANT    USB_NRZI_PID_DATA0              =   0xEB
+  0093                00092     CONSTANT    USB_NRZI_PID_DATA1              =   0x93
+  00E4                00093     CONSTANT    USB_NRZI_PID_ACK                =   0xE4
+  009C                00094     CONSTANT    USB_NRZI_PID_NAK                =   0x9C
+  00B1                00095     CONSTANT    USB_NRZI_PID_SETUP              =   0xB1
+  008D                00096     CONSTANT    USB_NRZI_PID_IN                 =   0x8D
+  00F5                00097     CONSTANT    USB_NRZI_PID_OUT                =   0xF5
+                      00098 
+                      00099 ;====================================================================
+                      00100 ;   Other constants
+                      00101 
+  0003                00102     CONSTANT    HID_INTERFACE_CLASS             =   0x03
+                      00103 
+  00A0                00104     CONSTANT    con_a0                          =   0xA0
+  0001                00105     CONSTANT    con_01                          =   0x01    
+                      00106 
+                      00107 ;====================================================================
+                      00108 ; Device Descriptor default values.
+                      00109 
+  000000FF            00110 DEVICE_CLASS            SET     0xFF        ; bDeviceClass
+                      00111 
+  00000004            00112 DEVICE_VENDOR_ID_HIGH   SET     0x04        ; idVendor
+  000000D8            00113 DEVICE_VENDOR_ID_LOW    SET     0xD8        ; idVendor
+                      00114 
+  00000006            00115 DEVICE_ID_HIGH          SET     0x06        ; idProduct
+  00000028            00116 DEVICE_ID_LOW           SET     0x28        ; idProduct
+                      00117 
+  00000001            00118 DEVICE_VERSION_HIGH     SET     0x01        ; bcdDevice
+gpasm-1.5.0 #1285 (Sep 12 2016)       USB.ASM   6-1-2018  10:48:12          PAGE  4
+
+
+LOC    OBJECT CODE    LINE  SOURCE TEXT
+  VALUE
+
+  00000000            00119 DEVICE_VERSION_LOW      SET     0x00        ; bcdDevice
+                      00120 
+                      00121 
+                      00122 ;====================================================================
+                      00123 ; Configuration Descriptor/Interface Descriptor default values.
+                      00124 
+  00000064            00125 DEVICE_MAX_POWER        SET     D'100'      ; bMaxPower
+  000000FF            00126 INTERFACE_CLASS         SET     0xFF        ; bInterfaceClass
+                      00127 
+                      00128 ;====================================================================
+                      00129 ; Interrupt endpoints defaults (disabled).
+                      00130 
+  00000000            00131 INTERRUPT_IN_ENDPOINT   SET     0
+  00000008            00132 INT_EP_IN_INTERVAL      SET     0x08        ; IN endpoint bInterval
+                      00133 
+  00000000            00134 INTERRUPT_OUT_ENDPOINT  SET     0
+  00000008            00135 INT_EP_OUT_INTERVAL     SET     0x08        ; OUT endpoint bInterval
+                      00136 
+                      00137 ;---------------------------------------------------------------------
+                      00138 ; HID Interface
+                      00139 
+  00000000            00140 HID                     SET     0
+                      00141 
+                      00142 
+                      00143     
+                      00144 
+                      00145 
+                      00146     
+                      00147 
+                      00148 
+                      00149 
+                      00150 
+                      00151 
+                      00029 
+                      00030     ; Local labels to export
+                      00031 #if INTERRUPT_IN_ENDPOINT == 1
+                      00032     global  PrepareIntTxBuffer
+                      00033 #endif
+                      00034 
+                      00035     ; (isr.asm)
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00036     extern  TX_EXTRA_BITS
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00037     extern  FRAME_NUMBER
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00038     extern  DEVICE_ADDRESS
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00039     extern  NEW_DEVICE_ADDRESS
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00040     extern  ACTION_FLAG
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00041     extern  TX_LEN
+Error[149]  : Directive only allowed when generating an object file: "extern"
+gpasm-1.5.0 #1285 (Sep 12 2016)       USB.ASM   6-1-2018  10:48:12          PAGE  5
+
+
+LOC    OBJECT CODE    LINE  SOURCE TEXT
+  VALUE
+
+  0000                00042     extern  TX_BUFFER
+                      00043 #if INTERRUPT_IN_ENDPOINT == 1
+                      00044     extern  INT_TX_BUFFER
+                      00045 #endif    
+                      00046 
+                      00047     ; (func.asm)
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00048     extern  DoCrc
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00049     extern  InsertStuff
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00050     extern  PreInitTXBuffer
+                      00051 
+                      00052     ; (stdreq.asm)
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00053     extern  GetDescriptor
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00054     extern  GetStatus
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00055     extern  GetConfiguration
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00056     extern  GetInterface
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00057     extern  SetAddress
+                      00058 
+                      00059     ; (main.asm)
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00060     extern  Init
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00061     extern  Main
+                      00062 
+                      00063     ; (setup.asm)
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00064     extern  VendorRequest
+Error[149]  : Directive only allowed when generating an object file: "extern"
+  0000                00065     extern  ProcessOut
+                      00066 #if HID == 1
+                      00067     extern  GetReportDescriptor
+                      00068 #endif
+                      00069 
+                      00070 
+Error[149]  : Directive only allowed when generating an object file: "UDATA_SHR"
+                      00071 USB_SHARED_INTERFACE    UDATA_SHR
+                      00072 
+0000   3FFF           00073 RXDATA_LEN      RES     D'1'        ; Number of received bytes decoded.
+                      00074 
+Error[149]  : Directive only allowed when generating an object file: "global"
+  0000                00075     global  RXDATA_LEN
+                      00076 
+                      00077 
+Error[149]  : Directive only allowed when generating an object file: "UDATA"
+                      00078 USB_VARIABLES  UDATA    0x41+(INTERRUPT_IN_ENDPOINT*D'16')
+                      00079 
+gpasm-1.5.0 #1285 (Sep 12 2016)       USB.ASM   6-1-2018  10:48:12          PAGE  6
+
+
+LOC    OBJECT CODE    LINE  SOURCE TEXT
+  VALUE
+
+0000   3FFF           00080 CTRL_TOTAL_LEN  RES     D'1'        ; Total of bytes to transfer in data phase (wLength)
+0002   3FFF 3FFF 3FFF 00081 RXDATA_BUFFER   RES     D'8'        ; Received bytes decoded (EP0 e EP1 OUT).
+       3FFF 3FFF 3FFF 
+       3FFF 3FFF      
+                      00082 #if INTERRUPT_OUT_ENDPOINT == 1
+                      00083 RXINPUT_LEN     RES     D'1'        ; Length of RXINPUT
+                      00084 RXINPUT_BUFFER  RES     D'13'       ; Copy of RX_BUFFER
+                      00085 #endif
+                      00086 
+Error[149]  : Directive only allowed when generating an object file: "global"
+  0000                00087     global  CTRL_TOTAL_LEN
+Error[149]  : Directive only allowed when generating an object file: "global"
+  0000                00088     global  RXDATA_BUFFER
+                      00089 
+                      00090 
+Error[149]  : Directive only allowed when generating an object file: "UDATA_OVR"
+                      00091 LOCAL_OVERLAY   UDATA_OVR   0x4A+(INTERRUPT_IN_ENDPOINT*D'16')+(INTERRUPT_OUT_ENDPOINT*D'14')
+                      00092 
+0000   3FFF           00093 GEN                 RES     D'1'    ; General
+0002   3FFF           00094 GEN2                RES     D'1'    ; General
+0004   3FFF           00095 SEEK                RES     D'1'    ; Index level one
+0006   3FFF           00096 SEEK2               RES     D'1'    ; Index level two
+0008   3FFF           00097 COUNT               RES     D'1'    ; Counter level one
+000A   3FFF           00098 COUNT2              RES     D'1'    ; Counter level two
+000C   3FFF           00099 COUNT3              RES     D'1'    ; Counter file level three
+000E   3FFF           00100 NCHANGE_COUNT       RES     D'1'    ; Number of no change level in NRZI (bit stuffing)
+                      00101 
+                      00102 #if INTERRUPT_OUT_ENDPOINT == 0
+0010   3FFF           00103 RXINPUT_LEN         RES     D'1'    ; Length of RXINPUT
+0012   3FFF 3FFF 3FFF 00104 RXINPUT_BUFFER      RES     D'13'   ; Copy of RX_BUFFER
+       3FFF 3FFF 3FFF 
+       3FFF 3FFF 3FFF 
+       3FFF 3FFF 3FFF 
+       3FFF           
+                      00105 #endif
+                      00106 
+Error[149]  : Directive only allowed when generating an object file: "global"
+  0000                00107     global  RXINPUT_LEN
+Error[149]  : Directive only allowed when generating an object file: "global"
+  0000                00108     global  RXINPUT_BUFFER
+                      00109 
+                      00110 #define     BYTE        RXINPUT_BUFFER
+                      00111 #define     REQTYPE     RXINPUT_BUFFER
+                      00112 #define     STUFFING    GEN,0
+                      00113 
+                      00114  
+Error[149]  : Directive only allowed when generating an object file: "CODE"
+                      00115 RESET_VECTOR    CODE    0x00
+                      00116     ; enable only RB0 int
+0000   3010           00117     movlw   B'00010000'
+0001   008B           00118     movwf   INTCON
+                      00119     
+                      00120     ; and goto Start
+gpasm-1.5.0 #1285 (Sep 12 2016)       USB.ASM   6-1-2018  10:48:12          PAGE  7
+
+
+LOC    OBJECT CODE    LINE  SOURCE TEXT
+  VALUE
+
+0002   2800           00121     goto    Start
+0003   0000           00122     nop
+                      00123 
+                      00124 
+Error[149]  : Directive only allowed when generating an object file: "CODE"
+                      00125 USB_MAIN_LOOP   CODE
+                      00126 ; ---------------- Initial Setup (Start) ----------------
+0000                  00127 Start:
+Error[113]  : Symbol not previously defined: "Init"
+0000   2000           00128     call    Init
+                      00129 
+0001   1683           00130     bsf     STATUS,RP0
+0002   1303           00131     bcf     STATUS,RP1
+                      00132 
+                      00133     ; adjust RB0 edge (on rise) and disable pull-up resistors
+                      00134     ; and make Prescaler 1:4    
+0003   30C1           00135     movlw   B'11000001'
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 1 from now on.
+0004   0081           00136     movwf   OPTION_REG
+                      00137 
+                      00138     ; make RB0, RB1 and RB2 input
+0005   3007           00139     movlw   B'00000111'
+0006   0486           00140     iorwf   TRISB,F
+                      00141 
+0007   1283           00142     bcf     STATUS,RP0
+                      00143 
+                      00144     ; disable USART (because we use RB1 for I/O)    
+0008   1398           00145     bcf     RCSTA,SPEN
+                      00146 
+                      00147     ; set ActionFlag Free
+Error[113]  : Symbol not previously defined: "ACTION_FLAG"
+0009   0180           00148     clrf    ACTION_FLAG
+                      00149 
+                      00150     ; initial device address (0 NRZI coded)
+000A   302A           00151     movlw   USB_NRZI_ZERO_ADDR
+Error[113]  : Symbol not previously defined: "DEVICE_ADDRESS"
+000B   0080           00152     movwf   DEVICE_ADDRESS
+Error[113]  : Symbol not previously defined: "NEW_DEVICE_ADDRESS"
+000C   0080           00153     movwf   NEW_DEVICE_ADDRESS
+                      00154 
+                      00155  #if INTERRUPT_IN_ENDPOINT == 1
+                      00156     ; initialize data toggle for EP1
+                      00157     movlw   USB_PID_DATA0
+                      00158     movwf   INT_TX_BUFFER
+                      00159 #endif    
+                      00160 
+                      00161     ; enable interrupts
+000D   178B           00162     bsf     INTCON,GIE
+                      00163 ; ---------------- Initial Setup (End) ----------------
+                      00164 
+000E                  00165 MainLoop:
+000E   1D06           00166     btfss   USB_EOPCHK              ; checks for Reset
+000F   20A7           00167     call    CheckReset
+gpasm-1.5.0 #1285 (Sep 12 2016)       USB.ASM   6-1-2018  10:48:12          PAGE  8
+
+
+LOC    OBJECT CODE    LINE  SOURCE TEXT
+  VALUE
+
+                      00168 
+Error[113]  : Symbol not previously defined: "Main"
+0010   2000           00169     call    Main
+                      00170 
+                      00171     ; select BANK 0
+0011   1283           00172     bcf     STATUS,RP0
+0012   1303           00173     bcf     STATUS,RP1
+                      00174 
+Error[113]  : Symbol not previously defined: "ACTION_FLAG"
+0013   1C00           00175     btfss   AF_BIT_BUSY             ; if it's free don't check below
+0014   280E           00176     goto    MainLoop
+                      00177 
+Error[113]  : Symbol not previously defined: "ACTION_FLAG"
+0015   1880           00178     btfsc   AF_BIT_DECODING         ; checks for decode mode
+0016                  00179 ML_Decode:
+0016   201C           00180     call    DecodeData
+0017                  00181 ML_ProcSetupOut:
+Error[113]  : Symbol not previously defined: "ACTION_FLAG"
+0017   1F80           00182     btfss   AF_BIT_PID_OUT          ; checks for process setup/out
+0018   286B           00183     goto    ProcessSetup            ; it's SETUP
+Error[113]  : Symbol not previously defined: "ProcessOut"
+0019   2000           00184     call    ProcessOut              ; it's OUT
+                      00185 #if INTERRUPT_OUT_ENDPOINT == 1    
+                      00186     btfsc   AF_BIT_DECODING         ; checks pending decoding (from SETUP)
+                      00187     goto    ML_Decode
+                      00188 #endif
+Error[113]  : Symbol not previously defined: "ACTION_FLAG"
+001A   1000           00189     bcf     AF_BIT_BUSY             ; set it free
+                      00190 #if INTERRUPT_OUT_ENDPOINT == 1
+                      00191     btfsc   AF_BIT_INTERRUPT        ; if it's an interrupt transfer, 
+                      00192     goto    MainLoop                ; don't compose empty packet.
+                      00193 #endif
+001B   289B           00194     goto    ComposeNullAndReturn
+                      00195    
+                      00196 
+                      00197 ; decode RXINPUT_BUFFER to RXDATA_BUFFER
+001C                  00198 DecodeData:
+                      00199     ; select BANK 0
+001C   1283           00200     bcf     STATUS,RP0
+001D   1303           00201     bcf     STATUS,RP1
+                      00202 
+Warning[219]: Invalid RAM location specified. 'RXINPUT_LEN' -- {0x0008} in BADRAM
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+001E   0308           00203     decf    RXINPUT_LEN,W           ; ignore PID on decoding
+001F   0084           00204     movwf   COUNT                   ; number of bytes to decode
+                      00205    
+0020   300A           00206     movlw   RXINPUT_BUFFER+1        ; ignore PID on decoding
+0021   0082           00207     movwf   SEEK                    ; source
+0022   0180           00208     clrf    RXDATA_LEN
+0023   3001           00209     movlw   RXDATA_BUFFER
+0024   0083           00210     movwf   SEEK2                   ; destiny
+                      00211 
+0025   3001           00212     movlw   0x01
+gpasm-1.5.0 #1285 (Sep 12 2016)       USB.ASM   6-1-2018  10:48:12          PAGE  9
+
+
+LOC    OBJECT CODE    LINE  SOURCE TEXT
+  VALUE
+
+0026   0081           00213     movwf   GEN2                    ; roles as "last nrzi bit"
+                      00214 
+0027   3006           00215     movlw   0x06                    ; if DATA1
+Warning[219]: Invalid RAM location specified. 'RXINPUT_BUFFER' -- {0x0009} in BADRAM
+0028   1B09           00216     btfsc   RXINPUT_BUFFER,6   
+0029   3004           00217     movlw   0x04                    ; if DATA0
+Warning[219]: Invalid RAM location specified. 'NCHANGE_COUNT' -- {0x0007} in BADRAM
+002A   0087           00218     movwf   NCHANGE_COUNT
+002B   1000           00219     bcf     STUFFING
+                      00220    
+002C   3008           00221     movlw   0x08
+002D   0086           00222     movwf   COUNT3                  ; controls number bits in destiny
+                      00223 
+002E                  00224 DD_CopyLoop:                        ; controlled by COUNT
+002E   0802           00225     movf    SEEK,W
+002F   0084           00226     movwf   FSR
+0030   0800           00227     movf    INDF,W
+Warning[219]: Invalid RAM location specified. 'RXINPUT_BUFFER' -- {0x0009} in BADRAM
+0031   0089           00228     movwf   BYTE                    ; put the byte to decode in BYTE
+                      00229    
+0032   0803           00230     movf    SEEK2,W
+0033   0084           00231     movwf   FSR
+                      00232    
+0034   3008           00233     movlw   0x08                    ; decode 8 bits
+0035   0085           00234     movwf   COUNT2
+                      00235 
+0036   1C00           00236     btfss   STUFFING                ; stuffing bit is in bit 0?
+0037   283D           00237     goto    DD_CP_DecodeBit
+0038   1000           00238     bcf     STUFFING  
+Warning[219]: Invalid RAM location specified. 'RXINPUT_BUFFER' -- {0x0009} in BADRAM
+0039   0809           00239     movf    BYTE,W
+003A   0081           00240     movwf   GEN2
+Warning[219]: Invalid RAM location specified. 'RXINPUT_BUFFER' -- {0x0009} in BADRAM
+003B   0C89           00241     rrf     BYTE,F                  ; discard the stuffing bit
+003C   0385           00242     decf    COUNT2,F    
+                      00243 
+003D                  00244 DD_CP_DecodeBit:                    ; controlled by COUNT2
+Warning[219]: Invalid RAM location specified. 'RXINPUT_BUFFER' -- {0x0009} in BADRAM
+003D   0809           00245     movf    BYTE,W
+003E   0681           00246     xorwf   GEN2,F
+003F   0981           00247     comf    GEN2,F
+                      00248 
+0040   1C01           00249     btfss   GEN2,0
+0041   2849           00250     goto    DD_CP_DB_ResetNChange
+Warning[219]: Invalid RAM location specified. 'NCHANGE_COUNT' -- {0x0007} in BADRAM
+0042   0B87           00251     decfsz  NCHANGE_COUNT,F
+0043   284B           00252     goto    DD_CP_DB_SaveLastBit
+                      00253 
+                      00254     ; six consecutives bits found
+Warning[219]: Invalid RAM location specified. 'RXINPUT_BUFFER' -- {0x0009} in BADRAM
+0044   0C89           00255     rrf     BYTE,F                  ; discard the stuffing bit
+0045   0B85           00256     decfsz  COUNT2,F                ; the stuffing bit is in the next byte?
+0046   2849           00257     goto    DD_CP_DB_ResetNChange
+gpasm-1.5.0 #1285 (Sep 12 2016)       USB.ASM   6-1-2018  10:48:12          PAGE 10
+
+
+LOC    OBJECT CODE    LINE  SOURCE TEXT
+  VALUE
+
+0047   1400           00258     bsf     STUFFING                ; get the stuffing bit in next byte
+0048   0A85           00259     incf    COUNT2,F
+                      00260 
+0049                  00261 DD_CP_DB_ResetNChange:
+0049   3006           00262     movlw   0x06
+Warning[219]: Invalid RAM location specified. 'NCHANGE_COUNT' -- {0x0007} in BADRAM
+004A   0087           00263     movwf   NCHANGE_COUNT
+                      00264 
+004B                  00265 DD_CP_DB_SaveLastBit:
+004B   0C81           00266     rrf     GEN2,F
+004C   0C80           00267     rrf     INDF,F
+Warning[219]: Invalid RAM location specified. 'RXINPUT_BUFFER' -- {0x0009} in BADRAM
+004D   0809           00268     movf    BYTE,W
+004E   0081           00269     movwf   GEN2
+                      00270 
+004F                  00271 DD_CP_DB_VerifyDestEnd:
+004F   0B86           00272     decfsz  COUNT3,F
+0050   285C           00273     goto    DD_CP_DB_VerifyEnd
+0051   0A80           00274     incf    RXDATA_LEN,F
+0052   0800           00275     movf    RXDATA_LEN,W
+Warning[219]: Invalid RAM location specified. 'RXINPUT_LEN' -- {0x0008} in BADRAM
+0053   0208           00276     subwf   RXINPUT_LEN,W
+0054   3A03           00277     xorlw   0x03                    ; discard PID and CRC16 (3 bytes)
+0055   1903           00278     btfsc   STATUS,Z
+0056   2862           00279     goto    DD_CP_End
+0057   0A83           00280     incf    SEEK2,F
+0058   0803           00281     movf    SEEK2,W
+0059   0084           00282     movwf   FSR
+005A   3008           00283     movlw   0x08
+005B   0086           00284     movwf   COUNT3
+                      00285 
+005C                  00286 DD_CP_DB_VerifyEnd:
+Warning[219]: Invalid RAM location specified. 'RXINPUT_BUFFER' -- {0x0009} in BADRAM
+005C   0C89           00287     rrf     BYTE,F
+005D   0B85           00288     decfsz  COUNT2,F
+005E   283D           00289     goto    DD_CP_DecodeBit
+                      00290 
+005F                  00291 DD_CP_DB_End:
+005F   0A82           00292     incf    SEEK,F
+0060   0B84           00293     decfsz  COUNT,F
+0061   282E           00294     goto    DD_CopyLoop
+                      00295 
+0062                  00296 DD_CP_End:
+Error[113]  : Symbol not previously defined: "ACTION_FLAG"
+0062   1080           00297     bcf     AF_BIT_DECODING         ; put in process mode
+Error[113]  : Symbol not previously defined: "ACTION_FLAG"
+0063   1B80           00298     btfsc   AF_BIT_PID_OUT          ; data from SETUP?
+0064   0008           00299     return                          ; if data is from OUT, return.
+                      00300 
+                      00301 ; if data is from SETUP
+0065                  00302 DD_CP_End_Setup:
+Error[113]  : Symbol not previously defined: "FRAME_NUMBER"
+0065   0180           00303     clrf    FRAME_NUMBER            ; reset frame number
+gpasm-1.5.0 #1285 (Sep 12 2016)       USB.ASM   6-1-2018  10:48:12          PAGE 11
+
+
+LOC    OBJECT CODE    LINE  SOURCE TEXT
+  VALUE
+
+0066   30C3           00304     movlw   USB_PID_DATA0
+Error[113]  : Symbol not previously defined: "TX_BUFFER"
+0067   0080           00305     movwf   TX_BUFFER
+                      00306     
+                      00307     ; put setup's wLenght in CTRL_TOTAL_LEN
+Warning[219]: Invalid RAM location specified. Address{0x0007} in BADRAM
+0068   0807           00308     movf    RXDATA_BUFFER+6,W
+0069   0080           00309     movwf   CTRL_TOTAL_LEN
+                      00310 
+006A   0008           00311     return
+                      00312 
+006B                  00313 ProcessSetup:
+006B   3060           00314     movlw   0x60
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+006C   0501           00315     andwf   RXDATA_BUFFER,W         ; REQTYPE will be zero if it's a standard request
+Warning[219]: Invalid RAM location specified. 'RXINPUT_BUFFER' -- {0x0009} in BADRAM
+006D   0089           00316     movwf   REQTYPE
+                      00317 
+006E   1F81           00318     btfss   RXDATA_BUFFER,7         ; checks the transfer direction
+006F   288B           00319     goto    PS_HostToDevice
+                      00320 
+0070                  00321 PS_DeviceToHost:
+Error[113]  : Symbol not previously defined: "PreInitTXBuffer"
+0070   2000           00322     call    PreInitTXBuffer
+                      00323 
+Warning[219]: Invalid RAM location specified. 'RXINPUT_BUFFER' -- {0x0009} in BADRAM
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+0071   0889           00324     movf    REQTYPE,F
+0072   1903           00325     btfsc   STATUS,Z                ; is it standard request?
+0073   2876           00326     goto    PS_DTH_StandardRequest    
+                      00327     
+Error[113]  : Symbol not previously defined: "VendorRequest"
+0074   2000           00328     call    VendorRequest           ; it's class/vendor request
+0075   2886           00329     goto    PS_DTH_End    
+                      00330     
+0076                  00331 PS_DTH_StandardRequest:
+                      00332 ; Check for Get Descriptor request
+0076   0802           00333     movf    RXDATA_BUFFER+1,W
+0077   3A06           00334     xorlw   GET_DESCRIPTOR
+0078   1D03           00335     btfss   STATUS,Z
+0079   287B           00336     goto    PS_DTH_NoDescriptor
+                      00337 #if HID == 1
+                      00338 ; Check for Get Report Descriptor
+                      00339     movf    RXDATA_BUFFER+3,W
+                      00340     xorlw   DESCRIPTOR_TYPE_REPORT
+                      00341     btfsc   STATUS,Z
+                      00342     call    GetReportDescriptor
+                      00343 #endif
+                      00344 ; Check for others descriptors
+Error[113]  : Symbol not previously defined: "GetDescriptor"
+007A   2000           00345     call    GetDescriptor
+007B                  00346 PS_DTH_NoDescriptor:
+                      00347 ; Check for Get Status request
+gpasm-1.5.0 #1285 (Sep 12 2016)       USB.ASM   6-1-2018  10:48:12          PAGE 12
+
+
+LOC    OBJECT CODE    LINE  SOURCE TEXT
+  VALUE
+
+007B   0882           00348     movf    RXDATA_BUFFER+1,F
+007C   1903           00349     btfsc   STATUS,Z
+Error[113]  : Symbol not previously defined: "GetStatus"
+007D   2000           00350     call    GetStatus
+                      00351 ; Check for Get Configuration request
+007E   0802           00352     movf    RXDATA_BUFFER+1,W
+007F   3A08           00353     xorlw   GET_CONFIGURATION
+0080   1903           00354     btfsc   STATUS,Z
+Error[113]  : Symbol not previously defined: "GetConfiguration"
+0081   2000           00355     call    GetConfiguration
+                      00356 ; Check for Get Interface request
+0082   0802           00357     movf    RXDATA_BUFFER+1,W
+0083   3A0A           00358     xorlw   GET_INTERFACE
+0084   1903           00359     btfsc   STATUS,Z
+Error[113]  : Symbol not previously defined: "GetInterface"
+0085   2000           00360     call    GetInterface
+                      00361 
+0086                  00362 PS_DTH_End:
+                      00363     ; select BANK 0
+0086   1283           00364     bcf     STATUS,RP0
+0087   1303           00365     bcf     STATUS,RP1
+                      00366 
+                      00367 #if INTERRUPT_IN_ENDPOINT == 1
+                      00368     clrw
+                      00369 #endif
+Error[113]  : Symbol not previously defined: "DoCrc"
+0088   2000           00370     call    DoCrc
+                      00371 #if INTERRUPT_IN_ENDPOINT == 1
+                      00372     clrw
+                      00373 #endif
+Error[113]  : Symbol not previously defined: "InsertStuff"
+0089   2000           00374     call    InsertStuff
+008A   28A4           00375     goto    SetReadyAndReturn
+                      00376 
+008B                  00377 PS_HostToDevice:
+Warning[219]: Invalid RAM location specified. 'RXINPUT_BUFFER' -- {0x0009} in BADRAM
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+008B   0889           00378     movf    REQTYPE,F
+008C   1903           00379     btfsc   STATUS,Z                ; is it standard request?
+008D   2890           00380     goto    PS_HTD_StandardRequest
+                      00381 
+Error[113]  : Symbol not previously defined: "VendorRequest"
+008E   2000           00382     call    VendorRequest           ; it's class/vendor request
+008F   2894           00383     goto    PS_HTD_End
+                      00384 
+0090                  00385 PS_HTD_StandardRequest:
+                      00386     ; Check for Set Address request
+0090   0802           00387     movf    RXDATA_BUFFER+1,W
+0091   3A05           00388     xorlw   SET_ADDRESS
+0092   1903           00389     btfsc   STATUS,Z
+Error[113]  : Symbol not previously defined: "SetAddress"
+0093   2000           00390     call    SetAddress
+                      00391 
+gpasm-1.5.0 #1285 (Sep 12 2016)       USB.ASM   6-1-2018  10:48:12          PAGE 13
+
+
+LOC    OBJECT CODE    LINE  SOURCE TEXT
+  VALUE
+
+0094                  00392 PS_HTD_End:
+                      00393     ; select BANK 0
+0094   1283           00394     bcf     STATUS,RP0
+0095   1303           00395     bcf     STATUS,RP1
+                      00396 
+0096   0880           00397     movf    CTRL_TOTAL_LEN,F
+0097   1903           00398     btfsc   STATUS,Z
+0098   289D           00399     goto    ComposeNullAndReturn_
+Error[113]  : Symbol not previously defined: "ACTION_FLAG"
+0099   1000           00400     bcf     AF_BIT_BUSY
+009A   280E           00401     goto    MainLoop
+                      00402 
+                      00403 ; Prepare buffer with zero length data packet
+009B                  00404 ComposeNullAndReturn:
+                      00405     ; select BANK 0
+009B   1283           00406     bcf     STATUS,RP0
+009C   1303           00407     bcf     STATUS,RP1
+009D                  00408 ComposeNullAndReturn_:
+009D   304B           00409     movlw   USB_PID_DATA1           ; DATA1 PID
+Error[113]  : Symbol not previously defined: "TX_BUFFER"
+009E   0080           00410     movwf   TX_BUFFER
+                      00411                   
+Error[113]  : Symbol not previously defined: "TX_BUFFER"
+009F   0180           00412     clrf    TX_BUFFER+1             ; CRC16
+Error[113]  : Symbol not previously defined: "TX_BUFFER"
+00A0   0180           00413     clrf    TX_BUFFER+2
+                      00414     
+Error[113]  : Symbol not previously defined: "TX_LEN"
+00A1   0180           00415     clrf    TX_LEN                  ; zero length
+Error[113]  : Symbol not previously defined: "TX_EXTRA_BITS"
+00A2   0180           00416     clrf    TX_EXTRA_BITS
+Error[113]  : Symbol not previously defined: "ACTION_FLAG"
+00A3   1180           00417     bcf     AF_BIT_PEND_BYTES
+                      00418 
+00A4                  00419 SetReadyAndReturn:
+Error[113]  : Symbol not previously defined: "ACTION_FLAG"
+00A4   1000           00420     bcf     AF_BIT_BUSY
+Error[113]  : Symbol not previously defined: "ACTION_FLAG"
+00A5   1700           00421     bsf     AF_BIT_TX_READY
+00A6   280E           00422     goto    MainLoop
+                      00423         
+00A7                  00424 CheckReset:
+                      00425     ; select BANK 0
+00A7   1283           00426     bcf     STATUS,RP0
+00A8   1303           00427     bcf     STATUS,RP1
+                      00428 
+00A9   3003           00429     movlw   0x3                     ; for 15 instructions (2.5us)
+00AA   0084           00430     movwf   COUNT
+00AB                  00431 CR_Loop:
+Message[1302]: RAM Bank undefined in this chunk of code. Ensure that bank bits are correct. Assuming bank 0 from now on.
+00AB   1906           00432     btfsc   USB_EOPCHK
+00AC   0008           00433     return
+00AD   0B84           00434     decfsz  COUNT,F
+gpasm-1.5.0 #1285 (Sep 12 2016)       USB.ASM   6-1-2018  10:48:12          PAGE 14
+
+
+LOC    OBJECT CODE    LINE  SOURCE TEXT
+  VALUE
+
+00AE   28AB           00435     goto    CR_Loop    
+00AF                  00436 ResetDevice:                        ; SE0 for more than 2.5us, host is sending a reset
+00AF   302A           00437     movlw   USB_NRZI_ZERO_ADDR      ; initial device address (0 NRZI coded)
+Error[113]  : Symbol not previously defined: "DEVICE_ADDRESS"
+00B0   0080           00438     movwf   DEVICE_ADDRESS
+Error[113]  : Symbol not previously defined: "NEW_DEVICE_ADDRESS"
+00B1   0080           00439     movwf   NEW_DEVICE_ADDRESS
+00B2   0008           00440     return   
+                      00441     
+                      00442 
+                      00443 #if INTERRUPT_IN_ENDPOINT == 1
+                      00444 PrepareIntTxBuffer:
+                      00445     ; select BANK 0
+                      00446     bcf     STATUS,RP0
+                      00447     bcf     STATUS,RP1
+                      00448 
+                      00449     ; data toggle
+                      00450     movlw   USB_PID_DATA0
+                      00451     btfss   INT_TX_BUFFER,3
+                      00452     movlw   USB_PID_DATA1
+                      00453     movwf   INT_TX_BUFFER
+                      00454 
+                      00455     movlw   0x01
+                      00456     call    DoCrc
+                      00457     movlw   0x01
+                      00458     call    InsertStuff
+                      00459     bsf     AF_BIT_INT_TX_READY
+                      00460 
+                      00461     return
+                      00462 #endif
+                      00463 
+                      00464     END
+Error[181]  : Error generating hex file.

@@ -1,0 +1,30 @@
+16FUSB - A USB 1.1 implementation for PIC16F628/628A
+----------------------------------------------------
+
+The 16FUSB is a software implementation of the USB low-speed for PIC16F628/628A microcontroller. 
+All communication stuff is done by the firmware, completely discarding the need to use an 
+additional chip. From the 16FUSB core is possible to add implementations of other protocols 
+such as, for example, I2C, SPI or simple write data from the USB host (PC) directly to the 
+PIC pins. A low-speed USB software implementation can be a great alternative for those who want 
+lower cost projects and at the same time also doesn't need high speed data transfer.
+
+
+License
+-------
+
+The 16FUSB software is licensed under the terms of the GNU General
+Public License as published by the Free Software Foundation, either
+version 2 of the license, or (at your option) any later version. A
+copy of the GPL version 2 license can be found in the file COPYING.
+
+
+Author
+------
+
+Emanuel Paz <efspaz@gmail.com>
+
+
+Site
+----
+
+http://www.lendlocus.com/?q=16fusb
