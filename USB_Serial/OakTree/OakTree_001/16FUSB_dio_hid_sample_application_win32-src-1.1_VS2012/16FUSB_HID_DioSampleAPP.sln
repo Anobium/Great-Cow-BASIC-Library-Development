@@ -1,0 +1,21 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+# SharpDevelop 4.4
+Project("{0E96FCFA-9DAC-4534-AC18-01A90C368873}") = "16FUSB_HID_DioSampleAPP", "16FUSB_HID_DioSampleAPP\16FUSB_HID_DioSampleAPP.vcxproj", "{D310BE4B-75FE-4332-BB82-FE4995AC6B80}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D310BE4B-75FE-4332-BB82-FE4995AC6B80}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D310BE4B-75FE-4332-BB82-FE4995AC6B80}.Debug|Win32.Build.0 = Debug|Win32
+		{D310BE4B-75FE-4332-BB82-FE4995AC6B80}.Release|Win32.ActiveCfg = Release|Win32
+		{D310BE4B-75FE-4332-BB82-FE4995AC6B80}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
