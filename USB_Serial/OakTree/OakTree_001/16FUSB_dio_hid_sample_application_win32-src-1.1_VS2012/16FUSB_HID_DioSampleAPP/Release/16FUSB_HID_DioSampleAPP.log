@@ -1,0 +1,8 @@
+﻿Build started 01/06/2018 14:07:40.
+     1>Project "C:\Users\admin\Desktop\OakTree_001\16FUSB_dio_hid_sample_application_win32-src-1.1_VS2012\16FUSB_HID_DioSampleAPP\16FUSB_HID_DioSampleAPP.vcxproj" on node 2 (Rebuild target(s)).
+     1>C:\Program Files\MSBuild\Microsoft.Cpp\v4.0\V110\Microsoft.Cpp.Platform.targets(44,5): error MSB8020: The builds tools for v140 (Platform Toolset = 'v140') cannot be found. To build using the v140 build tools, either click the Project menu or right-click the solution, and then select "Update VC++ Projects...". Install v140 to build using the v140 build tools.
+     1>Done Building Project "C:\Users\admin\Desktop\OakTree_001\16FUSB_dio_hid_sample_application_win32-src-1.1_VS2012\16FUSB_HID_DioSampleAPP\16FUSB_HID_DioSampleAPP.vcxproj" (Rebuild target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.05

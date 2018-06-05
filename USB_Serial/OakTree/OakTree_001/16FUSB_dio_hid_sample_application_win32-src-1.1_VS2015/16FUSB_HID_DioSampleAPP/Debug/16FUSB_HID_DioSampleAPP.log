@@ -1,0 +1,28 @@
+﻿  Microsoft (R) C/C++ Optimizing Compiler Version 17.00.50727.1
+  for Microsoft (R) .NET Framework version 4.07.2650.0
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /AI"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\\" /AI"C:\Program Files\Windows Kits\8.0\References\CommonConfiguration\Neutral" /AI"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\\" /Zi /clr:pure /nologo- /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _UNICODE /D UNICODE /EHa /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Debug\16FUSB_HID_DioSampleAPP.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /TP /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\mscorlib.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Data.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Drawing.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Windows.Forms.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Xml.dll" /analyze- /errorReport:prompt stdafx.cpp
+cl : Command line warning D9035: option 'nologo-' has been deprecated and will be removed in a future release
+  
+  stdafx.cpp
+  Microsoft (R) C/C++ Optimizing Compiler Version 17.00.50727.1
+  for Microsoft (R) .NET Framework version 4.07.2650.0
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /AI"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\\" /AI"C:\Program Files\Windows Kits\8.0\References\CommonConfiguration\Neutral" /AI"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\\" /Zi /clr:pure /nologo- /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _UNICODE /D UNICODE /EHa /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\16FUSB_HID_DioSampleAPP.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /TP /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\mscorlib.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Data.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Drawing.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Windows.Forms.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Xml.dll" /analyze- /errorReport:prompt 16FUSB_HID_DioSampleAPP.cpp AssemblyInfo.cpp Usb.cpp
+cl : Command line warning D9035: option 'nologo-' has been deprecated and will be removed in a future release
+  
+  16FUSB_HID_DioSampleAPP.cpp
+  AssemblyInfo.cpp
+  Usb.cpp
+  Generating Code...
+  Microsoft (R) C/C++ Optimizing Compiler Version 17.00.50727.1
+  for Microsoft (R) .NET Framework version 4.07.2650.0
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /clr:pure /nologo- /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _UNICODE /D UNICODE /EHa /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /TP /analyze- /errorReport:prompt "C:\Users\admin\AppData\Local\Temp\.NETFramework,Version=v4.5.2.AssemblyAttributes.cpp"
+cl : Command line warning D9035: option 'nologo-' has been deprecated and will be removed in a future release
+  
+  .NETFramework,Version=v4.5.2.AssemblyAttributes.cpp
+  16FUSB_HID_DioSampleAPP.vcxproj -> C:\Users\admin\Desktop\OakTree_001\16FUSB_dio_hid_sample_application_win32-src-1.1_VS2015\Debug\16FUSB_HID_DioSampleAPP.exe

@@ -62,13 +62,13 @@ ENABLE_POWER_CONFIG equ 0
 ;USE_RA3_SWITCH and USE_RC3_SWITCH and USE_RA4_SWITCH and USE_RC5_SWITCH are all mutually exclusive, 0 or 1
 
 ; Bootloader switch definition RA3
-USE_RA3_SWITCH    equ 1
+USE_RA3_SWITCH    equ 0
 ; Bootloader switch definition RC3 (external pull-up need for this pin)
 USE_RC3_SWITCH    equ 0
 ; Bootloader switch definition RC5 (external pull-up need for this pin)
 USE_RC5_SWITCH    equ 0
-; Bootloader switch definition RC4 (external pull-up need for this pin)
-USE_RA4_SWITCH    equ 0
+; Bootloader switch definition RA4 (external pull-up need for this pin)
+USE_RA4_SWITCH    equ 1
 
 
   radix dec
