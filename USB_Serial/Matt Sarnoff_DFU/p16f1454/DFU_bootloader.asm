@@ -59,14 +59,16 @@ LOGGING_ENABLED   equ 0
 ENABLE_POWER_CONFIG equ 0
 
 
-;USE_RA3_SWITCH and USE_RC3_SWITCH and USE_RC5_SWITCH are all mutually exclusive, 0 or 1
+;USE_RA3_SWITCH and USE_RC3_SWITCH and USE_RA4_SWITCH and USE_RC5_SWITCH are all mutually exclusive, 0 or 1
 
 ; Bootloader switch definition RA3
-USE_RA3_SWITCH    equ 0
+USE_RA3_SWITCH    equ 1
 ; Bootloader switch definition RC3 (external pull-up need for this pin)
 USE_RC3_SWITCH    equ 0
 ; Bootloader switch definition RC5 (external pull-up need for this pin)
-USE_RC5_SWITCH    equ 1
+USE_RC5_SWITCH    equ 0
+; Bootloader switch definition RC4 (external pull-up need for this pin)
+USE_RA4_SWITCH    equ 0
 
 
   radix dec
@@ -669,6 +671,11 @@ app_check_loop
   goto  _bootloader_main  ; enter bootloader mode if input is low
 #endif
 
+#if USE_RA4_SWITCH
+  banksel PORTA
+  btfss PORTA,RA4
+  goto  _bootloader_main  ; enter bootloader mode if input is low
+#endif
 
 #if USE_RC5_SWITCH
   banksel PORTC
@@ -690,6 +697,11 @@ app_check_loop
 #if USE_RC3_SWITCH
   banksel ANSELC        ;enable analog function on pin
   bsf   ANSELC,ANSC3
+#endif
+
+#if USE_RA4_SWITCH
+  banksel ANSELA        ;enable analog function on pin
+  bsf   ANSELA,ANSA4
 #endif
 
 #if USE_RC5_SWITCH
