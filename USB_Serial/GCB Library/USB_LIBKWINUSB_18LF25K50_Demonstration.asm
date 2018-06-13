@@ -16,87 +16,84 @@ ADREADPORT	EQU	10
 COMPORT	EQU	11
 DELAYTEMP	EQU	0
 DELAYTEMP2	EQU	1
-GCBBUILDSTR	EQU	1921
+GCBBUILDSTR	EQU	1901
 GCBBUILDTIMESTR	EQU	1944
-HEX	EQU	1911
+HEX	EQU	1897
 HSERPRINTCRLFCOUNT	EQU	12
 MEMDATA	EQU	13
 OUTVALUETEMP	EQU	16
 PEEK	EQU	17
 PRINTLEN	EQU	18
 READAD10	EQU	19
-READAD10_H	EQU	20
-SAVEDELAYTEMP2	EQU	21
-SAVEFSR0H	EQU	22
-SAVEFSR0L	EQU	23
-SAVEFSR1H	EQU	24
-SAVEFSR1L	EQU	25
-SAVESYSBYTETEMPA	EQU	26
-SAVESYSBYTETEMPB	EQU	27
-SAVESYSBYTETEMPX	EQU	28
-SAVESYSDIVLOOP	EQU	29
-SAVESYSSTRINGA	EQU	30
-SAVESYSSTRINGLENGTH	EQU	31
-SAVESYSTEMP1	EQU	32
-SAVESYSTEMP2	EQU	33
-SAVESYSWAITTEMPMS	EQU	34
-SAVESYSWAITTEMPMS_H	EQU	35
-SENSORVALUE1	EQU	36
-SENSORVALUE1_H	EQU	37
-SENSORVALUE2	EQU	38
-SENSORVALUE2_H	EQU	39
-SENSORVALUE3	EQU	40
-SENSORVALUE3_H	EQU	41
-SENSORVALUE4	EQU	42
-SENSORVALUE4_H	EQU	43
-SERDATA	EQU	44
-SERPRINTVAL	EQU	45
-STRINGPOINTER	EQU	46
-SYSBSR	EQU	47
+READAD10_H	EQU	21
+SAVEDELAYTEMP2	EQU	22
+SAVEFSR0H	EQU	23
+SAVEFSR0L	EQU	24
+SAVEFSR1H	EQU	25
+SAVEFSR1L	EQU	26
+SAVESYSBYTETEMPA	EQU	27
+SAVESYSBYTETEMPB	EQU	28
+SAVESYSBYTETEMPX	EQU	29
+SAVESYSDIVLOOP	EQU	30
+SAVESYSSTRINGA	EQU	31
+SAVESYSSTRINGLENGTH	EQU	32
+SAVESYSTEMP1	EQU	33
+SAVESYSTEMP1_H	EQU	34
+SAVESYSTEMP2	EQU	35
+SAVESYSWAITTEMPMS	EQU	36
+SAVESYSWAITTEMPMS_H	EQU	37
+SERDATA	EQU	38
+SERPRINTVAL	EQU	39
+STRINGPOINTER	EQU	40
+SYSBSR	EQU	41
 SYSBYTETEMPA	EQU	5
 SYSBYTETEMPB	EQU	9
 SYSBYTETEMPX	EQU	0
 SYSCALCTEMPA	EQU	5
 SYSCALCTEMPX	EQU	0
 SYSDIVLOOP	EQU	4
-SYSPRINTDATAHANDLER	EQU	48
-SYSPRINTDATAHANDLER_H	EQU	49
-SYSPRINTTEMP	EQU	50
-SYSREPEATTEMP1	EQU	51
+SYSPRINTDATAHANDLER	EQU	42
+SYSPRINTDATAHANDLER_H	EQU	43
+SYSPRINTTEMP	EQU	44
+SYSREPEATTEMP1	EQU	45
 SYSSTATUS	EQU	15
 SYSSTRINGA	EQU	7
 SYSSTRINGA_H	EQU	8
 SYSSTRINGLENGTH	EQU	6
-SYSSTRINGPARAM1	EQU	1915
-SYSSTRINGTEMP	EQU	52
-SYSTEMP1	EQU	53
-SYSTEMP1_H	EQU	54
-SYSTEMP2	EQU	55
-SYSVALTEMP	EQU	56
+SYSSTRINGPARAM1	EQU	1917
+SYSSTRINGPARAM2	EQU	1907
+SYSSTRINGTEMP	EQU	46
+SYSTEMP1	EQU	47
+SYSTEMP1_H	EQU	48
+SYSTEMP2	EQU	49
+SYSVALTEMP	EQU	50
 SYSW	EQU	14
 SYSWAITTEMP10US	EQU	5
 SYSWAITTEMPMS	EQU	2
 SYSWAITTEMPMS_H	EQU	3
-USBBMREQUESTTYPE	EQU	57
-USBBUFFERSTAT	EQU	58
-USBCURRBYTE	EQU	59
-USBCURRCONFIGURATION	EQU	60
-USBCURRENDPOINT	EQU	61
-USBDESCINDEX	EQU	62
-USBDESCSIZEIN	EQU	63
-USBDESCSTART	EQU	64
-USBDESCTYPE	EQU	65
-USBHASDATA	EQU	66
-USBLASTCONTROL	EQU	67
-USBNEWADDRESS	EQU	68
-USBPID	EQU	69
+USBBMREQUESTTYPE	EQU	51
+USBBUFFERSTAT	EQU	52
+USBCURRBYTE	EQU	53
+USBCURRCONFIGURATION	EQU	54
+USBCURRENDPOINT	EQU	55
+USBDESCINDEX	EQU	56
+USBDESCSIZEIN	EQU	57
+USBDESCSTART	EQU	58
+USBDESCTYPE	EQU	59
+USBHASDATA	EQU	60
+USBLASTCONTROL	EQU	61
+USBNEWADDRESS	EQU	62
+USBPID	EQU	63
 USBRAM	EQU	1024
-USBSIZE	EQU	70
-USBSTATE	EQU	71
+USBSIZE	EQU	64
+USBSTATE	EQU	65
 USBTEMPBUFFER	EQU	1927
-USBTEMPBYTE	EQU	72
+USBTEMPBYTE	EQU	66
 USBTEMPSTRING	EQU	2005
+USB_CNT_POINTER	EQU	67
 VERSIONSTRING	EQU	1964
+_USBINVALUE	EQU	68
+_USBINVALUE_H	EQU	69
 
 ;********************************************************************************
 
@@ -105,17 +102,18 @@ AFSR0	EQU	4073
 AFSR0_H	EQU	4074
 MEMADR	EQU	4073
 MEMADR_H	EQU	4074
-SYSHEX_0	EQU	1911
-SYSHEX_1	EQU	1912
-SYSHEX_2	EQU	1913
+SYSHEX_0	EQU	1897
+SYSHEX_1	EQU	1898
+SYSHEX_2	EQU	1899
 SYSREADAD10WORD	EQU	19
-SYSREADAD10WORD_H	EQU	20
+SYSREADAD10WORD_H	EQU	21
 SYSUSBTEMPBUFFER_0	EQU	1927
 SYSUSBTEMPBUFFER_1	EQU	1928
 SYSUSBTEMPBUFFER_2	EQU	1929
 SYSUSBTEMPBUFFER_3	EQU	1930
 SYSUSBTEMPBUFFER_6	EQU	1933
 SYSUSBTEMPSTRING_0	EQU	2005
+USBREQUEST	EQU	1928
 USB_IN0_ADDR	EQU	1030
 USB_IN0_ADDR_H	EQU	1031
 USB_IN0_CNT	EQU	1029
@@ -147,25 +145,49 @@ BASPROGRAMSTART
 	bsf	INTCON,PEIE,ACCESS
 
 ;Start of the main program
-;Very basic first program for USB
-;#define USB_VID 0xF055
-;#define USB_PID 0x1000
-;#define USB_ERROR_HANDLER ErrorHandler
-;#define USB_SETUP_HANDLER SetupHandler
-;#define USB_DESCRIPTOR_HANDLER DescriptorHandler
-;#define USB_PRODUCT_NAME "GCBASIC USB Test:"
-;#define ADSpeed LowSpeed
-;Dim SensorValue1 As Word
-;Dim SensorValue2 As Word
-;Dim SensorValue3 As Word
-;Dim SensorValue4 As Word
+;''A program  for GCGB and GCB.
+;''--------------------------------------------------------------------------------------------------------------------------------
+;''This program is the very first program for Great Cow BASICUSB
+;''
+;''@author     HughC and EvanV
+;''@licence    GPL
+;''@version    1.04
+;''@date       10/06/2018
+;''********************************************************************************
+;----- Configuration
+;----- Constants for the usb.h
+;Define a name - 30 chars max long
+;#define USB_PRODUCT_NAME "Great Cow BASIC LibK/WinUSB"
+;#define USB_VID 0x1209      'MUST not be changed unless you have your own Vendor Identity - this VID is allocate to Great Cow BASIC Lib/WinUSB Solutions.
+;#define USB_PID 0x2006      'MUST not be changed unless you have your own Vendor Identity - this PID is allocate to Great Cow BASIC Lib/WinUSB Solutions.
+;The USB_REV MUST be registered and MUST match your host computer applications USB_REV constant
+;#define USB_REV 0x0000      'You MUST obtain a REV number from https://github.com/Anobium/GreatCowBASICpidcodes1209_2006 to develop your own Open Source USB solutions
+;DO NOT USE REUSE A USB_REV IF YOU WANT TO PUBLISH OR RELEASE. THIS INCLUDES PUBLISHING TO THE FORUM.  See https://sourceforge.net/p/gcbasic/discussion/579125/thread/1e7daf8a/#0034/d2d3
+;#define USBDeviceReadPortb5LEDStatus  130
+;#define USBDeviceSetPortb5StatusOn    131
+;#define USBDeviceSetPortb5StatusOff   132
+;#define USBDeviceReadADCValues        133
+;define specific callback handlers
+;MANDATED to handle your solution
+;#define USB_SETUP_HANDLER           SetupHandler_CallBack
+;optional callback handlers for error and descriptor call.
+;#define USB_ERROR_HANDLER           ErrorHandler_CallBack
+;#define USB_DESCRIPTOR_HANDLER      DescriptorHandler_CallBack
+;Solution specific configuration
+;----- Define Hardware settings
 ;USART
 ;#define USART_BAUD_RATE 115200
 ;#define USART_BLOCKING
-;Dir PORTC.6 Out
-	bcf	TRISC,6,ACCESS
-;Dir PORTB.5 out
+;ADC
+;#define ADSpeed LowSpeed
+;------ Ports
+;#define LED1 PORTB.5
+;Dir LED1 out    'controlled from PC Host application
 	bcf	TRISB,5,ACCESS
+;#define HeartBeatLED PORTB.4
+;Dir HeartBeatLED out    'keepalive not controlled from PC Host application
+	bcf	TRISB,4,ACCESS
+;------ Version Control - optional
 ;Include the GCBVersionNumber.cnt to increment versionString and create the build time string called GCBBuildTimeStr.
 ;versionString a string is created automatically.
 ;GCBBuildTimeStr is a string that is also created automatically.
@@ -201,69 +223,10 @@ BASPROGRAMSTART
 	lfsr	0,VERSIONSTRING
 	movff	SysStringLength, INDF0
 ;HSerPrint "USB CGB  "
-;HSerPrint versionString
-;HSerPrintCRLF
-	movlw	1
-	movwf	HSERPRINTCRLFCOUNT,BANKED
-	movlw	1
-	movwf	COMPORT,BANKED
-	rcall	HSERPRINTCRLF
-;Main loop, read from ADC and cache
-;Do
-SysDoLoop_S1
-;SensorValue1 = ReadAD10(AN0)
-	clrf	ADREADPORT,BANKED
-	rcall	FN_READAD1028
-	movff	SYSREADAD10WORD,SENSORVALUE1
-	movff	SYSREADAD10WORD_H,SENSORVALUE1_H
-;Wait 1 ms
-	movlw	1
-	movwf	SysWaitTempMS,ACCESS
-	clrf	SysWaitTempMS_H,ACCESS
-	rcall	Delay_MS
-;SensorValue2 = ReadAD10(AN1)
-	movlw	1
-	movwf	ADREADPORT,BANKED
-	rcall	FN_READAD1028
-	movff	SYSREADAD10WORD,SENSORVALUE2
-	movff	SYSREADAD10WORD_H,SENSORVALUE2_H
-;Wait 1 ms
-	movlw	1
-	movwf	SysWaitTempMS,ACCESS
-	clrf	SysWaitTempMS_H,ACCESS
-	rcall	Delay_MS
-;SensorValue3 = ReadAD10(AN2)
-	movlw	2
-	movwf	ADREADPORT,BANKED
-	rcall	FN_READAD1028
-	movff	SYSREADAD10WORD,SENSORVALUE3
-	movff	SYSREADAD10WORD_H,SENSORVALUE3_H
-;Wait 1 ms
-	movlw	1
-	movwf	SysWaitTempMS,ACCESS
-	clrf	SysWaitTempMS_H,ACCESS
-	rcall	Delay_MS
-;SensorValue4 = ReadAD10(AN3)
-	movlw	3
-	movwf	ADREADPORT,BANKED
-	rcall	FN_READAD1028
-	movff	SYSREADAD10WORD,SENSORVALUE4
-	movff	SYSREADAD10WORD_H,SENSORVALUE4_H
-;Loop
-	bra	SysDoLoop_S1
-SysDoLoop_E1
-BASPROGRAMEND
-	sleep
-	bra	BASPROGRAMEND
-
-;********************************************************************************
-
-DESCRIPTORHANDLER
-;HSerPrint "Desc "
 	lfsr	1,SYSSTRINGPARAM1
-	movlw	low StringTable7
+	movlw	low StringTable5
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable7
+	movlw	high StringTable5
 	movwf	TBLPTRH,ACCESS
 	rcall	SysReadString
 	movlw	low SYSSTRINGPARAM1
@@ -272,12 +235,57 @@ DESCRIPTORHANDLER
 	movwf	SysPRINTDATAHandler_H,BANKED
 	movlw	1
 	movwf	COMPORT,BANKED
-	rcall	HSERPRINT276
+	rcall	HSERPRINT270
+;HSerPrint versionString
+	movlw	low VERSIONSTRING
+	movwf	SysPRINTDATAHandler,BANKED
+	movlw	high VERSIONSTRING
+	movwf	SysPRINTDATAHandler_H,BANKED
+	movlw	1
+	movwf	COMPORT,BANKED
+	rcall	HSERPRINT270
+;HSerPrintCRLF
+	movlw	1
+	movwf	HSERPRINTCRLFCOUNT,BANKED
+	movlw	1
+	movwf	COMPORT,BANKED
+	rcall	HSERPRINTCRLF
+;------ End of Version Control - optional
+;----- Main body of program commences here
+;Do
+SysDoLoop_S1
+;Loop
+	bra	SysDoLoop_S1
+SysDoLoop_E1
+;end
+	bra	BASPROGRAMEND
+;----- Support methods.  User call backs
+BASPROGRAMEND
+	sleep
+	bra	BASPROGRAMEND
+
+;********************************************************************************
+
+DESCRIPTORHANDLER_CALLBACK
+;HSerPrint "Desc: "
+	lfsr	1,SYSSTRINGPARAM2
+	movlw	low StringTable8
+	movwf	TBLPTRL,ACCESS
+	movlw	high StringTable8
+	movwf	TBLPTRH,ACCESS
+	rcall	SysReadString
+	movlw	low SYSSTRINGPARAM2
+	movwf	SysPRINTDATAHandler,BANKED
+	movlw	high SYSSTRINGPARAM2
+	movwf	SysPRINTDATAHandler_H,BANKED
+	movlw	1
+	movwf	COMPORT,BANKED
+	rcall	HSERPRINT270
 ;HSerPrint USBDescType
 	movff	USBDESCTYPE,SERPRINTVAL
 	movlw	1
 	movwf	COMPORT,BANKED
-	rcall	HSERPRINT277
+	rcall	HSERPRINT271
 ;HSerPrintCRLF
 	movlw	1
 	movwf	HSERPRINTCRLFCOUNT,BANKED
@@ -321,21 +329,21 @@ DMS_INNER
 
 ;********************************************************************************
 
-ERRORHANDLER
-;HSerPrint "E"
-	lfsr	1,SYSSTRINGPARAM1
-	movlw	low StringTable5
+ERRORHANDLER_CALLBACK
+;HSerPrint "Error: "
+	lfsr	1,SYSSTRINGPARAM2
+	movlw	low StringTable6
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable5
+	movlw	high StringTable6
 	movwf	TBLPTRH,ACCESS
 	rcall	SysReadString
-	movlw	low SYSSTRINGPARAM1
+	movlw	low SYSSTRINGPARAM2
 	movwf	SysPRINTDATAHandler,BANKED
-	movlw	high SYSSTRINGPARAM1
+	movlw	high SYSSTRINGPARAM2
 	movwf	SysPRINTDATAHandler_H,BANKED
 	movlw	1
 	movwf	COMPORT,BANKED
-	rcall	HSERPRINT276
+	rcall	HSERPRINT270
 ;HSerPrint Hex(UEIR)
 	movff	UEIR,SYSVALTEMP
 	rcall	FN_HEX
@@ -345,7 +353,7 @@ ERRORHANDLER
 	movwf	SysPRINTDATAHandler_H,BANKED
 	movlw	1
 	movwf	COMPORT,BANKED
-	rcall	HSERPRINT276
+	rcall	HSERPRINT270
 ;HSerPrintCRLF
 	movlw	1
 	movwf	HSERPRINTCRLFCOUNT,BANKED
@@ -356,22 +364,22 @@ ERRORHANDLER
 ;********************************************************************************
 
 FN_GCBBUILDSTR
-;GCBBuildStr="80"
+;GCBBuildStr="168"
 	lfsr	1,GCBBUILDSTR
-	movlw	low StringTable19
+	movlw	low StringTable20
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable19
+	movlw	high StringTable20
 	movwf	TBLPTRH,ACCESS
 	bra	SysReadString
 
 ;********************************************************************************
 
 FN_GCBBUILDTIMESTR
-;GCBBuildTimeStr="06-11-2018 06:48:46"
+;GCBBuildTimeStr="06-13-2018 09:20:36"
 	lfsr	1,GCBBUILDTIMESTR
-	movlw	low StringTable20
+	movlw	low StringTable21
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable20
+	movlw	high StringTable21
 	movwf	TBLPTRH,ACCESS
 	bra	SysReadString
 
@@ -391,10 +399,10 @@ FN_HEX
 ;If SysStringTemp > 9 Then SysStringTemp = SysStringTemp + 7
 	sublw	9
 	btfsc	STATUS, C,ACCESS
-	bra	ENDIF41
+	bra	ENDIF46
 	movlw	7
 	addwf	SYSSTRINGTEMP,F,BANKED
-ENDIF41
+ENDIF46
 ;Hex(2) = SysStringTemp + 48
 	movlw	48
 	addwf	SYSSTRINGTEMP,W,BANKED
@@ -404,7 +412,7 @@ ENDIF41
 ;For SysStringTemp = 1 to 4
 	banksel	SYSSTRINGTEMP
 	clrf	SYSSTRINGTEMP,BANKED
-SysForLoop6
+SysForLoop7
 	incf	SYSSTRINGTEMP,F,BANKED
 ;Rotate SysValTemp Right
 	rrcf	SYSVALTEMP,F,BANKED
@@ -412,9 +420,9 @@ SysForLoop6
 	movlw	4
 	subwf	SYSSTRINGTEMP,W,BANKED
 	btfss	STATUS, C,ACCESS
-	bra	SysForLoop6
-ENDIF42
-SysForLoopEnd6
+	bra	SysForLoop7
+ENDIF47
+SysForLoopEnd7
 ;SysStringTemp = SysValTemp And 0x0F
 	movlw	15
 	andwf	SYSVALTEMP,W,BANKED
@@ -422,10 +430,10 @@ SysForLoopEnd6
 ;If SysStringTemp > 9 Then SysStringTemp = SysStringTemp + 7
 	sublw	9
 	btfsc	STATUS, C,ACCESS
-	bra	ENDIF43
+	bra	ENDIF48
 	movlw	7
 	addwf	SYSSTRINGTEMP,F,BANKED
-ENDIF43
+ENDIF48
 ;Hex(1) = SysStringTemp + 48
 	movlw	48
 	addwf	SYSSTRINGTEMP,W,BANKED
@@ -437,7 +445,7 @@ ENDIF43
 ;********************************************************************************
 
 ;Overloaded signature: STRING:byte:
-HSERPRINT276
+HSERPRINT270
 ;PrintLen = LEN(PrintData$)
 ;PrintLen = PrintData(0)
 	movff	SysPRINTDATAHandler,AFSR0
@@ -446,16 +454,16 @@ HSERPRINT276
 ;If PrintLen <> 0 then
 	movf	PRINTLEN,F,BANKED
 	btfsc	STATUS, Z,ACCESS
-	bra	ENDIF44
+	bra	ENDIF34
 ;Write Data
 ;for SysPrintTemp = 1 to PrintLen
 	clrf	SYSPRINTTEMP,BANKED
 	movlw	1
 	subwf	PRINTLEN,W,BANKED
 	btfss	STATUS, C,ACCESS
-	bra	SysForLoopEnd7
-ENDIF45
-SysForLoop7
+	bra	SysForLoopEnd6
+ENDIF35
+SysForLoop6
 	incf	SYSPRINTTEMP,F,BANKED
 ;HSerSend(PrintData(SysPrintTemp),comport )
 	movf	SYSPRINTTEMP,W,BANKED
@@ -475,25 +483,25 @@ SysForLoop7
 	movf	PRINTLEN,W,BANKED
 	subwf	SYSPRINTTEMP,W,BANKED
 	btfss	STATUS, C,ACCESS
-	bra	SysForLoop7
-ENDIF46
-SysForLoopEnd7
+	bra	SysForLoop6
+ENDIF36
+SysForLoopEnd6
 ;End If
-ENDIF44
+ENDIF34
 ;CR
 	return
 
 ;********************************************************************************
 
 ;Overloaded signature: BYTE:byte:
-HSERPRINT277
+HSERPRINT271
 ;OutValueTemp = 0
 	clrf	OUTVALUETEMP,BANKED
 ;IF SerPrintVal >= 100 Then
 	movlw	100
 	subwf	SERPRINTVAL,W,BANKED
 	btfss	STATUS, C,ACCESS
-	bra	ENDIF47
+	bra	ENDIF49
 ;OutValueTemp = SerPrintVal / 100
 	movff	SERPRINTVAL,SysBYTETempA
 	movlw	100
@@ -513,7 +521,7 @@ HSERPRINT277
 	clrf	SysWaitTempMS_H,ACCESS
 	rcall	Delay_MS
 ;End If
-ENDIF47
+ENDIF49
 ;If OutValueTemp > 0 Or SerPrintVal >= 10 Then
 	movff	OUTVALUETEMP,SysBYTETempB
 	clrf	SysBYTETempA,ACCESS
@@ -528,7 +536,7 @@ ENDIF47
 	iorwf	SysByteTempX,W,ACCESS
 	movwf	SysTemp1,BANKED
 	btfss	SysTemp1,0,BANKED
-	bra	ENDIF48
+	bra	ENDIF50
 ;OutValueTemp = SerPrintVal / 10
 	movff	SERPRINTVAL,SysBYTETempA
 	movlw	10
@@ -548,7 +556,7 @@ ENDIF47
 	clrf	SysWaitTempMS_H,ACCESS
 	rcall	Delay_MS
 ;End If
-ENDIF48
+ENDIF50
 ;HSerSend(SerPrintVal + 48 ,comport)
 	movlw	48
 	addwf	SERPRINTVAL,W,BANKED
@@ -603,16 +611,16 @@ HSERSEND
 ;if comport = 1 Then
 	decf	COMPORT,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	ENDIF36
+	bra	ENDIF33
 ;HSerSendBlocker
 ;Wait While TXIF = Off
-SysWaitLoop4
+SysWaitLoop3
 	btfss	PIR1,TXIF,ACCESS
-	bra	SysWaitLoop4
+	bra	SysWaitLoop3
 ;Wait While TX1IF = Off
-SysWaitLoop5
+SysWaitLoop4
 	btfss	PIR1,TX1IF,ACCESS
-	bra	SysWaitLoop5
+	bra	SysWaitLoop4
 ;TXREG = SerData
 	movff	SERDATA,TXREG
 ;exit sub
@@ -622,7 +630,7 @@ SysWaitLoop5
 ;exit sub
 	return
 ;end if
-ENDIF36
+ENDIF33
 	return
 
 ;********************************************************************************
@@ -646,9 +654,9 @@ INITSYS
 	bsf	OSCCON2,PLLEN,ACCESS
 ;Wait for PLL to stabilize
 ;wait while (PLLRDY = 0)
-SysWaitLoop3
+SysWaitLoop2
 	btfss	OSCCON2,PLLRDY,ACCESS
-	bra	SysWaitLoop3
+	bra	SysWaitLoop2
 ;Clear BSR on 18F chips
 ;BSR = 0
 	clrf	BSR,ACCESS
@@ -823,13 +831,14 @@ Interrupt
 	movff	FSR0H,SaveFSR0H
 	movff	SysByteTempX,SaveSysByteTempX
 	movff	SysDivLoop,SaveSysDivLoop
+	movff	SysTemp2,SaveSysTemp2
 	movff	FSR1L,SaveFSR1L
 	movff	FSR1H,SaveFSR1H
 	movff	SysStringLength,SaveSysStringLength
 	movff	SysWaitTempMS,SaveSysWaitTempMS
 	movff	SysWaitTempMS_H,SaveSysWaitTempMS_H
 	movff	DelayTemp2,SaveDelayTemp2
-	movff	SysTemp2,SaveSysTemp2
+	movff	SysTemp1_H,SaveSysTemp1_H
 	movff	SysStringA,SaveSysStringA
 ;On Interrupt handlers
 	btfss	PIE3,USBIE,ACCESS
@@ -851,13 +860,14 @@ INTERRUPTDONE
 	movff	SaveFSR0H,FSR0H
 	movff	SaveSysByteTempX,SysByteTempX
 	movff	SaveSysDivLoop,SysDivLoop
+	movff	SaveSysTemp2,SysTemp2
 	movff	SaveFSR1L,FSR1L
 	movff	SaveFSR1H,FSR1H
 	movff	SaveSysStringLength,SysStringLength
 	movff	SaveSysWaitTempMS,SysWaitTempMS
 	movff	SaveSysWaitTempMS_H,SysWaitTempMS_H
 	movff	SaveDelayTemp2,DelayTemp2
-	movff	SaveSysTemp2,SysTemp2
+	movff	SaveSysTemp1_H,SysTemp1_H
 	movff	SaveSysStringA,SysStringA
 	movff	SysW,WREG
 	movff	SysSTATUS,STATUS
@@ -888,7 +898,7 @@ POKE
 ;********************************************************************************
 
 ;Overloaded signature: BYTE:
-FN_READAD1028
+FN_READAD1022
 ;Always RIGHT justified
 ;SET ADFM ON
 	bsf	ADCON2,ADFM,ACCESS
@@ -901,157 +911,157 @@ FN_READAD1028
 ;Code for 16F193x chips (and others?) with ANSELA/ANSELB/ANSELE registers
 ;Select Case ADReadPort ' #IFDEF Var(ANSELA). ANSELA exists @DebugADC_H
 ;Case 0: Set ANSELA.0 On
-SysSelect6Case1
+SysSelect7Case1
 	movf	ADREADPORT,F,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case2
+	bra	SysSelect7Case2
 	banksel	ANSELA
 	bsf	ANSELA,0,BANKED
 ;Case 1: Set ANSELA.1 On
-	bra	SysSelectEnd6
-SysSelect6Case2
+	bra	SysSelectEnd7
+SysSelect7Case2
 	decf	ADREADPORT,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case3
+	bra	SysSelect7Case3
 	banksel	ANSELA
 	bsf	ANSELA,1,BANKED
 ;Case 2: Set ANSELA.2 On
-	bra	SysSelectEnd6
-SysSelect6Case3
+	bra	SysSelectEnd7
+SysSelect7Case3
 	movlw	2
 	subwf	ADREADPORT,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case4
+	bra	SysSelect7Case4
 	banksel	ANSELA
 	bsf	ANSELA,2,BANKED
 ;Case 3: Set ANSELA.3 On
-	bra	SysSelectEnd6
-SysSelect6Case4
+	bra	SysSelectEnd7
+SysSelect7Case4
 	movlw	3
 	subwf	ADREADPORT,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case5
+	bra	SysSelect7Case5
 	banksel	ANSELA
 	bsf	ANSELA,3,BANKED
 ;Case 4: Set ANSELA.5 On
-	bra	SysSelectEnd6
-SysSelect6Case5
+	bra	SysSelectEnd7
+SysSelect7Case5
 	movlw	4
 	subwf	ADREADPORT,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case6
+	bra	SysSelect7Case6
 	banksel	ANSELA
 	bsf	ANSELA,5,BANKED
 ;Case 12: Set ANSELB.0 On
-	bra	SysSelectEnd6
-SysSelect6Case6
+	bra	SysSelectEnd7
+SysSelect7Case6
 	movlw	12
 	subwf	ADREADPORT,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case7
+	bra	SysSelect7Case7
 	banksel	ANSELB
 	bsf	ANSELB,0,BANKED
 ;Case 10: Set ANSELB.1 On
-	bra	SysSelectEnd6
-SysSelect6Case7
+	bra	SysSelectEnd7
+SysSelect7Case7
 	movlw	10
 	subwf	ADREADPORT,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case8
+	bra	SysSelect7Case8
 	banksel	ANSELB
 	bsf	ANSELB,1,BANKED
 ;Case 8: Set ANSELB.2 On
-	bra	SysSelectEnd6
-SysSelect6Case8
+	bra	SysSelectEnd7
+SysSelect7Case8
 	movlw	8
 	subwf	ADREADPORT,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case9
+	bra	SysSelect7Case9
 	banksel	ANSELB
 	bsf	ANSELB,2,BANKED
 ;Case 9: Set ANSELB.3 On
-	bra	SysSelectEnd6
-SysSelect6Case9
+	bra	SysSelectEnd7
+SysSelect7Case9
 	movlw	9
 	subwf	ADREADPORT,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case10
+	bra	SysSelect7Case10
 	banksel	ANSELB
 	bsf	ANSELB,3,BANKED
 ;Case 11: Set ANSELB.4 On
-	bra	SysSelectEnd6
-SysSelect6Case10
+	bra	SysSelectEnd7
+SysSelect7Case10
 	movlw	11
 	subwf	ADREADPORT,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case11
+	bra	SysSelect7Case11
 	banksel	ANSELB
 	bsf	ANSELB,4,BANKED
 ;Case 13: Set ANSELB.5 On
-	bra	SysSelectEnd6
-SysSelect6Case11
+	bra	SysSelectEnd7
+SysSelect7Case11
 	movlw	13
 	subwf	ADREADPORT,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case12
+	bra	SysSelect7Case12
 	banksel	ANSELB
 	bsf	ANSELB,5,BANKED
 ;Case 14: Set ANSELC.2 On
-	bra	SysSelectEnd6
-SysSelect6Case12
+	bra	SysSelectEnd7
+SysSelect7Case12
 	movlw	14
 	subwf	ADREADPORT,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case13
+	bra	SysSelect7Case13
 	banksel	ANSELC
 	bsf	ANSELC,2,BANKED
 ;Case 15: Set ANSELC.3 On
-	bra	SysSelectEnd6
-SysSelect6Case13
+	bra	SysSelectEnd7
+SysSelect7Case13
 	movlw	15
 	subwf	ADREADPORT,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case14
+	bra	SysSelect7Case14
 	banksel	ANSELC
 	bsf	ANSELC,3,BANKED
 ;Case 16: Set ANSELC.4 On
-	bra	SysSelectEnd6
-SysSelect6Case14
+	bra	SysSelectEnd7
+SysSelect7Case14
 	movlw	16
 	subwf	ADREADPORT,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case15
+	bra	SysSelect7Case15
 	banksel	ANSELC
 	bsf	ANSELC,4,BANKED
 ;Case 17: Set ANSELC.5 On
-	bra	SysSelectEnd6
-SysSelect6Case15
+	bra	SysSelectEnd7
+SysSelect7Case15
 	movlw	17
 	subwf	ADREADPORT,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case16
+	bra	SysSelect7Case16
 	banksel	ANSELC
 	bsf	ANSELC,5,BANKED
 ;Case 18: Set ANSELC.6 On
-	bra	SysSelectEnd6
-SysSelect6Case16
+	bra	SysSelectEnd7
+SysSelect7Case16
 	movlw	18
 	subwf	ADREADPORT,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect6Case17
+	bra	SysSelect7Case17
 	banksel	ANSELC
 	bsf	ANSELC,6,BANKED
 ;Case 19: Set ANSELC.7 On
-	bra	SysSelectEnd6
-SysSelect6Case17
+	bra	SysSelectEnd7
+SysSelect7Case17
 	movlw	19
 	subwf	ADREADPORT,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelectEnd6
+	bra	SysSelectEnd7
 	banksel	ANSELC
 	bsf	ANSELC,7,BANKED
 ;End Select  'End Select #1
-SysSelectEnd6
+SysSelectEnd7
 ;ANSEL0/ANSEL
 ;Code for PICs with newer A/D (with ANSEL register)
 ;Code for 18F4431, uses ANSEL0 and ANSEL1
@@ -1078,23 +1088,23 @@ SysSelectEnd6
 	banksel	ADREADPORT
 	btfsc	ADREADPORT,0,BANKED
 	bsf	ADCON0,CHS0,ACCESS
-ENDIF31
+ENDIF41
 ;IF ADReadPort.1 On Then Set CHS1 On
 	btfsc	ADREADPORT,1,BANKED
 	bsf	ADCON0,CHS1,ACCESS
-ENDIF32
+ENDIF42
 ;IF ADReadPort.2 On Then Set CHS2 On
 	btfsc	ADREADPORT,2,BANKED
 	bsf	ADCON0,CHS2,ACCESS
-ENDIF33
+ENDIF43
 ;If ADReadPort.3 On Then Set CHS3 On
 	btfsc	ADREADPORT,3,BANKED
 	bsf	ADCON0,CHS3,ACCESS
-ENDIF34
+ENDIF44
 ;If ADReadPort.4 On Then Set CHS4 On
 	btfsc	ADREADPORT,4,BANKED
 	bsf	ADCON0,CHS4,ACCESS
-ENDIF35
+ENDIF45
 ;***  'Special section for 16F1688x Chips ***
 ;Enable A/D
 ;SET ADON ON
@@ -1110,9 +1120,9 @@ ENDIF35
 ;nop
 	nop
 ;Wait While GO_NOT_DONE ON
-SysWaitLoop2
+SysWaitLoop5
 	btfsc	ADCON0,GO_NOT_DONE,ACCESS
-	bra	SysWaitLoop2
+	bra	SysWaitLoop5
 ;Switch off A/D
 ;SET ADCON0.ADON OFF
 	bcf	ADCON0,ADON,ACCESS
@@ -1138,237 +1148,128 @@ SysWaitLoop2
 
 ;********************************************************************************
 
-SETUPHANDLER
-;Select Case USBTempBuffer(1)
-;Case 130
-SysSelect7Case1
+SETUPHANDLER_CALLBACK
+;Select Case USBRequest
+;Response to control request: Transfer USBDeviceReadPortb5LEDStatus, send status of port
+;Case USBDeviceReadPortb5LEDStatus
+SysSelect6Case1
 	movlw	130
-	banksel	SYSUSBTEMPBUFFER_1
-	subwf	SYSUSBTEMPBUFFER_1,W,BANKED
+	banksel	USBREQUEST
+	subwf	USBREQUEST,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect7Case2
-;USB_IN0_CNT = 1
-	movlw	1
-	banksel	USB_IN0_CNT
-	movwf	USB_IN0_CNT,BANKED
-;Poke USB_IN0_ADDR, PORTB.5
-	movff	USB_IN0_ADDR,MEMADR
-	movff	USB_IN0_ADDR_H,MEMADR_H
-	banksel	MEMDATA
-	clrf	MEMDATA,BANKED
+	bra	SysSelect6Case2
+;USBBufferWrite( LED1 )
+	banksel	_USBINVALUE
+	clrf	_USBINVALUE,BANKED
 	btfsc	PORTB,5,ACCESS
-	incf	MEMDATA,F,BANKED
-ENDIF40
-	rcall	POKE
-;USBStartSend
-;If USB_IN0_STAT.6 Then
-	banksel	USB_IN0_STAT
-	btfss	USB_IN0_STAT,6,BANKED
-	bra	ELSE37_1
-;USB_IN0_STAT = b'10001000'
-	movlw	136
-	movwf	USB_IN0_STAT,BANKED
-;Else
-	bra	ENDIF37
-ELSE37_1
-;USB_IN0_STAT = b'11001000'
-	movlw	200
-	movwf	USB_IN0_STAT,BANKED
-;End If
+	incf	_USBINVALUE,F,BANKED
 ENDIF37
-;Control transfer 131, turn on LED
-;Case 131
-	bra	SysSelectEnd7
-SysSelect7Case2
-	movlw	131
-	subwf	SYSUSBTEMPBUFFER_1,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect7Case3
-;Set PORTB.5 On
-	bsf	LATB,5,ACCESS
-;USBSendData1Ack
-	banksel	0
-	rcall	USBSENDDATA1ACK
-;Control transfer 132, turn off LED
-;Case 132
-	bra	SysSelectEnd7
-SysSelect7Case3
-	movlw	132
-	subwf	SYSUSBTEMPBUFFER_1,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect7Case4
-;Set PORTB.5 Off
+	rcall	USBBUFFERWRITE14
 	bcf	LATB,5,ACCESS
-;USBSendData1Ack
-	banksel	0
-	rcall	USBSENDDATA1ACK
-;Control transfer 133, send back ADC readings
-;Case 133
-	bra	SysSelectEnd7
-SysSelect7Case4
-	movlw	133
-	subwf	SYSUSBTEMPBUFFER_1,W,BANKED
-	btfss	STATUS, Z,ACCESS
-	bra	SysSelect7Case5
-;USB_IN0_CNT = 8
-	movlw	8
-	banksel	USB_IN0_CNT
-	movwf	USB_IN0_CNT,BANKED
-;Poke USB_IN0_ADDR, SensorValue1
-	movff	USB_IN0_ADDR,MEMADR
-	movff	USB_IN0_ADDR_H,MEMADR_H
-	movff	SENSORVALUE1,MEMDATA
-	banksel	0
-	rcall	POKE
-;Poke USB_IN0_ADDR + 1, SensorValue1_H
-	movlw	1
-	banksel	USB_IN0_ADDR
-	addwf	USB_IN0_ADDR,W,BANKED
-	movwf	MEMADR,ACCESS
-	movlw	0
-	addwfc	USB_IN0_ADDR_H,W,BANKED
-	movwf	MEMADR_H,ACCESS
-	movff	SENSORVALUE1_H,MEMDATA
-	banksel	0
-	rcall	POKE
-;Poke USB_IN0_ADDR + 2, SensorValue2
-	movlw	2
-	banksel	USB_IN0_ADDR
-	addwf	USB_IN0_ADDR,W,BANKED
-	movwf	MEMADR,ACCESS
-	movlw	0
-	addwfc	USB_IN0_ADDR_H,W,BANKED
-	movwf	MEMADR_H,ACCESS
-	movff	SENSORVALUE2,MEMDATA
-	banksel	0
-	rcall	POKE
-;Poke USB_IN0_ADDR + 3, SensorValue2_H
-	movlw	3
-	banksel	USB_IN0_ADDR
-	addwf	USB_IN0_ADDR,W,BANKED
-	movwf	MEMADR,ACCESS
-	movlw	0
-	addwfc	USB_IN0_ADDR_H,W,BANKED
-	movwf	MEMADR_H,ACCESS
-	movff	SENSORVALUE2_H,MEMDATA
-	banksel	0
-	rcall	POKE
-;Poke USB_IN0_ADDR + 4, SensorValue3
-	movlw	4
-	banksel	USB_IN0_ADDR
-	addwf	USB_IN0_ADDR,W,BANKED
-	movwf	MEMADR,ACCESS
-	movlw	0
-	addwfc	USB_IN0_ADDR_H,W,BANKED
-	movwf	MEMADR_H,ACCESS
-	movff	SENSORVALUE3,MEMDATA
-	banksel	0
-	rcall	POKE
-;Poke USB_IN0_ADDR + 5, SensorValue3_H
-	movlw	5
-	banksel	USB_IN0_ADDR
-	addwf	USB_IN0_ADDR,W,BANKED
-	movwf	MEMADR,ACCESS
-	movlw	0
-	addwfc	USB_IN0_ADDR_H,W,BANKED
-	movwf	MEMADR_H,ACCESS
-	movff	SENSORVALUE3_H,MEMDATA
-	banksel	0
-	rcall	POKE
-;Poke USB_IN0_ADDR + 6, SensorValue4
-	movlw	6
-	banksel	USB_IN0_ADDR
-	addwf	USB_IN0_ADDR,W,BANKED
-	movwf	MEMADR,ACCESS
-	movlw	0
-	addwfc	USB_IN0_ADDR_H,W,BANKED
-	movwf	MEMADR_H,ACCESS
-	movff	SENSORVALUE4,MEMDATA
-	banksel	0
-	rcall	POKE
-;Poke USB_IN0_ADDR + 7, SensorValue4_H
-	movlw	7
-	banksel	USB_IN0_ADDR
-	addwf	USB_IN0_ADDR,W,BANKED
-	movwf	MEMADR,ACCESS
-	movlw	0
-	addwfc	USB_IN0_ADDR_H,W,BANKED
-	movwf	MEMADR_H,ACCESS
-	movff	SENSORVALUE4_H,MEMDATA
-	banksel	0
-	rcall	POKE
-;USBStartSend
-;If USB_IN0_STAT.6 Then
-	banksel	USB_IN0_STAT
-	btfss	USB_IN0_STAT,6,BANKED
-	bra	ELSE38_1
-;USB_IN0_STAT = b'10001000'
-	movlw	136
-	movwf	USB_IN0_STAT,BANKED
-;Else
-	bra	ENDIF38
-ELSE38_1
-;USB_IN0_STAT = b'11001000'
-	movlw	200
-	movwf	USB_IN0_STAT,BANKED
-;End If
+	btfsc	_USBINVALUE,0,BANKED
+	bsf	LATB,5,ACCESS
 ENDIF38
-;Case 255  'keep alive
-	bra	SysSelectEnd7
-SysSelect7Case5
-	incf	SYSUSBTEMPBUFFER_1,W,BANKED
+;Response to control request: Transfer USBDeviceSetPortb5StatusOn, turn on LED
+;Case USBDeviceSetPortb5StatusOn
+	bra	SysSelectEnd6
+SysSelect6Case2
+	movlw	131
+	subwf	USBREQUEST,W,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	SysSelect7Case6
-;USB_IN0_CNT = 1
+	bra	SysSelect6Case3
+;Set LED1 On
+	bsf	LATB,5,ACCESS
+;Response to control request: Transfer USBDeviceSetPortb5StatusOff, turn off LED
+;Case USBDeviceSetPortb5StatusOff
+	bra	SysSelectEnd6
+SysSelect6Case3
+	movlw	132
+	subwf	USBREQUEST,W,BANKED
+	btfss	STATUS, Z,ACCESS
+	bra	SysSelect6Case4
+;Set LED1 Off
+	bcf	LATB,5,ACCESS
+;Response to control request: Transfer USBDeviceReadADCValues, send back ADC readings
+;Case USBDeviceReadADCValues
+	bra	SysSelectEnd6
+SysSelect6Case4
+	movlw	133
+	subwf	USBREQUEST,W,BANKED
+	btfss	STATUS, Z,ACCESS
+	bra	SysSelect6Case5
+;USBBufferWrite( ReadAD10(AN0) )
+	banksel	ADREADPORT
+	clrf	ADREADPORT,BANKED
+	rcall	FN_READAD1022
+	movff	SYSREADAD10WORD,_USBINVALUE
+	movff	SYSREADAD10WORD_H,_USBINVALUE_H
+	rcall	USBBUFFERWRITE15
+;USBBufferWrite( ReadAD10(AN1) )
 	movlw	1
-	banksel	USB_IN0_CNT
-	movwf	USB_IN0_CNT,BANKED
-;Poke USB_IN0_ADDR, 255
-	movff	USB_IN0_ADDR,MEMADR
-	movff	USB_IN0_ADDR_H,MEMADR_H
-	banksel	MEMDATA
-	setf	MEMDATA,BANKED
-	rcall	POKE
-;USBStartSend
-;If USB_IN0_STAT.6 Then
-	banksel	USB_IN0_STAT
-	btfss	USB_IN0_STAT,6,BANKED
-	bra	ELSE39_1
-;USB_IN0_STAT = b'10001000'
-	movlw	136
-	movwf	USB_IN0_STAT,BANKED
-;Else
-	bra	ENDIF39
-ELSE39_1
-;USB_IN0_STAT = b'11001000'
-	movlw	200
-	movwf	USB_IN0_STAT,BANKED
-;End If
+	movwf	ADREADPORT,BANKED
+	rcall	FN_READAD1022
+	movff	SYSREADAD10WORD,_USBINVALUE
+	movff	SYSREADAD10WORD_H,_USBINVALUE_H
+	rcall	USBBUFFERWRITE15
+;USBBufferWrite( ReadAD10(AN2) )
+	movlw	2
+	movwf	ADREADPORT,BANKED
+	rcall	FN_READAD1022
+	movff	SYSREADAD10WORD,_USBINVALUE
+	movff	SYSREADAD10WORD_H,_USBINVALUE_H
+	rcall	USBBUFFERWRITE15
+;USBBufferWrite( ReadAD10(AN3) )
+	movlw	3
+	movwf	ADREADPORT,BANKED
+	rcall	FN_READAD1022
+	movff	SYSREADAD10WORD,_USBINVALUE
+	movff	SYSREADAD10WORD_H,_USBINVALUE_H
+	rcall	USBBUFFERWRITE15
+;Response to control request: Transfer 255, keep alive
+;Case USBDeviceKeepAlive
+	bra	SysSelectEnd6
+SysSelect6Case5
+	incf	USBREQUEST,W,BANKED
+	btfss	STATUS, Z,ACCESS
+	bra	SysSelect6Case6
+;USBBufferWrite( USBDeviceKeepAlive )
+	banksel	_USBINVALUE
+	setf	_USBINVALUE,BANKED
+	rcall	USBBUFFERWRITE14
+;HeartBeatLED = !HeartBeatLED
+	clrf	SysTemp2,BANKED
+	btfsc	PORTB,4,ACCESS
+	incf	SysTemp2,F,BANKED
 ENDIF39
-;It broke
+	comf	SysTemp2,F,BANKED
+	bcf	LATB,4,ACCESS
+	btfsc	SysTemp2,0,BANKED
+	bsf	LATB,4,ACCESS
+ENDIF40
+;Handle the others via the serial port as we do not know what they are
 ;Case Else
-	bra	SysSelectEnd7
-SysSelect7Case6
+	bra	SysSelectEnd6
+SysSelect6Case6
 ;HSerPrint "Req "
-	lfsr	1,SYSSTRINGPARAM1
-	movlw	low StringTable6
+	lfsr	1,SYSSTRINGPARAM2
+	movlw	low StringTable7
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable6
+	movlw	high StringTable7
 	movwf	TBLPTRH,ACCESS
 	banksel	0
 	rcall	SysReadString
-	movlw	low SYSSTRINGPARAM1
+	movlw	low SYSSTRINGPARAM2
 	movwf	SysPRINTDATAHandler,BANKED
-	movlw	high SYSSTRINGPARAM1
+	movlw	high SYSSTRINGPARAM2
 	movwf	SysPRINTDATAHandler_H,BANKED
 	movlw	1
 	movwf	COMPORT,BANKED
-	rcall	HSERPRINT276
+	rcall	HSERPRINT270
 ;HSerPrint USBTempBuffer(1)
 	movff	SYSUSBTEMPBUFFER_1,SERPRINTVAL
 	movlw	1
 	movwf	COMPORT,BANKED
-	rcall	HSERPRINT277
+	rcall	HSERPRINT271
 ;HSerPrintCRLF
 	movlw	1
 	movwf	HSERPRINTCRLFCOUNT,BANKED
@@ -1376,7 +1277,7 @@ SysSelect7Case6
 	movwf	COMPORT,BANKED
 	rcall	HSERPRINTCRLF
 ;End Select
-SysSelectEnd7
+SysSelectEnd6
 	banksel	0
 	return
 
@@ -1531,7 +1432,8 @@ SYSSTRINGREAD
 SysStringTables
 
 StringTable1
-	db	17,71,67,66,65,83,73,67,32,85,83,66,32,84,101,115,116,58
+	db	27,71,114,101,97,116,32,67,111,119,32,66,65,83,73,67,32,76,105,98,75,47,87,105
+	db	110,85,83,66
 
 
 StringTable3
@@ -1543,32 +1445,111 @@ StringTable4
 
 
 StringTable5
-	db	1,69
+	db	9,85,83,66,32,67,71,66,32,32
 
 
 StringTable6
-	db	4,82,101,113,32
+	db	7,69,114,114,111,114,58,32
 
 
 StringTable7
-	db	5,68,101,115,99,32
+	db	4,82,101,113,32
 
 
 StringTable8
-	db	9,71,114,101,97,116,32,67,111,119
+	db	6,68,101,115,99,58,32
 
 
-StringTable12
+StringTable9
+	db	15,71,114,101,97,116,32,67,111,119,32,66,65,83,73,67
+
+
+StringTable13
 	db	0
 
 
-StringTable19
-	db	2,56,48
-
-
 StringTable20
-	db	19,48,54,45,49,49,45,50,48,49,56,32,48,54,58,52,56,58,52,54
+	db	3,49,54,56
 
+
+StringTable21
+	db	19,48,54,45,49,51,45,50,48,49,56,32,48,57,58,50,48,58,51,54
+
+
+;********************************************************************************
+
+;Overloaded signature: BYTE:
+USBBUFFERWRITE14
+;Increment the buffer counter
+;USB_IN0_CNT++
+	banksel	USB_IN0_CNT
+	incf	USB_IN0_CNT,F,BANKED
+;Poke USB_IN0_ADDR+USB_CNT_POINTER, _USBinValue
+	banksel	USB_CNT_POINTER
+	movf	USB_CNT_POINTER,W,BANKED
+	banksel	USB_IN0_ADDR
+	addwf	USB_IN0_ADDR,W,BANKED
+	movwf	MEMADR,ACCESS
+	movlw	0
+	addwfc	USB_IN0_ADDR_H,W,BANKED
+	movwf	MEMADR_H,ACCESS
+	movff	_USBINVALUE,MEMDATA
+	banksel	0
+	rcall	POKE
+;Increment the data pointer
+;USB_CNT_POINTER++
+	incf	USB_CNT_POINTER,F,BANKED
+	return
+
+;********************************************************************************
+
+;Overloaded signature: WORD:
+USBBUFFERWRITE15
+;Increment the buffer counter
+;USB_IN0_CNT++
+	banksel	USB_IN0_CNT
+	incf	USB_IN0_CNT,F,BANKED
+;Poke USB_IN0_ADDR+USB_CNT_POINTER,    _USBinValue
+	banksel	USB_CNT_POINTER
+	movf	USB_CNT_POINTER,W,BANKED
+	banksel	USB_IN0_ADDR
+	addwf	USB_IN0_ADDR,W,BANKED
+	movwf	MEMADR,ACCESS
+	movlw	0
+	addwfc	USB_IN0_ADDR_H,W,BANKED
+	movwf	MEMADR_H,ACCESS
+	movff	_USBINVALUE,MEMDATA
+	banksel	0
+	rcall	POKE
+;Increment the buffer counter
+;USB_IN0_CNT++
+	banksel	USB_IN0_CNT
+	incf	USB_IN0_CNT,F,BANKED
+;Poke USB_IN0_ADDR+USB_CNT_POINTER+ 1, _USBinValue_H
+	banksel	USB_CNT_POINTER
+	movf	USB_CNT_POINTER,W,BANKED
+	banksel	USB_IN0_ADDR
+	addwf	USB_IN0_ADDR,W,BANKED
+	banksel	SYSTEMP1
+	movwf	SysTemp1,BANKED
+	movlw	0
+	banksel	USB_IN0_ADDR_H
+	addwfc	USB_IN0_ADDR_H,W,BANKED
+	banksel	SYSTEMP1_H
+	movwf	SysTemp1_H,BANKED
+	movlw	1
+	addwf	SysTemp1,W,BANKED
+	movwf	MEMADR,ACCESS
+	movlw	0
+	addwfc	SysTemp1_H,W,BANKED
+	movwf	MEMADR_H,ACCESS
+	movff	_USBINVALUE_H,MEMDATA
+	rcall	POKE
+;Increment the data pointer
+;USB_CNT_POINTER = USB_CNT_POINTER + 2
+	movlw	2
+	addwf	USB_CNT_POINTER,F,BANKED
+	return
 
 ;********************************************************************************
 
@@ -1606,7 +1587,7 @@ USBDEVICEDESCRIPTOR
 	movf	TABLAT, W,ACCESS
 	return
 TableUSBDEVICEDESCRIPTOR
-	db	18,18,1,0,2,0,0,0,64,85,240,0,16,1,1,1,2,0,1
+	db	18,18,1,0,2,0,0,0,64,9,18,6,32,0,0,1,2,0,1
 
 ;********************************************************************************
 
@@ -1714,7 +1695,7 @@ ENDIF2
 	btfss	UIR,UERRIF,ACCESS
 	bra	ENDIF3
 ;USB_ERROR_HANDLER
-	rcall	ERRORHANDLER
+	rcall	ERRORHANDLER_CALLBACK
 ;UEIR = 0
 	clrf	UEIR,ACCESS
 ;UERRIF = 0
@@ -2019,23 +2000,65 @@ ELSE12_1
 ENDIF12
 ;USBSendData1Ack
 	rcall	USBSENDDATA1ACK
-;It broke
+;Unknown case - send to the User Handler
 ;Case Else
 	bra	SysSelectEnd3
 SysSelect3Case4
+;Call the user callback
 ;USB_SETUP_HANDLER
 	banksel	0
-	rcall	SETUPHANDLER
+	rcall	SETUPHANDLER_CALLBACK
 ;End Select
 SysSelectEnd3
 ;Else
 	bra	ENDIF11
 ELSE11_1
-;USBDumpControlIn
+;USBDumpControlIn    'method to assist in debuggin
+;clear the pointer.  If the pointer has been incremented then we know what to do!
+;the is the number of buffer bytes to be sent
+;USB_IN0_CNT = 0
+	banksel	USB_IN0_CNT
+	clrf	USB_IN0_CNT,BANKED
+;point to the output buffer
+;USB_CNT_POINTER = 0
+	banksel	USB_CNT_POINTER
+	clrf	USB_CNT_POINTER,BANKED
+;Call the user callback
 ;USB_SETUP_HANDLER
-	rcall	SETUPHANDLER
+	rcall	SETUPHANDLER_CALLBACK
+;if USB_IN0_CNT = 0 then
+	banksel	USB_IN0_CNT
+	movf	USB_IN0_CNT,F,BANKED
+	btfss	STATUS, Z,ACCESS
+	bra	ELSE13_1
+;No data added to the output buffer - just send an ACK
+;USBSendData1Ack
+	banksel	0
+	rcall	USBSENDDATA1ACK
+;else
+	bra	ENDIF13
+ELSE13_1
+;Data is thee output buffer - send the data
+;USBStartSend
+;If USB_IN0_STAT.6 Then
+	btfss	USB_IN0_STAT,6,BANKED
+	bra	ELSE14_1
+;USB_IN0_STAT = b'10001000'
+	movlw	136
+	movwf	USB_IN0_STAT,BANKED
+;Else
+	bra	ENDIF14
+ELSE14_1
+;USB_IN0_STAT = b'11001000'
+	movlw	200
+	movwf	USB_IN0_STAT,BANKED
+;End If
+ENDIF14
+;end if
+ENDIF13
 ;End If
 ENDIF11
+	banksel	0
 	return
 
 ;********************************************************************************
@@ -2080,31 +2103,31 @@ SysSelect4Case1
 	subwf	USBDESCSIZEIN,W,BANKED
 	btfss	STATUS, C,ACCESS
 	movff	USBDESCSIZEIN,USBSIZE
-ENDIF13
+ENDIF15
 ;If USBDescStart >= USBSize Then
 	movf	USBSIZE,W,BANKED
 	subwf	USBDESCSTART,W,BANKED
 	btfss	STATUS, C,ACCESS
-	bra	ELSE14_1
+	bra	ELSE16_1
 ;USBSize = 0
 	clrf	USBSIZE,BANKED
 ;USBLastControl = USB_NONE
 	setf	USBLASTCONTROL,BANKED
 ;Else
-	bra	ENDIF14
-ELSE14_1
+	bra	ENDIF16
+ELSE16_1
 ;USBSize -= USBDescStart
 	movf	USBDESCSTART,W,BANKED
 	subwf	USBSIZE,F,BANKED
 ;End If
-ENDIF14
+ENDIF16
 ;For USBCurrByte = 1 To USBSize
 	clrf	USBCURRBYTE,BANKED
 	movlw	1
 	subwf	USBSIZE,W,BANKED
 	btfss	STATUS, C,ACCESS
 	bra	SysForLoopEnd2
-ENDIF15
+ENDIF17
 SysForLoop2
 	incf	USBCURRBYTE,F,BANKED
 ;ReadTable USB_DEVICE_DESCRIPTOR, USBCurrByte + USBDescStart, USBTempByte
@@ -2130,7 +2153,7 @@ SysForLoop2
 	subwf	USBCURRBYTE,W,BANKED
 	btfss	STATUS, C,ACCESS
 	bra	SysForLoop2
-ENDIF16
+ENDIF18
 SysForLoopEnd2
 ;USB_IN0_CNT = USBSize
 	movff	USBSIZE,USB_IN0_CNT
@@ -2153,31 +2176,31 @@ SysSelect4Case2
 	subwf	USBDESCSIZEIN,W,BANKED
 	btfss	STATUS, C,ACCESS
 	movff	USBDESCSIZEIN,USBSIZE
-ENDIF17
+ENDIF19
 ;If USBDescStart >= USBSize Then
 	movf	USBSIZE,W,BANKED
 	subwf	USBDESCSTART,W,BANKED
 	btfss	STATUS, C,ACCESS
-	bra	ELSE18_1
+	bra	ELSE20_1
 ;USBSize = 0
 	clrf	USBSIZE,BANKED
 ;USBLastControl = USB_NONE
 	setf	USBLASTCONTROL,BANKED
 ;Else
-	bra	ENDIF18
-ELSE18_1
+	bra	ENDIF20
+ELSE20_1
 ;USBSize -= USBDescStart
 	movf	USBDESCSTART,W,BANKED
 	subwf	USBSIZE,F,BANKED
 ;End If
-ENDIF18
+ENDIF20
 ;For USBCurrByte = 1 To USBSize
 	clrf	USBCURRBYTE,BANKED
 	movlw	1
 	subwf	USBSIZE,W,BANKED
 	btfss	STATUS, C,ACCESS
 	bra	SysForLoopEnd3
-ENDIF19
+ENDIF21
 SysForLoop3
 	incf	USBCURRBYTE,F,BANKED
 ;ReadTable USB_CONFIG_DESCRIPTOR, USBCurrByte + USBDescStart, USBTempByte
@@ -2203,7 +2226,7 @@ SysForLoop3
 	subwf	USBCURRBYTE,W,BANKED
 	btfss	STATUS, C,ACCESS
 	bra	SysForLoop3
-ENDIF20
+ENDIF22
 SysForLoopEnd3
 ;USB_IN0_CNT = USBSize
 	movff	USBSIZE,USB_IN0_CNT
@@ -2226,31 +2249,31 @@ SysSelect4Case3
 	subwf	USBDESCSIZEIN,W,BANKED
 	btfss	STATUS, C,ACCESS
 	movff	USBDESCSIZEIN,USBSIZE
-ENDIF21
+ENDIF23
 ;If USBDescStart >= USBSize Then
 	movf	USBSIZE,W,BANKED
 	subwf	USBDESCSTART,W,BANKED
 	btfss	STATUS, C,ACCESS
-	bra	ELSE22_1
+	bra	ELSE24_1
 ;USBSize = 0
 	clrf	USBSIZE,BANKED
 ;USBLastControl = USB_NONE
 	setf	USBLASTCONTROL,BANKED
 ;Else
-	bra	ENDIF22
-ELSE22_1
+	bra	ENDIF24
+ELSE24_1
 ;USBSize -= USBDescStart
 	movf	USBDESCSTART,W,BANKED
 	subwf	USBSIZE,F,BANKED
 ;End If
-ENDIF22
+ENDIF24
 ;For USBCurrByte = 1 To USBSize
 	clrf	USBCURRBYTE,BANKED
 	movlw	1
 	subwf	USBSIZE,W,BANKED
 	btfss	STATUS, C,ACCESS
 	bra	SysForLoopEnd4
-ENDIF23
+ENDIF25
 SysForLoop4
 	incf	USBCURRBYTE,F,BANKED
 ;ReadTable USBDeviceQualDescriptor, USBCurrByte + USBDescStart, USBTempByte
@@ -2276,7 +2299,7 @@ SysForLoop4
 	subwf	USBCURRBYTE,W,BANKED
 	btfss	STATUS, C,ACCESS
 	bra	SysForLoop4
-ENDIF24
+ENDIF26
 SysForLoopEnd4
 ;USB_IN0_CNT = USBSize
 	movff	USBSIZE,USB_IN0_CNT
@@ -2294,7 +2317,7 @@ SysSelect4Case4
 ;If USBDescIndex = 0 Then
 	movf	USBDESCINDEX,F,BANKED
 	btfss	STATUS, Z,ACCESS
-	bra	ELSE25_1
+	bra	ELSE27_1
 ;Assume that these aren't continued over
 ;USBLastControl = USB_NONE
 	setf	USBLASTCONTROL,BANKED
@@ -2346,8 +2369,8 @@ SysSelect4Case4
 	banksel	USB_IN0_CNT
 	movwf	USB_IN0_CNT,BANKED
 ;Else
-	bra	ENDIF25
-ELSE25_1
+	bra	ENDIF27
+ELSE27_1
 ;Get requested string
 ;Select Case USBDescIndex
 ;Vendor name
@@ -2357,9 +2380,9 @@ SysSelect5Case1
 	btfss	STATUS, Z,ACCESS
 	bra	SysSelect5Case2
 	lfsr	1,USBTEMPSTRING
-	movlw	low StringTable8
+	movlw	low StringTable9
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable8
+	movlw	high StringTable9
 	movwf	TBLPTRH,ACCESS
 	rcall	SysReadString
 ;Product name
@@ -2381,9 +2404,9 @@ SysSelect5Case2
 	bra	SysSelectEnd5
 SysSelect5Case3
 	lfsr	1,USBTEMPSTRING
-	movlw	low StringTable12
+	movlw	low StringTable13
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable12
+	movlw	high StringTable13
 	movwf	TBLPTRH,ACCESS
 	rcall	SysReadString
 ;End Select
@@ -2405,22 +2428,22 @@ SysSelectEnd5
 	banksel	USB_IN0_CNT
 	subwf	USB_IN0_CNT,W,BANKED
 	btfsc	STATUS, C,ACCESS
-	bra	ELSE27_1
+	bra	ELSE29_1
 ;USB_IN0_CNT = 0
 	clrf	USB_IN0_CNT,BANKED
 ;USBLastControl = USB_NONE
 	banksel	USBLASTCONTROL
 	setf	USBLASTCONTROL,BANKED
 ;Else
-	bra	ENDIF27
-ELSE27_1
+	bra	ENDIF29
+ELSE29_1
 ;USB_IN0_CNT -= USBDescStart
 	banksel	USBDESCSTART
 	movf	USBDESCSTART,W,BANKED
 	banksel	USB_IN0_CNT
 	subwf	USB_IN0_CNT,F,BANKED
 ;End If
-ENDIF27
+ENDIF29
 ;Poke USB_IN0_ADDR, USB_IN0_CNT
 	movff	USB_IN0_ADDR,MEMADR
 	movff	USB_IN0_ADDR_H,MEMADR_H
@@ -2446,7 +2469,7 @@ ENDIF27
 	subwf	SYSUSBTEMPSTRING_0,W,BANKED
 	btfss	STATUS, C,ACCESS
 	bra	SysForLoopEnd5
-ENDIF28
+ENDIF30
 SysForLoop5
 	banksel	USBCURRBYTE
 	incf	USBCURRBYTE,F,BANKED
@@ -2493,7 +2516,7 @@ SysForLoop5
 	subwf	USBCURRBYTE,W,BANKED
 	btfss	STATUS, C,ACCESS
 	bra	SysForLoop5
-ENDIF29
+ENDIF31
 SysForLoopEnd5
 ;If USB_IN0_CNT > USBDescSizeIn Then USB_IN0_CNT = USBDescSizeIn
 	banksel	USB_IN0_CNT
@@ -2502,14 +2525,14 @@ SysForLoopEnd5
 	subwf	USBDESCSIZEIN,W,BANKED
 	btfss	STATUS, C,ACCESS
 	movff	USBDESCSIZEIN,USB_IN0_CNT
-ENDIF30
+ENDIF32
 ;USBDescStart += USB_IN0_CNT
 	banksel	USB_IN0_CNT
 	movf	USB_IN0_CNT,W,BANKED
 	banksel	USBDESCSTART
 	addwf	USBDESCSTART,F,BANKED
 ;End If
-ENDIF25
+ENDIF27
 ;Interface
 ;Case 4
 ;Endpoint
@@ -2519,7 +2542,7 @@ ENDIF25
 	bra	SysSelectEnd4
 SysSelect4Case5
 ;USB_DESCRIPTOR_HANDLER
-	call	DESCRIPTORHANDLER
+	call	DESCRIPTORHANDLER_CALLBACK
 ;Exit Sub
 	return
 ;End Select
@@ -2528,18 +2551,18 @@ SysSelectEnd4
 ;If USB_IN0_STAT.6 Then
 	banksel	USB_IN0_STAT
 	btfss	USB_IN0_STAT,6,BANKED
-	bra	ELSE26_1
+	bra	ELSE28_1
 ;USB_IN0_STAT = b'10001000'
 	movlw	136
 	movwf	USB_IN0_STAT,BANKED
 ;Else
-	bra	ENDIF26
-ELSE26_1
+	bra	ENDIF28
+ELSE28_1
 ;USB_IN0_STAT = b'11001000'
 	movlw	200
 	movwf	USB_IN0_STAT,BANKED
 ;End If
-ENDIF26
+ENDIF28
 	banksel	0
 	return
 

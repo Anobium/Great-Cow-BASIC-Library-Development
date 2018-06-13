@@ -12,7 +12,7 @@
 #define USB_DESCRIPTOR_HANDLER DescriptorHandler
 #define USB_PRODUCT_NAME "GCBASIC USB Test:"
 
-#define LED PORTB.0
+
 
 #define ADSpeed LowSpeed
 Dim SensorValue1 As Word
@@ -24,20 +24,7 @@ Dim SensorValue4 As Word
 #define USART_BAUD_RATE 115200
 #define USART_BLOCKING
 Dir PORTC.6 Out
-
-dir led out
-Set LED ON
-
-  'ALIVE!!
-  repeat 15
-      LED=!LED
-      wait 50 ms
-      LED=!LED
-      wait 100 ms
-
-  end repeat
-
-
+Dir PORTB.5 out
 
   #include "GCBVersionNumber.cnt"
   'Include the GCBVersionNumber.cnt to increment versionString and create the build time string called GCBBuildTimeStr.
@@ -77,6 +64,10 @@ End Sub
 
 Sub SetupHandler
   Select Case USBTempBuffer(1)
+    Case 130
+      USB_IN0_CNT = 1
+      Poke USB_IN0_ADDR, PORTB.5
+      USBStartSend
     'Control transfer 131, turn on LED
     Case 131
       Set PORTB.5 On
@@ -98,6 +89,11 @@ Sub SetupHandler
       Poke USB_IN0_ADDR + 5, SensorValue3_H
       Poke USB_IN0_ADDR + 6, SensorValue4
       Poke USB_IN0_ADDR + 7, SensorValue4_H
+      USBStartSend
+
+    Case 255  'keep alive
+      USB_IN0_CNT = 1
+      Poke USB_IN0_ADDR, 255
       USBStartSend
 
     'It broke
