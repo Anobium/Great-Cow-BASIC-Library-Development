@@ -92,12 +92,12 @@
 
     dim myLocalVariable as word
 
-    PCA9685_SetFreqency ( 38 )
+    PCA9685_SetFreqency ( 1000 )
     'set the duty to 50% to ALL channel, you can make this specific to a channel
     PCA9685_SetChannelDuty ( PCA9685_ALL_CHANNELS, 50 ) 'set to 50% duty
     PCA9685_SetChannelDuty ( PCA9685_LED0, 25 ) 'set to 25% duty
 
-    wait 5 s
+    wait 15 s
 
     do
 
@@ -129,8 +129,9 @@
             'Setting the Freqency DOES reset the Duty cycle
             PCA9685_SetFreqency ( myLocalVariable )
             PCA9685_SetChannelDuty ( PCA9685_ALL_CHANNELS, 50 ) 'set to 50% duty
+            wait 10 ms
         next
-
+        wait 3 s
 
     loop
 
@@ -153,6 +154,17 @@ End
 '      PCA9685_GetServoAngleLimits
 '      PCA9685_SetChannelAngle
 
+' Key Constants
+'        PCA9685_ADDRESS    device address
+'        PWM_DUTY           default pwm
+
+'        PCA9685_ALL_CHANNELS   address all channels
+'        PCA9685_LED0, PCA9685_LED1 etc to PCA9685_LED15   address a specific channel
+'        PCA9685_LED_ON                                    set channel on
+'        PCA9685_LED_OFF                                   set channel off
+'        PCA9685_INTERNAL_CLOCK_FREQUENCY                  set to 25000000 change if you use an external clock
+'
+
 Sub PCA9685_SetFreqency ( _locaFrequency as Word )
 
     'Protect the range - see the datasheet
@@ -163,7 +175,7 @@ Sub PCA9685_SetFreqency ( _locaFrequency as Word )
     dim _localtempFrequency as long
     _localtempFrequency  = [long]4096 * [word]_locaFrequency
     _localtempFrequency  = [long]_localtempFrequency   - 1
-    _localtempFrequency  = 25000000 / [long]_localtempFrequency
+    _localtempFrequency  = [long]PCA9685_INTERNAL_CLOCK_FREQUENCY / [long]_localtempFrequency
 
     PCA9685_SetPrescaler ( _localtempFrequency )
 
@@ -457,7 +469,7 @@ End Sub
     'Sets PCA9685_SERVO_PRESCALER constant
 
     'See section 7.3.5 PWM frequency PRE_SCALE of the datasheet
-    PCA9685_SERVO_PRESCALER = int(((25000000)/(4096*PWM_Freq*0.95))-1)
+    PCA9685_SERVO_PRESCALER = int(((PCA9685_INTERNAL_CLOCK_FREQUENCY)/(4096*PWM_Freq*0.95))-1)
 
     'Check the setting
     if PCA9685_SERVO_PRESCALER > 255 then
@@ -645,6 +657,7 @@ End Sub
     #define PCA9685_LED_ON   0x1000
     #define PCA9685_LED_OFF  0x0000
 
+    #define PCA9685_INTERNAL_CLOCK_FREQUENCY 25000000
 
     ' Servo angle calculation constants
     '  We want to give the user the ability to specify an angle (range 0 to 180)
