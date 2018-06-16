@@ -19,4 +19,3 @@ Looks something like this
 <img src="https://cdn-shop.adafruit.com/970x728/815-04.jpg" height="300"/>
 
 We invest time and resources providing this open source code, please support Great Cow BASIC!!!!
-
