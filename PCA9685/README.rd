@@ -1,5 +1,4 @@
-PCA9685
-=======
+# Great Cow BASIC PCA9685 PWM Driver Library
 
 `PCA9685_Library` is a library  for talking to the PCA9685 I<sup>2</sup>C PWM driver by NXP
 
