@@ -92,7 +92,7 @@
 
     dim myLocalVariable as word
 
-    PCA9685_SetFreqency ( 1000 )
+    PCA9685_SetFreqency ( 38 )
     'set the duty to 50% to ALL channel, you can make this specific to a channel
     PCA9685_SetChannelDuty ( PCA9685_ALL_CHANNELS, 50 ) 'set to 50% duty
     PCA9685_SetChannelDuty ( PCA9685_LED0, 25 ) 'set to 25% duty
@@ -118,20 +118,20 @@
         '    wait 100 ms
 
         'Show how to set Duty between 0% to 100%
-        '    for myLocalVariable = 0 to 100
-        '        PCA9685_SetChannelDuty ( PCA9685_ALL_CHANNELS, myLocalVariable )
-        '        wait 50 ms
-        '    next
+            for myLocalVariable = 0 to 100
+                PCA9685_SetChannelDuty ( PCA9685_ALL_CHANNELS, myLocalVariable )
+                wait 50 ms
+            next
 
 
         'Show how to control frequency
-        for myLocalVariable = 24 to 1526
-            'Setting the Freqency DOES reset the Duty cycle
-            PCA9685_SetFreqency ( myLocalVariable )
-            PCA9685_SetChannelDuty ( PCA9685_ALL_CHANNELS, 50 ) 'set to 50% duty
-            wait 10 ms
-        next
-        wait 3 s
+        ' for myLocalVariable = 24 to 1526
+        '     'Setting the Freqency DOES reset the Duty cycle
+        '     PCA9685_SetFreqency ( myLocalVariable )
+        '     PCA9685_SetChannelDuty ( PCA9685_ALL_CHANNELS, 50 ) 'set to 50% duty
+        '     wait 10 ms
+        ' next
+        ' wait 3 s
 
     loop
 
