@@ -17,6 +17,8 @@
 
 'Notes:
 '     v0.9a - initial release needs to have the Servo methods sorted.
+'     v0.9b - revised to fix the Duty at 100%
+
 
 ' ----- Configuration
     'Chip Settings.
@@ -49,6 +51,17 @@
     End Sub
     'Template comment at the end of the config file
 
+    #define LEDD2 PORTA.0
+    #define LEDD3 PORTA.1
+    #define LEDD4 PORTA.2
+    #define LEDD5 PORTA.3
+    #define Potentiometer   PORTA.4
+
+    Dir     LEDD2 OUT
+    Dir     LEDD3 OUT
+    Dir     LEDD4 OUT
+    Dir     LEDD5 OUT
+    DIR     Potentiometer In
 
 
     #define SWITCH_DOWN         0
@@ -90,14 +103,17 @@
       '#define PWM_Freq 24
 
 
-    dim myLocalVariable as word
+    dim myLocalVariable, myOldLocalVariable as word
+    dim myLoADCValue, myHiADCValue as word
+        myLoADCValue = 1023
+        myHiADCValue = 0
 
     PCA9685_SetFreqency ( 38 )
     'set the duty to 50% to ALL channel, you can make this specific to a channel
     PCA9685_SetChannelDuty ( PCA9685_ALL_CHANNELS, 50 ) 'set to 50% duty
     PCA9685_SetChannelDuty ( PCA9685_LED0, 25 ) 'set to 25% duty
 
-    wait 15 s
+    wait 5 s
 
     do
 
@@ -118,11 +134,37 @@
         '    wait 100 ms
 
         'Show how to set Duty between 0% to 100%
-            for myLocalVariable = 0 to 100
-                PCA9685_SetChannelDuty ( PCA9685_ALL_CHANNELS, myLocalVariable )
-                wait 50 ms
-            next
+        '    for myLocalVariable = 0 to 100
+        '        PCA9685_SetChannelDuty ( PCA9685_ALL_CHANNELS, myLocalVariable )
+        '        wait 50 ms
+        '    next
 
+        'Show ADC to PWM as %
+              myLocalVariable = ReadAD10 ( AN4 )
+              'ensure you get the range of your ADC
+              if myLocalVariable < myLoADCValue then myLoADCValue  = myLocalVariable
+              if myLocalVariable > myHiADCValue then myHiADCValue  = myLocalVariable
+              myLocalVariable = Scale ( myLocalVariable , myLoADCValue, myHiADCValue, 0, 100 )
+              'If you want to ensure the PCA9685_SetFreqency method does not 'glitch' the PWM signal
+              'Only change when required
+              if myOldLocalVariable <> myLocalVariable then
+                  PCA9685_SetChannelDuty ( PCA9685_ALL_CHANNELS, myLocalVariable )
+                  myOldLocalVariable = myLocalVariable
+              end if
+
+        'Show ADC to Freqency
+        '      myLocalVariable = ReadAD10 ( AN4 )
+        '      'ensure you get the range of your ADC
+        '      if myLocalVariable < myLoADCValue then myLoADCValue  = myLocalVariable
+        '      if myLocalVariable > myHiADCValue then myHiADCValue  = myLocalVariable
+        '      myLocalVariable = Scale ( myLocalVariable , myLoADCValue, myHiADCValue, 24, 1526 )
+        '      'If you want to ensure the PCA9685_SetFreqency method does not 'glitch' the PWM signal
+        '      'Only change when required
+        '      if myOldLocalVariable <> myLocalVariable then
+        '          PCA9685_SetFreqency ( myLocalVariable )
+        '          PCA9685_SetChannelDuty ( PCA9685_ALL_CHANNELS, 50 )
+        '          myOldLocalVariable = myLocalVariable
+        '      end if
 
         'Show how to control frequency
         ' for myLocalVariable = 24 to 1526
@@ -191,14 +233,20 @@ Sub PCA9685_SetChannelDuty( _localchannel as byte , _localduty as word )
   '  cycle as nearly as possible.
 
   dim _offTime as long
-  _offTime = 0
+  if _localduty < 100 then
 
-  if _localduty > 0 then
-    _offTime = _localduty*4096
-    _offTime = (_offTime/100)  -1
+      _offTime = 0
+      if _localduty > 0 then
+        _offTime = _localduty*4096
+        _offTime = (_offTime/100)
+      end if
+      PCA9685_WriteChannel( _localchannel, [word]PCA9685_LED_OFF , [word]_offTime )
+  else
+      'force DUTY TO ON = 100%
+      PCA9685_WriteChannel ( _localchannel, PCA9685_LED_ON )
+
   end if
 
-  PCA9685_WriteChannel( _localchannel, [word]PCA9685_LED_OFF , [word]_offTime )
 
 End Sub
 
@@ -210,9 +258,6 @@ sub PCA9685_SetChannelOnOnly ( _localchannel as byte , _localValue as word )
 
   _onTime = PCA9685_ReadChannel( _localchannel )          'read a Word
   _offTime = PCA9685_ReadChannel( _localchannel + 2 )     'read the next Word
-
-  'ensure value is not greater than 4095
-  _localValue = _localValue & 0xFFF
   channelWrite( _localchannel, _localValue, _offTime)
 
 end Sub
@@ -225,9 +270,6 @@ sub PCA9685_SetChannelOffOnly ( _localchannel as byte , _localValue as word )
 
   _onTime = PCA9685_ReadChannel( _localchannel )          'read a Word
   _offTime = PCA9685_ReadChannel( _localchannel + 2 )     'read the next Word
-
-  'ensure value is not greater than 4095
-  _localValue = _localValue & 0xFFF
   channelWrite( _localchannel, _onTime, _localValue)
 
 end Sub
@@ -237,11 +279,6 @@ end Sub
 Sub PCA9685_WriteChannel( _localregister as byte, _localValueOn as word, _localValueOff  as word )
 
   'Requires Mode1.AI=1 and Mode1.OCH = 0 - these ARE MANDATED
-
-    'ensure value is not greater than 4095
-  _localValueOn = _localValueOn & 0xFFF
-  _localValueOff = _localValueOff & 0xFFF
-
 
   do
     HI2CRESTART
@@ -360,10 +397,6 @@ End Function
 
 Sub PCA9685_WriteReg ( _localregister, _localValue )
 
-  'ensuree value is not greater than 4095
-  _localValue = _localValue & 0xFFF
-
-
   do
     HI2CRESTART
     HI2CSend(PCA9685_ADDRESS)
@@ -381,9 +414,6 @@ End Sub
 Sub PCA9685_WriteChannel( _localregister, _localValueOn as word  )
 
   'Requires Mode1.AI=1 and Mode1.OCH = 0 - these ARE MANDATED
-
-    'ensure value is not greater than 4095
-  _localValueOn = _localValueOn & 0xFFF
 
   do
     HI2CRESTART
