@@ -352,7 +352,7 @@ Sub PCA9685_SetPrescaler( _localPrescale as byte )
   pca9685_writeReg ( PCA9685_ALL_LED_OFF_H, 0x10 )
 
   ' Set the SLEEP bit, which stops the oscillator on the part.
-  modeReg = PCA9685_readReg(MODE1)
+  modeReg = PCA9685_readReg(PCA9685_MODE1)
   modeReg = modeReg OR PCA9685_SLEEP
   PCA9685_writeReg(PCA9685_MODE1, modeReg)
 
@@ -456,10 +456,10 @@ Sub PCA9685_Reset
   'bus.
   'The SWRST Call function is defined as the following:
   '1. A START command is sent by the I2C-bus master.
-  '2. The reserved SWRST I2C-bus address ‘0000 000’ with the R/W bit set to ‘0’ (write) is
+  '2. The reserved SWRST I2C-bus address Â‘0000 000Â’ with the R/W bit set to Â‘0Â’ (write) is
   'sent by the I2C-bus master.
   '3. The PCA9685 device(s) acknowledge(s) after seeing the General Call address
-  '‘0000 0000’ (00h) only. If the R/W bit is set to ‘1’ (read), no acknowledge is returned to
+  'Â‘0000 0000Â’ (00h) only. If the R/W bit is set to Â‘1Â’ (read), no acknowledge is returned to
   'the I2C-bus master.
   '4. Once the General Call address has been sent and acknowledged, the master sends
   '1 byte with 1 specific value (SWRST data byte 1):
