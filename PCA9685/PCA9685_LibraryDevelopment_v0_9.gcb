@@ -18,7 +18,7 @@
 'Notes:
 '     v0.9a - initial release needs to have the Servo methods sorted.
 '     v0.9b - revised to fix the Duty at 100%
-
+'     v0.9c - revised PCA9685_SetFreqency to remove typo
 
 ' ----- Configuration
     'Chip Settings.
@@ -207,15 +207,15 @@ End
 '        PCA9685_INTERNAL_CLOCK_FREQUENCY                  set to 25000000 change if you use an external clock
 '
 
-Sub PCA9685_SetFreqency ( _locaFrequency as Word )
+Sub PCA9685_SetFreqency ( _localFrequency as Word )
 
     'Protect the range - see the datasheet
-    if _locaFrequency < 24 then _locaFrequency = 24
-    if _locaFrequency > 1526 then _locaFrequency = 1526
+    if _localFrequency < 24 then _localFrequency = 24
+    if _localFrequency > 1526 then _localFrequency = 1526
 
 
     dim _localtempFrequency as long
-    _localtempFrequency  = [long]4096 * [word]_locaFrequency
+    _localtempFrequency  = [long]4096 * [word]_localFrequency
     _localtempFrequency  = [long]_localtempFrequency   - 1
     _localtempFrequency  = [long]PCA9685_INTERNAL_CLOCK_FREQUENCY / [long]_localtempFrequency
 
