@@ -1,29 +1,16 @@
 
-#chip mega328p
-'#config osc=INTosc, MCLRE=off, WDTE=Off, boren=off
+#chip 16F1789,8
+#config osc=INTosc, MCLRE=off, WDTE=Off, boren=off
 wait 1 ms
-    #include <UNO_mega328p.h >
+
 '#include <glcd.h>
 '#include<glcd_ili9326.h>
    #define GLCD_TYPE GLCD_TYPE_ILI9326
-    #define GLCD_RST      portc.4         ' Reset line
-    #define GLCD_RD       portc.3        ' read command line
-    #define GLCD_WR       portc.2         ' write command line
-    #define GLCD_RS       portc.1         ' Command/Data line
-    #define GLCD_CS       portc.0         ' Chip select line
-
-
-    #define GLCD_DB0       DIGITAL_8
-    #define GLCD_DB1       DIGITAL_9
-    #define GLCD_DB2       DIGITAL_2
-    #define GLCD_DB3       DIGITAL_3
-    #define GLCD_DB4       DIGITAL_4
-    #define GLCD_DB5       DIGITAL_5
-    #define GLCD_DB6       DIGITAL_6
-    #define GLCD_DB7       DIGITAL_7
-
-
-
+    #define GLCD_RD       porta.3        ' read command line
+    #define GLCD_WR       porta.2         ' write command line
+    #define GLCD_RS       porta.1         ' Command/Data line
+    #define GLCD_CS       porta.0         ' Chip select line
+    #define GLCD_RST      porta.5         ' Reset line
 
    ' #define GLCD_DB0       portd.0
     '#define GLCD_DB1       portd.1
@@ -33,9 +20,6 @@ wait 1 ms
     '#define GLCD_DB5       portd.5
     '#define GLCD_DB6       portd.6
     '#define GLCD_DB7       portd.7
-    dir portc out
-    dir portb out
-
     #define GLCD_DataPort portD
     #define ILI9326_DataPort GLCD_DataPort
 
@@ -52,15 +36,10 @@ dim xx1 as word
 GLCD_WIDTH = 400
 GLCD_HEIGHT = 240
 ili9326_angle=0
-
-
-do
 ili9326init
 ILI9326Orientation(ILI9326_angle)
 GLCDCLS_ILI9326
-
 glcdStripes_ILI9326
-loop
 sleep
 end
 sub SendCommand_ili9326(ILI9326SendWord)
@@ -68,36 +47,22 @@ sub SendCommand_ili9326(ILI9326SendWord)
           set ILI9326_GLCD_RS OFF
           set ILI9326_GLCD_RD ON
           set ILI9326_GLCD_WR ON
-    PORTD = (PORTD & 0B00000011) | ((ILI9326SendWord_H) & 0B11111100);
-    PORTB = (PORTB & 0B11111100) | ((ILI9326SendWord_H) & 0B00000011);
-
+ILI9326_DataPort=ILI9326SendWord_h
           set ILI9326_GLCD_WR OFF
           set ILI9326_GLCD_WR ON
-    PORTD = (PORTD & 0B00000011) | ((ILI9326SendWord) & 0B11111100);
-    PORTB = (PORTB & 0B11111100) | ((ILI9326SendWord) & 0B00000011);
+ILI9326_DataPort=ILI9326SendWord
           set ILI9326_GLCD_WR OFF
           set ILI9326_GLCD_WR ON
 end sub
 
 sub SendData_ILI9326(ILI9326SendWord)
           set ILI9326_GLCD_RS ON
-'ILI9326_DataPort=ILI9326SendWord_h
-    PORTD = (PORTD & 0B00000011) | ((ILI9326SendWord_H) & 0B11111100);
-    PORTB = (PORTB & 0B11111100) | ((ILI9326SendWord_H) & 0B00000011);
-
+ILI9326_DataPort=ILI9326SendWord_h
           set ILI9326_GLCD_WR OFF
           set ILI9326_GLCD_WR ON
-'ILI9326_DataPort=ILI9326SendWord
-    PORTD = (PORTD & 0B00000011) | ((ILI9326SendWord) & 0B11111100);
-    PORTB = (PORTB & 0B11111100) | ((ILI9326SendWord) & 0B00000011);
-
+ILI9326_DataPort=ILI9326SendWord
           set ILI9326_GLCD_WR OFF
           set ILI9326_GLCD_WR ON
-
-
-
-
-
 end sub
 
 sub GLCDCLS_ILI9326
@@ -127,10 +92,6 @@ end sub
 
 
 sub ILI9326INIT
-
-
-
-
 'Reset*********************
 Set ILI9326_GLCD_RST On
 Wait 15 ms
