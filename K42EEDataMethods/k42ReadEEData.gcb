@@ -1,0 +1,275 @@
+'Public are following methods v1.01
+    'FLASH_ReadByte_K42
+    'FLASH_ReadWord_K42
+    'FLASH_WriteByte_K42
+
+
+    #chip 18F47K42
+
+    #define WRITE_FLASH_BLOCKSIZE_K42    128
+    #define ERASE_FLASH_BLOCKSIZE_K42    128
+    #define END_FLASH_K42                0x020000
+
+    #option Explicit
+
+    dim myFlashAddress as long
+    myFlashAddress = 0x7D00
+
+    dim mybyte as Byte
+    mybyte = FLASH_ReadByte_K42  ( myFlashAddress )
+
+
+    dim myword as Word
+    myword = FLASH_ReadWord_K42 ( myFlashAddress )
+
+    myByte = 0x55  ' the byte to write
+    dim myBuffer( WRITE_FLASH_BLOCKSIZE_K42 )
+    FLASH_WriteByte_K42( myFlashAddress, myBuffer, myByte )
+
+end
+
+
+'  Summary
+'    Reads a data byte from Flash
+'
+'  Description
+'    This routine reads a data byte from given Flash address
+'
+'  Preconditions
+'    None
+'
+'  Param
+'    flashAddr - Flash program memory location from which data has to be read
+'
+'  Returns
+'    Data byte read from given Flash address
+'
+'  Example
+'    readByte as byte
+'    flashAddr = 0x7D00
+'
+'    readByte = FLASH_ReadByte(flashAddr)
+
+    function FLASH_ReadByte_K42( flashAddr as long ) as byte
+
+        NVMREG1 = 1
+        NVMREG0 = 0
+
+        TBLPTRU = flashAddr_u
+        TBLPTRH = flashAddr_h
+        TBLPTRL = flashAddr
+
+        #asmraw TBLRD
+
+        FLASH_ReadByte_K42 = TABLAT
+
+    end function TABLAT
+
+
+'  Summary
+'    Reads a data word from Flash
+'
+'  Description
+'    This routine reads a data word from given Flash address
+'
+'  Preconditions
+'    None
+'
+'  Param
+'    flashAddr - Flash program memory location from which data has to be read
+'
+'  Returns
+'    Data word read from given Flash address
+'
+'  Example
+'    readWord as word
+'    flashAddr = 0x7D00
+'
+'    readWord = FLASH_ReadWord(flashAddr)
+
+    function FLASH_ReadWord_K42( flashAddr as long ) as word
+
+        FLASH_ReadWord_K42 = FLASH_ReadByte_K42( flashAddr )
+        FLASH_ReadWord_K42_h = FLASH_ReadByte_K42( flashAddr + 1 )
+
+    end function
+
+'
+'  Summary
+'    Writes a data byte into Flash
+'
+'  Description
+'    This routine writes the given data byte into mentioned Flash address.
+'
+'    This routine intially reads block of data (from Flash) into RAM, updates
+'    data values in RAM, and writes back updated values to Flash.
+'
+'  Preconditions
+'    None
+'
+'  Param
+'    flashAddr      - Flash program memory location to which data has to be written
+'    flashRdBufPtr -  RAM buffer of size 'ERASE_FLASH_BLOCKSIZE' at least
+'    byte           - Data byte to be written in Flash
+'
+'  Returns
+'    None
+'
+'  Example
+'
+'    writeData = 0xAA
+'    flashAddr = 0x7D00
+'    MyBuffer(ERASE_FLASH_BLOCKSIZE)
+'
+'    FLASH_WriteWord(flashAddr, MyBuffer, writeData)
+
+    sub FLASH_WriteByte_K42( flashAddr as long , flashRdBufPtr as string,  EEDatabyte as byte )
+        dim blockStartAddr  as Long
+        blockStartAddr= flashAddr  & ((END_FLASH_K42-1) OR (ERASE_FLASH_BLOCKSIZE_K42-1))
+
+        Dim EEDataoffset as byte
+        EEDataoffset = (flashAddr & (ERASE_FLASH_BLOCKSIZE_K42-1))
+
+
+        'Entire row will be erased, read and save the existing data
+        dim writeloop as byte
+        for writeloop = 0 to ERASE_FLASH_BLOCKSIZE_K42-1
+            flashRdBufPtr(writeloop) = FLASH_ReadByte_K42(blockStartAddr+ writeloop )
+        next
+
+        'Load byte at offset
+        flashRdBufPtr( EEDataoffset ) = EEDatabyte
+
+        'Writes buffer contents to current block
+        FLASH_WriteBlock_K42(blockStartAddr, flashRdBufPtr)
+    end sub
+
+
+
+'  Summary
+'    Writes data to complete block of Flash
+'
+'  Description
+'    This routine writes data bytes to complete block in Flash program memory
+'
+'  Preconditions
+'    None
+'
+'  Param
+'    writeAddr      - A valid block starting address in Flash
+'    myBuffer        - An array of size 'WRITE_FLASH_BLOCKSIZE' at least
+
+'  Returns
+'    -1, if the given address is not a valid block starting address of Flash
+'    0, in case of valid block starting address
+
+'  Example
+
+'    #define FLASH_ROW_ADDRESS     0x7D00
+
+'    Dim myBuffer (
+'        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
+'        0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F,
+'        0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x2E, 0x2F,
+'        0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E, 0x3F
+'        )
+
+'    write to Flash memory block
+'    FLASH_WriteBlock( FLASH_ROW_ADDRESS, myBuffer )
+
+    function FLASH_WriteBlock_K42( writeAddr as long, flashWrBufPtr as string )
+
+        dim blockStartAddr  as Long
+        blockStartAddr= writeAddr & ((END_FLASH_K42-1) OR (ERASE_FLASH_BLOCKSIZE_K42-1))
+        Dim GIEBitValue as bit
+        GIEBitValue = GIE     'Save interrupt enable
+
+
+        ' Flash write must start at the beginning of a row
+        if writeAddr <> blockStartAddr then
+            FLASH_WriteBlock_K42 = false
+            exit function
+        end if
+
+        'Block erase sequence
+        FLASH_EraseBlock_K42(writeAddr)
+
+        'Block write sequence
+        TBLPTRU = writeAddr_U                               'Load Table point register
+        TBLPTRH = writeAddr_H
+        TBLPTRL = writeAddr
+
+        'Write block of data
+        dim writeloop as byte
+        for writeloop = 0 to WRITE_FLASH_BLOCKSIZE_K42-1
+
+            TABLAT = flashWrBufPtr(writeloop) ' Load data byte
+
+            if writeloop = (WRITE_FLASH_BLOCKSIZE_K42-1) then
+                #asmraw TBLWT
+            else
+                #asmraw TBLWTPOSTINC
+            end if
+        next
+
+        NVMREG1 = 1
+        NVMREG0 = 0
+        WREN = 1
+        #asmraw BCF INTCON0,7
+        #asmraw BANKSEL NVMCON1
+        #asmraw BSF NVMCON1,2
+        #asmraw MOVLW 0x55
+        #asmraw MOVWF NVMCON2
+        #asmraw MOVLW 0xAA
+        #asmraw MOVWF NVMCON2
+        #asmraw BSF NVMCON1,1
+        #asmraw BSF INTCON0,7
+        #asmraw BCF NVMCON1,2
+
+        FLASH_WriteBlock_K42 = true
+
+    end function
+
+
+'  Summary
+'    Erases complete Flash program memory block
+'
+'  Description
+'    This routine erases complete Flash program memory block
+'
+'  Preconditions
+'    None
+'
+'  Param
+'    baseAddr - A valid block starting address in Flash program memory
+'
+'  Returns
+'    None
+'
+'  Example
+'    flashBlockStartAddr = 0x7D00
+'
+'    FLASH_EraseBlock(flashBlockStartAddr)
+
+    sub FLASH_EraseBlock_K42( flashAddr as long )
+
+        GIEBitValue = GIE   'Save interrupt enable
+        TBLPTRU = flashAddr_U
+        TBLPTRH = flashAddr_H
+        TBLPTRL = flashAddr
+
+        NVMREG1 = 1
+        NVMREG0 = 0
+        WREN = 1
+        FREE = 1
+        #asmraw BCF INTCON0,7
+        #asmraw BANKSEL NVMCON1
+        #asmraw BSF NVMCON1,2
+        #asmraw MOVLW 0x55
+        #asmraw MOVWF NVMCON2
+        #asmraw MOVLW 0xAA
+        #asmraw MOVWF NVMCON2
+        #asmraw BSF NVMCON1,1
+        #asmraw BSF INTCON0,7
+
+    end sub
