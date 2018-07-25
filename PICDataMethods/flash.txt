@@ -1,0 +1,85 @@
+'16f18326
+sub flashdata1(xx8)
+'adr1=address xx8=data
+nvmadrl=adr1
+nvmadrh=adr1_h
+set nvmCON1.NVMREGS off
+set NVMCON1.wren on  ' Enable writes
+set NVMCON1.lwlo on  ' Write Latches
+NVMdatl=xx8
+NVMdath=xx8_h
+set NVMcon1.lwlo off 'write
+SET INTCON.GIE OFF
+NVMcon2=0x55
+NVMcon2=0xAA
+set NVMcon1.wr on
+'SET INTCON.GIE ON
+set PMcon1.wren off
+end sub
+
+
+16f1840
+sub flashdata
+'ADR1=address XX7=data
+eeadrl=ADR1
+eeadrh=ADR1_h
+set EECON1.eepgd on ' Point to flash memory
+set EECON1.cfgs off  ' Not configuration space
+set EECON1.free off 'write
+set EECON1.wren on  ' Enable writes
+set EECON1.lwlo on  ' Write Latches
+eedatl=XX7
+eedath=XX7_h
+set eecon1.lwlo off 'write
+eecon2=0x55
+eecon2=0xAA
+set eecon1.wr on
+nop
+nop
+set eecon1.wren off
+end sub
+
+16f1825
+a1=a1+1
+x1=x1+1
+'a1=address x1=data
+eeadrl=a1
+eeadrh=a1_h
+set EECON1.eepgd on ' Point to flash memory
+set EECON1.cfgs off  ' Not configuration space
+set EECON1.free off 'write
+set EECON1.wren on  ' Enable writes
+set EECON1.lwlo on  ' Write Latches
+eedatl=x1
+eedath=x1_h
+set eecon1.lwlo off 'write
+eecon2=0x55
+eecon2=0xAA
+set eecon1.wr on
+nop
+nop
+set eecon1.wren off
+wait 10 ms
+
+18f14k22
+sub flashdata
+tblptru=0
+tblptrl=a1 'load address 22 bit!
+tblptrh=a1_h
+tablat=x1
+tblwt+*
+tablat=x1_h 'load data as separate bytes
+tblwt+*
+tablat=x9
+tblwt+*
+tablat=x9_h 'load data as separate bytes
+tblwt+*
+set EECON1.eepgd on ' Point to flash memory
+set EECON1.cfgs off  ' Not configuration space
+set EECON1.wren on  ' Enable writes
+eecon2=0x55
+eecon2=0xAA
+set eecon1.wr on
+set eecon1.wren off
+
+end sub
