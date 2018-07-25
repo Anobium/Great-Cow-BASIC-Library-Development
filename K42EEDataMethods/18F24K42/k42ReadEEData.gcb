@@ -4,27 +4,40 @@
     'FLASH_WriteByte_K42
 
 
-    #chip 18F24K42
+    #chip 18F24K42,32
 
     #define WRITE_FLASH_BLOCKSIZE_K42    128
     #define ERASE_FLASH_BLOCKSIZE_K42    128
-    #define END_FLASH_K42                0x020000
+    #define END_FLASH_K42                0x004000   'Some devices have more memory. Please check the datasheet
+    dim EEDataBuffer( WRITE_FLASH_BLOCKSIZE_K42 )
 
     #option Explicit
 
-    dim myFlashAddress as long
-    myFlashAddress = 0x3FF0
 
-    myByte = 0x55  ' the byte to write
-    dim myBuffer( WRITE_FLASH_BLOCKSIZE_K42 )
-    FLASH_WriteByte_K42( myFlashAddress, myBuffer, myByte )
+    'User code
+
+    dim myFlashAddress as long
+    myFlashAddress = 0x003FFF
+
+    myByte = 0x01  ' the test byte to write
+
+    FLASH_WriteByte_K42( myFlashAddress, EEDataBuffer, myByte )
 
     dim mybyte as Byte
+    myFlashAddress = 0x003FFF
     mybyte = FLASH_ReadByte_K42  ( myFlashAddress )
 
-    dim myword as Word
-    myword = FLASH_ReadWord_K42 ( myFlashAddress )
+    myFlashAddress = 0x003FFD
+    FLASH_WriteByte_K42( myFlashAddress, EEDataBuffer, myByte - 1 )
 
+    EPWrite 0, myByte
+
+    wait 100 ms
+
+
+'    dim myword as Word
+'    myword = FLASH_ReadWord_K42 ( myFlashAddress )
+'    EPWrite 0x20, myword
 end
 
 
@@ -49,20 +62,29 @@ end
 '
 '    readByte = FLASH_ReadByte_K42(flashAddr)
 
-    function FLASH_ReadByte_K42( flashAddr as long ) as byte
+    function FLASH_ReadByte_K42( _flashAddr as long ) as byte
 
         NVMREG1 = 1
         NVMREG0 = 0
+        RD = 1
+        TBLPTRU = _flashAddr_u
+        TBLPTRH = _flashAddr_h
+        TBLPTRL = _flashAddr
 
-        TBLPTRU = flashAddr_u
-        TBLPTRH = flashAddr_h
-        TBLPTRL = flashAddr
-
-        #asmraw TBLRD
+        TBLRD*
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
 
         FLASH_ReadByte_K42 = TABLAT
 
-    end function TABLAT
+    end function
 
 
 '  Summary
@@ -123,12 +145,12 @@ end
 '    FLASH_WriteByte_K42(flashAddr, MyBuffer, writeData)
 
     sub FLASH_WriteByte_K42( flashAddr as long , flashRdBufPtr as string,  EEDatabyte as byte )
+
         dim blockStartAddr  as Long
-        blockStartAddr= flashAddr  & ((END_FLASH_K42-1) OR (ERASE_FLASH_BLOCKSIZE_K42-1))
+        blockStartAddr= flashAddr  & ((END_FLASH_K42-1) XOR (ERASE_FLASH_BLOCKSIZE_K42-1))
 
         Dim EEDataoffset as byte
         EEDataoffset = (flashAddr & (ERASE_FLASH_BLOCKSIZE_K42-1))
-
 
         'Entire row will be erased, read and save the existing data
         dim writeloop as byte
@@ -141,6 +163,7 @@ end
 
         'Writes buffer contents to current block
         FLASH_WriteBlock_K42(blockStartAddr, flashRdBufPtr)
+
     end sub
 
 
@@ -166,7 +189,7 @@ end
 
 '    #define FLASH_ROW_ADDRESS     0x7D00
 
-'    Dim myBuffer (
+'    Dim EEDataBuffer (
 '        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
 '        0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F,
 '        0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x2E, 0x2F,
@@ -179,17 +202,15 @@ end
     function FLASH_WriteBlock_K42( writeAddr as long, flashWrBufPtr as string )
 
         dim blockStartAddr  as Long
-        blockStartAddr= writeAddr & ((END_FLASH_K42-1) OR (ERASE_FLASH_BLOCKSIZE_K42-1))
+        blockStartAddr= writeAddr & ((END_FLASH_K42-1) XOR (ERASE_FLASH_BLOCKSIZE_K42-1))
         Dim GIEBitValue as bit
         GIEBitValue = GIE     'Save interrupt enable
-
-
         ' Flash write must start at the beginning of a row
         if writeAddr <> blockStartAddr then
             FLASH_WriteBlock_K42 = false
+
             exit function
         end if
-
         'Block erase sequence
         FLASH_EraseBlock_K42(writeAddr)
 
@@ -205,25 +226,27 @@ end
             TABLAT = flashWrBufPtr(writeloop) ' Load data byte
 
             if writeloop = (WRITE_FLASH_BLOCKSIZE_K42-1) then
-                #asmraw TBLWT
+                TBLWT*
             else
-                #asmraw TBLWTPOSTINC
+                TBLWT*+
             end if
         next
 
         NVMREG1 = 1
         NVMREG0 = 0
         WREN = 1
-        #asmraw BCF INTCON0,7
-        #asmraw BANKSEL NVMCON1
-        #asmraw BSF NVMCON1,2
-        #asmraw MOVLW 0x55
-        #asmraw MOVWF NVMCON2
-        #asmraw MOVLW 0xAA
-        #asmraw MOVWF NVMCON2
-        #asmraw BSF NVMCON1,1
-        #asmraw BSF INTCON0,7
-        #asmraw BCF NVMCON1,2
+        INTOFF
+        NVMCON2 = 0x55
+        NVMCON2 = 0xAA
+        WR = 1
+        NOP     ' NOPs required for latency at high frequencies
+        NOP
+        NOP
+        NOP
+        NOP
+        wait while WR = 1
+        WREN = 0
+        INTON
 
         FLASH_WriteBlock_K42 = true
 
@@ -252,7 +275,6 @@ end
 
     sub FLASH_EraseBlock_K42( flashAddr as long )
 
-        GIEBitValue = GIE   'Save interrupt enable
         TBLPTRU = flashAddr_U
         TBLPTRH = flashAddr_H
         TBLPTRL = flashAddr
@@ -260,15 +282,18 @@ end
         NVMREG1 = 1
         NVMREG0 = 0
         WREN = 1
-        FREE = 1
-        #asmraw BCF INTCON0,7
-        #asmraw BANKSEL NVMCON1
-        #asmraw BSF NVMCON1,2
-        #asmraw MOVLW 0x55
-        #asmraw MOVWF NVMCON2
-        #asmraw MOVLW 0xAA
-        #asmraw MOVWF NVMCON2
-        #asmraw BSF NVMCON1,1
-        #asmraw BSF INTCON0,7
+'        FREE = 1
+        IntOff
+        NVMCON2 = 0x55
+        NVMCON2 = 0xAA
+        WR = 1
+        NOP     ' NOPs required for latency at high frequencies
+        NOP
+        NOP
+        NOP
+        NOP
+        wait while WR = 1
+        WREN = 0
+        IntOn
 
     end sub

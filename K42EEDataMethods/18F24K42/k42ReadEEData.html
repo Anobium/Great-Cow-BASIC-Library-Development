@@ -7,30 +7,31 @@
 <h1>Compilation Report</h1>
 <p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2018-07-19</p>
 <h2>Compilation time</h2>
-<p> (Compile time: 2 seconds)</p>
-<p> (Assembly time: 0.8125 seconds)</p>
-<p> (Download time: 3.875 seconds)</p>
-<p> (Total time: 6.6875 seconds)</p>
+<p> (Compile time: 1.4375 seconds)</p>
+<p> (Assembly time: 0.5625 seconds)</p>
+<p> (Download time: 3.8125 seconds)</p>
+<p> (Total time: 5.8125 seconds)</p>
 <h2>Chip resource usage:</h2>
 <p>Chip Model: 18F24K42</p>
-<p>Program Memory: 341/8192 words (4.16%)</p>
-<p>RAM: 164/1024 bytes (16.02%)</p>
+<p>Program Memory: 453/8192 words (5.53%)</p>
+<p>RAM: 168/1024 bytes (16.41%)</p>
 <h2>RAM Allocation</h2>
 <table border="1">
 </table>
 <h2>Subroutines</h2>
 <table border="1">
 <tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Outgoing calls</th></tr>
-<tr><td>Main</td><td>13</td><td>67</td><td>FLASH_READWORD_K42(1), FLASH_READBYTE_K42(1), FLASH_WRITEBYTE_K42(1), INITSYS(7)</td></tr>
-<tr><td>FLASH_READBYTE_K42</td><td>6</td><td>17</td><td></td></tr>
-<tr><td>FLASH_READWORD_K42</td><td>2</td><td>17</td><td>FLASH_READBYTE_K42(2)</td></tr>
+<tr><td>Main</td><td>16</td><td>98</td><td>Delay_MS(1), NVMADR_EPWRITE(1), FLASH_READBYTE_K42(1), FLASH_WRITEBYTE_K42(2), INITSYS(7)</td></tr>
+<tr><td>FLASH_READBYTE_K42</td><td>17</td><td>28</td><td></td></tr>
 <tr><td>FLASH_WRITEBYTE_K42</td><td>10</td><td>68</td><td>SYSCOMPLESSTHAN(1), FLASH_WRITEBLOCK_K42(1), FLASH_READBYTE_K42(1)</td></tr>
-<tr><td>FLASH_WRITEBLOCK_K42</td><td>23</td><td>98</td><td>SYSCOMPLESSTHAN(1), SYSCOMPEQUAL(1), SYSCOMPEQUAL32(1), FLASH_ERASEBLOCK_K42(1)</td></tr>
-<tr><td>FLASH_ERASEBLOCK_K42</td><td>8</td><td>19</td><td></td></tr>
+<tr><td>FLASH_WRITEBLOCK_K42</td><td>37</td><td>116</td><td>SYSCOMPLESSTHAN(1), SYSCOMPEQUAL(1), SYSCOMPEQUAL32(1), FLASH_ERASEBLOCK_K42(1)</td></tr>
+<tr><td>FLASH_ERASEBLOCK_K42</td><td>18</td><td>29</td><td></td></tr>
+<tr><td>NVMADR_EPWRITE</td><td>32</td><td>41</td><td></td></tr>
 <tr><td>INITSYS</td><td>663</td><td>30</td><td></td></tr>
 <tr><td>SYSCOMPEQUAL</td><td>20</td><td>5</td><td></td></tr>
 <tr><td>SYSCOMPEQUAL32</td><td>52</td><td>15</td><td></td></tr>
 <tr><td>SYSCOMPLESSTHAN</td><td>23</td><td>5</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>18</td><td></td></tr>
 </table>
 </body>
 </html>
