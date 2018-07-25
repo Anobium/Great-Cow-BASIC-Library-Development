@@ -27,16 +27,17 @@
     myFlashAddress = 0x003FFF
     mybyte = FLASH_ReadByte_K42  ( myFlashAddress )
 
-    myFlashAddress = 0x003FFD
+    myFlashAddress = 0x003FFE
     FLASH_WriteByte_K42( myFlashAddress, EEDataBuffer, myByte - 1 )
+    EPWrite 0x00, myByte
 
-    EPWrite 0, myByte
 
-    wait 100 ms
+    myFlashAddress = 0x003FFE
+    dim myword as Word
+    myword = FLASH_ReadWord_K42 ( myFlashAddress )
+    EPWrite 0x10, myword_h
+    EPWrite 0x11, myword
 
-    '    dim myword as Word
-    '    myword = FLASH_ReadWord_K42 ( myFlashAddress )
-    '    EPWrite 0x20, myword
     end
 'User code ends here.
 
@@ -113,7 +114,7 @@
     function FLASH_ReadWord_K42( flashAddr as long ) as word
 
         FLASH_ReadWord_K42 = FLASH_ReadByte_K42( flashAddr )
-        FLASH_ReadWord_K42_h = FLASH_ReadByte_K42( flashAddr + 1 )
+        FLASH_ReadWord_K42_h = FLASH_ReadByte_K42( [long]flashAddr + 1 )
 
     end function
 
