@@ -19,7 +19,7 @@
     dim myFlashAddress as long
     myFlashAddress = 0x003FFF
 
-    myByte = 0x01  ' the test byte to write
+    myByte = 0xAA  ' the test byte to write
 
     FLASH_WriteByte_K42( myFlashAddress, EEDataBuffer, myByte )
 
@@ -187,7 +187,7 @@ end
 
 '  Example
 
-'    #define FLASH_ROW_ADDRESS     0x7D00
+'    #define FLASH_ROW_ADDRESS     0x3D00
 
 '    Dim EEDataBuffer (
 '        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
