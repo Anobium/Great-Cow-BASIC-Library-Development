@@ -211,8 +211,7 @@
 
         dim blockStartAddr  as Long
         blockStartAddr= writeAddr & ((END_FLASH_K42-1) XOR (ERASE_FLASH_BLOCKSIZE_K42-1))
-        Dim GIEBitValue as bit
-        GIEBitValue = GIE     'Save interrupt enable
+
         ' Flash write must start at the beginning of a row
         if writeAddr <> blockStartAddr then
             FLASH_WriteBlock_K42 = false
