@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2018-07-19</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 2 seconds)</p>
+<p> (Assembly time: 0.8125 seconds)</p>
+<p> (Download time: 3.8125 seconds)</p>
+<p> (Total time: 6.625 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 18F24K42</p>
+<p>Program Memory: 525/8192 words (6.41%)</p>
+<p>RAM: 284/1024 bytes (27.73%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>17</td><td>109</td><td>Delay_S(1), FLASH_READ_K42(1), FLASH_WRITE_K42(1), NVMADR_EPWRITE(4), INITSYS(5)</td></tr>
+<tr><td>FLASH_READ_K42</td><td>25</td><td>32</td><td></td></tr>
+<tr><td>FLASH_WRITE_K42</td><td>11</td><td>85</td><td>SYSCOMPLESSTHAN16(1), FLASH_WRITEBLOCK_K42(1), FLASH_READ_K42(1)</td></tr>
+<tr><td>FLASH_WRITE_K42</td><td>2</td><td>8</td><td>FLASH_WRITE_K42(1), FLASH_WRITE_K42(1)</td></tr>
+<tr><td>FLASH_WRITEBLOCK_K42</td><td>33</td><td>126</td><td>SYSCOMPLESSTHAN16(1), SYSCOMPEQUAL16(1), SYSCOMPEQUAL32(1), FLASH_ERASEBLOCK_K42(1)</td></tr>
+<tr><td>FLASH_ERASEBLOCK_K42</td><td>18</td><td>28</td><td></td></tr>
+<tr><td>NVMADR_EPWRITE</td><td>32</td><td>41</td><td></td></tr>
+<tr><td>INITSYS</td><td>663</td><td>30</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL16</td><td>34</td><td>9</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL32</td><td>52</td><td>15</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>14</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>18</td><td></td></tr>
+<tr><td>Delay_S</td><td>0</td><td>10</td><td>Delay_MS(1)</td></tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,39 @@
+'Public are following methods v1.04
+    'FLASH_ReadByte
+    'FLASH_ReadWord
+    'FLASH_WriteByte
+
+
+    #chip 16f1938
+'    #include "D:\Great-Cow-BASIC-Library-Development\trunk\PICDataMethods\PICFlashDataMethods.h"
+
+    #option Explicit
+
+
+'User code starts here.
+
+    dim myWord as word
+    myWord = 0xAABB  ' the test word to write & 16383, so, therefore 0x2ABB is written. See the Help
+
+    dim myFlashAddress as long
+    myFlashAddress = 0x3FA0
+    ProgramWrite ( myFlashAddress, myWord )
+    myWord++
+    myFlashAddress = 0x3FA1
+    ProgramWrite ( myFlashAddress, myWord )
+
+    myFlashAddress = 0x3FA0
+    ProgramRead  ( myFlashAddress, myWord )
+    EPWrite 0x00, myWord_h
+    EPWrite 0x01, myWord
+
+    myFlashAddress = 0x3FA1
+    ProgramRead  ( myFlashAddress, myWord )
+    EPWrite 0x02, myWord_h
+    EPWrite 0x03, myWord
+
+    end
+'User code ends here.
+
+
+

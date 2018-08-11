@@ -1,0 +1,57 @@
+Can you review please? Anything to add?
+
+
+This is an explanation of Intel hex file (.hex) in the context of comparing two files. One hex file (#1) produced by the Great Cow BASIC compiler. This hex file is programmed to the part.  The other a file (#2) exported using a PICKit programmer from the same part.
+
+*Great Cow BASIC Intel (.hex file)*
+
+The Great Cow BASIC hex file does not necessarily represent the complete to be state of the programmed memory of a part.
+
+The first three lines of a file #1 genertated by Great Cow BASIC are:
+
+:02 0000 04 0000 FA
+:04 0000 00 80310528 1E
+:10 0008 00 0900CA27B927E526E726803112119316 79
+:10 0018 00 931702307C0196009701980199019201 8B
+
+
+The first line simply sets the "top" two bytes of the address to 0.
+The second line is a [:04] -byte command to address [0000] with record type [00] - data.  The following 8 characters [80310528] contain the data*.  The last two bytes are a simple checksum.
+The next line here writes (0x)[10] bytes, starting with address [0008], thus skipping the four bytes in-between.
+
+This is not a problem, but it leaves the four bytes unprogrammed between [0005] and [0008].
+
+When exporting the flash memory using a programmer, the programmer does not know the difference between 1) the flash memory that was set to the erase value, the 2) the flash memory intentionally wrote to  and 3) the bytes that were left unwritten after erase.   To give a correct and complete picture, the programmer must therefore represent all the flash memory when exporting.  This leads to the data file exported being represented in a different (and simpler, more linear, and complete) form of the flash memory.
+
+*Exported file using a programmer*
+
+
+This file is the same file as discussed above, but, has been exported to a txt file.
+
+The top four lines (as read them back):
+
+:02 0000 04 0000 FA
+:10 0000 00 80310528FF3FFF3F0900CA27B927E526 B1
+:10 0010 00 E726803112119316931702307C019600 67
+:10 0020 00 97019801990192011330930001309400 D7
+
+Rather than the [80310528] appearing on a [04] byte long line, here we have the first line representing the [:10] (16 decimal) first bytes:
+
+80310528 FF3FFF3F 0900CA27 B927E526
+
+If you look back up to the top, this is the data from line two (80310528), two words still at their erase value (FF3F FF3F - remember the endian) followed by half the data from the original line three.
+
+Since the original file had this offset, the hex file continued 16 bytes at a time with an offset of 8, and as such (together with the addresses and checksum being different) is jumbled around enough to look quite different while containing the same data.
+
+*Verification of the source hex file and the flash memory of the part*
+
+
+
+
+Usually, rather than parsing this out by hand, we would use the "verify flash" functionality of our programming environment.
+
+Given the original .hex file, this will read out the flash of the device, and verify that all the bytes specified in the hex file match the ones in the device.
+
+Hope this helps!
+
+*: The PIC instruction word length of 14 is mapped onto 16 bits little-endian

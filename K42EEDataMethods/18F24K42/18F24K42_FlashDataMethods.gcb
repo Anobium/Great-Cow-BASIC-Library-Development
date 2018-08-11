@@ -1,0 +1,40 @@
+'Public are following methods v1.04
+    'FLASH_ReadByte
+    'FLASH_ReadWord
+    'FLASH_WriteByte
+
+
+    #chip 18F24K42,32
+
+    #define PROGRAM_EEDATAMETHODS    1
+    #define WRITE_FLASH_BLOCKSIZE    128
+    #define ERASE_FLASH_BLOCKSIZE    128
+    #define END_FLASH                0x004000   'Some devices have more memory. Please check the datasheet
+
+    #option Explicit
+
+'User code starts here.
+    wait 1 s
+    dim myFlashAddress as long
+    myFlashAddress = 0x3FA0
+
+    dim myWord as word
+    myWord = 0xAABB  ' the test word to write & 16383, so, therefore 0x2ABB is written. See the Help
+
+    EPWrite 0x00, 0
+    EPWrite 0x01, 1
+
+
+    ProgramWrite ( myFlashAddress, myWord )
+    ProgramRead  ( myFlashAddress, myWord )
+
+    myWord++
+    EPWrite 0x00, myWord_h
+    EPWrite 0x01, myWord
+
+    end
+'User code ends here.
+
+
+
+
