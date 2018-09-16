@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.02 2018-05-10</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 3.96875 seconds)</p>
+<p> (Assembly time: 0.25 seconds)</p>
+<p> (Download time: 2.0625 seconds)</p>
+<p> (Total time: 6.28125 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: MEGA328P</p>
+<p>Program Memory: 1016/16384 words (6.2%)</p>
+<p>RAM: 18/2048 bytes (.88%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>38</td><td>45</td><td>Delay_MS(1), GLCDSTRIPES_ILI9326(1), GLCDCLS_ILI9326(1), ILI9326ORIENTATION(1), ILI9326INIT(1), INITSYS(17)</td></tr>
+<tr><td>SENDCOMMAND_ILI9326</td><td>12</td><td>57</td><td></td></tr>
+<tr><td>SENDDATA_ILI9326</td><td>9</td><td>54</td><td></td></tr>
+<tr><td>GLCDCLS_ILI9326</td><td>6</td><td>95</td><td>SYSCOMPLESSTHAN16(2), SENDDATA_ILI9326(1), SENDCOMMAND_ILI9326(1)</td></tr>
+<tr><td>GLCDSTRIPES_ILI9326</td><td>8</td><td>125</td><td>SYSCOMPLESSTHAN16(2), SENDDATA_ILI9326(1), SENDCOMMAND_ILI9326(1)</td></tr>
+<tr><td>ILI9326INIT</td><td>69</td><td>500</td><td>Delay_MS(4), SENDDATA_ILI9326(31), SENDCOMMAND_ILI9326(31)</td></tr>
+<tr><td>ILI9326ORIENTATION</td><td>16</td><td>104</td><td>SYSCOMPEQUAL16(4), SENDDATA_ILI9326(4), SENDCOMMAND_ILI9326(4)</td></tr>
+<tr><td>INITSYS</td><td>674</td><td>7</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL16</td><td>34</td><td>7</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>10</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>12</td><td></td></tr>
+</table>
+</body>
+</html>

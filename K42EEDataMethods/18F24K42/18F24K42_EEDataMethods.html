@@ -7,31 +7,38 @@
 <h1>Compilation Report</h1>
 <p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2018-07-19</p>
 <h2>Compilation time</h2>
-<p> (Compile time: 2.0625 seconds)</p>
-<p> (Assembly time: 0.8125 seconds)</p>
+<p> (Compile time: 3.5 seconds)</p>
+<p> (Assembly time: 1 seconds)</p>
 <p> (Download time: 4 seconds)</p>
-<p> (Total time: 6.875 seconds)</p>
+<p> (Total time: 8.5 seconds)</p>
 <h2>Chip resource usage:</h2>
 <p>Chip Model: 18F24K42</p>
-<p>Program Memory: 478/8192 words (5.83%)</p>
-<p>RAM: 168/1024 bytes (16.41%)</p>
+<p>Program Memory: 660/8192 words (8.06%)</p>
+<p>RAM: 185/1024 bytes (18.07%)</p>
 <h2>RAM Allocation</h2>
 <table border="1">
 </table>
 <h2>Subroutines</h2>
 <table border="1">
 <tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Outgoing calls</th></tr>
-<tr><td>Main</td><td>20</td><td>127</td><td>FLASH_READWORD_K42(1), NVMADR_EPWRITE(3), FLASH_READBYTE_K42(1), FLASH_WRITEBYTE_K42(2), INITSYS(7)</td></tr>
+<tr><td>Main</td><td>28</td><td>166</td><td>INITUSART(3), SYSREADSTRING(1), Delay_MS(2), FLASH_READWORD_K42(1), NVMADR_EPWRITE(3), FLASH_READBYTE_K42(1), FLASH_WRITEBYTE_K42(2), HSERPRINTSTRINGCRLF(1), INITPPS(7), INITSYS(10)</td></tr>
+<tr><td>INITPPS</td><td>2</td><td>7</td><td></td></tr>
 <tr><td>FLASH_READBYTE_K42</td><td>17</td><td>28</td><td></td></tr>
 <tr><td>FLASH_READWORD_K42</td><td>2</td><td>17</td><td>FLASH_READBYTE_K42(2)</td></tr>
 <tr><td>FLASH_WRITEBYTE_K42</td><td>10</td><td>68</td><td>SYSCOMPLESSTHAN(1), FLASH_WRITEBLOCK_K42(1), FLASH_READBYTE_K42(1)</td></tr>
 <tr><td>FLASH_WRITEBLOCK_K42</td><td>35</td><td>113</td><td>SYSCOMPLESSTHAN(1), SYSCOMPEQUAL(1), SYSCOMPEQUAL32(1), FLASH_ERASEBLOCK_K42(1)</td></tr>
 <tr><td>FLASH_ERASEBLOCK_K42</td><td>18</td><td>29</td><td></td></tr>
 <tr><td>NVMADR_EPWRITE</td><td>32</td><td>41</td><td></td></tr>
-<tr><td>INITSYS</td><td>663</td><td>30</td><td></td></tr>
+<tr><td>INITSYS</td><td>674</td><td>30</td><td></td></tr>
+<tr><td>SYSREADSTRING</td><td>101</td><td>24</td><td></td></tr>
 <tr><td>SYSCOMPEQUAL</td><td>20</td><td>5</td><td></td></tr>
 <tr><td>SYSCOMPEQUAL32</td><td>52</td><td>15</td><td></td></tr>
 <tr><td>SYSCOMPLESSTHAN</td><td>23</td><td>5</td><td></td></tr>
+<tr><td>INITUSART</td><td>139</td><td>17</td><td></td></tr>
+<tr><td>HSERSEND</td><td>147</td><td>13</td><td></td></tr>
+<tr><td>HSERPRINTSTRINGCRLF</td><td>11</td><td>59</td><td>Delay_MS(3), HSERSEND(3)</td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>18</td><td></td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>5</td><td></td></tr>
 </table>
 </body>
 </html>

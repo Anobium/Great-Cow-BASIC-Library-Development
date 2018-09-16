@@ -7,47 +7,54 @@
 ;Set up the assembler options (Chip type, clock source, other bits and pieces)
  LIST p=18F24K42, r=DEC
 #include <P18F24K42.inc>
- CONFIG LVP = OFF, WDTE = OFF, MVECEN = OFF, MCLRE = INTMCLR, RSTOSC = HFINTOSC_1MHZ
+ CONFIG LVP = OFF, WDTE = OFF, MVECEN = OFF, MCLRE = EXTMCLR, RSTOSC = HFINTOSC_1MHZ
 
 ;********************************************************************************
 
 ;Set aside memory locations for variables
-BLOCKSTARTADDR	EQU	1
-BLOCKSTARTADDR_E	EQU	4
-BLOCKSTARTADDR_H	EQU	2
-BLOCKSTARTADDR_U	EQU	3
-EEDATA	EQU	13
+BLOCKSTARTADDR	EQU	13
+BLOCKSTARTADDR_E	EQU	16
+BLOCKSTARTADDR_H	EQU	14
+BLOCKSTARTADDR_U	EQU	15
+COMPORT	EQU	4
+DELAYTEMP	EQU	0
+DELAYTEMP2	EQU	1
+EEDATA	EQU	17
 EEDATABUFFER	EQU	893
-EEDATABYTE	EQU	14
-EEDATAOFFSET	EQU	15
-FLASHADDR	EQU	16
-FLASHADDR_E	EQU	19
-FLASHADDR_H	EQU	17
-FLASHADDR_U	EQU	18
-FLASH_READBYTE_K42	EQU	20
-FLASH_READWORD_K42	EQU	21
-FLASH_READWORD_K42_H	EQU	22
-FLASH_WRITEBLOCK_K42	EQU	23
-MYBYTE	EQU	24
-MYFLASHADDRESS	EQU	25
-MYFLASHADDRESS_E	EQU	28
-MYFLASHADDRESS_H	EQU	26
-MYFLASHADDRESS_U	EQU	27
-MYWORD	EQU	29
-MYWORD_H	EQU	30
-NVMADRH	EQU	31
-SYSBITVAR0	EQU	32
+EEDATABYTE	EQU	18
+EEDATAOFFSET	EQU	19
+FLASHADDR	EQU	20
+FLASHADDR_E	EQU	23
+FLASHADDR_H	EQU	21
+FLASHADDR_U	EQU	22
+FLASH_READBYTE_K42	EQU	24
+FLASH_READWORD_K42	EQU	25
+FLASH_READWORD_K42_H	EQU	26
+FLASH_WRITEBLOCK_K42	EQU	27
+MYBYTE	EQU	28
+MYFLASHADDRESS	EQU	29
+MYFLASHADDRESS_E	EQU	32
+MYFLASHADDRESS_H	EQU	30
+MYFLASHADDRESS_U	EQU	31
+MYWORD	EQU	33
+MYWORD_H	EQU	34
+NVMADRH	EQU	35
+PRINTLEN	EQU	36
+SERDATA	EQU	37
+STRINGPOINTER	EQU	38
+SYSBITVAR0	EQU	39
 SYSBYTETEMPA	EQU	5
 SYSBYTETEMPB	EQU	9
 SYSBYTETEMPX	EQU	0
-SYSEEADDRESS	EQU	33
-SYSEEADDRESS_H	EQU	34
-SYSEEPROMADDRESS	EQU	35
-SYSEEPROMADDRESS_H	EQU	36
-SYSFLASHRDBUFPTRHANDLER	EQU	37
-SYSFLASHRDBUFPTRHANDLER_H	EQU	38
-SYSFLASHWRBUFPTRHANDLER	EQU	39
-SYSFLASHWRBUFPTRHANDLER_H	EQU	40
+SYSCALCTEMPA	EQU	5
+SYSEEADDRESS	EQU	40
+SYSEEADDRESS_H	EQU	41
+SYSEEPROMADDRESS	EQU	42
+SYSEEPROMADDRESS_H	EQU	43
+SYSFLASHRDBUFPTRHANDLER	EQU	44
+SYSFLASHRDBUFPTRHANDLER_H	EQU	45
+SYSFLASHWRBUFPTRHANDLER	EQU	46
+SYSFLASHWRBUFPTRHANDLER_H	EQU	47
 SYSLONGTEMPA	EQU	5
 SYSLONGTEMPA_E	EQU	8
 SYSLONGTEMPA_H	EQU	6
@@ -56,13 +63,23 @@ SYSLONGTEMPB	EQU	9
 SYSLONGTEMPB_E	EQU	12
 SYSLONGTEMPB_H	EQU	10
 SYSLONGTEMPB_U	EQU	11
-SYSTEMP1	EQU	41
-SYSTEMP1_H	EQU	42
-WRITEADDR	EQU	43
-WRITEADDR_E	EQU	46
-WRITEADDR_H	EQU	44
-WRITEADDR_U	EQU	45
-WRITELOOP	EQU	47
+SYSPRINTDATAHANDLER	EQU	48
+SYSPRINTDATAHANDLER_H	EQU	49
+SYSPRINTTEMP	EQU	50
+SYSREPEATTEMP1	EQU	51
+SYSSTRINGA	EQU	7
+SYSSTRINGA_H	EQU	8
+SYSSTRINGLENGTH	EQU	6
+SYSSTRINGPARAM1	EQU	884
+SYSTEMP1	EQU	52
+SYSTEMP1_H	EQU	53
+SYSWAITTEMPMS	EQU	2
+SYSWAITTEMPMS_H	EQU	3
+WRITEADDR	EQU	54
+WRITEADDR_E	EQU	57
+WRITEADDR_H	EQU	55
+WRITEADDR_U	EQU	56
+WRITELOOP	EQU	58
 
 ;********************************************************************************
 
@@ -85,6 +102,10 @@ AFSR0_H	EQU	16362
 BASPROGRAMSTART
 ;Call initialisation routines
 	rcall	INITSYS
+	rcall	INITPPS
+	rcall	INITUSART
+;Automatic pin direction setting
+	bcf	TRISA,0,ACCESS
 
 ;Start of the main program
 ;Public are following methods v1.04
@@ -95,6 +116,22 @@ BASPROGRAMSTART
 ;#define ERASE_FLASH_BLOCKSIZE_K42    128
 ;#define END_FLASH_K42                0x004000   'Some devices have more memory. Please check the datasheet
 ;dim EEDataBuffer( WRITE_FLASH_BLOCKSIZE_K42 )
+;#define USART_BAUD_RATE 9600
+;#define USART_TX_BLOCKING
+;HSerPrintStringCRLF "K42 Test"
+	lfsr	1,SYSSTRINGPARAM1
+	movlw	low StringTable1
+	movwf	TBLPTRL,ACCESS
+	movlw	high StringTable1
+	movwf	TBLPTRH,ACCESS
+	rcall	SysReadString
+	movlw	low SYSSTRINGPARAM1
+	movwf	SysPRINTDATAHandler,BANKED
+	movlw	high SYSSTRINGPARAM1
+	movwf	SysPRINTDATAHandler_H,BANKED
+	movlw	1
+	movwf	COMPORT,BANKED
+	rcall	HSERPRINTSTRINGCRLF
 ;User code starts here.
 ;dim myFlashAddress as long
 ;myFlashAddress = 0x003FFF
@@ -192,6 +229,30 @@ BASPROGRAMSTART
 	clrf	SYSEEADDRESS_H,BANKED
 	movff	MYWORD,EEDATA
 	rcall	NVMADR_EPWRITE
+;Repeat 10
+	movlw	10
+	movwf	SysRepeatTemp1,BANKED
+SysRepeatLoop1
+;pulseout porta.0, 900 ms
+;Set Pin On
+	bsf	LATA,0,ACCESS
+;Wait Time
+	movlw	132
+	movwf	SysWaitTempMS,ACCESS
+	movlw	3
+	movwf	SysWaitTempMS_H,ACCESS
+	rcall	Delay_MS
+;Set Pin Off
+	bcf	LATA,0,ACCESS
+;wait 100 ms
+	movlw	100
+	movwf	SysWaitTempMS,ACCESS
+	clrf	SysWaitTempMS_H,ACCESS
+	rcall	Delay_MS
+;end Repeat
+	decfsz	SysRepeatTemp1,F,BANKED
+	bra	SysRepeatLoop1
+SysRepeatLoopEnd1
 ;end
 	bra	BASPROGRAMEND
 ;User code ends here.
@@ -316,6 +377,27 @@ BASPROGRAMSTART
 BASPROGRAMEND
 	sleep
 	bra	BASPROGRAMEND
+
+;********************************************************************************
+
+Delay_MS
+	incf	SysWaitTempMS_H, F,ACCESS
+DMS_START
+	movlw	14
+	movwf	DELAYTEMP2,ACCESS
+DMS_OUTER
+	movlw	189
+	movwf	DELAYTEMP,ACCESS
+DMS_INNER
+	decfsz	DELAYTEMP, F,ACCESS
+	bra	DMS_INNER
+	decfsz	DELAYTEMP2, F,ACCESS
+	bra	DMS_OUTER
+	decfsz	SysWaitTempMS, F,ACCESS
+	bra	DMS_START
+	decfsz	SysWaitTempMS_H, F,ACCESS
+	bra	DMS_START
+	return
 
 ;********************************************************************************
 
@@ -625,6 +707,107 @@ SysForLoopEnd1
 
 ;********************************************************************************
 
+HSERPRINTSTRINGCRLF
+;PrintLen = LEN(PrintData$)
+;PrintLen = PrintData(0)
+	movffl	SysPRINTDATAHandler,AFSR0
+	movffl	SysPRINTDATAHandler_H,AFSR0_H
+	movffl	INDF0,PRINTLEN
+;If PrintLen <> 0 then
+	movf	PRINTLEN,F,BANKED
+	btfsc	STATUS, Z,ACCESS
+	bra	ENDIF10
+;Write Data
+;for SysPrintTemp = 1 to PrintLen
+	clrf	SYSPRINTTEMP,BANKED
+	movlw	1
+	subwf	PRINTLEN,W,BANKED
+	btfss	STATUS, C,ACCESS
+	bra	SysForLoopEnd3
+ENDIF11
+SysForLoop3
+	incf	SYSPRINTTEMP,F,BANKED
+;HSerSend(PrintData(SysPrintTemp),comport )
+	movf	SYSPRINTTEMP,W,BANKED
+	addwf	SysPRINTDATAHandler,W,BANKED
+	movwf	AFSR0,ACCESS
+	movlw	0
+	addwfc	SysPRINTDATAHandler_H,W,BANKED
+	movwf	AFSR0_H,ACCESS
+	movffl	INDF0,SERDATA
+	rcall	HSERSEND
+;Wait USART_DELAY
+	movlw	1
+	movwf	SysWaitTempMS,ACCESS
+	clrf	SysWaitTempMS_H,ACCESS
+	rcall	Delay_MS
+;next
+	movf	PRINTLEN,W,BANKED
+	subwf	SYSPRINTTEMP,W,BANKED
+	btfss	STATUS, C,ACCESS
+	bra	SysForLoop3
+ENDIF12
+SysForLoopEnd3
+;End If
+ENDIF10
+;HSerSend(13,comport)
+	movlw	13
+	movwf	SERDATA,BANKED
+	rcall	HSERSEND
+;Wait USART_DELAY
+	movlw	1
+	movwf	SysWaitTempMS,ACCESS
+	clrf	SysWaitTempMS_H,ACCESS
+	rcall	Delay_MS
+;HSerSend(10,comport)
+	movlw	10
+	movwf	SERDATA,BANKED
+	rcall	HSERSEND
+;Wait USART_DELAY
+	movlw	1
+	movwf	SysWaitTempMS,ACCESS
+	clrf	SysWaitTempMS_H,ACCESS
+	bra	Delay_MS
+
+;********************************************************************************
+
+HSERSEND
+;Block before sending (if needed)
+;Send byte
+;if comport = 1 Then
+	decf	COMPORT,W,BANKED
+	btfss	STATUS, Z,ACCESS
+	bra	ENDIF13
+;HSerSendBlocker
+;Wait While U1TXIF = Off
+SysWaitLoop4
+	banksel	PIR3
+	btfss	PIR3,U1TXIF,BANKED
+	bra	SysWaitLoop4
+;U1TXB = SerData
+	movffl	SERDATA,U1TXB
+;end if
+ENDIF13
+	banksel	0
+	return
+
+;********************************************************************************
+
+INITPPS
+;Module: UART1
+;RC6PPS = 0x0013     'TX1 > RC6
+	movlw	19
+	banksel	RC6PPS
+	movwf	RC6PPS,BANKED
+;U1RXPPS = 0x0017    'RC7 > RX1
+	movlw	23
+	movwf	U1RXPPS,BANKED
+;Setup Serial port
+	banksel	0
+	return
+
+;********************************************************************************
+
 INITSYS
 ;Set up internal oscillator
 ;Handle OSCCON1 register for parts that have this register
@@ -692,6 +875,42 @@ INITSYS
 	clrf	PORTC,ACCESS
 ;PORTE = 0
 	clrf	PORTE,ACCESS
+	banksel	0
+	return
+
+;********************************************************************************
+
+INITUSART
+;Set the default value for comport
+;comport = 1
+	movlw	1
+	movwf	COMPORT,BANKED
+;Set baud rate for legacy chips
+;for 18fxxK42 series UART
+;U1BRGH=SPBRGH_TEMP
+	movlw	3
+	banksel	U1BRGH
+	movwf	U1BRGH,BANKED
+;U1BRGL=SPBRGL_TEMP
+	movlw	64
+	movwf	U1BRGL,BANKED
+;U1BRGS = BRGS1_SCRIPT
+	bsf	U1CON0,U1BRGS,BANKED
+;U1TXEN=1
+	bsf	U1CON0,U1TXEN,BANKED
+;U1RXEN=1
+	bsf	U1CON0,U1RXEN,BANKED
+;ON_U1CON1=1
+	bsf	U1CON1,ON_U1CON1,BANKED
+;Enable async mode
+;Set SYNC Off
+	banksel	CM1CON0
+	bcf	CM1CON0,SYNC,BANKED
+;Enable TX and RX
+;Set TXEN On
+	banksel	U1CON0
+	bsf	U1CON0,TXEN,BANKED
+;PIC USART 2 Init
 	banksel	0
 	return
 
@@ -830,6 +1049,59 @@ SYSCOMPLESSTHAN
 ;clrf SysByteTempX
 	clrf	SYSBYTETEMPX,ACCESS
 	return
+
+;********************************************************************************
+
+SYSREADSTRING
+;Dim SysCalcTempA As Byte
+;Dim SysStringLength As Byte
+;Get length
+;TBLRD*+
+	tblrd*+
+;movff TABLAT,SysCalcTempA
+	movffl	TABLAT,SYSCALCTEMPA
+;movff TABLAT,INDF1
+	movffl	TABLAT,INDF1
+;goto SysStringReadCheck
+	bra	SYSSTRINGREADCHECK
+SYSREADSTRINGPART
+;TBLRD*+
+	tblrd*+
+;movf TABLAT, W
+	movf	TABLAT, W,ACCESS
+;movwf SysCalcTempA
+	movwf	SYSCALCTEMPA,ACCESS
+;addwf SysStringLength,F
+	addwf	SYSSTRINGLENGTH,F,ACCESS
+;Check length
+SYSSTRINGREADCHECK
+;If length is 0, exit
+;movf SysCalcTempA,F
+	movf	SYSCALCTEMPA,F,ACCESS
+;btfsc STATUS,Z
+	btfsc	STATUS,Z,ACCESS
+;return
+	return
+;Copy
+SYSSTRINGREAD
+;Copy char
+;TBLRD*+
+	tblrd*+
+;movff TABLAT,PREINC1
+	movffl	TABLAT,PREINC1
+;decfsz SysCalcTempA, F
+	decfsz	SYSCALCTEMPA, F,ACCESS
+;goto SysStringRead
+	bra	SYSSTRINGREAD
+	return
+
+;********************************************************************************
+
+SysStringTables
+
+StringTable1
+	db	8,75,52,50,32,84,101,115,116
+
 
 ;********************************************************************************
 

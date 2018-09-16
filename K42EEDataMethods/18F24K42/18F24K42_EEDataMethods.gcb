@@ -5,6 +5,7 @@
 
 
     #chip 18F24K42,32
+    #config MCLRE=extMCLR
 
     #define WRITE_FLASH_BLOCKSIZE_K42    128
     #define ERASE_FLASH_BLOCKSIZE_K42    128
@@ -13,7 +14,22 @@
 
     #option Explicit
 
+    #startup InitPPS, 85
 
+    Sub InitPPS
+
+          'Module: UART1
+          RC6PPS = 0x0013     'TX1 > RC6
+          U1RXPPS = 0x0017    'RC7 > RX1
+
+          'Setup Serial port
+          #define USART_BAUD_RATE 9600
+          #define USART_TX_BLOCKING
+
+    End Sub
+
+
+    HSerPrintStringCRLF "K42 Test"
 'User code starts here.
 
     dim myFlashAddress as long
@@ -38,6 +54,14 @@
     EPWrite 0x10, myword_h
     EPWrite 0x11, myword
 
+
+
+
+
+    Repeat 10
+        pulseout porta.0, 900 ms
+        wait 100 ms
+    end Repeat
     end
 'User code ends here.
 
