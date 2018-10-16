@@ -46,7 +46,7 @@
     #define LED_D4_SetHigh  LED_D4_LAT = On
     #define LED_D4_Toggle   LED_D4_LAT = !LED_D4_LAT
 
-'Define constant value - do not change
+'Define constant values - do not change
     #define LOW                 0
     #define HIGH                1
     #define PRESSED             1

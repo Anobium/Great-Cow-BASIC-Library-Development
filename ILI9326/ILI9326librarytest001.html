@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2018-09-23</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 9.90625 seconds)</p>
+<p> (Assembly time: 1.0625 seconds)</p>
+<p> (Download time: 6.4375 seconds)</p>
+<p> (Total time: 17.40625 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 16F1789</p>
+<p>Program Memory: 6269/16384 words (38.26%)</p>
+<p>RAM: 221/2048 bytes (10.79%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Page</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>60</td><td>353</td><td>1</td><td>INITGLCD_ILI9326(76), BOX(2), GLCDDRAWSTRING_ILI9326(2), SHOWCASE2(1), SHOWCASE1(1), GLCDROTATE_ILI9326(2), GLCDPRINT(3), GLCDPRINT(3), GLCDCLS_ILI9326(3), INITSYS(47)</td></tr>
+<tr><td>SHOWCASE1</td><td>40</td><td>782</td><td>2</td><td>SYSDIVSUB16(11), GLCDDRAWCHAR_ILI9326(1), STR(3), PAD(3), GLCDPRINT(2), GLCDPRINT(1), FILLEDBOX_ILI9326(1), LINE(2), FILLEDCIRCLE(1), CIRCLE(1), BOX(3), GLCDDRAWSTRING_ILI9326(11)</td></tr>
+<tr><td>SHOWCASE2</td><td>42</td><td>843</td><td>1</td><td>SYSDIVSUB16(11), SYSREADSTRING(2), GLCDDRAWCHAR_ILI9326(1), STR(3), PAD(3), GLCDPRINT(1), GLCDPRINT(3), FILLEDBOX_ILI9326(1), LINE(2), FILLEDCIRCLE(1), CIRCLE(1), BOX(3), GLCDDRAWSTRING_ILI9326(11)</td></tr>
+<tr><td>GLCDPRINT</td><td>18</td><td>87</td><td>3</td><td>SYSMULTSUB(1), GLCDDRAWCHAR_ILI9326(1)</td></tr>
+<tr><td>GLCDPRINT</td><td>21</td><td>139</td><td>3</td><td>SYSMULTSUB(1), SYSDIVSUB32(1), SYSCOMPEQUAL32(1), GLCDDRAWCHAR_ILI9326(1)</td></tr>
+<tr><td>BOX</td><td>20</td><td>235</td><td>2</td><td>SYSCOMPLESSTHAN16(6), PSET_ILI9326(4)</td></tr>
+<tr><td>CIRCLE</td><td>20</td><td>324</td><td>1</td><td>SYSMULTSUBINT(1), SYSDIVSUBINT(1), SYSCOMPLESSTHANINT(2), PSET_ILI9326(8)</td></tr>
+<tr><td>FILLEDCIRCLE</td><td>24</td><td>237</td><td>2</td><td>SYSMULTSUBINT(1), SYSCOMPLESSTHANINT(1), LINE(5)</td></tr>
+<tr><td>LINE</td><td>55</td><td>376</td><td>2</td><td>SYSMULTSUBINT(4), SYSCOMPLESSTHANINT(5), SYSCOMPEQUAL16(2), PSET_ILI9326(4)</td></tr>
+<tr><td>INITGLCD_ILI9326</td><td>95</td><td>467</td><td>1</td><td>Delay_MS(4), GLCDCLS_ILI9326(1), SENDDATA_ILI9326(32), SENDCOMMAND_ILI9326(32)</td></tr>
+<tr><td>GLCDCLS_ILI9326</td><td>21</td><td>72</td><td>3</td><td>SENDDATA_ILI9326(4), SENDCOMMAND_ILI9326(5)</td></tr>
+<tr><td>PSET_ILI9326</td><td>26</td><td>141</td><td>3</td><td>SENDDATA_ILI9326(9), SENDCOMMAND_ILI9326(3)</td></tr>
+<tr><td>SENDCOMMAND_ILI9326</td><td>10</td><td>19</td><td>3</td><td></td></tr>
+<tr><td>SENDDATA_ILI9326</td><td>7</td><td>16</td><td>4</td><td></td></tr>
+<tr><td>GLCDROTATE_ILI9326</td><td>39</td><td>136</td><td>3</td><td>SENDDATA_ILI9326(5), SENDCOMMAND_ILI9326(5)</td></tr>
+<tr><td>GLCDDRAWCHAR_ILI9326</td><td>96</td><td>240</td><td>2</td><td>SYSCOMPLESSTHAN(2), PSET_ILI9326(2)</td></tr>
+<tr><td>FILLEDBOX_ILI9326</td><td>16</td><td>172</td><td>3</td><td>SYSCOMPLESSTHAN16(6), PSET_ILI9326(1)</td></tr>
+<tr><td>GLCDDRAWSTRING_ILI9326</td><td>14</td><td>76</td><td>3</td><td>SYSMULTSUB(1), GLCDDRAWCHAR_ILI9326(1)</td></tr>
+<tr><td>INITSYS</td><td>674</td><td>24</td><td>1</td><td></td></tr>
+<tr><td>SYSREADSTRING</td><td>101</td><td>22</td><td>4</td><td></td></tr>
+<tr><td>SYSMULTSUB</td><td>39</td><td>12</td><td>4</td><td></td></tr>
+<tr><td>SYSMULTSUB16</td><td>73</td><td>36</td><td>4</td><td>SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>SYSMULTSUBINT</td><td>13</td><td>28</td><td>1</td><td>SYSMULTSUB16(1)</td></tr>
+<tr><td>SYSDIVSUB16</td><td>38</td><td>54</td><td>3</td><td>SYSCOMPEQUAL16(1)</td></tr>
+<tr><td>SYSDIVSUBINT</td><td>14</td><td>33</td><td>4</td><td>SYSDIVSUB16(1)</td></tr>
+<tr><td>SYSDIVSUB32</td><td>40</td><td>96</td><td>3</td><td>SYSCOMPEQUAL32(1)</td></tr>
+<tr><td>SYSCOMPEQUAL16</td><td>34</td><td>11</td><td>4</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL32</td><td>52</td><td>19</td><td>4</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN</td><td>23</td><td>7</td><td>4</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>15</td><td>4</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHANINT</td><td>48</td><td>42</td><td>3</td><td></td></tr>
+<tr><td>STR</td><td>36</td><td>201</td><td>3</td><td>SYSDIVSUB16(4), SYSCOMPLESSTHAN16(4)</td></tr>
+<tr><td>PAD</td><td>16</td><td>146</td><td>3</td><td>SYSREADSTRING(1), SYSCOMPLESSTHAN(1)</td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>14</td><td>2</td><td></td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>164</td><td>2</td><td></td></tr>
+<tr><td>GLCDCHARCOL3</td><td>0</td><td>126</td><td>3</td><td></td></tr>
+<tr><td>GLCDCHARCOL4</td><td>0</td><td>126</td><td>3</td><td></td></tr>
+<tr><td>GLCDCHARCOL5</td><td>0</td><td>126</td><td>3</td><td></td></tr>
+<tr><td>GLCDCHARCOL6</td><td>0</td><td>126</td><td>3</td><td></td></tr>
+<tr><td>GLCDCHARCOL7</td><td>0</td><td>126</td><td>3</td><td></td></tr>
+</table>
+</body>
+</html>

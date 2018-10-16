@@ -5,66 +5,67 @@
 </head>
 <body>
 <h1>Compilation Report</h1>
-<p>Compiler Version (YYYY-MM-DD): 0.98.02 RC00 2017-12-24</p>
+<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2018-10-03 (Windows 32 bit)</p>
 <h2>Compilation time</h2>
-<p> (Compile time: 5.71875 seconds)</p>
-<p> (Assembly time: 0 seconds)</p>
+<p> (Compile time: 4.545898 seconds)</p>
+<p> (Assembly time: 0.4619141 seconds)</p>
 <p> (Download time: 0 seconds)</p>
-<p> (Total time: 5.71875 seconds)</p>
+<p> (Total time: 5.007813 seconds)</p>
 <h2>Chip resource usage:</h2>
 <p>Chip Model: 16F1829</p>
-<p>Program Memory: 2233/8192 words (27.26%)</p>
-<p>RAM: 78/1024 bytes (7.62%)</p>
+<p>Program Memory: 2464/8192 words (30.08%)</p>
+<p>RAM: 83/1024 bytes (8.11%)</p>
 <h2>RAM Allocation</h2>
 <table border="1">
 </table>
 <h2>Subroutines</h2>
 <table border="1">
 <tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Page</th><th>Outgoing calls</th></tr>
-<tr><td>Main</td><td>80</td><td>169</td><td>1</td><td>INITUSART(6), LAB_ISR(1), INITPWM(1), SYSCOPYSTRING(1), SYSREADSTRING(1), NEXTLAB(1), EEPROM2LEDS(1), SLEEPWAKEUP2LEDS(1), INTERRUPT2LEDS(1), TIMERLEDS(1), PWM2LEDS(1), VSRLEDS(1), ADC2LEDS(1), ROTATELEDS(1), BLINKLED(1), HELLOWORLD(1), STR(1), CHECKBUTTONS1(1), HSERPRINTSTRINGCRLF(2), FLASHLEDS(1), HSERPRINT(2), HSERPRINTCRLF(2), INITSYS(135)</td></tr>
-<tr><td>CHECKBUTTONS1</td><td>19</td><td>28</td><td>1</td><td></td></tr>
+<tr><td>Main</td><td>85</td><td>181</td><td>1</td><td>INITUSART(1), LAB_ISR(1), INITPWM(1), SYSCOPYSTRING(1), SYSREADSTRING(1), NEXTLAB(1), EEPROM2LEDS(1), SLEEPWAKEUP2LEDS(1), INTERRUPT2LEDS(1), TIMERLEDS(1), PWM2LEDS(1), VSRLEDS(1), ADC2LEDS(1), ROTATELEDS(1), BLINKLED(1), HELLOWORLD(1), STR(1), CHECKBUTTONS1(1), HSERPRINTSTRINGCRLF(2), FLASHLEDS(1), HSERPRINT(2), HSERPRINTCRLF(2), INITSYS(159)</td></tr>
+<tr><td>CHECKBUTTONS1</td><td>19</td><td>28</td><td>2</td><td></td></tr>
 <tr><td>NEXTLAB</td><td>5</td><td>9</td><td>2</td><td></td></tr>
 <tr><td>HELLOWORLD</td><td>13</td><td>21</td><td>2</td><td></td></tr>
-<tr><td>FLASHLEDS</td><td>16</td><td>76</td><td>1</td><td>Delay_MS(1), Delay_S(1)</td></tr>
-<tr><td>BLINKLED</td><td>15</td><td>37</td><td>1</td><td>Delay_MS(1)</td></tr>
-<tr><td>ROTATELEDS</td><td>22</td><td>64</td><td>1</td><td>Delay_MS(1)</td></tr>
+<tr><td>FLASHLEDS</td><td>16</td><td>74</td><td>1</td><td>Delay_MS(1), Delay_S(1)</td></tr>
+<tr><td>BLINKLED</td><td>15</td><td>37</td><td>2</td><td>Delay_MS(1)</td></tr>
+<tr><td>ROTATELEDS</td><td>22</td><td>62</td><td>1</td><td>Delay_MS(1)</td></tr>
 <tr><td>ADC2LEDS</td><td>18</td><td>59</td><td>1</td><td>SYSDIVSUB(1), READAD(1)</td></tr>
-<tr><td>VSRLEDS</td><td>28</td><td>86</td><td>1</td><td>SYSDIVSUB(1), Delay_MS(2), READAD(1)</td></tr>
-<tr><td>PWM2LEDS</td><td>32</td><td>45</td><td>1</td><td>Delay_MS(1), PWMOFF(1), HPWM(1), READAD(1)</td></tr>
-<tr><td>TIMERLEDS</td><td>32</td><td>92</td><td>1</td><td>STOPTIMER(1), STARTTIMER(1), SETTIMER(2), INITTIMER1(1)</td></tr>
-<tr><td>INTERRUPT2LEDS</td><td>14</td><td>27</td><td>1</td><td>INITTIMER0(1)</td></tr>
+<tr><td>VSRLEDS</td><td>28</td><td>82</td><td>1</td><td>SYSDIVSUB(1), Delay_MS(2), READAD(1)</td></tr>
+<tr><td>PWM2LEDS</td><td>32</td><td>43</td><td>1</td><td>Delay_MS(1), PWMOFF(1), HPWM(1), READAD(1)</td></tr>
+<tr><td>TIMERLEDS</td><td>32</td><td>96</td><td>1</td><td>STOPTIMER(1), STARTTIMER(1), SETTIMER(2), INITTIMER1(1)</td></tr>
+<tr><td>INTERRUPT2LEDS</td><td>14</td><td>25</td><td>2</td><td>INITTIMER0(1)</td></tr>
 <tr><td>LAB_ISR</td><td>9</td><td>38</td><td>1</td><td></td></tr>
 <tr><td>SLEEPWAKEUP2LEDS</td><td>23</td><td>77</td><td>1</td><td></td></tr>
-<tr><td>EEPROM2LEDS</td><td>0</td><td>1</td><td>2</td><td></td></tr>
-<tr><td>READAD</td><td>57</td><td>142</td><td>1</td><td>Delay_10US(1)</td></tr>
-<tr><td>INITPWM</td><td>1220</td><td>17</td><td>1</td><td></td></tr>
+<tr><td>EEPROM2LEDS</td><td>23</td><td>85</td><td>1</td><td>SYSDIVSUB(1), EPWRITE(2), READAD(1)</td></tr>
+<tr><td>READAD</td><td>57</td><td>144</td><td>1</td><td>Delay_10US(1)</td></tr>
+<tr><td>INITPWM</td><td>1439</td><td>19</td><td>1</td><td></td></tr>
 <tr><td>PWMOFF</td><td>1</td><td>4</td><td>2</td><td></td></tr>
-<tr><td>HPWM</td><td>296</td><td>338</td><td>1</td><td>SYSMULTSUB32(4), SYSDIVSUB32(1), SYSCOMPEQUAL16(4)</td></tr>
-<tr><td>STARTTIMER</td><td>143</td><td>22</td><td>1</td><td></td></tr>
+<tr><td>HPWM</td><td>420</td><td>481</td><td>1</td><td>SYSMULTSUB32(4), SYSDIVSUB32(1), SYSCOMPEQUAL16(4)</td></tr>
+<tr><td>EPWRITE</td><td>55</td><td>23</td><td>2</td><td></td></tr>
+<tr><td>STARTTIMER</td><td>143</td><td>22</td><td>2</td><td></td></tr>
 <tr><td>SETTIMER</td><td>130</td><td>36</td><td>1</td><td></td></tr>
-<tr><td>STOPTIMER</td><td>131</td><td>22</td><td>1</td><td></td></tr>
+<tr><td>STOPTIMER</td><td>131</td><td>22</td><td>2</td><td></td></tr>
 <tr><td>INITTIMER0</td><td>70</td><td>22</td><td>2</td><td></td></tr>
 <tr><td>INITTIMER1</td><td>75</td><td>37</td><td>1</td><td></td></tr>
-<tr><td>INITSYS</td><td>648</td><td>20</td><td>1</td><td></td></tr>
+<tr><td>INITSYS</td><td>674</td><td>20</td><td>1</td><td></td></tr>
 <tr><td>SYSCOPYSTRING</td><td>118</td><td>17</td><td>2</td><td></td></tr>
 <tr><td>SYSREADSTRING</td><td>101</td><td>22</td><td>2</td><td>SysStringTables(1)</td></tr>
-<tr><td>SYSMULTSUB32</td><td>43</td><td>64</td><td>1</td><td>SYSCOMPLESSTHAN32(1)</td></tr>
+<tr><td>SYSMULTSUB32</td><td>43</td><td>66</td><td>1</td><td>SYSCOMPLESSTHAN32(1)</td></tr>
 <tr><td>SYSDIVSUB</td><td>48</td><td>20</td><td>2</td><td></td></tr>
 <tr><td>SYSDIVSUB16</td><td>38</td><td>54</td><td>1</td><td>SYSCOMPEQUAL16(1)</td></tr>
 <tr><td>SYSDIVSUB32</td><td>40</td><td>92</td><td>1</td><td>SYSCOMPEQUAL32(1)</td></tr>
 <tr><td>SYSCOMPEQUAL16</td><td>34</td><td>11</td><td>2</td><td></td></tr>
 <tr><td>SYSCOMPEQUAL32</td><td>52</td><td>19</td><td>2</td><td></td></tr>
 <tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>15</td><td>2</td><td></td></tr>
-<tr><td>SYSCOMPLESSTHAN32</td><td>63</td><td>25</td><td>1</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN32</td><td>63</td><td>25</td><td>2</td><td></td></tr>
 <tr><td>STR</td><td>36</td><td>180</td><td>1</td><td>SYSDIVSUB16(4), SYSCOMPLESSTHAN16(4)</td></tr>
-<tr><td>HSERPRINTCRLF</td><td>6</td><td>21</td><td>2</td><td>Delay_MS(2), HSERSEND(2)</td></tr>
+<tr><td>HSERPRINTCRLF</td><td>4</td><td>13</td><td>2</td><td>HSERSEND(2)</td></tr>
 <tr><td>INITUSART</td><td>139</td><td>14</td><td>1</td><td></td></tr>
-<tr><td>HSERSEND</td><td>147</td><td>11</td><td>2</td><td></td></tr>
-<tr><td>HSERPRINTSTRINGCRLF</td><td>11</td><td>57</td><td>1</td><td>Delay_MS(3), HSERSEND(3)</td></tr>
-<tr><td>HSERPRINT</td><td>15</td><td>37</td><td>1</td><td>Delay_MS(1), HSERSEND(1)</td></tr>
-<tr><td>Delay_10US</td><td>0</td><td>3</td><td>1</td><td></td></tr>
-<tr><td>Delay_MS</td><td>0</td><td>14</td><td>2</td><td></td></tr>
-<tr><td>Delay_S</td><td>0</td><td>8</td><td>2</td><td>Delay_MS(1)</td></tr>
+<tr><td>HSERSEND</td><td>122</td><td>19</td><td>2</td><td>Delay_MS(1)</td></tr>
+<tr><td>HSERPRINTSTRINGCRLF</td><td>8</td><td>34</td><td>2</td><td>HSERSEND(3)</td></tr>
+<tr><td>HSERPRINT</td><td>12</td><td>29</td><td>2</td><td>HSERSEND(1)</td></tr>
+<tr><td>Delay_10US</td><td>0</td><td>3</td><td>2</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>14</td><td>1</td><td></td></tr>
+<tr><td>Delay_S</td><td>0</td><td>10</td><td>2</td><td>Delay_MS(1)</td></tr>
 <tr><td>SysStringTables</td><td>0</td><td>60</td><td>1</td><td></td></tr>
 </table>
 </body>

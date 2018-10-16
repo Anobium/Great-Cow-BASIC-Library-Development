@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2018-09-23</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 8.59375 seconds)</p>
+<p> (Assembly time: 1 seconds)</p>
+<p> (Download time: 6.40625 seconds)</p>
+<p> (Total time: 16 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 16F1789</p>
+<p>Program Memory: 6353/16384 words (38.78%)</p>
+<p>RAM: 196/2048 bytes (9.57%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Page</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>115</td><td>918</td><td>1</td><td>SYSCOMPLESSTHAN16(10), Delay_S(1), SPRITE(2), ERASE_SPRITE(2), GLCDCLS_ILI9326(1), INITGLCD_ILI9326(78), GLCDROTATE_ILI9326(1), GLCDPRINT(3), INITSYS(33)</td></tr>
+<tr><td>SPRITE</td><td>9</td><td>193</td><td>3</td><td>SYSCOMPLESSTHAN16(4), PSET_ILI9326(1)</td></tr>
+<tr><td>ERASE_SPRITE</td><td>6</td><td>170</td><td>3</td><td>SYSCOMPLESSTHAN16(4), PSET_ILI9326(1)</td></tr>
+<tr><td>GLCDPRINT</td><td>18</td><td>85</td><td>1</td><td>SYSMULTSUB(1), GLCDDRAWCHAR_ILI9326(1)</td></tr>
+<tr><td>INITGLCD_ILI9326</td><td>95</td><td>467</td><td>1</td><td>Delay_MS(4), GLCDCLS_ILI9326(1), SENDDATA_ILI9326(32), SENDCOMMAND_ILI9326(32)</td></tr>
+<tr><td>GLCDCLS_ILI9326</td><td>21</td><td>83</td><td>2</td><td>SENDDATA_ILI9326(4), SENDCOMMAND_ILI9326(5)</td></tr>
+<tr><td>PSET_ILI9326</td><td>26</td><td>147</td><td>3</td><td>SENDDATA_ILI9326(9), SENDCOMMAND_ILI9326(3)</td></tr>
+<tr><td>SENDCOMMAND_ILI9326</td><td>10</td><td>19</td><td>4</td><td></td></tr>
+<tr><td>SENDDATA_ILI9326</td><td>7</td><td>16</td><td>4</td><td></td></tr>
+<tr><td>GLCDROTATE_ILI9326</td><td>39</td><td>146</td><td>3</td><td>SENDDATA_ILI9326(5), SENDCOMMAND_ILI9326(5)</td></tr>
+<tr><td>GLCDDRAWCHAR_ILI9326</td><td>96</td><td>208</td><td>3</td><td>SYSMULTSUB16(1), SYSCOMPEQUAL(2), PSET_ILI9326(3)</td></tr>
+<tr><td>INITSYS</td><td>674</td><td>24</td><td>1</td><td></td></tr>
+<tr><td>SYSMULTSUB</td><td>39</td><td>12</td><td>1</td><td></td></tr>
+<tr><td>SYSMULTSUB16</td><td>73</td><td>36</td><td>4</td><td>SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>SYSCOMPEQUAL</td><td>20</td><td>6</td><td>4</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>15</td><td>4</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>14</td><td>4</td><td></td></tr>
+<tr><td>Delay_S</td><td>0</td><td>10</td><td>3</td><td>Delay_MS(1)</td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>56</td><td>3</td><td></td></tr>
+<tr><td>SPRITEDATA</td><td>0</td><td>530</td><td>1</td><td></td></tr>
+<tr><td>SPRITEDATA_H</td><td>0</td><td>530</td><td>3</td><td></td></tr>
+<tr><td>OLEDFONT2</td><td>0</td><td>1960</td><td>2</td><td></td></tr>
+<tr><td>OLEDFONT2_H</td><td>0</td><td>23</td><td>3</td><td></td></tr>
+<tr><td>OLEDFONT1INDEX</td><td>0</td><td>110</td><td>3</td><td></td></tr>
+<tr><td>OLEDFONT1INDEX_H</td><td>0</td><td>110</td><td>4</td><td></td></tr>
+<tr><td>OLEDFONT1DATA</td><td>0</td><td>444</td><td>3</td><td></td></tr>
+<tr><td>OLEDFONT1DATA_H</td><td>0</td><td>21</td><td>4</td><td></td></tr>
+</table>
+</body>
+</html>
