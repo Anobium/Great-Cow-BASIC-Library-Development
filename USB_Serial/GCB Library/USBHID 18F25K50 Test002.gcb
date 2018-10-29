@@ -1,11 +1,28 @@
 '''A program  for GCGB and GCB.
 '''--------------------------------------------------------------------------------------------------------------------------------
+'''
+'''
+'''
+'''
+'''
+'''
+'''
+'''
+'''
+'''
+'''
+'''
+'''
+'''
+'''
+'''
+'''
 '''This program is the very first program for Great Cow BASICUSB
 '''
 '''@author     HughC and EvanV
 '''@licence    GPL
 '''@version    0.9a
-'''@date       10/06/2018
+'''@date       29/10/2018
 '''********************************************************************************
 
 ' ----- Configuration
@@ -18,7 +35,7 @@
 
 
     'Define a name - 30 chars max long
-    #define USB_PRODUCT_NAME versionString
+    #define USB_PRODUCT_NAME versionString  '"LibK/WinUSB v0.9a"
     #define USB_VID 0x1209      'Should not be changed unless you have your own Vendor Identity - this VID is allocate to Great Cow BASIC Lib/WinUSB Solutions.
     #define USB_PID 0x2006      'Should not be changed unless you have your own Vendor Identity - this PID is allocate to Great Cow BASIC Lib/WinUSB Solutions.
     #define USB_REV 0x0000      'You MUST obtain a REV number from https://github.com/Anobium/GreatCowBASICpidcodes1209_2006 to develop your own Open Source USB solutions
@@ -55,8 +72,6 @@
 
         'ADC
         #define ADSpeed LowSpeed
-
-
 
 
         ' ------ Ports
@@ -146,7 +161,6 @@
                   HSerPrint "Req "
                   HSerPrint USBTempBuffer(1)
                   HSerPrintCRLF
-
 
               End Select
 

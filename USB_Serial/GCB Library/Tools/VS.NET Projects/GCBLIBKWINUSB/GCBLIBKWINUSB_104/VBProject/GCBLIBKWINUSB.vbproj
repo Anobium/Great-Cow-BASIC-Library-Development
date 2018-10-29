@@ -113,8 +113,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="GCBLIBKWINUSB_2_TemporaryKey.pfx" />
-    <None Include="GCBLIBKWINUSB_TemporaryKey.pfx" />
     <None Include="Properties\app.manifest">
       <SubType>Designer</SubType>
     </None>

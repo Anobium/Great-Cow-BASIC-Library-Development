@@ -6,7 +6,7 @@
 ' 
 ' To change this template use Tools | Options | Coding | Edit Standard Headers.
 '
-Option Strict On
+
 Imports LibUsbDotNet
 Imports LibUsbDotNet.Main
 Imports LibUsbDotNet.DeviceNotify
@@ -103,11 +103,11 @@ Public Partial Class MainForm
     	try
 		        'Update  application
 		        If Not Device Is Nothing Then
-		            ConnectionStatus.Text = "Device connected"
-		            
-		            'Update the UI 
-		            ConnectionStatus.BackColor = System.Drawing.SystemColors.Control
-		            ConnectionStatus.BorderStyle = System.Windows.Forms.BorderStyle.None
+                ConnectionStatus.Text = "USB device connected"
+
+                'Update the UI  
+                ConnectionStatus.BackColor = System.Drawing.Color.LimeGreen
+                ConnectionStatus.BorderStyle = System.Windows.Forms.BorderStyle.None
 		            
 		            'If we are init or reinit USB channel so get the LED state from the USB
 		            If GetStatusfromDeviceUponInit = True Then
@@ -154,7 +154,7 @@ Public Partial Class MainForm
                 
             Else
 
-                ConnectionStatus.Text = "Device not connected"
+                ConnectionStatus.Text = "USB device not connected"
                 'Paint Red
                 If ConnectionStatus.BackColor <> System.Drawing.Color.Red then
                 	ConnectionStatus.BackColor = System.Drawing.Color.Red
@@ -210,12 +210,14 @@ Public Partial Class MainForm
 
     'Status of the check changed, send commands to turn bits on the PIC on or off
     Sub SetDeviceStatusCheckedChangedHighOn_UserSolution(sender As Object, e As EventArgs) Handles SetLEDStatus1.CheckedChanged, SetLEDStatus2.CheckedChanged
-    	
-    	
-        Select Case  CType(sender, String)  	
+
+
+#Disable Warning BC42017 ' Late bound resolution
+        Select Case CType(sender.name, String)
+#Enable Warning BC42017 ' Late bound resolution
 ' Adapt below here - to add a handler, additional case statements, for more LEDs and the related checkboxes
-        	'Handle the event when you select a check box	
-    		Case "SetLEDStatus1"
+            'Handle the event when you select a check box	
+            Case "SetLEDStatus1"
     			If SetLEDStatus1.Checked Then
 	                'To turn on, PIC expects request GCBDeviceSetPortb5StatusOn
 	                SendCommand( constGCBDeviceSetPortb5StatusOn, GCBBitOn)
