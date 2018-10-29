@@ -9,7 +9,7 @@
 '''********************************************************************************
 
 ' ----- Configuration
-    #chip 18LF25K50, 48
+    #chip 18F25K50, 48
     #include <usb.h>
     #option Explicit
 
@@ -18,16 +18,22 @@
 
 
     'Define a name - 30 chars max long
-    #define USB_PRODUCT_NAME "Great Cow BASIC LibK/WinUSB"
-    #define USB_VID 0x1209      'Should nbt be changed unless you have your own Vendor Identity - this VID is allocate to Great Cow BASIC Lib/WinUSB Solutions.
-    #define USB_PID 0x2006      'Should nbt be changed unless you have your own Vendor Identity - this PID is allocate to Great Cow BASIC Lib/WinUSB Solutions.
+    #define USB_PRODUCT_NAME versionString
+    #define USB_VID 0x1209      'Should not be changed unless you have your own Vendor Identity - this VID is allocate to Great Cow BASIC Lib/WinUSB Solutions.
+    #define USB_PID 0x2006      'Should not be changed unless you have your own Vendor Identity - this PID is allocate to Great Cow BASIC Lib/WinUSB Solutions.
     #define USB_REV 0x0000      'You MUST obtain a REV number from https://github.com/Anobium/GreatCowBASICpidcodes1209_2006 to develop your own Open Source USB solutions
 
 
     #define USBDeviceReadPortb5LEDStatus  130
-    #define USBDeviceSetPortb5StatusOn 		131
+    #define USBDeviceSetPortb5StatusOn    131
     #define USBDeviceSetPortb5StatusOff   132
-    #define USBDeviceReadADCValues     		133
+    #define USBDeviceReadADCValues        133
+
+    #define USBDeviceReadPortb4LEDStatus  134
+    #define USBDeviceSetPortb4StatusOn    135
+    #define USBDeviceSetPortb4StatusOff   136
+
+    'S--- -111
 
 
     'define specific callback handlers
@@ -54,7 +60,10 @@
 
 
         ' ------ Ports
+        Dir PORTB.4 out
         Dir PORTB.5 out
+        Dir PORTc.7 out
+
 
         ' ------ Version Control - optional
 
@@ -92,7 +101,20 @@
 
         Sub SetupHandler_CallBack
 
+
               Select Case USBRequest
+
+                'Response to control request: Transfer USBDeviceReadPortb4LEDStatus, send status of port
+                Case USBDeviceReadPortb4LEDStatus
+                  USBBufferWrite( PORTB.4 )
+
+                'Response to control request: Transfer USBDeviceSetPortb4StatusOn, turn on LED
+                Case USBDeviceSetPortb4StatusOn
+                  Set PORTB.4 On
+
+                'Response to control request: Transfer USBDeviceSetPortb4StatusOff, turn off LED
+                Case USBDeviceSetPortb4StatusOff
+                  Set PORTB.4 Off
 
                 'Response to control request: Transfer USBDeviceReadPortb5LEDStatus, send status of port
                 Case USBDeviceReadPortb5LEDStatus
@@ -117,12 +139,15 @@
                 'Response to control request: Transfer 255, keep alive
                 Case USBDeviceKeepAlive
                   USBBufferWrite( USBDeviceKeepAlive )
+                  PORTc.7 = !PORTc.7
 
                 'Handle the others via the serial port as we do not know what they are
                 Case Else
                   HSerPrint "Req "
                   HSerPrint USBTempBuffer(1)
                   HSerPrintCRLF
+
+
               End Select
 
         End Sub

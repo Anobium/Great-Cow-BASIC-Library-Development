@@ -1,7 +1,7 @@
 'Great Cow BASIC Date Stamp Converter v1.04
         Function GCBBuildStr as string * 5 
-            GCBBuildStr="170"
+            GCBBuildStr="183"
         End Function 
         Function GCBBuildTimeStr as string * 19 
-            GCBBuildTimeStr="06-13-2018 09:29:14"
+            GCBBuildTimeStr="10-29-2018 08:56:51"
         End Function 

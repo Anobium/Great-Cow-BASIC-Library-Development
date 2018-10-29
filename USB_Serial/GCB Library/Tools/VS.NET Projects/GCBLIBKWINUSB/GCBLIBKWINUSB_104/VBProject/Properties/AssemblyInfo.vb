@@ -13,7 +13,7 @@ Imports System.Runtime.InteropServices
 <assembly: AssemblyConfiguration("")>
 <Assembly: AssemblyCompany("Great Cow BASIC")>
 <Assembly: AssemblyProduct("USB_LIBKWINUSB")>
-<Assembly: AssemblyCopyright("Copyright Evan R. Venn 2018")>
+<Assembly: AssemblyCopyright("Great Cow BASIC 2018")>
 <assembly: AssemblyTrademark("")>
 <assembly: AssemblyCulture("")>
 
