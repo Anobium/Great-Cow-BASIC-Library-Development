@@ -147,17 +147,36 @@ BASPROGRAMSTART
 ;Start of the main program
 ;''A program  for GCGB and GCB.
 ;''--------------------------------------------------------------------------------------------------------------------------------
+;''
+;''Demonstration of the Great Cow BASIC capabilities for LibK/WinUSB library
+;''
+;''Connect the 18f25K50 to the USB
+;''  D- to portc.4
+;''  D+ to portc.5
+;''  Cap between port.c3 and 0V
+;''  You can provide supply voltage via the USB, or, you can prpoved local voltage.
+;''
+;'' LEDs to ports c.7, b.5 and b.4 via suitable resistors.  They are KeepAlive LED and two LEDs for remote control
+;'' POTS to ports a.0, a.1, a.3 and a.3,  you will read those remotely
+;'' A serrial terminal at 115200bps can be connected to portc.6
+;''
+;'' Use the Windows application to control!
+;''
+;''
+;''
+;''
 ;''This program is the very first program for Great Cow BASICUSB
 ;''
 ;''@author     HughC and EvanV
 ;''@licence    GPL
-;''@version    0.9a
-;''@date       10/06/2018
+;''@version    1.0
+;''@date       29/10/2018
 ;''********************************************************************************
 ;----- Configuration
 ;----- Constants for the usb.h
 ;Define a name - 30 chars max long
 ;#define USB_PRODUCT_NAME versionString
+;#define USB_PRODUCT_NAME  "GCB USB v1.4.2"
 ;#define USB_VID 0x1209      'Should not be changed unless you have your own Vendor Identity - this VID is allocate to Great Cow BASIC Lib/WinUSB Solutions.
 ;#define USB_PID 0x2006      'Should not be changed unless you have your own Vendor Identity - this PID is allocate to Great Cow BASIC Lib/WinUSB Solutions.
 ;#define USB_REV 0x0000      'You MUST obtain a REV number from https://github.com/Anobium/GreatCowBASICpidcodes1209_2006 to develop your own Open Source USB solutions
@@ -168,27 +187,6 @@ BASPROGRAMSTART
 ;#define USBDeviceReadPortb4LEDStatus  134
 ;#define USBDeviceSetPortb4StatusOn    135
 ;#define USBDeviceSetPortb4StatusOff   136
-;S--- -111
-;define specific callback handlers
-;MANDATED to handle you solution
-;#define USB_SETUP_HANDLER           SetupHandler_CallBack
-;optional callback handlers for error and descriptor call.
-;#define USB_ERROR_HANDLER           ErrorHandler_CallBack
-;#define USB_DESCRIPTOR_HANDLER      DescriptorHandler_CallBack
-;Solution specific configuration
-;----- Define Hardware settings
-;USART
-;#define USART_BAUD_RATE 115200
-;#define USART_BLOCKING
-;ADC
-;#define ADSpeed LowSpeed
-;------ Ports
-;Dir PORTB.4 out
-	bcf	TRISB,4,ACCESS
-;Dir PORTB.5 out
-	bcf	TRISB,5,ACCESS
-;Dir PORTc.7 out
-	bcf	TRISC,7,ACCESS
 ;------ Version Control - optional
 ;Include the GCBVersionNumber.cnt to increment versionString and create the build time string called GCBBuildTimeStr.
 ;versionString a string is created automatically.
@@ -200,9 +198,9 @@ BASPROGRAMSTART
 	rcall	FN_GCBBUILDSTR
 	lfsr	1,VERSIONSTRING
 	clrf	SysStringLength,ACCESS
-	movlw	low StringTable2
+	movlw	low StringTable3
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable2
+	movlw	high StringTable3
 	movwf	TBLPTRH,ACCESS
 	rcall	SysReadStringPart
 	lfsr	0,GCBBUILDSTR
@@ -215,9 +213,9 @@ BASPROGRAMSTART
 	clrf	SysStringLength,ACCESS
 	lfsr	0,VERSIONSTRING
 	rcall	SysCopyStringPart
-	movlw	low StringTable3
+	movlw	low StringTable4
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable3
+	movlw	high StringTable4
 	movwf	TBLPTRH,ACCESS
 	rcall	SysReadStringPart
 	lfsr	0,GCBBUILDTIMESTR
@@ -226,9 +224,9 @@ BASPROGRAMSTART
 	movff	SysStringLength, INDF0
 ;HSerPrint "USB CGB  "
 	lfsr	1,SYSSTRINGPARAM1
-	movlw	low StringTable4
+	movlw	low StringTable5
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable4
+	movlw	high StringTable5
 	movwf	TBLPTRH,ACCESS
 	rcall	SysReadString
 	movlw	low SYSSTRINGPARAM1
@@ -253,6 +251,26 @@ BASPROGRAMSTART
 	movwf	COMPORT,BANKED
 	rcall	HSERPRINTCRLF
 ;------ End of Version Control - optional
+;Define USB specific callback handlers
+;MANDATED to handle you solution
+;#define USB_SETUP_HANDLER           SetupHandler_CallBack
+;optional callback handlers for error and descriptor call.
+;#define USB_ERROR_HANDLER           ErrorHandler_CallBack
+;#define USB_DESCRIPTOR_HANDLER      DescriptorHandler_CallBack
+;Solution specific configuration
+;----- Define Hardware settings
+;USART
+;#define USART_BAUD_RATE 115200
+;#define USART_BLOCKING
+;ADC
+;#define ADSpeed LowSpeed
+;------ Ports
+;Dir PORTB.4 out
+	bcf	TRISB,4,ACCESS
+;Dir PORTB.5 out
+	bcf	TRISB,5,ACCESS
+;Dir PORTc.7 out
+	bcf	TRISC,7,ACCESS
 ;----- Main body of program commences here
 ;Do
 SysDoLoop_S1
@@ -271,9 +289,9 @@ BASPROGRAMEND
 DESCRIPTORHANDLER_CALLBACK
 ;HSerPrint "Desc: "
 	lfsr	1,SYSSTRINGPARAM2
-	movlw	low StringTable7
+	movlw	low StringTable8
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable7
+	movlw	high StringTable8
 	movwf	TBLPTRH,ACCESS
 	rcall	SysReadString
 	movlw	low SYSSTRINGPARAM2
@@ -334,9 +352,9 @@ DMS_INNER
 ERRORHANDLER_CALLBACK
 ;HSerPrint "Error: "
 	lfsr	1,SYSSTRINGPARAM2
-	movlw	low StringTable5
+	movlw	low StringTable6
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable5
+	movlw	high StringTable6
 	movwf	TBLPTRH,ACCESS
 	rcall	SysReadString
 	movlw	low SYSSTRINGPARAM2
@@ -366,22 +384,22 @@ ERRORHANDLER_CALLBACK
 ;********************************************************************************
 
 FN_GCBBUILDSTR
-;GCBBuildStr="183"
+;GCBBuildStr="187"
 	lfsr	1,GCBBUILDSTR
-	movlw	low StringTable19
+	movlw	low StringTable20
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable19
+	movlw	high StringTable20
 	movwf	TBLPTRH,ACCESS
 	bra	SysReadString
 
 ;********************************************************************************
 
 FN_GCBBUILDTIMESTR
-;GCBBuildTimeStr="10-29-2018 08:56:51"
+;GCBBuildTimeStr="10-29-2018 16:43:14"
 	lfsr	1,GCBBUILDTIMESTR
-	movlw	low StringTable20
+	movlw	low StringTable21
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable20
+	movlw	high StringTable21
 	movwf	TBLPTRH,ACCESS
 	bra	SysReadString
 
@@ -1269,9 +1287,9 @@ ENDIF42
 SysSelect6Case9
 ;HSerPrint "Req "
 	lfsr	1,SYSSTRINGPARAM2
-	movlw	low StringTable6
+	movlw	low StringTable7
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable6
+	movlw	high StringTable7
 	movwf	TBLPTRH,ACCESS
 	banksel	0
 	rcall	SysReadString
@@ -1448,44 +1466,48 @@ SYSSTRINGREAD
 
 SysStringTables
 
-StringTable2
-	db	5,66,117,105,108,100
+StringTable1
+	db	14,71,67,66,32,85,83,66,32,118,49,46,52,46,50
 
 
 StringTable3
-	db	1,64
+	db	5,66,117,105,108,100
 
 
 StringTable4
-	db	9,85,83,66,32,67,71,66,32,32
+	db	1,64
 
 
 StringTable5
-	db	7,69,114,114,111,114,58,32
+	db	9,85,83,66,32,67,71,66,32,32
 
 
 StringTable6
-	db	4,82,101,113,32
+	db	7,69,114,114,111,114,58,32
 
 
 StringTable7
-	db	6,68,101,115,99,58,32
+	db	4,82,101,113,32
 
 
 StringTable8
+	db	6,68,101,115,99,58,32
+
+
+StringTable9
 	db	15,71,114,101,97,116,32,67,111,119,32,66,65,83,73,67
 
 
-StringTable12
+StringTable13
 	db	0
 
 
-StringTable19
-	db	3,49,56,51
-
-
 StringTable20
-	db	19,49,48,45,50,57,45,50,48,49,56,32,48,56,58,53,54,58,53,49
+	db	3,49,56,55
+
+
+StringTable21
+	db	19,49,48,45,50,57,45,50,48,49,56,32,49,54,58,52,51,58,49,52
 
 
 ;********************************************************************************
@@ -2392,9 +2414,9 @@ SysSelect5Case1
 	btfss	STATUS, Z,ACCESS
 	bra	SysSelect5Case2
 	lfsr	1,USBTEMPSTRING
-	movlw	low StringTable8
+	movlw	low StringTable9
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable8
+	movlw	high StringTable9
 	movwf	TBLPTRH,ACCESS
 	rcall	SysReadString
 ;Product name
@@ -2406,16 +2428,19 @@ SysSelect5Case2
 	btfss	STATUS, Z,ACCESS
 	bra	SysSelect5Case3
 	lfsr	1,USBTEMPSTRING
-	lfsr	0,VERSIONSTRING
-	rcall	SysCopyString
+	movlw	low StringTable1
+	movwf	TBLPTRL,ACCESS
+	movlw	high StringTable1
+	movwf	TBLPTRH,ACCESS
+	rcall	SysReadString
 ;Other
 ;Case Else: USBTempString = ""
 	bra	SysSelectEnd5
 SysSelect5Case3
 	lfsr	1,USBTEMPSTRING
-	movlw	low StringTable12
+	movlw	low StringTable13
 	movwf	TBLPTRL,ACCESS
-	movlw	high StringTable12
+	movlw	high StringTable13
 	movwf	TBLPTRH,ACCESS
 	rcall	SysReadString
 ;End Select
@@ -2458,7 +2483,7 @@ ENDIF29
 	movff	USB_IN0_ADDR_H,MEMADR_H
 	movff	USB_IN0_CNT,MEMDATA
 	banksel	0
-	rcall	POKE
+	call	POKE
 ;Poke USB_IN0_ADDR + 1, 3
 	movlw	1
 	banksel	USB_IN0_ADDR

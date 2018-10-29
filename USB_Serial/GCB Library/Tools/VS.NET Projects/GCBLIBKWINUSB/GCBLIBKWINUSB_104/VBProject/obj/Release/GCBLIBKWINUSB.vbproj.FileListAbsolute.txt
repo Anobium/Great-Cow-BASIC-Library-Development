@@ -34,11 +34,3 @@ C:\Users\admin\Desktop\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\obj\Release\GCB
 C:\Users\admin\Desktop\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\obj\Release\GCBLIBKWINUSB.MainForm.resources
 C:\Users\admin\Desktop\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\obj\Release\GCBLIBKWINUSB.vbproj.GenerateResource.Cache
 C:\Users\admin\Desktop\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\obj\Release\GCBLIBKWINUSB.exe
-D:\Great-Cow-BASIC-Library-Development.git\trunk\USB_Serial\GCB Library\Tools\VS.NET Projects\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\bin\Release\GCBLIBKWINUSB.exe
-D:\Great-Cow-BASIC-Library-Development.git\trunk\USB_Serial\GCB Library\Tools\VS.NET Projects\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\bin\Release\LibUsbDotNet.dll
-D:\Great-Cow-BASIC-Library-Development.git\trunk\USB_Serial\GCB Library\Tools\VS.NET Projects\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\obj\Release\GCBLIBKWINUSB.MainForm.resources
-D:\Great-Cow-BASIC-Library-Development.git\trunk\USB_Serial\GCB Library\Tools\VS.NET Projects\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\obj\Release\GCBLIBKWINUSB.Resources.resources
-D:\Great-Cow-BASIC-Library-Development.git\trunk\USB_Serial\GCB Library\Tools\VS.NET Projects\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\obj\Release\GCBLIBKWINUSB.vbproj.GenerateResource.cache
-D:\Great-Cow-BASIC-Library-Development.git\trunk\USB_Serial\GCB Library\Tools\VS.NET Projects\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\obj\Release\GCBLIBKWINUSB.vbproj.CoreCompileInputs.cache
-D:\Great-Cow-BASIC-Library-Development.git\trunk\USB_Serial\GCB Library\Tools\VS.NET Projects\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\obj\Release\GCBLIBKWINUSB.vbproj.CopyComplete
-D:\Great-Cow-BASIC-Library-Development.git\trunk\USB_Serial\GCB Library\Tools\VS.NET Projects\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\obj\Release\GCBLIBKWINUSB.exe
