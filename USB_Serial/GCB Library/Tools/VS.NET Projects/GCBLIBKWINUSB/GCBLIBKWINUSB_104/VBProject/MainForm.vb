@@ -6,6 +6,7 @@
 ' 
 ' To change this template use Tools | Options | Coding | Edit Standard Headers.
 '
+Option Strict On
 Imports LibUsbDotNet
 Imports LibUsbDotNet.Main
 Imports LibUsbDotNet.DeviceNotify
@@ -18,33 +19,36 @@ Imports System.Timers
 
 Public Partial Class MainForm
 	
-	
 
+	'Constants for communication to PIC - must match the constants in the PIC program.
+	public const constGCBDeviceReadPortb5LEDStatus  	= 130
+	Public const constGCBDeviceSetPortb5StatusOn 		= 131
+	Public const constGCBDeviceSetPortb5StatusOff 		= 132
+    Public const constGCBDeviceReadADCValues            = 133
+
+
+    Public const constGCBDeviceReadPortb4LEDStatus  = 134
+    Public const constGCBDeviceSetPortb4StatusOn    = 135
+    Public const constGCBDeviceSetPortb4StatusOff   = 136
+    
+    
+    '**************** YOU MAY CHANGE THE CONSTANTS ABOVE... Also, look for section marked 'adapt' to add/revise functionality
+    'Constants - do not changed
 	Public Const GCBBitOn			 = 1
 	Public Const GCBBitOff			 = 0
 	
-	'Allocated VID and PID to this type of Great Cow BASIC solution
+	'Allocated VID and PID to this type of Great Cow BASIC solution - this is a LIBL/WinUSB library solution
 	public const USB_VID                            = &H1209
 	Public Const USB_PID 							= &H2006
-	'Solution Specific - Can be edited
 	Public Const USB_REV 							= &H0000
-	
-	public const GCBDeviceReadPortb5LEDStatus  	    = 130
-	Public Const GCBDeviceSetPortb5StatusOn 		= 131
-	Public Const GCBDeviceSetPortb5StatusOff 		= 132
-    Public Const GCBDeviceReadADCValues = 133
-
-
-    Public Const GCBDeviceReadPortb4LEDStatus = 134
-    Public Const GCBDeviceSetPortb4StatusOn = 135
-    Public Const GCBDeviceSetPortb4StatusOff = 136
 
 
     'Application Support- DO NOT CHANGE
-
-    Public Const GCBDeviceKeepAlive  = 255
-	'Set up USB change event to handle disconnections etc
+    Public Const constGCBDeviceKeepAlive  = 255
+    
+    'Set up USB change event to handle disconnections etc
 	Public Shared UsbDeviceNotifier As IDeviceNotifier = DeviceNotifier.OpenDeviceNotifier()
+	
 	'Set up objects and variables we need - do not change
 	Public Dim Device As UsbDevice
 	Private _timer As Timer
@@ -54,7 +58,7 @@ Public Partial Class MainForm
 	Shared tempvalue As Byte
 	
 	'Set up a variable used to track the user interface
-	Shared orginalLabel5Text As String
+	Shared orginalfooterRightText As String
 	
 	
     Delegate Sub InvokeDelegate()
@@ -65,7 +69,7 @@ Public Partial Class MainForm
 		ConnectionStatus.Select
 		
 		'Store the orignal UI value - we update later
-		orginalLabel5Text = label5.Text	
+		orginalfooterRightText = footerRightText.Text	
 		
 		'Flag to track status of reading the status of the LED when init/reinit of applicatiom
 		GetStatusfromDeviceUponInit = True
@@ -77,7 +81,7 @@ Public Partial Class MainForm
         AddHandler UsbDeviceNotifier.OnDeviceNotify, AddressOf OnUSBDeviceEventRaised
 
 		
-        'init the timer - this one 1s manages the KeepAlive - do not remove
+        'init the timer - this one 1s manages the KeepAlive - do not remove/touch!
 	        _timer = New System.Timers.Timer()
 	        _timer.Interval = 1000
 	        AddHandler _timer.Elapsed, AddressOf OneSecondTimerHandler
@@ -111,9 +115,9 @@ Public Partial Class MainForm
                     Delay(1)
 
 
-                    'Adapt here - Set the buttons up
+'Adapt here - Set the buttons up
                     'Get the LED status portb.5
-                    SetLEDStatus1.Checked = ReadDeviceBitStatus_UserSolution(GCBDeviceReadPortb5LEDStatus)
+                    SetLEDStatus1.Checked = ReadDeviceBitStatus_UserSolution( constGCBDeviceReadPortb5LEDStatus)
                     If SetLEDStatus1.Checked = True Then
                         RedLED1.Visible = True
                         BlackLED1.Visible = False
@@ -123,7 +127,7 @@ Public Partial Class MainForm
                     End If
 
                     'Get the LED status portb.4
-                    SetLEDStatus2.Checked = ReadDeviceBitStatus_UserSolution(GCBDeviceReadPortb4LEDStatus)
+                    SetLEDStatus2.Checked = ReadDeviceBitStatus_UserSolution( constGCBDeviceReadPortb4LEDStatus)
                     If SetLEDStatus2.Checked = True Then
                         GreenLED2.Visible = True
                         BlackLED2.Visible = False
@@ -131,35 +135,41 @@ Public Partial Class MainForm
                         GreenLED2.Visible = False
                         BlackLED2.Visible = True
                     End If
-
-
+'End of adapt here
+                    
                     GetStatusfromDeviceUponInit = False
                 End If
                 'Update some text
                 VenPidText.Text = Device.Info.ProductString '
                 'Update the timeout string
-                label5.Text = StrDup(KeepAliveCounter, ".") + orginalLabel5Text
+                footerRightText.Text = StrDup(KeepAliveCounter, ".") + orginalfooterRightText
                 'Enable the UI
                 PollADCValues.Enabled = True
-
-                'Adapt here - Set the buttons status
+                
+'Adapt here - Set the buttons status
                 SetLEDStatus1.Enabled = True
                 SetLEDStatus2.Enabled = True
-
+                
+'End of adapt here
+                
             Else
 
                 ConnectionStatus.Text = "Device not connected"
-                'Red
-                ConnectionStatus.BackColor = System.Drawing.Color.Red
+                'Paint Red
+                If ConnectionStatus.BackColor <> System.Drawing.Color.Red then
+                	ConnectionStatus.BackColor = System.Drawing.Color.Red
+                Else
+                	ConnectionStatus.BackColor = Me.BackColor
+                End if
                 ConnectionStatus.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
                 VenPidText.Text = ""
                 'Disable the UI
                 PollADCValues.Enabled = False
 
-                'Adapt here - Set the buttons status
+'Adapt here - Set the buttons status
                 SetLEDStatus1.Enabled = False
                 SetLEDStatus2.Enabled = False
-
+'End of adapt here
 
                 'Do not move this call
                 ConnectionStatus.Select()
@@ -172,12 +182,12 @@ Public Partial Class MainForm
 
     End Sub 'UpdateFormWithLatestData
 
-
-    'Poll ADC button was clicked, read ADC values
+	'Adapt this method to add more ADCs
+    'Read ADC button was clicked, read ADC values
     Sub PollADCValuesClick_UserSolution(sender As Object, e As EventArgs) Handles PollADCValues.Click
         Dim Reply As Byte()
         'Send request GCBDeviceReadADCValues, which means read ADC to PIC. Read 8 bytes back.
-        Reply = ReadReplyData(GCBDeviceReadADCValues, 8)
+        Reply = ReadReplyData( constGCBDeviceReadADCValues, 8)
         If Not Reply Is Nothing Then
             'If there is a reply, display
             If Reply.Length >= 2 Then
@@ -200,45 +210,44 @@ Public Partial Class MainForm
 
     'Status of the check changed, send commands to turn bits on the PIC on or off
     Sub SetDeviceStatusCheckedChangedHighOn_UserSolution(sender As Object, e As EventArgs) Handles SetLEDStatus1.CheckedChanged, SetLEDStatus2.CheckedChanged
+    	
+    	
+        Select Case  CType(sender, String)  	
+' Adapt below here - to add a handler, additional case statements, for more LEDs and the related checkboxes
+        	'Handle the event when you select a check box	
+    		Case "SetLEDStatus1"
+    			If SetLEDStatus1.Checked Then
+	                'To turn on, PIC expects request GCBDeviceSetPortb5StatusOn
+	                SendCommand( constGCBDeviceSetPortb5StatusOn, GCBBitOn)
+	                RedLED1.Visible = True
+	                BlackLED1.Visible = False
 
-        'Adapt here - to add a handler for more LEDs and buttons
-
-        If sender.name.ToString = "SetLEDStatus1" Then
-
-            If SetLEDStatus1.Checked Then
-                'To turn on, test program on PIC expects request GCBDeviceSetPortb5StatusOn
-                SendCommand(GCBDeviceSetPortb5StatusOn, GCBBitOn)
-                RedLED1.Visible = True
-                BlackLED1.Visible = False
-
-            Else
-                'To turn off, test program on PIC expects request GCBDeviceSetPortb5StatusOff
-                SendCommand(GCBDeviceSetPortb5StatusOff, GCBBitOff)
-                RedLED1.Visible = False
-                BlackLED1.Visible = True
-            End If
-
-        End If
-
-        If sender.name.ToString = "SetLEDStatus2" Then
-
-            If SetLEDStatus2.Checked Then
-                'To turn on, test program on PIC expects request GCBDeviceSetPortb5StatusOn
-                SendCommand(GCBDeviceSetPortb4StatusOn, GCBBitOn)
-                GreenLED2.Visible = True
-                BlackLED2.Visible = False
-
-            Else
-                'To turn off, test program on PIC expects request GCBDeviceSetPortb5StatusOff
-                SendCommand(GCBDeviceSetPortb4StatusOff, GCBBitOff)
-                GreenLED2.Visible = False
-                BlackLED2.Visible = True
-            End If
-        End If
+	            Else
+	                'To turn off, PIC expects request GCBDeviceSetPortb5StatusOff
+	                SendCommand( constGCBDeviceSetPortb5StatusOff, GCBBitOff)
+	                RedLED1.Visible = False
+	                BlackLED1.Visible = True
+	            End If
+	            
+    		Case "SetLEDStatus2"
+	            If SetLEDStatus2.Checked Then
+	                'To turn on, PIC expects request GCBDeviceSetPortb4StatusOn
+	                SendCommand( constGCBDeviceSetPortb4StatusOn, GCBBitOn)
+	                GreenLED2.Visible = True
+	                BlackLED2.Visible = False
+	
+	            Else
+	                'To turn off, PIC expects request GCBDeviceSetPortb4StatusOff
+	                SendCommand( constGCBDeviceSetPortb4StatusOff, GCBBitOff)
+	                GreenLED2.Visible = False
+	                BlackLED2.Visible = True
+	            End If
+    			
+    	End Select
 
     End Sub
 
-    'Read the status of the LED and return the value
+    'Read the status of a Bit and return the value
     Function ReadDeviceBitStatus_UserSolution(USBDeviceRequestID As Byte) As Boolean
 
         Dim Reply As Byte()
@@ -260,7 +269,8 @@ Public Partial Class MainForm
 
     'Everything after this should not be changed.
 
-    'Utility functions
+'Utility functions
+
     'Find the USB device - do not change
     Function FindUSBDevice() As Boolean
 
@@ -291,7 +301,7 @@ Public Partial Class MainForm
         Try
             'Create setup packet
             'First parameter is RequestType, see LibUsbDotNet documentation for bit usage
-            '66 meansn:
+            '66 means:
             '          Data direction is host to device
             '          Request type is vendor defined (ie, by us)
             '          Packet is sent to the whole device, not a specific endpoint
@@ -355,17 +365,17 @@ Public Partial Class MainForm
     End Function
 
 
-    'KeepAlive Check Send the constant GCBDeviceKeepAlive and expect GCBDeviceKeepAlive back - do not change
+    'KeepAlive Check Send the constant 'constGCBDeviceKeepAlive' and expect 'constGCBDeviceKeepAlive' back - do not change
     Sub PollKeepAlive()
         Dim Reply As Byte()
         KeepAliveError = False
-        'Send request GCBDeviceKeepAlive, which means KEEPALIVE. Read 1 byte back.
-        Reply = ReadReplyData(GCBDeviceKeepAlive, 1)
+        'Send request constGCBDeviceKeepAlive, which means KEEPALIVE. Read 1 byte back.
+        Reply = ReadReplyData(constGCBDeviceKeepAlive, 1)
         tempvalue = Reply(0)
 
         If Not Reply Is Nothing Then
             'If there is a reply 
-            If Reply(0) <> GCBDeviceKeepAlive Then
+            If Reply(0) <> constGCBDeviceKeepAlive Then
                 KeepAliveError = True
                 Device.Close()
                 Device = Nothing

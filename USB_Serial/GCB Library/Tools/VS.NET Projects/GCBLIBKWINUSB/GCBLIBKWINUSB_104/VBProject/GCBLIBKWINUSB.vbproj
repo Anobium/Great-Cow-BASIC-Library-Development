@@ -63,7 +63,7 @@
     <StartAction>Project</StartAction>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>8BC18CCD5803A19204D6F38953B1C2C27BEA7752</ManifestCertificateThumbprint>
