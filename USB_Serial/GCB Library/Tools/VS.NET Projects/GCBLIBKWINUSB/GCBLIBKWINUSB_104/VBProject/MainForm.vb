@@ -436,21 +436,29 @@ Public Partial Class MainForm
 		
 		try
 			_timer.Enabled = False
-	
-	        If Device Is Nothing Then
-	            'Find USB device
-	            FindUSBDevice()
-	            'time out the keepalive
-	      		KeepAliveCounter = 9
-	        End If
+
+            ' If the Device has gone off line the device is nothing
+            If Device Is Nothing Then
+                'Find USB device
+                FindUSBDevice()
+                'If the Device has been located then.. poll it, if the poll fails then Device will be set to Nothing, so, dont set the keep alive as need it to keep retrying
+                If Not Device Is Nothing Then
+                    PollKeepAlive()
+                    If Not Device Is Nothing Then
+                        'time out the keepalive
+                        KeepAliveCounter = 9
+                    End If
+                End If
+
+            End If
 	
 			If Not Device Is Nothing Then
-				'every 10 seconds poll the device
-				If KeepAliveCounter = 9 then
-					PollKeepAlive()
-					KeepAliveCounter = 0
-				Else
-					KeepAliveCounter = KeepAliveCounter + 1
+                'every 10 seconds poll the device
+                If KeepAliveCounter = 9 Then
+                    PollKeepAlive()
+                    KeepAliveCounter = 0
+                Else
+                    KeepAliveCounter = KeepAliveCounter + 1
 				End If
 			Else
 				'Will keep re-trying keep alive, only if, the USB is active.

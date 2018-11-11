@@ -285,7 +285,7 @@ Partial Class MainForm
         Me.footerRightText.Name = "footerRightText"
         Me.footerRightText.Size = New System.Drawing.Size(72, 19)
         Me.footerRightText.TabIndex = 9
-        Me.footerRightText.Text = "v1.4.2"
+        Me.footerRightText.Text = "v1.4.2a"
         Me.footerRightText.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'textBox1

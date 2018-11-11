@@ -38,3 +38,4 @@ D:\Great-Cow-BASIC-Library-Development\trunk\USB_Serial\GCB Library\Tools\VS.NET
 D:\Great-Cow-BASIC-Library-Development\trunk\USB_Serial\GCB Library\Tools\VS.NET Projects\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\obj\Debug\GCBLIBKWINUSB.pdb
 D:\Great-Cow-BASIC-Library-Development\trunk\USB_Serial\GCB Library\Tools\VS.NET Projects\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\bin\Debug\GCBLIBKWINUSB.exe
 D:\Great-Cow-BASIC-Library-Development\trunk\USB_Serial\GCB Library\Tools\VS.NET Projects\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\bin\Debug\GCBLIBKWINUSB.pdb
+D:\Great-Cow-BASIC-Library-Development.git\trunk\USB_Serial\GCB Library\Tools\VS.NET Projects\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\obj\Debug\GCBLIBKWINUSB.vbprojAssemblyReference.cache
