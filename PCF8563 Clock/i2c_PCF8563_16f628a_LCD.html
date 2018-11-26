@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.03 2018-10-20 (Windows 32 bit)</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 2.992188 seconds)</p>
+<p> (Assembly time: 0.109375 seconds)</p>
+<p> (Download time: 0 seconds)</p>
+<p> (Total time: 3.101563 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 16F628A</p>
+<p>Program Memory: 693/2048 words (33.84%)</p>
+<p>RAM: 50/224 bytes (22.32%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>38</td><td>66</td><td>INITI2C(47), SYSREADSTRING(2), Delay_S(1), PCF8563_READDATE(1), CLS(1), PRINT(2), LOCATE(2), LCDCURSOR(1), INITLCD(24), INITSYS(53)</td></tr>
+<tr><td>BCDTODEC</td><td>1</td><td>22</td><td>SYSMULTSUB(1), SYSDIVSUB(2)</td></tr>
+<tr><td>PCF8563_READDATE</td><td>38</td><td>54</td><td>I2CSTOP(1), BCDTODEC(4), I2CRECEIVE(4), I2CRESTART(1), I2CSEND(3), I2CSTART(1)</td></tr>
+<tr><td>LOCATE</td><td>7</td><td>24</td><td>SYSMULTSUB(1), Delay_10US(1), LCDNORMALWRITEBYTE(1)</td></tr>
+<tr><td>CLS</td><td>5</td><td>14</td><td>Delay_10US(1), Delay_MS(1), LCDNORMALWRITEBYTE(2)</td></tr>
+<tr><td>LCD3_CMD</td><td>2</td><td>4</td><td>LCDNORMALWRITEBYTE(1)</td></tr>
+<tr><td>INITLCD</td><td>273</td><td>52</td><td>Delay_MS(3), LCD3_CMD(8), LCDBACKLIGHT(1)</td></tr>
+<tr><td>PRINT</td><td>8</td><td>31</td><td>LCDNORMALWRITEBYTE(1)</td></tr>
+<tr><td>LCDNORMALWRITEBYTE</td><td>283</td><td>43</td><td>Delay_MS(3)</td></tr>
+<tr><td>LCDCURSOR</td><td>30</td><td>68</td><td>LCDNORMALWRITEBYTE(1)</td></tr>
+<tr><td>LCDBACKLIGHT</td><td>27</td><td>1</td><td></td></tr>
+<tr><td>INITSYS</td><td>674</td><td>5</td><td></td></tr>
+<tr><td>SYSREADSTRING</td><td>101</td><td>28</td><td></td></tr>
+<tr><td>SYSMULTSUB</td><td>39</td><td>12</td><td></td></tr>
+<tr><td>SYSDIVSUB</td><td>48</td><td>20</td><td></td></tr>
+<tr><td>INITI2C</td><td>8</td><td>8</td><td></td></tr>
+<tr><td>I2CSTART</td><td>32</td><td>17</td><td></td></tr>
+<tr><td>I2CSTOP</td><td>18</td><td>22</td><td></td></tr>
+<tr><td>I2CRESTART</td><td>1</td><td>1</td><td>I2CSTART(1)</td></tr>
+<tr><td>I2CSEND</td><td>116</td><td>75</td><td></td></tr>
+<tr><td>I2CRECEIVE</td><td>116</td><td>66</td><td></td></tr>
+<tr><td>Delay_10US</td><td>0</td><td>7</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>14</td><td></td></tr>
+<tr><td>Delay_S</td><td>0</td><td>8</td><td>Delay_MS(1)</td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>31</td><td></td></tr>
+</table>
+</body>
+</html>

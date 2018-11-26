@@ -1,5 +1,5 @@
-
 '    Software PCF8563 routines for the GCBASIC compiler
+
 '
 '    This library is free software' you can redistribute it and/or
 '    modify it under the terms of the GNU Lesser General Public
@@ -12,19 +12,17 @@
 '    Lesser General Public License for more details.
 '
 '    You should have received a copy of the GNU Lesser General Public
-'    License along with this library' if not, write to the
-'    Free Software ' Foundation, Inc., 51 Franklin St, Fifth Floor,
-'    Boston, MA  02110-1301  USA
+'    License along with this library' if not, write to the Free Software
+'    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 '
-'    10 bytes are used as input and output parameters.
-'    They are:
-'       DS_Value, DS_Addr, DS_Hour, DS_Min, DS_Sec,
-'       DS_A_P, DS_Date, DS_Month, DS_Year and DS_DOW.
 '
+'    10 bytes are used as input and output parameters. They are:
+'    DS_Value, DS_Addr, DS_Hour, DS_Min, DS_Sec, DS_A_P, DS_Date, DS_Month, DS_Year and DS_DOW.
+
 '    Quick Command Reference:
-'
+
 '    PCF8563_Enable(flag)
-'    PCF8563_ResetClock
+     'PCF8563_ResetClock
 '    PCF8563_SetClock(hour, minute, second, DOW, date, month, year)
 '    PCF8563_SetTime(hour, minute, second)
 '    PCF8563_SetDate(DOW, date, month, year)
@@ -36,10 +34,12 @@
 '    PCF8563_SetSQW(rate)
 '    PCF8563_Write(address, value)
 '    PCF8563_Read(address, value)
+
 ;See the subroutine definitions below for full details on each.
 
 ;----- Constants
- ' These are the I2C addresses of the generic PCF8563 Real-Time Clock
+
+ ' These are the addresses of the generic PCF8563 Real-Time Clock
  #define DS_AddrWrite 0xA2
  #define DS_AddrRead  0xA3
 
@@ -59,7 +59,6 @@ end function
 
 ;-----
 #define PCF8563_EnableOscillator PCF8563_Enable
-
 sub PCF8563_Enable(in DS_Value)
 
   #ifdef HI2C_DATA
@@ -68,7 +67,7 @@ sub PCF8563_Enable(in DS_Value)
         HI2CReStart                          ;generate a start signal
         HI2CSend(DS_AddrWrite)                     ;inidcate a write
      loop While HI2CAckPollState
-     HI2CSend(2)                     ;indicate register 0
+     HI2CSend(0)                     ;indicate register 0
      HI2CReStart
      HI2CSend(DS_AddrRead)
      HI2CReceive(DS_Sec, NACK)       ;get the current seconds
@@ -79,7 +78,7 @@ sub PCF8563_Enable(in DS_Value)
      end if
      HI2CReStart
      HI2CSend(DS_AddrWrite)
-     HI2CSend(2)                     ;indicate register 0
+     HI2CSend(0)                     ;indicate register 0
      HI2CSend(DS_Sec)                ;now send updated value
      HI2CStop
   #endif
@@ -89,7 +88,7 @@ sub PCF8563_Enable(in DS_Value)
     ;Enables clock if DS_Value = TRUE, disables if DS_Value = FALSE
      I2CStart
      I2CSend(DS_AddrWrite)
-     I2CSend(2)                     ;indicate register 0
+     I2CSend(0)                     ;indicate register 0
      I2CStart
      I2CSend(DS_AddrRead)
      I2CReceive(DS_Sec, NACK)       ;get the current seconds
@@ -100,7 +99,7 @@ sub PCF8563_Enable(in DS_Value)
      end if
      I2CStart
      I2CSend(DS_AddrWrite)
-     I2CSend(2)                     ;indicate register 0
+     I2CSend(0)                     ;indicate register 0
      I2CSend(DS_Sec)                ;now send updated value
      I2CStop
   #endif
@@ -119,7 +118,7 @@ sub PCF8563_ResetClock
         HI2CReStart                          ;generate a start signal
         HI2CSend(DS_AddrWrite)                     ;inidcate a write
     loop While HI2CAckPollState
-    HI2CSend(2)                      ;begin with address 0
+    HI2CSend(0)                      ;begin with address 0
     HI2CSend(0)                      ;then set the seven
     HI2CSend(0)                      ;consecutive locations
     HI2CSend(0)
@@ -133,7 +132,7 @@ sub PCF8563_ResetClock
   #ifdef I2C_DATA
     I2CStart
     I2CSend(DS_AddrWrite)
-    I2CSend(2)                      ;begin with address 0
+    I2CSend(0)                      ;begin with address 0
     I2CSend(0)                      ;then set the seven
     I2CSend(0)                      ;consecutive locations
     I2CSend(0)
@@ -157,7 +156,7 @@ sub PCF8563_SetClock(in DS_Hour, in DS_Min, in DS_Sec, in DS_DOW, in DS_Date, in
        HI2CReStart                          ;generate a start signal
        HI2CSend(DS_AddrWrite)                     ;inidcate a write
     loop While HI2CAckPollState
-    HI2CSend(2)                      ;begin with address 0
+    HI2CSend(0)                      ;begin with address 0
     HI2CSend(DecToBcd(DS_Sec))       ;then set the seven
     HI2CSend(DecToBcd(DS_Min))       ;consecutive values
     HI2CSend(DecToBcd(DS_Hour))
@@ -171,7 +170,7 @@ sub PCF8563_SetClock(in DS_Hour, in DS_Min, in DS_Sec, in DS_DOW, in DS_Date, in
   #ifdef I2C_DATA
     I2CStart
     I2CSend(DS_AddrWrite)
-    I2CSend(2)                      ;begin with address 0
+    I2CSend(0)                      ;begin with address 0
     I2CSend(DecToBcd(DS_Sec))       ;then set the seven
     I2CSend(DecToBcd(DS_Min))       ;consecutive values
     I2CSend(DecToBcd(DS_Hour))
@@ -195,7 +194,7 @@ sub PCF8563_SetTime(in DS_Hour, in DS_Min, in DS_Sec)
         HI2CReStart                          ;generate a start signal
         HI2CSend(DS_AddrWrite)                     ;inidcate a write
     loop While HI2CAckPollState
-    HI2CSend(2)                      ;begin with address 0
+    HI2CSend(0)                      ;begin with address 0
     HI2CSend(DecToBcd(DS_Sec))       ;then set the three
     HI2CSend(DecToBcd(DS_Min))       ;consecutive values
     HI2CSend(DecToBcd(DS_Hour))
@@ -206,7 +205,7 @@ sub PCF8563_SetTime(in DS_Hour, in DS_Min, in DS_Sec)
   #ifdef I2C_DATA
     I2CStart
     I2CSend(DS_AddrWrite)
-    I2CSend(2)                      ;begin with address 0
+    I2CSend(0)                      ;begin with address 0
     I2CSend(DecToBcd(DS_Sec))       ;then set the three
     I2CSend(DecToBcd(DS_Min))       ;consecutive values
     I2CSend(DecToBcd(DS_Hour))
@@ -226,7 +225,7 @@ sub PCF8563_SetDate(in DS_DOW, DS_Date, in DS_Month, in DS_Year)
         HI2CReStart                          ;generate a start signal
         HI2CSend(DS_AddrWrite)                     ;inidcate a write
      loop While HI2CAckPollState
-    HI2CSend(5)                      ;begin with address 3
+    HI2CSend(3)                      ;begin with address 3
     HI2CSend(DecToBcd(DS_DOW))       ;then set the four
     HI2CSend(DecToBcd(DS_Date))      ;consecutive values
     HI2CSend(DecToBcd(DS_Month))
@@ -238,7 +237,7 @@ sub PCF8563_SetDate(in DS_DOW, DS_Date, in DS_Month, in DS_Year)
   #ifdef I2C_DATA
     I2CStart
     I2CSend(DS_AddrWrite)
-    I2CSend(5)                      ;begin with address 3
+    I2CSend(3)                      ;begin with address 3
     I2CSend(DecToBcd(DS_DOW))       ;then set the four
     I2CSend(DecToBcd(DS_Date))      ;consecutive values
     I2CSend(DecToBcd(DS_Month))
@@ -260,7 +259,7 @@ sub PCF8563_ReadClock(out DS_Hour, out DS_Min, out DS_Sec, out DS_A_P, out DS_DO
         HI2CReStart                          ;generate a start signal
         HI2CSend(DS_AddrWrite)                     ;inidcate a write
      loop While HI2CAckPollState
-    HI2CSend(2)                      ;begin with address 0
+    HI2CSend(0)                      ;begin with address 0
     HI2CReStart
     HI2CSend(DS_AddrRead)
     HI2CReceive(DS_Sec)              ;get seconds
@@ -297,7 +296,7 @@ sub PCF8563_ReadClock(out DS_Hour, out DS_Min, out DS_Sec, out DS_A_P, out DS_DO
   #ifdef I2C_DATA
     I2CStart
     I2CSend(DS_AddrWrite)
-    I2CSend(2)                      ;begin with address 0
+    I2CSend(0)                      ;begin with address 0
     I2CStart
     I2CSend(DS_AddrRead)
     I2CReceive(DS_Sec, ACK)              ;get seconds
@@ -334,7 +333,9 @@ sub PCF8563_ReadClock(out DS_Hour, out DS_Min, out DS_Sec, out DS_A_P, out DS_DO
 'ported
 sub PCF8563_ReadTime(out DS_Hour, out DS_Min, out DS_Sec, out DS_A_P)
   ;Read time only: hours, minutes, seconds, a.m. or p.m.
+
   #ifdef HI2C_DATA
+
      do
         HI2CReStart                          ;generate a start signal
         HI2CSend(DS_AddrWrite)                     ;inidcate a write
@@ -344,8 +345,10 @@ sub PCF8563_ReadTime(out DS_Hour, out DS_Min, out DS_Sec, out DS_A_P)
     HI2CSend(DS_AddrRead)
     HI2CReceive(DS_Sec, ACK)              ;get the seconds
     DS_Sec = BcdToDec(DS_Sec & 127) ;strip off CH bit
+
     HI2CReceive(DS_Min, ACK)              ;get the minutes
     DS_Min = BcdToDec(DS_Min)
+
     HI2CReceive(DS_Hour, NACK)       ;get the hours
     if DS_Hour.6 then               ;12-hour mode
       DS_A_P = DS_Hour.5            ;a.m. or p.m.
@@ -356,6 +359,7 @@ sub PCF8563_ReadTime(out DS_Hour, out DS_Min, out DS_Sec, out DS_A_P)
     end if
     HI2CStop
   #endif
+
   #ifdef I2C_DATA
     I2CStart
     I2CSend(DS_AddrWrite)
@@ -364,8 +368,10 @@ sub PCF8563_ReadTime(out DS_Hour, out DS_Min, out DS_Sec, out DS_A_P)
     I2CSend(DS_AddrRead)
     I2CReceive(DS_Sec, ACK)              ;get the seconds
     DS_Sec = BcdToDec(DS_Sec & 127) ;strip off CH bit
+
     I2CReceive(DS_Min, ACK)              ;get the minutes
     DS_Min = BcdToDec(DS_Min)
+
     I2CReceive(DS_Hour, NACK)       ;get the hours
     if DS_Hour.6 then               ;12-hour mode
       DS_A_P = DS_Hour.5            ;a.m. or p.m.
@@ -376,24 +382,27 @@ sub PCF8563_ReadTime(out DS_Hour, out DS_Min, out DS_Sec, out DS_A_P)
     end if
     I2CStop
   #endif
+
 end sub
+
 ;-----
+
 'Ported
 sub PCF8563_ReadDate(out DS_DOW, out DS_Date, out DS_Month, out DS_Year)
 ;Get date only: day of week, date, month, year
 
   #ifdef HI2C_DATA
 
-    do
-      HI2CReStart                          ;generate a start signal
-      HI2CSend(DS_AddrWrite)                     ;inidcate a write
-    loop While HI2CAckPollState
-
+     do
+        HI2CReStart                          ;generate a start signal
+        HI2CSend(DS_AddrWrite)                     ;inidcate a write
+     loop While HI2CAckPollState
     HI2CSend(5)                      ;begin with address 3
     HI2CReStart
     HI2CSend(DS_AddrRead)
     HI2CReceive(DS_Date, ACK)              ;get date
     DS_Date = BcdToDec(DS_Date)
+
 
     HI2CReceive(DS_DOW, ACK)             ;get dow the week
     DS_DOW = BcdToDec(DS_DOW)
@@ -444,7 +453,7 @@ sub PCF8563_SetHourMode(in DS_A_P)
         HI2CReStart                          ;generate a start signal
         HI2CSend(DS_AddrWrite)                     ;inidcate a write
      loop While HI2CAckPollState
-    HI2CSend(4)                      ;located in address 2
+    HI2CSend(2)                      ;located in address 2
     HI2CReStart
     HI2CSend(DS_AddrRead)
     HI2CReceive(DS_Hour, NACK)       ;get current hours and mode
@@ -472,14 +481,15 @@ sub PCF8563_SetHourMode(in DS_A_P)
     end if
     HI2CReStart
     HI2CSend(DS_AddrWrite)
-    HI2CSend(4)
+    HI2CSend(2)
     HI2CSend(DS_Hour)                ;send hours and flag back again
     HI2CStop
   #endif
+
   #ifdef I2C_DATA
     I2CStart
     I2CSend(DS_AddrWrite)
-    I2CSend(4)                      ;located in address 2
+    I2CSend(2)                      ;located in address 2
     I2CStart
     I2CSend(DS_AddrRead)
     I2CReceive(DS_Hour, NACK)       ;get current hours and mode
@@ -507,7 +517,7 @@ sub PCF8563_SetHourMode(in DS_A_P)
     end if
     I2CStart
     I2CSend(DS_AddrWrite)
-    I2CSend(4)
+    I2CSend(2)
     I2CSend(DS_Hour)                ;send hours and flag back again
     I2CStop
   #endif
@@ -525,7 +535,7 @@ sub PCF8563_ReadHourMode(out DS_A_P)
         HI2CReStart                          ;generate a start signal
         HI2CSend(DS_AddrWrite)                     ;inidcate a write
      loop While HI2CAckPollState
-    HI2CSend(4)                      ;go to address 2
+    HI2CSend(2)                      ;go to address 2
     HI2CReStart
     HI2CSend(DS_AddrRead)
     HI2CReceive(DS_A_P, NACK)        ;get entire hour byte
@@ -541,7 +551,7 @@ sub PCF8563_ReadHourMode(out DS_A_P)
   #ifdef I2C_DATA
     I2CStart
     I2CSend(DS_AddrWrite)
-    I2CSend(4)                      ;go to address 2
+    I2CSend(2)                      ;go to address 2
     I2CStart
     I2CSend(DS_AddrRead)
     I2CReceive(DS_A_P, NACK)        ;get entire hour byte
@@ -566,7 +576,7 @@ sub PCF8563_SetSQW(in DS_Value)
         HI2CReStart                          ;generate a start signal
         HI2CSend(DS_AddrWrite)                     ;inidcate a write
      loop While HI2CAckPollState
-    HI2CSend(9)                      ;location is address 7
+    HI2CSend(7)                      ;location is address 7
     select case DS_Value
        case 0                       ;0 = disable completely
             HI2CSend(0)
@@ -585,7 +595,7 @@ sub PCF8563_SetSQW(in DS_Value)
   #ifdef I2C_DATA
     I2CStart
     I2CSend(DS_AddrWrite)
-    I2CSend(9)                      ;location is address 7
+    I2CSend(7)                      ;location is address 7
     select case DS_Value
        case 0                       ;0 = disable completely
             I2CSend(0)
@@ -601,3 +611,66 @@ sub PCF8563_SetSQW(in DS_Value)
     I2CStop
   #endif
 end sub
+
+;-----
+#define PCF8563_WriteRam PCF8563_Write
+sub PCF8563_Write(in DS_Addr, in DS_Value)
+  ;Write to the internal RAM. Use addresses 0x08 to 0x3F only,
+  ;else there will be wraparound to the register space of
+  ;0x00 to 0x07. This is especially important when doing
+  ;multibyte writes. But note that this subroutine could
+  ;also be used to write to clock registers 0 though 7 if
+  ;that's really what you want, for low level access.
+
+  #ifdef HI2C_DATA
+
+     do
+        HI2CReStart                          ;generate a start signal
+        HI2CSend(DS_AddrWrite)                     ;inidcate a write
+     loop While HI2CAckPollState
+    HI2CSend(DS_Addr)                ;send address
+    HI2CSend(DS_Value)               ;send value
+    HI2CStop
+  #endif
+
+  #ifdef I2C_DATA
+    I2CStart
+    I2CSend(DS_AddrWrite)           ;indicate write mode
+    I2CSend(DS_Addr)                ;send address
+    I2CSend(DS_Value)               ;send value
+    I2CStop
+  #endif
+
+end sub
+
+;-----
+#define PCF8563_ReadRam PCF8563_Read
+sub PCF8563_Read(in DS_Addr, out DS_Value)
+  ;Read from the internal RAM. See the notes, above.
+
+  #ifdef HI2C_DATA
+
+     do
+        HI2CReStart                          ;generate a start signal
+        HI2CSend(DS_AddrWrite)                     ;inidcate a write
+     loop While HI2CAckPollState
+    HI2CSend(DS_Addr)                ;send the address
+    HI2CReStart
+    HI2CSend(DS_AddrRead)            ;then read mode
+    HI2CReceive(DS_Value, NACK)      ;and get value
+    HI2CStop
+  #endif
+
+  #ifdef I2C_DATA
+    I2CStart
+    I2CSend(DS_AddrWrite)           ;indicate write mode
+    I2CSend(DS_Addr)                ;send the address
+    I2CStart
+    I2CSend(DS_AddrRead)            ;then read mode
+    I2CReceive(DS_Value, NACK)      ;and get value
+    I2CStop
+  #endif
+
+end sub
+
+

@@ -45,9 +45,11 @@
  #define I2C_DATA PORTa.4
  #define I2C_CLOCK PORTa.3
 
+
+
  #define I2C_DISABLE_INTERRUPTS ON
 
- #include "PCF8563.h"
+ #include <PCF8563.h>
  #define DS_AddrWrite 0xA2
  #define DS_AddrRead  0xA3
 
@@ -103,12 +105,17 @@
   wait 2 s
   CLS
 
+
+
+
+
 ;Main body of program commences here.
   PCF8563_ReadDate(DOW, date, month, year)   ;get initial date
 
+
   do
 
-'    updateDisp                        ;show time and date
+    updateDisp                        ;show time and date
 '    if setBut = pressed then
 '      changeSetting                   ;change time and date
 '    end if
@@ -116,6 +123,7 @@
 '    if modeBut = pressed then
 '      changeMode                      ;12 or 24 hour mode
 '    end if
+
 
   loop
 end

@@ -1,35 +1,37 @@
-'''A demonstration program for GCGB and GCB.
+'''  A demonstration program for GCGB and GCB.
 '''--------------------------------------------------------------------------------------------------------------------------------
-'''This program shows the real time clock on a LCD. The LCD is driven by a LCD I2C adapter.
-'''Two types of LCD are supported using this method, as shown below:
-''':        Set LCD_10 to 10 for the YwRobot LCD1602 IIC V1 or the Sainsmart LCD_PIC I2C adapter
-''':        Set LCD_10 to 12 for the Ywmjkdz I2C adapter with pot bent over top of chip
-'''The PCF8563 is attached to the I2C ports with appropiate resistors to the supply voltage.  Typically a 5k or 2.2k resistor 'pulling up' to the supply voltage can be used.
-''':
-''':    There are two pushbuttons: Mode and Set equates to Key1 and Key2. Connected to portb.0 and portb.1 resepectively.
-''':
-''':    During normal operation, the Mode button will toggle
-''':    between 12- and 24-hours modes.
-''':
-''':    This has two modes US date and UK date style.
-''':    Change ''':clocktype''': to 0 for US and 1 for UK
-''':
-''':    To set a new date and time, press the Set button
-''':    which will take you consecutively to Month, Day, Year,
-''':    Day of the Week, Hour, Minute and Second. Within each of
-''':    these, press Mode to cycle through the possible values.
-''':    You may hold the Mode button to increment automatically,
-''':    or press momentarily for a single increment. Time is
-''':    always set in 24-hour clock format.
+'''  This program shows the real time clock on a LCD.
+'''
+'''  The PCF8563 is attached to the I2C ports with appropiate
+'''  resistors to the supply voltage. Typically a 5k or 2.2k
+'''  resistor pulling up to the supply voltage can be used.
+'''
+'''  There are two pushbuttons:
+'''     Set and Mode equates to Key1 and Key2.
+'''     Connected to portb.0 and portb.1 resepectively.
+'''
+'''  During normal operation, the Mode button will toggle
+'''  between 12- and 24-hours modes.
+'''
+'''  This has two modes US date and UK date style.
+'''  Change ''':clocktype''': to 0 for US and 1 for UK
+'''
+'''  To set a new date and time, press the Set button
+'''  which will take you consecutively to Month, Day, Year,
+'''  Day of the Week, Hour, Minute and Second. Within each of
+'''  these, press Mode to cycle through the possible values.
+'''  You may hold the Mode button to increment automatically,
+'''  or press momentarily for a single increment. Time is
+'''  always set in 24-hour clock format.
 
-'''@author          EvanV
+'''@author          EvanV / C.A.Roper
 '''@licence GPL
 '''@version 1.2a
 '''@date    23.02.15
 '''********************************************************************************
 
 ; ----- Configuration
-#chip 16f628a, 4
+#chip 16f648a, 4
 #option explicit
 
 ;Setup LCD Parameters
@@ -41,8 +43,8 @@
 #define LCD_EB     PORTa.0            ; enable bit
 
   ' Define I2C settings - CHANGE PORTS
- #define I2C_MODE Master
- #define I2C_DATA PORTa.4
+ #define I2C_MODE  Master
+ #define I2C_DATA  PORTa.4
  #define I2C_CLOCK PORTa.3
 
  #define I2C_DISABLE_INTERRUPTS ON
@@ -52,19 +54,19 @@
  #define DS_AddrRead  0xA3
 
 ; ----- Define Hardware settings
-  dir setBut in
+  dir setBut  in
   dir modeBut in
 
-  #define clocktype   0               ;0 is US or 1 is UK style
-  #define debounce    50 mS            ;settling time for switches
-  #define delay       150 mS          ;delay time for pushbutton
-  #define pressed     1               ;flag for pressed pushbutton
-  #define setBut      portb.0         ;Set pushbutton
-  #define modeBut     portb.1         ;Mode pushbutton
+  #define clocktype   1               ; 0 is US or 1 is UK style
+  #define debounce    50 mS           ; settling time for switches
+  #define delay       150 mS          ; delay time for pushbutton
+  #define pressed     1               ; flag for pressed pushbutton
 
-  #define Alarm0 0x00                 ;a reference to the alarm 0
-  #define Alarm1 0x01                 ;a reference to the alarm 1
+  #define setBut      portb.0         ; Set  pushbutton
+  #define modeBut     portb.1         ; Mode pushbutton
 
+  #define Alarm0 0x00                 ; a reference to the alarm 0
+  #define Alarm1 0x01                 ; a reference to the alarm 1
 
 ;----- Variables
 
@@ -108,14 +110,15 @@
 
   do
 
-'    updateDisp                        ;show time and date
-'    if setBut = pressed then
-'      changeSetting                   ;change time and date
-'    end if
-'
-'    if modeBut = pressed then
-'      changeMode                      ;12 or 24 hour mode
-'    end if
+    updateDisp                        ;show time and date
+    if setBut = pressed then
+      changeSetting                   ;change time and date
+    end if
+
+    if modeBut = pressed then
+      changeMode                      ;12 or 24 hour mode
+    end if
+
 
   loop
 end
