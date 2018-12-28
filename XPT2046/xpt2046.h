@@ -37,8 +37,9 @@
 '''    #define XPT2046_DI       DIGITAL_12          ' Data in | MISO.  Should be shared port the GLCD (it will be if hardware SPI is used).  No essential to define as the librart will select the GLCD port
 '''    #define XPT2046_DO       DIGITAL_11          ' Data out | MOSI.  .  Should be shared port the GLCD (it will be if hardware SPI is used).  No essential to define as the librart will select the GLCD port
 '''    #define XPT2046_SCK      DIGITAL_13          ' Clock Line.  .  Should be shared port the GLCD (it will be if hardware SPI is used).  No essential to define as the librart will select the GLCD port
+'''
 '''    #define XPT2046_CS       DIGITAL_2           ' Touch chip select line. MUST BE DEFINED.
-'''    #define XPT2046_IRQ      PORTc.5             ' Event line... something touched the GLCD touch sensor.  MUST BE DEFINED.
+'''    #define XPT2046_IRQ      ANALOG_5            ' Event line... something touched the GLCD touch sensor.  MUST BE DEFINED.
 '''    #define XPT2046_HardwareSPI                  ' remove/comment out if you want to use software SPI - must use same method as GLCD
 '''
 '''    '******************************************************************************************************
