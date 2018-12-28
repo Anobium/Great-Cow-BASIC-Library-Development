@@ -43,8 +43,8 @@
 
     'Typical calibration range for Hardware SPI when using XPT2046
     'for 320 * 240 screeen... may be different for others
-    #define XPT2046XMIN   17
-    #define XPT2046YMIN   15
+    #define XPT2046XMIN   10
+    #define XPT2046YMIN   10
     #define XPT2046XMAX   100
     #define XPT2046YMAX   110
 
@@ -107,8 +107,8 @@
           GLCDPrint ( 162, 56, pad(str(XPT2046_Xmax),3 ) )
           GLCDPrint ( 162, 72, pad(str(XPT2046_Ymax),3 ) )
 
-          GLCDPrint ( 24, 230, pad(str(XTouchPoint_XPT2046),3 ))
-          GLCDPrint ( 24, 246, pad(str(YTouchPoint_XPT2046),3 ))
+          GLCDPrint ( 24, 230, pad(str(XTouchPoint_XPT2046),5 ))
+          GLCDPrint ( 24, 246, pad(str(YTouchPoint_XPT2046),5 ))
 
           'do not hammer the touch
           wait 20 ms
