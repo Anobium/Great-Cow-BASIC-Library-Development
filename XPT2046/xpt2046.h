@@ -15,7 +15,7 @@
 '    License along with this library; if not, write to the Free Software
 '    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-'    v0.9b
+'    v0.9c
 
  '''    '******************************************************************************************************
 '''    'Setup the XPT2046
@@ -44,9 +44,9 @@
 '''
 '''    '******************************************************************************************************
 
-  
-  
-'No change below here  
+
+
+'No change below here
 #define XPT2046_ReadSamples 15
 
 #define XPT2046_CFG_START   128       'bit 7
@@ -219,6 +219,35 @@ sub  TransferData_XPT2046( IN XPT2046SendByte as byte, XPT2046OutByte as byte )
 
 end Sub
 
+'''Send a command to the XPT2046 GLCD
+'''@param XPT2046SendByte Command to send
+'''@hide
+sub  SendData_XPT2046( IN XPT2046SendByte as byte )
+
+
+  #ifdef XPT2046_HardwareSPI
+     SPITransfer  XPT2046SendByte,  XPT2046TempOut
+  #endif
+
+  #ifndef XPT2046_HardwareSPI
+      set XPT2046_SCK Off;
+      repeat 8
+
+        if XPT2046SendByte.7 = ON  then
+          set XPT2046_DO ON;
+        else
+          set XPT2046_DO OFF;
+        end if
+        SET XPT2046_SCK On;
+        rotate XPT2046SendByte left
+        set XPT2046_SCK Off;
+
+      end repeat
+  #endif
+
+end Sub
+
+
 Sub GetXY_XPT2046 (out XTouchPoint_XPT2046 as word, out YTouchPoint_XPT2046 as word )
 
     dim XTouchPoint_XPT2046, YTouchPoint_XPT2046 as Word
@@ -250,7 +279,7 @@ Sub GetXY_XPT2046 (out XTouchPoint_XPT2046 as word, out YTouchPoint_XPT2046 as w
     End Repeat
     yTouchPoint_XPT2046 = yTouchPoint_XPT2046 /(XPT2046_ReadSamples + 1)
     xTouchPoint_XPT2046 = xTouchPoint_XPT2046 /(XPT2046_ReadSamples + 1)
-      
+
     set XPT2046_CS ON
 
     XTouchPoint_XPT2046raw = XTouchPoint_XPT2046
@@ -264,4 +293,3 @@ Sub GetXY_XPT2046 (out XTouchPoint_XPT2046 as word, out YTouchPoint_XPT2046 as w
     end if
 
 End Sub
-
