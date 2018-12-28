@@ -59,7 +59,7 @@
     #define XPT2046_DO       DIGITAL_11          ' Data out | MOSI
     #define XPT2046_SCK      DIGITAL_13          ' Clock Line
     #define XPT2046_CS       DIGITAL_2           ' Chip select line
-    #define XPT2046_IRQ      PORTc.5
+    #define XPT2046_IRQ      ANALOG_5
     #define XPT2046_HardwareSPI                  ' remove/comment out if you want to use software SPI - must use same method as GLCD
 
     '******************************************************************************************************
