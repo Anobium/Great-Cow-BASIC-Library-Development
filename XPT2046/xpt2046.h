@@ -15,7 +15,7 @@
 '    License along with this library; if not, write to the Free Software
 '    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-'    v0.9d - rotate
+'    v0.9e - more samples
 
  '''    '******************************************************************************************************
 '''    'Setup the XPT2046
@@ -47,7 +47,7 @@
 
 
 'No change below here
-#define XPT2046_ReadSamples 15
+#define XPT2046_ReadSamples 200
 
 #define XPT2046_CFG_START   128       'bit 7
 
@@ -161,9 +161,9 @@ Sub Init_XPT2046 (Optional In precision = PREC_EXTREME)
 
     Repeat 4
         set XPT2046_CS OFF
-        wait 5 us
+        wait 10 ms
         set XPT2046_CS ON
-        wait 5 us
+        wait 10 ms
     End Repeat
 
     #define isTouched_XPT2046  XPT2046_IRQ = 1
@@ -218,7 +218,7 @@ sub  TransferData_XPT2046( IN XPT2046SendByte as byte, XPT2046OutByte as byte )
       end Repeat
 
   #endif
-  wait 250 us
+'  wait 250 us
 
 end Sub
 
@@ -259,19 +259,24 @@ Sub GetXY_XPT2046 (out XTouchPoint_XPT2046 as word, out YTouchPoint_XPT2046 as w
 
     set XPT2046_CS OFF
 
-      Repeat 2
-          TransferData_XPT2046  ( XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_MUX_X  | XPT2046_CFG_PWR_1 ), XPT2046TempOut
+      Repeat 10
+          TransferData_XPT2046  ( XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_MUX_X  | XPT2046_CFG_PWR ), XPT2046TempOut
           TransferData_XPT2046  0,  YTouchPoint_XPT2046
-          TransferData_XPT2046  ( XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_MUX_Y  | XPT2046_CFG_PWR_1 ), XPT2046TempOut
+          TransferData_XPT2046  ( XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_MUX_Y  | XPT2046_CFG_PWR ), XPT2046TempOut
           TransferData_XPT2046  0, XTouchPoint_XPT2046
           TransferData_XPT2046  0, XPT2046TempOut
       end Repeat
 
+      XTouchPoint_XPT2046 = 0
+      YTouchPoint_XPT2046 = 0
+
       Repeat XPT2046_ReadSamples
 
-          TransferData_XPT2046  XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_MUX_X  | XPT2046_CFG_PWR_1, XPT2046TempOut
+          TransferData_XPT2046  XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_MUX_X  | XPT2046_CFG_PWR, XPT2046TempOut
+          wait 20 us
           TransferData_XPT2046  0,  NewYTouchPoint_XPT2046
-          TransferData_XPT2046  XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_MUX_Y  | XPT2046_CFG_PWR_1, XPT2046TempOut
+          TransferData_XPT2046  XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_MUX_Y  | XPT2046_CFG_PWR, XPT2046TempOut
+          wait 20 us
           TransferData_XPT2046  0, NewXTouchPoint_XPT2046
           TransferData_XPT2046  0, XPT2046TempOut
 
@@ -280,8 +285,8 @@ Sub GetXY_XPT2046 (out XTouchPoint_XPT2046 as word, out YTouchPoint_XPT2046 as w
 
       End Repeat
 
-      yTouchPoint_XPT2046 = yTouchPoint_XPT2046 /(XPT2046_ReadSamples + 1)
-      xTouchPoint_XPT2046 = xTouchPoint_XPT2046 /(XPT2046_ReadSamples + 1)
+      yTouchPoint_XPT2046 = yTouchPoint_XPT2046 /(XPT2046_ReadSamples )
+      xTouchPoint_XPT2046 = xTouchPoint_XPT2046 /(XPT2046_ReadSamples )
 
       SendData_XPT2046( XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_CFG_PWR )
 

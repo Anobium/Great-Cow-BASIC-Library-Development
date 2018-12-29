@@ -44,10 +44,10 @@
     'Typical calibration range for Hardware SPI when using XPT2046
     'for 320 * 240 screeen... may be different for others
     #define XPT2046XMIN   15
-    #define XPT2046YMIN   15
-    #define XPT2046XMAX   100
-    #define XPT2046YMAX   115
-    #define XPT2046_ReadSamples 5
+    #define XPT2046YMIN   14
+    #define XPT2046XMAX   110
+    #define XPT2046YMAX   113
+    #define XPT2046_ReadSamples 200
 
     'Typical Calibration range for Software SPI when using XPT2046
 '    #define XPT2046XMIN   30
