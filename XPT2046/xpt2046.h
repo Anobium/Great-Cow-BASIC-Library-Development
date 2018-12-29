@@ -15,7 +15,7 @@
 '    License along with this library; if not, write to the Free Software
 '    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-'    v0.9c
+'    v0.9d - rotate
 
  '''    '******************************************************************************************************
 '''    'Setup the XPT2046
@@ -67,6 +67,9 @@
 #define XPT2046_CFG_DFR     0
 
 #define XPT2046_CFG_PWR     0         'bit 1-0 - the power mask.  PD1 & PD0
+#define XPT2046_CFG_PWR_1   1         'bit 1-0 - the power mask.  PD1 & PD0
+#define XPT2046_CFG_PWR_2   2         'bit 1-0 - the power mask.  PD1 & PD0
+#define XPT2046_CFG_PWR_3   3         'bit 1-0 - the power mask.  PD1 & PD0
 
 
 #script
@@ -170,14 +173,14 @@ Sub Init_XPT2046 (Optional In precision = PREC_EXTREME)
 End Sub
 
 sub SetCalibation_XPT2046( XPT2046_Xmin, XPT2046_Xmax, XPT2046_Ymin, XPT2046_Ymax )
-
+     'this simply set the variables
 End Sub
 
 Sub EnableIRQ_XPT2046
 
     set XPT2046_CS OFF
-        SendData_XPT2046( XPT2046_CFG_START | XPT2046_CFG_12BIT | XPT2046_CFG_DFR | XPT2046_MUX_Y )
-        wait 1 ms
+    SendData_XPT2046( XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_MUX_Y )
+    wait 1 ms
     set XPT2046_CS ON
 
 End Sub
@@ -251,45 +254,56 @@ end Sub
 Sub GetXY_XPT2046 (out XTouchPoint_XPT2046 as word, out YTouchPoint_XPT2046 as word )
 
     dim XTouchPoint_XPT2046, YTouchPoint_XPT2046 as Word
-
-    set XPT2046_CS OFF
-
-    Repeat 2
-        TransferData_XPT2046  ( XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_MUX_X  | XPT2046_CFG_PWR ), XPT2046TempOut
-        TransferData_XPT2046  0,  YTouchPoint_XPT2046
-        TransferData_XPT2046  ( XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_MUX_Y  | XPT2046_CFG_PWR ), XPT2046TempOut
-        TransferData_XPT2046  0, XTouchPoint_XPT2046
-        TransferData_XPT2046  0, XPT2046TempOut
-    end Repeat
-
     dim NewXTouchPoint_XPT2046, NewYTouchPoint_XPT2046 as Word
     dim XTouchPoint_XPT2046raw, YTouchPoint_XPT2046Raw as word
 
-    Repeat XPT2046_ReadSamples
+    set XPT2046_CS OFF
 
-        TransferData_XPT2046  XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_MUX_X  | XPT2046_CFG_PWR, XPT2046TempOut
-        TransferData_XPT2046  0,  NewYTouchPoint_XPT2046
-        TransferData_XPT2046  XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_MUX_Y  | XPT2046_CFG_PWR, XPT2046TempOut
-        TransferData_XPT2046  0, NewXTouchPoint_XPT2046
-        TransferData_XPT2046  0, XPT2046TempOut
+      Repeat 2
+          TransferData_XPT2046  ( XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_MUX_X  | XPT2046_CFG_PWR_1 ), XPT2046TempOut
+          TransferData_XPT2046  0,  YTouchPoint_XPT2046
+          TransferData_XPT2046  ( XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_MUX_Y  | XPT2046_CFG_PWR_1 ), XPT2046TempOut
+          TransferData_XPT2046  0, XTouchPoint_XPT2046
+          TransferData_XPT2046  0, XPT2046TempOut
+      end Repeat
 
-        yTouchPoint_XPT2046 = ( yTouchPoint_XPT2046 + NewyTouchPoint_XPT2046 )
-        XTouchPoint_XPT2046 = ( XTouchPoint_XPT2046 + NewXTouchPoint_XPT2046 )
+      Repeat XPT2046_ReadSamples
 
-    End Repeat
-    yTouchPoint_XPT2046 = yTouchPoint_XPT2046 /(XPT2046_ReadSamples + 1)
-    xTouchPoint_XPT2046 = xTouchPoint_XPT2046 /(XPT2046_ReadSamples + 1)
+          TransferData_XPT2046  XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_MUX_X  | XPT2046_CFG_PWR_1, XPT2046TempOut
+          TransferData_XPT2046  0,  NewYTouchPoint_XPT2046
+          TransferData_XPT2046  XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_MUX_Y  | XPT2046_CFG_PWR_1, XPT2046TempOut
+          TransferData_XPT2046  0, NewXTouchPoint_XPT2046
+          TransferData_XPT2046  0, XPT2046TempOut
+
+          yTouchPoint_XPT2046 = ( yTouchPoint_XPT2046 + NewyTouchPoint_XPT2046 )
+          XTouchPoint_XPT2046 = ( XTouchPoint_XPT2046 + NewXTouchPoint_XPT2046 )
+
+      End Repeat
+
+      yTouchPoint_XPT2046 = yTouchPoint_XPT2046 /(XPT2046_ReadSamples + 1)
+      xTouchPoint_XPT2046 = xTouchPoint_XPT2046 /(XPT2046_ReadSamples + 1)
+
+      SendData_XPT2046( XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_CFG_PWR )
 
     set XPT2046_CS ON
 
+    'Set the raw values, folks may want to know this
     XTouchPoint_XPT2046raw = XTouchPoint_XPT2046
     YTouchPoint_XPT2046Raw = yTouchPoint_XPT2046
 
+    'Scale to calibration
     XTouchPoint_XPT2046 = scale ( XTouchPoint_XPT2046, XPT2046_Xmin, XPT2046_Xmax, 0, Current_GLCD_WIDTH )
     YTouchPoint_XPT2046 = scale ( YTouchPoint_XPT2046, XPT2046_Ymin, XPT2046_Ymax, 0, Current_GLCD_HEIGHT )
+
 
     if GLCDRotateState = Portrait_Rev then
         YTouchPoint_XPT2046 = GLCD_HEIGHT - YTouchPoint_XPT2046
     end if
+
+
+    if GLCDRotateState = Landscape_Rev then
+        XTouchPoint_XPT2046 = GLCD_WIDTH - XTouchPoint_XPT2046
+    end if
+
 
 End Sub
