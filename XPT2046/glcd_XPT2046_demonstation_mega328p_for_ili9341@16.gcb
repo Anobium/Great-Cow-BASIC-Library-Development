@@ -151,4 +151,19 @@ sub ScreenLayout
         GLCDPrint ( 182, 302, "Clear", TFT_BLACK )
         GLCDBackground = TFT_BLACK
 
+        ' ------ Version Control - optional
+        #include "GCBVersionNumber.cnt"
+        'Include the GCBVersionNumber.cnt to increment versionString and create the build time string called GCBBuildTimeStr.
+        ' versionString a string is created automatically.
+        ' GCBBuildTimeStr is a string that is also created automatically.
+        ' use "GCBVersionNumber.cnt" as this will create a local copy of the versionString tracker.
+        ' if you use <GCBVersionNumber.cnt> this is a system wide versionString tracker.
+
+        dim versionString as string * 40
+        versionString = "Build: "+GCBBuildStr
+        versionString = versionString + "@"+GCBBuildTimeStr
+        GLCDfntDefaultsize = 1
+        GLCDPrint ( 2, 310, versionString)
+        GLCDfntDefaultsize = 2
+        ' ------ End of Version Control - optional
 End Sub
