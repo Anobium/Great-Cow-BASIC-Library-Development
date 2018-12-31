@@ -38,7 +38,7 @@
     #define XPT2046YMIN   10
     #define XPT2046XMAX   108
     #define XPT2046YMAX   117
-    #define XPT2046_ReadSamples 12
+    #define XPT2046_ReadSamples 100
 
     'Typical Calibration range for Software SPI when using XPT2046
 '    #define XPT2046XMIN   30
@@ -92,7 +92,7 @@
       Loop
       'Flip the data to handle for the screen rotation
       YTouchPoint_XPT2046 = Current_GLCD_HEIGHT - YTouchPoint_XPT2046
-
+      filledbox Current_GLCD_WIDTH, 0, Current_GLCD_WIDTH-10, 10, TFT_GREEN
         if XTouchPoint_XPT2046 > Current_GLCD_WIDTH-59 and YTouchPoint_XPT2046 > Current_GLCD_HEIGHT-20  then
           if XTouchPoint_XPT2046 < Current_GLCD_WIDTH and  YTouchPoint_XPT2046 < Current_GLCD_HEIGHT then
             'clear

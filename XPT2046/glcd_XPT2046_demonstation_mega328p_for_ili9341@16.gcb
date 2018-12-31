@@ -103,7 +103,7 @@
       Loop
       'Flip the data to handle for the screen rotation
       YTouchPoint_XPT2046 = Current_GLCD_HEIGHT - YTouchPoint_XPT2046
-
+      filledbox Current_GLCD_WIDTH, 0, Current_GLCD_WIDTH-10, 10, TFT_GREEN
         if XTouchPoint_XPT2046 > Current_GLCD_WIDTH-59 and YTouchPoint_XPT2046 > Current_GLCD_HEIGHT-20  then
           if XTouchPoint_XPT2046 < Current_GLCD_WIDTH and  YTouchPoint_XPT2046 < Current_GLCD_HEIGHT then
             'clear
