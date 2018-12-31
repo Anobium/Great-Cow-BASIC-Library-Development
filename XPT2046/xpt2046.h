@@ -16,6 +16,8 @@
 '    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 '    v0.9e - more samples
+'    v0.9f - revised calibration method
+'    v0.9g - changed the IRQ
 
  '''    '******************************************************************************************************
 '''    'Setup the XPT2046
@@ -141,6 +143,7 @@
   dim XTouchPoint_XPT2046, YTouchPoint_XPT2046 as Word
   dim XTouchPoint_XPT2046raw, YTouchPoint_XPT2046raw as word
   dim XPT2046_Xmin, XPT2046_Ymin, XPT2046_Xmax, XPT2046_Ymax  as Byte
+  dim Current_GLCD_WIDTH, Current_GLCD_HEIGHT as word
 
 Sub Init_XPT2046 (Optional In precision = PREC_EXTREME)
 
@@ -169,12 +172,17 @@ Sub Init_XPT2046 (Optional In precision = PREC_EXTREME)
     #define isTouched_XPT2046  XPT2046_IRQ = 1
     EnableIRQ_XPT2046
 
-
 End Sub
-
-sub SetCalibation_XPT2046( XPT2046_Xmin, XPT2046_Xmax, XPT2046_Ymin, XPT2046_Ymax )
+dim Current_GLCD_WIDTH, Current_GLCD_HEIGHT as word
+sub SetCalibation_XPT2046( XPT2046_Xmin as word, XPT2046_Xmax as word, XPT2046_Ymin as word, XPT2046_Ymax as word )
      'this simply set the variables
 End Sub
+
+
+sub SetCalibation_XPT2046( XPT2046_Xmin as word, XPT2046_Xmax as word, XPT2046_Ymin as word, XPT2046_Ymax as word, Current_GLCD_WIDTH as word, Current_GLCD_HEIGHT as word )
+     'this simply set the variables
+End Sub
+
 
 Sub EnableIRQ_XPT2046
 
@@ -252,10 +260,33 @@ end Sub
 
 
 Sub GetXY_XPT2046 (out XTouchPoint_XPT2046 as word, out YTouchPoint_XPT2046 as word )
+    '
+    '#define XPT2046_CFG_START   128       'bit 7
+    '
+    '#define XPT2046_CFG_MUX     112       'bits 7-4 the channel select bits   A2, A1 & A0
+    '#define XPT2046_MUX_Y       80
+    '#define XPT2046_MUX_X       16
+    '#define XPT2046_MUX_Z1      48
+    '#define XPT2046_MUX_Z2      64
+    '
+    '
+    '#define XPT2046_CFG         8
+    '#define XPT2046_CFG_8BIT    8         'bit 3 - the 12 or 8 bit conversion. Low is 12bit, High is 8bit
+    '#define XPT2046_CFG_12BIT   0
+    '
+    '#define XPT2046_CFG         4
+    '#define XPT2046_CFG_SER     4         'bit 2 - Single-ended or Differential conversion
+    '#define XPT2046_CFG_DFR     0
+    '
+    '#define XPT2046_CFG_PWR     0         'bit 1-0 - the power mask.  PD1 & PD0
+    '#define XPT2046_CFG_PWR_1   1         'bit 1-0 - the power mask.  PD1 & PD0
+    '#define XPT2046_CFG_PWR_2   2         'bit 1-0 - the power mask.  PD1 & PD0
+    '#define XPT2046_CFG_PWR_3   3         'bit 1-0 - the power mask.  PD1 & PD0
 
     dim XTouchPoint_XPT2046, YTouchPoint_XPT2046 as Word
     dim NewXTouchPoint_XPT2046, NewYTouchPoint_XPT2046 as Word
     dim XTouchPoint_XPT2046raw, YTouchPoint_XPT2046Raw as word
+    dim Current_GLCD_WIDTH, Current_GLCD_HEIGHT as word
 
     set XPT2046_CS OFF
 
@@ -288,7 +319,7 @@ Sub GetXY_XPT2046 (out XTouchPoint_XPT2046 as word, out YTouchPoint_XPT2046 as w
       yTouchPoint_XPT2046 = yTouchPoint_XPT2046 /(XPT2046_ReadSamples )
       xTouchPoint_XPT2046 = xTouchPoint_XPT2046 /(XPT2046_ReadSamples )
 
-      SendData_XPT2046( XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_CFG_PWR )
+      SendData_XPT2046( XPT2046_CFG_START | XPT2046_CFG_8BIT | XPT2046_CFG_DFR | XPT2046_CFG_PWR | XPT2046_MUX_Y )
 
     set XPT2046_CS ON
 
@@ -299,16 +330,5 @@ Sub GetXY_XPT2046 (out XTouchPoint_XPT2046 as word, out YTouchPoint_XPT2046 as w
     'Scale to calibration
     XTouchPoint_XPT2046 = scale ( XTouchPoint_XPT2046, XPT2046_Xmin, XPT2046_Xmax, 0, Current_GLCD_WIDTH )
     YTouchPoint_XPT2046 = scale ( YTouchPoint_XPT2046, XPT2046_Ymin, XPT2046_Ymax, 0, Current_GLCD_HEIGHT )
-
-
-    if GLCDRotateState = Portrait_Rev then
-        YTouchPoint_XPT2046 = GLCD_HEIGHT - YTouchPoint_XPT2046
-    end if
-
-
-    if GLCDRotateState = Landscape_Rev then
-        XTouchPoint_XPT2046 = GLCD_WIDTH - XTouchPoint_XPT2046
-    end if
-
 
 End Sub
