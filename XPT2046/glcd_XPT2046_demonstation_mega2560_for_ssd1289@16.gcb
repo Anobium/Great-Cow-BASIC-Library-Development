@@ -1,80 +1,101 @@
 '''A demonstration program for GCGB and GCB.
 '''--------------------------------------------------------------------------------------------------------------------------------
-'''This program is a GLCD demonstration maps the #1 character for the OLED font 1
+'''This program is a simple GLCD demonstration of the Touch Screen adapater working with the SSD1289 GLCD display.
+'''The XPT2046 is a 8-bit sampling Analog-to-Digital Converter (ADC) with a synchronous serial interface and low
+'''on-resistance switches for driving touch screens.
+''':
+'''It is a low power, high speed device with onboard switches make the XPT2046 ideal for battery-operated systems
+'''such as personal digital assistants with resistive touch screens and other portable equipment.
+'''The ADS7843 is available in an SSOP-16 package and is specified over the –40°C to +85°C temperature range.
+''':
+''':
 '''The GLCD is connected to the microprocessor as shown in the hardware section of this code.
 '''@author  EvanV
 '''@licence GPL
 '''@version 1.0
-'''@date    05.01.17
+'''@date    30.12.2018
 '''********************************************************************************
-  'Chip Settings.
-  #chip mega328p, 16
-  #option explicit
 
+    'Chip Settings
+    #chip mega2560, 16
+    #option explicit
+
+    'Include files
     #include <glcd.h>
-    #include <uno_mega328p.h >
+    'GLCD Device Selection
+    #define GLCD_TYPE GLCD_TYPE_SSD1289
     #include <xpt2046.h>
 
-    #define GLCD_TYPE GLCD_TYPE_ILI9486L
 
 
-    'Pin mappings for SPI - this GLCD driver supports Hardware SPI and Software SPI
-    #define GLCD_DC       DIGITAL_8         ' Data command line
-    #define GLCD_CS       DIGITAL_10        ' Chip select line
-    #define GLCD_RST      DIGITAL_9         ' Reset line
-
-    #define GLCD_DI       DIGITAL_12          ' Data in | MISO
-    #define GLCD_DO       DIGITAL_11          ' Data out | MOSI
-    #define GLCD_SCK      DIGITAL_13          ' Clock Line
-
-    #define ILI9486L_HardwareSPI    ' remove/comment out if you want to use software SPI.
-      'End of GLCD specific setup
-      '*****************************************************************************************
- 'Setup the XPT2046
-
-    'Typical calibration range for Hardware SPI when using XPT2046
-    'for 320 * 240 screeen... may be different for others
-    #define XPT2046XMIN   12
-    #define XPT2046YMIN   12
-    #define XPT2046XMAX   108
-    #define XPT2046YMAX   117
-    #define XPT2046_ReadSamples 100
-
-    'Typical Calibration range for Software SPI when using XPT2046
-'    #define XPT2046XMIN   30
-'    #define XPT2046YMIN   25
-'    #define XPT2046XMAX   210
-'    #define XPT2046YMAX   225
-
-
-    #define XPT2046_DI       DIGITAL_12          ' Data in | MISO
-    #define XPT2046_DO       DIGITAL_11          ' Data out | MOSI
-    #define XPT2046_SCK      DIGITAL_13          ' Clock Line
-    #define XPT2046_CS       DIGITAL_2           ' Chip select line
-    #define XPT2046_IRQ      ANALOG_5
-    #define XPT2046_HardwareSPI                  ' remove/comment out if you want to use software SPI - must use same method as GLCD
-
-    'Set the initial calibration - shown here to show the method
-    SetCalibation_XPT2046 ( XPT2046XMIN, XPT2046XMAX, XPT2046YMIN, XPT2046YMAX, GLCD_WIDTH, GLCD_HEIGHT )
+    'Define ports for the SSD1289 display
+    #define GLCD_WR   PORTG.2
+    #define GLCD_CS   PORTG.1
+    #define GLCD_RS   PORTD.7
+    #define GLCD_RST  PORTG.0
+    #define GLCD_DB0  PORTC.0
+    #define GLCD_DB1  PORTC.1
+    #define GLCD_DB2  PORTC.2
+    #define GLCD_DB3  PORTC.3
+    #define GLCD_DB4  PORTC.4
+    #define GLCD_DB5  PORTC.5
+    #define GLCD_DB6  PORTC.6
+    #define GLCD_DB7  PORTC.7
+    #define GLCD_DB8  PORTA.0
+    #define GLCD_DB9  PORTA.1
+    #define GLCD_DB10 PORTA.2
+    #define GLCD_DB11 PORTA.3
+    #define GLCD_DB12 PORTA.4
+    #define GLCD_DB13 PORTA.5
+    #define GLCD_DB14 PORTA.6
+    #define GLCD_DB15 PORTA.7
 
 
     '******************************************************************************************************
+    'Setup the XPT2046
+
+    'Typical calibration range for Hardware SPI when using XPT2046
+    'for 320 * 240 screeen... may be different for others
+    #define XPT2046XMIN   13
+    #define XPT2046YMIN   20
+    #define XPT2046XMAX   241
+    #define XPT2046YMAX   246
+    #define XPT2046_ReadSamples 15
+
+
+    #define XPT2046_Do       PORTG.5  ' Arduino Mega D4
+    #define XPT2046_Di       PORTE.5  ' Arduino Mega D3
+    #define XPT2046_SCK      PORTH.3  ' Arduino Mega D6
+    #define XPT2046_CS       PORTE.3  ' Arduino Mega D5
+    #define XPT2046_IRQ      PORTE.4  ' Arduino Mega D2
+    '#define XPT2046_HardwareSPI                  ' remove/comment out if you want to use software SPI - must use same method as GLCD
+
+    'Set the initial calibration - shown here to show the method.
+    'If you rotate the screen then you will have to call the method to reset these parameters.
+    SetCalibation_XPT2046 ( XPT2046XMIN, XPT2046XMAX, XPT2046YMIN, XPT2046YMAX, GLCD_WIDTH, GLCD_HEIGHT  )
+
+    '******************************************************************************************************
     'Main program
-    GLCDCLS TFT_NAVY
+    GLCDRotate Portrait_Rev
+    GLCDRotate LANDSCAPE_REV
+    GLCDCLS SSD1289_NAVY
+    SetCalibation_XPT2046 ( XPT2046XMIN, XPT2046XMAX, XPT2046YMIN, XPT2046YMAX, GLCD_WIDTH, GLCD_HEIGHT )
     ScreenLayout
 
-   dim Xconverge, Yconverge as Integer
+    dim Xconverge, Yconverge as Integer
     dim convergeCounter as byte
+    dim oldGLCDBackground as word
+
     do
 
       Xconverge = 0
       Yconverge = 0
       convergeCounter = 1
 
-      filledbox Current_GLCD_WIDTH, 0, Current_GLCD_WIDTH-10, 10, TFT_RED
+      filledbox Current_GLCD_WIDTH, 0, Current_GLCD_WIDTH-10, 10, SSD1289_RED
       'always wait for touch event
       wait while isTouched_XPT2046
-      filledbox Current_GLCD_WIDTH, 0, Current_GLCD_WIDTH-10, 10, TFT_YELLOW
+      filledbox Current_GLCD_WIDTH, 0, Current_GLCD_WIDTH-10, 10, SSD1289_YELLOW
       do
           repeat 5
               'get the values -
@@ -91,8 +112,10 @@
           end if
       Loop
       'Flip the data to handle for the screen rotation
-      YTouchPoint_XPT2046 = Current_GLCD_HEIGHT - YTouchPoint_XPT2046
-      filledbox Current_GLCD_WIDTH, 0, Current_GLCD_WIDTH-10, 10, TFT_GREEN
+      XTouchPoint_XPT2046 = Current_GLCD_WIDTH - XTouchPoint_XPT2046
+
+
+      filledbox Current_GLCD_WIDTH, 0, Current_GLCD_WIDTH-10, 10, SSD1289_GREEN
         if XTouchPoint_XPT2046 > Current_GLCD_WIDTH-59 and YTouchPoint_XPT2046 > Current_GLCD_HEIGHT-20  then
           if XTouchPoint_XPT2046 < Current_GLCD_WIDTH and  YTouchPoint_XPT2046 < Current_GLCD_HEIGHT then
             'clear
@@ -100,9 +123,10 @@
           end if
       else
 
-          FilledCircle XTouchPoint_XPT2046, YTouchPoint_XPT2046, 3, TFT_LIGHTGREY
+          FilledCircle XTouchPoint_XPT2046, YTouchPoint_XPT2046, 3, SSD1289_WHITE
 
           'Show the raw data
+          GLCDBackground = oldGLCDBackground
           GLCDPrint ( 24, 56, pad(str(XTouchPoint_XPT2046raw),3 ) )
           GLCDPrint ( 24, 72, pad(str(YTouchPoint_XPT2046raw),3 ) )
           GLCDPrint ( 24, 90, pad(str(convergeCounter ) ,3 ) )
@@ -114,6 +138,7 @@
           if XTouchPoint_XPT2046raw > XPT2046_Xmax then XPT2046_Xmax = XTouchPoint_XPT2046raw
           if YTouchPoint_XPT2046raw  > XPT2046_Ymax then XPT2046_Ymax = YTouchPoint_XPT2046raw
 
+          GLCDForeground = SSD1289_WHITE
           'show the values
           GLCDPrint ( 102, 56, pad(str(XPT2046_Xmin),3 ) )
           GLCDPrint ( 102, 72, pad(str(XPT2046_Ymin),3 ) )
@@ -131,22 +156,23 @@
     loop
 
 
-
 sub ScreenLayout
 
-        #define GLCD_OLED_FONT
-        GLCDfntDefaultsize = 2
+'        #define GLCD_OLED_FONT
+        GLCDfntDefaultsize = 1
         GLCDFontWidth = 5
         'Layout the screen
         GLCDCLS
         GLCDPrint ( 2, 3, "XPT2046 demonstration 2018")
-        line 0, 34, Current_GLCD_WIDTH, 34
+        line 0, 30, Current_GLCD_WIDTH, 30
         line 0, 128, Current_GLCD_WIDTH, 128
         line 0, 220, Current_GLCD_WIDTH, 220
         GLCDPrint ( 2, 25, "Dynamic Calibration")
         GLCDPrint ( 22, 40, "Raw    Min   Max")
         GLCDPrint ( 2, 56, "X:")
         GLCDPrint ( 2, 72, "Y:")
+        GLCDPrint ( 2, 90, "C:")
+
         GLCDPrint ( 2, 122, "Current Calibration")
         GLCDPrint ( 2, 146, "X:")
         GLCDPrint ( 2, 162, "Y:")
@@ -157,7 +183,6 @@ sub ScreenLayout
         GLCDPrint ( 2, 214, "Scaled")
         GLCDPrint ( 2, 230, "X:")
         GLCDPrint ( 2, 246, "Y:")
-        GLCDPrint ( 2, 90, "C:")
 
         GLCDPrint ( 120, 214, "GLCD Size")
         GLCDPrint ( 120, 230, "X:" + Str( Current_GLCD_WIDTH ) )
@@ -165,15 +190,15 @@ sub ScreenLayout
 
 
         GLCDfntDefaultsize = 1
-        GLCDPrint ( 2, Current_GLCD_HEIGHT-17, "v0.9c")
+        GLCDPrint ( 2, Current_GLCD_HEIGHT-19, "v0.9c")
         GLCDfntDefaultsize = 2
 
-        filledbox Current_GLCD_WIDTH, 0, Current_GLCD_WIDTH-10, 10, TFT_RED
+        filledbox Current_GLCD_WIDTH-1, 0, Current_GLCD_WIDTH-11, 10, SSD1289_RED
 
-        Dim oldGLCDBackground as word
+        filledbox ( Current_GLCD_WIDTH-58, Current_GLCD_HEIGHT-18, Current_GLCD_WIDTH, Current_GLCD_HEIGHT, SSD1289_WHITE )
         oldGLCDBackground = GLCDBackground
-            GLCDBackground = TFT_WHITE
-            GLCDPrint ( Current_GLCD_WIDTH-58, Current_GLCD_HEIGHT-18, "Clear", TFT_BLACK )
+        GLCDBackground = SSD1289_WHITE
+        GLCDPrint ( Current_GLCD_WIDTH-58, Current_GLCD_HEIGHT-18, "Clear", SSD1289_BLACK )
         GLCDBackground = oldGLCDBackground
 
         ' ------ Version Control - optional
@@ -188,7 +213,7 @@ sub ScreenLayout
         versionString = "Build: "+GCBBuildStr
         versionString = versionString + "@"+GCBBuildTimeStr
         GLCDfntDefaultsize = 1
-        GLCDPrint ( 2, Current_GLCD_HEIGHT-10, versionString)
-        GLCDfntDefaultsize = 2
+        GLCDPrint ( 2, Current_GLCD_HEIGHT-10, versionString, SSD1289_WHITE)
+        GLCDfntDefaultsize = 1
         ' ------ End of Version Control - optional
 End Sub
