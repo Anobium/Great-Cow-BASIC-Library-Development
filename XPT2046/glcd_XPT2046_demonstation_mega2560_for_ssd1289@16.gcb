@@ -68,7 +68,7 @@
     #define XPT2046_SCK      PORTH.3  ' Arduino Mega D6
     #define XPT2046_CS       PORTE.3  ' Arduino Mega D5
     #define XPT2046_IRQ      PORTE.4  ' Arduino Mega D2
-    '#define XPT2046_HardwareSPI                  ' remove/comment out if you want to use software SPI - must use same method as GLCD
+    'The mega2560 does not suppport hardware SPI!! So, for this hardware configuration tested, using Software SPI by default
 
     'Set the initial calibration - shown here to show the method.
     'If you rotate the screen then you will have to call the method to reset these parameters.
@@ -77,8 +77,10 @@
     '******************************************************************************************************
     'Main program
     GLCDRotate Portrait_Rev
-    GLCDRotate LANDSCAPE_REV
     GLCDCLS SSD1289_NAVY
+
+
+
     SetCalibation_XPT2046 ( XPT2046XMIN, XPT2046XMAX, XPT2046YMIN, XPT2046YMAX, GLCD_WIDTH, GLCD_HEIGHT )
     ScreenLayout
 
@@ -158,13 +160,13 @@
 
 sub ScreenLayout
 
-'        #define GLCD_OLED_FONT
-        GLCDfntDefaultsize = 1
+        #define GLCD_OLED_FONT
+        GLCDfntDefaultsize = 2
         GLCDFontWidth = 5
         'Layout the screen
         GLCDCLS
         GLCDPrint ( 2, 3, "XPT2046 demonstration 2018")
-        line 0, 30, Current_GLCD_WIDTH, 30
+        line 0, 32, Current_GLCD_WIDTH, 32
         line 0, 128, Current_GLCD_WIDTH, 128
         line 0, 220, Current_GLCD_WIDTH, 220
         GLCDPrint ( 2, 25, "Dynamic Calibration")
@@ -214,6 +216,6 @@ sub ScreenLayout
         versionString = versionString + "@"+GCBBuildTimeStr
         GLCDfntDefaultsize = 1
         GLCDPrint ( 2, Current_GLCD_HEIGHT-10, versionString, SSD1289_WHITE)
-        GLCDfntDefaultsize = 1
+        GLCDfntDefaultsize = 2
         ' ------ End of Version Control - optional
 End Sub
