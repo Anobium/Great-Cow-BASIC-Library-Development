@@ -57,6 +57,9 @@
  #include "PCF8563.h"
  #define DS_AddrWrite 0xA2
  #define DS_AddrRead  0xA3
+  'USART settings
+  #define USART_BAUD_RATE 9600
+  #define USART_TX_BLOCKING
 
 
   '''Set up LCD
@@ -144,13 +147,13 @@ locate 2,0
   do
 
     updateDisp                        ;show time and date
-'    if setBut = pressed then
-'      changeSetting                   ;change time and date
-'    end if
-'
-'    if modeBut = pressed then
-'      changeMode                      ;12 or 24 hour mode
-'    end if
+    if setBut = pressed then
+      changeSetting                   ;change time and date
+    end if
+
+    if modeBut = pressed then
+      changeMode                      ;12 or 24 hour mode
+    end if
 
   loop
 end
@@ -235,9 +238,32 @@ end
   sub updateDisp
     ;for best efficiency, date is only updated once a day
     PCF8563_ReadTime(hour, min, sec, am_pm)
+
     if oldsec <> sec then
+'erv
+    HSerPrint hour
+    HSerSend 9
+    HSerPrint min
+    HSerSend 9
+    HSerSend 9
+    HSerPrint sec
+    HSerSend 9
+    HSerPrint am_pm
+    HSerSend 9
+    HSerPrint ">"
+
       if !(hour | min | sec) then       ;time to update
         PCF8563_ReadDate(DOW, date, month, year)
+
+            HSerPrint DOW
+    HSerSend 9
+    HSerPrint date
+    HSerSend 9
+    HSerPrint month
+    HSerSend 9
+    HSerPrint year
+    HSerPrintCRLF
+
       end if
 
       locate 0,0                        ;home the cursor
