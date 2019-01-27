@@ -1,0 +1,528 @@
+
+'PingPong für ATmega8
+'Fabian Kainka 2009
+'Erweiterung: Soundeffekte, Ausgang D1
+
+'Fuses High= 0xD9, Low = 0xE4, 8 MHz intern, Brownout 2,7V:
+
+$crystal = 8000000
+$regfile = "m8def.dat"
+$hwstack = 64
+$swstack = 16
+$framesize = 64
+
+Config Portc = 15                                           'PORTC als AD-Eingang
+Config Portb = Output
+Config Portd = 255
+
+Dim X(14) As Word
+Dim W As Word
+Dim D As Byte
+Dim N As Byte
+Dim Ticks As Byte
+
+Dim Xgeschw As Integer
+Dim Ygeschw As Integer
+Dim Xpos As Byte
+Dim Ypos As Byte
+Dim Altpos As Byte
+
+Dim Vh1 As Integer
+
+Dim Ad0 As Word
+Dim Ad0_mean As Word
+
+Dim I As Byte
+Dim Vhelp As Word
+Dim Vhelp1 As Integer
+'Dim Vhelp3 As Integer
+Dim Dat As Integer
+Dim Vy As Byte
+Dim Col As Byte
+Dim Portdout As Byte
+Dim Portcout As Byte
+
+'MENUE
+Dim Mplaywahl As Bit
+Dim Pl2c As Bit
+Dim Pl1c As Bit
+Dim Pl2c1 As Bit
+Dim Pl2c2 As Bit
+Dim Pl1c1 As Bit
+Dim Pl1c2 As Bit
+Dim Mdlauf As Word
+Dim Mdlaufa As Byte
+Dim Vtime As Byte
+Dim Noadcpl2 As Bit
+Dim Noadcpl1 As Bit
+Dim Plst As Bit
+
+Dim Level As Byte
+Dim Vhlepl1 As Byte
+Dim Levelpl1 As Byte
+Dim Vhlepl2 As Byte
+Dim Levelpl2 As Byte
+
+
+Dim E As Integer
+Dim E2 As Single
+Dim U2 As Single
+Dim U As Integer
+Dim Ysch1 As Word
+Dim Ysch1pos As Byte
+Dim Vysch1pos As Byte
+Dim Ysch2pos As Byte
+Dim Vysch2pos As Byte
+Dim Pupl1 As Byte
+Dim Pupl2 As Byte
+Dim Vhelp2 As Word
+Dim Vhelp3 As Integer
+Dim Y(10) As Word
+
+Dim Piep As Byte
+Dim Pieptimer As Byte
+Dim Piepbit As Bit
+
+Declare Sub Standby
+Declare Sub Test
+
+Config Timer2 = Timer , Prescale = 8
+
+On Ovf2 Tim2_isr
+Enable Timer2
+Enable Interrupts
+Config Int0 = Low Level                                     'Falling
+On Int0 Int_isr
+
+
+Start Timer2
+Config Adc = Single , Prescaler = 64 , Reference = Off
+Start Adc
+
+Readeeprom I , 0
+If I = 255 Then Test
+  Portc.4 = 1                                               'Pullup
+  Waitms 10
+'Testroutine
+  If Pinc.4 = 0 Then Test                                   'Test gestartet
+'Test Ende
+
+
+'Spielstart, Variablen auf Anfangswert
+Spstart:
+Pupl1 = 0
+Pupl2 = 0
+Pl2c = 1
+Pl1c = 1
+Pl2c1 = 0
+Pl2c2 = 0
+Pl1c1 = 0
+Pl1c2 = 0
+Mdlauf = 0
+Mdlaufa = 0
+Mplaywahl = 1                                               'zuerst Spieler auswählen
+Vhlepl1 = 0
+Vhlepl2 = 0
+Levelpl1 = 0
+Levelpl2 = 0
+Level = 0
+
+Do
+   Ypos = Rnd(6)
+   Ypos = Ypos + 2
+   Do
+      Vtime = Vtime + 1
+
+      'SCHLÄGERSTEUERUNG
+      'Schlager1
+      E = Getadc(6) - 170
+      'E = E - 170
+      If E < 0 Then E = 0
+      ' If E > 170 Then E = E - 170 Else E = 0
+      If E > 680 Then E = 680
+      E = E / 68
+      If E < 0 Then E = 0
+      If E > 8 Then E = 8
+      'Computer Spielt
+         If Mplaywahl = 0 And Pl1c = 0 Then
+            If Xgeschw <= 0 And Rnd(100) > 5 Then           'And Rnd(100) < 9
+                 Vhelp3 = Ypos - Ysch1pos
+                 If Vhelp3 > 1 Then E = Ysch1pos + 1
+                 If Vhelp3 <= 0 And Ysch1pos > 0 Then E = Ysch1pos - 1
+                 If Vhelp3 = 1 Then
+                    E = E2
+                    If Ygeschw = 0 And Xpos < 4 Then E = Ysch1pos -1
+                 End If
+            Else
+               E = E2
+            End If
+         End If
+      If E < 0 Then E = 0
+      If E > 8 Then E = 8
+      'Ausgabe
+      E2 = E
+      Ysch1pos = E
+      E = 2 ^ E
+      Ysch1 = E
+      E = E * 2
+      Ysch1 = Ysch1 + E
+      X(1) = Ysch1
+
+      'Nur vor dem ersten Schalg: Spielerauswahl
+      If Mplaywahl = 1 Then
+           If Vhlepl1 = 0 Then If Ysch1pos > 4 Then Vhlepl1 = 1
+           If Vhlepl1 = 1 Then If Ysch1pos < 4 Then Vhlepl1 = 2
+           If Vhlepl1 = 2 Then
+               If Ysch1pos > 4 Then                         'Levelerhöhen
+                   Vhlepl1 = 1
+                   Levelpl1 = Levelpl1 + 1
+                   If Levelpl1 > Levelpl2 And Levelpl1 < 6 Then       'Levelanzeige
+                       Vhelp1 = Levelpl1
+                       Vhelp1 = 6 - Vhelp1
+                       Vhelp1 = Vhelp1 * 2
+                       Vhelp1 = Vhelp1 - 1
+                       Vhelp3 = 2 ^ Vhelp1
+                       X(5) = X(5) + Vhelp3
+                       Vhelp1 = Vhelp1 - 1
+                       Vhelp1 = 2 ^ Vhelp1
+                       X(5) = X(5) + Vhelp1
+                       X(6) = X(5)
+                   End If
+               End If
+           End If
+           If Ysch1pos < 1 Then Pl1c = 0 Else Pl1c = 1
+      End If
+
+
+
+      'Schlager2
+       U = Getadc(7) - 170
+       If U < 0 Then U = 0
+       'U = 1024 - U
+       'If U > 170 Then U = U - 170 Else U = 0
+       If U > 680 Then U = 680
+       U = U / 68
+       If U < 0 Then U = 0
+       If U > 8 Then U = 8
+       If Mplaywahl = 0 And Pl2c = 0 Then
+         If Xgeschw => 0 And Rnd(100) > 5 Then              'And Rnd(100) < 9
+              Vhelp3 = Ypos - Ysch2pos
+              If Vhelp3 > 1 Then U = Ysch2pos + 1
+              If Vhelp3 <= 0 And Ysch2pos > 0 Then U = Ysch2pos - 1
+              If Vhelp3 = 1 Then
+                  U = U2
+                  If Ygeschw = 0 And Xpos > 9 Then U = Ysch2pos -1
+              End If
+         Else
+            U = U2
+         End If
+       End If
+       If U < 0 Then U = 0
+       If U > 8 Then U = 8
+       U2 = U
+       Ysch2pos = U
+       U = 2 ^ U
+       Ysch1 = U
+       U = U * 2
+       Ysch1 = Ysch1 + U
+       X(12) = Ysch1
+
+       'Nur vor dem ersten Schalg: Spielerauswahl und: wer beginnt
+       If Mplaywahl = 1 Then
+         If Vhlepl2 = 0 Then If Ysch2pos > 4 Then Vhlepl2 = 1
+         If Vhlepl2 = 1 Then If Ysch2pos < 4 Then Vhlepl2 = 2
+         If Vhlepl2 = 2 Then
+            If Ysch2pos > 4 Then
+               Vhlepl2 = 1
+               Levelpl2 = Levelpl2 + 1
+               If Levelpl2 > Levelpl1 And Levelpl2 < 6 Then
+                  Vhelp1 = Levelpl2
+                  Vhelp1 = 6 - Vhelp1
+                  Vhelp1 = Vhelp1 * 2
+                  Vhelp1 = Vhelp1 - 1
+                  Vhelp3 = 2 ^ Vhelp1
+                  X(5) = X(5) + Vhelp3
+                  Vhelp1 = Vhelp1 - 1
+                  Vhelp1 = 2 ^ Vhelp1
+                  X(5) = X(5) + Vhelp1
+                  X(6) = X(5)
+               End If
+            End If
+          End If
+          If Ysch2pos < 1 Then Pl2c = 0 Else Pl2c = 1
+          If Ysch2pos > Ysch1pos Then Xpos = 11 Else Xpos = 2
+       End If
+
+      If Mplaywahl = 0 Then
+         'BALLSTEUERUNG:
+         Altpos = Xpos
+         Xpos = Xpos + Xgeschw
+         Ypos = Ypos + Ygeschw
+         X(altpos) = 0
+         Vhelp1 = 2 ^ Ypos
+         X(xpos) = X(xpos) Or Vhelp1
+
+         'Seite Player1
+         If Xpos = 2 Then
+            Vh1 = Ysch1pos - Ypos
+            If Vh1 >= -2 And Vh1 <= 1 Then
+Piep = 4
+Waitms 50
+Piep = 0
+               If Vh1 = 1 Then
+                  If Ygeschw = 1 Then
+                     Xgeschw = 1
+                     If Rnd(100) > 50 Then Ygeschw = -1 Else Ygeschw = 0
+                  Elseif Ygeschw = 0 Then
+                     Xgeschw = 1
+                     Ygeschw = -1
+                  End If
+               End If
+               If Vh1 = 0 Then Xgeschw = 1                  'And Ygeschw = -1
+               If Vh1 = -1 Then Xgeschw = 1
+               If Vh1 = -2 Then
+                  If Ygeschw = -1 Then
+                    Xgeschw = 1
+                    If Rnd(100) > 50 Then Ygeschw = 1 Else Ygeschw = 0
+                  Elseif Ygeschw = 0 Then
+                    Xgeschw = 1
+                    Ygeschw = 1
+                  End If
+               End If
+            End If
+         End If
+
+         'Seite Player2
+         If Xpos = 11 Then
+            Vh1 = Ysch2pos - Ypos
+            If Vh1 >= -2 And Vh1 <= 1 Then
+Piep = 4
+Waitms 50
+Piep = 0
+               If Vh1 = 1 Then
+                  If Ygeschw = 1 Then
+                      Xgeschw = -1
+                      If Rnd(100) > 50 Then Ygeschw = -1 Else Ygeschw = 0
+                  Elseif Ygeschw = 0 Then
+                     Xgeschw = -1
+                     Ygeschw = -1
+                  End If
+               End If
+               If Vh1 = 0 Then Xgeschw = -1                 'And Ygeschw = -1
+               If Vh1 = -1 Then Xgeschw = -1
+               If Vh1 = -2 Then
+                  If Ygeschw = -1 Then
+                     Xgeschw = -1
+                     If Rnd(100) > 50 Then Ygeschw = 1 Else Ygeschw = 0
+                  Elseif Ygeschw = 0 Then
+                     Xgeschw = -1
+                     Ygeschw = 1
+                  End If
+               End If
+            End If
+         End If
+
+         'GRENZEN & RICHTUNGSÄNDERUNG
+         If Xpos >= 12 Then
+Piep = 2
+Waitms 100
+Piep = 0
+            Wait 1
+            Goto Pout                                       'Aus! Punkteanzeige
+         End If
+         If Xpos <= 1 Then
+Piep = 3
+Waitms 100
+Piep = 0
+            Wait 1
+            Goto Pout                                       'Aus! Punkteanzeige
+         End If
+         If Ypos >= 9 Then Ygeschw = -1
+         If Ypos <= 0 Then Ygeschw = 1
+
+      'Geschwindigkeit
+      If Levelpl1 > Levelpl2 Then Level = Levelpl1 Else Level = Levelpl2
+      If Level < 2 Then Waitms 100
+      If Level = 2 Then Waitms 80
+      If Level = 3 Then Waitms 60
+      If Level = 4 Then Waitms 40
+      If Level > 4 Then Waitms 20
+   Else                                                     'Spielerauswahl
+     Mdlauf = Mdlauf + 1
+     Mdlaufa = Mdlaufa + 1
+     If Mdlaufa => 11 Then Mdlaufa = 0
+        If Mdlaufa > 6 Then
+           If Pl1c = 0 Then X(1) = &B0000000000
+           If Pl2c = 0 Then X(12) = &B0000000000
+           Waitms 50
+        Else
+           Waitms 50
+        End If
+
+        If Mdlauf >= 70 Then                                'Menudauer
+           Wait 1
+           X(5) = 0
+           X(6) = 0
+           If Pl1c = 0 And Pl2c = 0 Then Levelpl1 = Rnd(5)  'Computer spielt zufälliges level
+           Mplaywahl = 0
+        End If
+     End If
+   Loop
+
+Pout:
+X(1) = 0
+X(12) = 0
+
+If Xpos >= 12 Then
+   Xpos = Xpos - 1
+   Xgeschw = 0
+   Ygeschw = 0
+   If Pupl1 < 10 Then Pupl1 = Pupl1 + 1
+End If
+If Xpos <= 1 Then
+   Xpos = Xpos + 1
+   Xgeschw = 0
+   Ygeschw = 0
+   If Pupl2 < 10 Then Pupl2 = Pupl2 + 1
+End If
+
+Vh1 = 10 - Pupl1
+Vh1 = 2 ^ Vh1
+Vh1 = Vh1 - 1
+Vh1 = 1023 - Vh1
+   If Vh1 > 0 Then X(1) = Vh1 Else X(1) = 0
+Vh1 = 10 - Pupl2
+Vh1 = 2 ^ Vh1
+Vh1 = Vh1 - 1
+Vh1 = 1023 - Vh1
+   If Vh1 > 0 Then X(12) = Vh1
+   If Pupl1 = 10 Then
+      Wait 3
+      Standby
+      Goto Spstart:
+   End If
+   If Pupl2 = 10 Then
+      Wait 3
+      Standby
+      Goto Spstart:
+   End If
+Wait 1
+
+Loop
+
+
+Sub Standby
+  Stop Timer2
+  Portc = 0
+  Portd = 0
+  Portb = 0
+  Stop Adc
+  Portd.2 = 1
+  Ddrd.2 = 0
+  Waitms 1
+  Enable Int0
+  Waitms 1
+  Powerdown
+  Ddrd.2 = 1
+  Portd.2 = 0
+  Start Adc
+  Start Timer2
+End Sub
+
+Sub Test
+      For I = 1 To 12
+         X(i) = 1023
+      Next I
+      Waitms 1000
+      For U = 1 To 12
+         For I = 1 To 12
+            X(i) = 0
+         Next I
+         X(u) = 1023
+         Waitms 100
+      Next U
+      For U = 1 To 12
+         For I = 1 To 12
+            Vhelp = U - 1
+            Vhelp = 2 ^ Vhelp
+            X(i) = Vhelp
+         Next I
+         Waitms 100
+      Next U
+      For U = 1 To 12
+         X(u) = 0
+      Next U
+ I = 0
+ Writeeeprom I , 0
+
+End Sub
+
+Int_isr:
+  Disable Int0
+Return
+
+
+Tim2_isr:
+ '800 µs
+'Timer2 = 56
+Col = Col + 1
+If Col = 13 Then Col = 1
+Vy = Col + 0
+Portd = 0
+Portb = 0
+Portc = 0
+If Col = 1 Then Portb.4 = 0 Else Portb.4 = 1
+Portb.3 = 1                                                 'cl
+Portb.3 = 0
+Portb.2 = 1                                                 'Str
+Portb.2 = 0
+Portdout = Low(x(vy))
+Portcout = Portdout And 15
+Portdout = Portdout And 240
+Portd = Portdout
+Portc = Portcout
+Portb = High(x(vy))
+
+
+Pieptimer = Pieptimer + 1
+If Piep = 1 Then
+  Piepbit = Pieptimer.0
+  Portd.1 = Piepbit
+End If
+If Piep = 2 Then
+  Piepbit = Pieptimer.1
+  Portd.1 = Piepbit
+End If
+If Piep = 3 Then
+  Piepbit = Pieptimer.2
+  Portd.1 = Piepbit
+End If
+If Piep = 4 Then
+  Piepbit = Pieptimer.3
+  Portd.1 = Piepbit
+End If
+
+If Piep = 5 Then
+  Piepbit = Pieptimer.0
+  Portd.1 = Piepbit
+  Timer2 = Pieptimer
+End If
+If Piep = 6 Then
+  Piepbit = Pieptimer.1
+  Portd.1 = Piepbit
+  Timer2 = Pieptimer
+End If
+If Piep = 7 Then
+  Piepbit = Pieptimer.2
+  Portd.1 = Piepbit
+  Timer2 = Pieptimer
+End If
+If Piep = 8 Then
+  Piepbit = Pieptimer.3
+  Portd.1 = Piepbit
+  Timer2 = Pieptimer
+End If
+
+Return
+End
+

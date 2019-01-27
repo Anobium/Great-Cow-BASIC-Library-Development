@@ -1,0 +1,35 @@
+
+  #chip mega8, 8
+  #option explicit
+  #include <uno_mega328p.h>
+
+  ; ----- Define Hardware settings
+
+  ; ----- Constants
+  #define WIDTH 12        ' Width of the display – corresponds to x'
+  #define HEIGHT 10       ' Height of the display – corresponds to y'
+  #define disp_pin0       DIGITAL_14
+  #define disp_pin1       DIGITAL_15
+  #define disp_pin2       DIGITAL_16
+  #define disp_pin3       DIGITAL_17
+  #define disp_pin4       DIGITAL_4
+  #define disp_pin5       DIGITAL_5
+  #define disp_pin6       DIGITAL_6
+  #define disp_pin7       DIGITAL_7
+  #define disp_pin8       DIGITAL_8
+  #define disp_pin9       DIGITAL_9
+  #define disp_pin_data   DIGITAL_12
+  #define disp_pin_clock  DIGITAL_11
+  #define disp_pin_strobe DIGITAL_10
+  #define INT0pin         DIGITAL_2             'queries the coin slot and supplies power for the potentiometers
+  #define frame_slowness  0x08   'How long to wait until the next column is displayed. – Don’t make this value too small!
+
+
+  dir disp_pin0 out
+
+  do forever
+
+
+
+
+  loop

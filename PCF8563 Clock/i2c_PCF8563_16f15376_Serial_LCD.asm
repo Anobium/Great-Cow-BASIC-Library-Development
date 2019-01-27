@@ -1,4 +1,4 @@
-;Program compiled by Great Cow BASIC (0.98.04 2018-10-20 (Windows 32 bit))
+;Program compiled by Great Cow BASIC (0.98.<<>> 2019-01-21 (Windows 32 bit))
 ;Need help? See the GCBASIC forums at http://sourceforge.net/projects/gcbasic/forums,
 ;check the documentation or email w_cholmondeley at users dot sourceforge dot net.
 
@@ -202,8 +202,67 @@ BASPROGRAMSTART
 	bsf	TRISB,5
 ;Dir hi2c_CLOCK in
 	bsf	TRISB,7
+;------ CLC Settings
+;Module: CLC1/CLC2/CLC3/CLC4
+;CLCIN2PPS = 0x0008    'RB0 > CLCIN2
+	movlw	8
+	banksel	CLCIN2PPS
+	movwf	CLCIN2PPS
+;Module: CLC2
+;RC0PPS = 0x0002    'CLC2OUT > RC0
+	movlw	2
+	banksel	RC0PPS
+	movwf	RC0PPS
+;RC0PPS = 0x02;   //RC0->CLC2:CLC2OUT;
+	movlw	2
+	movwf	RC0PPS
+;CLCIN0PPS = 0x00;   //RA0->CLC2:CLCIN0;
+	banksel	CLCIN0PPS
+	clrf	CLCIN0PPS
+;CLCIN2PPS = 0x08;   //RB0->CLC2:CLCIN2;
+	movlw	8
+	movwf	CLCIN2PPS
+;DIR PORTC.0 OUT
+	banksel	TRISC
+	bcf	TRISC,0
+;Set the CLC2 to the options selected in the User Interface
+;LC2G1POL not_inverted; LC2G2POL not_inverted; LC2G3POL not_inverted; LC2G4POL not_inverted; LC2POL not_inverted;
+;CLC2POL = 0x00;
+	banksel	CLC2POL
+	clrf	CLC2POL
+;LC2D1S CLCIN2 (CLCIN2PPS);
+;CLC2SEL0 = 0x02;
+	movlw	2
+	movwf	CLC2SEL0
+;LC2D2S CLCIN0 (CLCIN0PPS);
+;CLC2SEL1 = 0x00;
+	clrf	CLC2SEL1
+;LC2D3S CLCIN0 (CLCIN0PPS);
+;CLC2SEL2 = 0x00;
+	clrf	CLC2SEL2
+;LC2D4S CLCIN0 (CLCIN0PPS);
+;CLC2SEL3 = 0x00;
+	clrf	CLC2SEL3
+;LC2G1D3N disabled; LC2G1D2N disabled; LC2G1D4N disabled; LC2G1D1T enabled; LC2G1D3T disabled; LC2G1D2T disabled; LC2G1D4T disabled; LC2G1D1N disabled;
+;CLC2GLS0 = 0x02;
+	movlw	2
+	movwf	CLC2GLS0
+;LC2G2D2N disabled; LC2G2D1N disabled; LC2G2D4N disabled; LC2G2D3N disabled; LC2G2D2T disabled; LC2G2D1T disabled; LC2G2D4T disabled; LC2G2D3T disabled;
+;CLC2GLS1 = 0x00;
+	clrf	CLC2GLS1
+;LC2G3D1N disabled; LC2G3D2N disabled; LC2G3D3N disabled; LC2G3D4N disabled; LC2G3D1T disabled; LC2G3D2T disabled; LC2G3D3T disabled; LC2G3D4T disabled;
+;CLC2GLS2 = 0x00;
+	clrf	CLC2GLS2
+;LC2G4D1N disabled; LC2G4D2N disabled; LC2G4D3N disabled; LC2G4D4N disabled; LC2G4D1T disabled; LC2G4D2T disabled; LC2G4D3T disabled; LC2G4D4T disabled;
+;CLC2GLS3 = 0x00;
+	clrf	CLC2GLS3
+;LC2EN enabled; INTN disabled; INTP disabled; MODE OR-XOR;
+;CLC2CON = 0x81;
+	movlw	129
+	movwf	CLC2CON
 ;----- Define Hardware settings
 ;dir setBut in
+	banksel	TRISB
 	bsf	TRISB,0
 ;dir modeBut in
 	bsf	TRISB,1
@@ -268,7 +327,6 @@ BASPROGRAMSTART
 ;CLS
 	pagesel	CLS
 	call	CLS
-	pagesel	$
 ;PCF8563_SetClock( 13, 45, 0, 19,20,12, 18)
 ;PCF8563_ResetClock
 	pagesel	PCF8563_RESETCLOCK
@@ -837,6 +895,20 @@ SysDoLoop_E16
 
 ;********************************************************************************
 
+Delay_10US
+D10US_START
+	movlw	25
+	movwf	DELAYTEMP
+DelayUS0
+	decfsz	DELAYTEMP,F
+	goto	DelayUS0
+	nop
+	decfsz	SysWaitTemp10US, F
+	goto	D10US_START
+	return
+
+;********************************************************************************
+
 HI2CRECEIVE
 ;Enable receive
 ;Master mode
@@ -935,67 +1007,6 @@ ELSE68_1
 	bcf	SSP1STAT,R_NOT_W
 ;End If
 ENDIF68
-	banksel	STATUS
-	return
-
-;********************************************************************************
-
-HI2CSEND
-RETRYHI2CSEND
-;Clear WCOL
-;SET SSPCON1.WCOL OFF
-	banksel	SSP1CON1
-	bcf	SSP1CON1,WCOL
-;Load data to send
-;SSPBUF = I2CByte
-	banksel	I2CBYTE
-	movf	I2CBYTE,W
-	banksel	SSP1BUF
-	movwf	SSP1BUF
-;HI2CWaitMSSP
-	banksel	STATUS
-	pagesel	HI2CWAITMSSP
-	call	HI2CWAITMSSP
-	pagesel	$
-;if ACKSTAT =  1 then
-	banksel	SSP1CON2
-	btfss	SSP1CON2,ACKSTAT
-	goto	ELSE63_1
-;HI2CAckPollState = true
-	movlw	255
-	banksel	HI2CACKPOLLSTATE
-	movwf	HI2CACKPOLLSTATE
-;else
-	goto	ENDIF63
-ELSE63_1
-;HI2CAckPollState = false
-	banksel	HI2CACKPOLLSTATE
-	clrf	HI2CACKPOLLSTATE
-;end if
-ENDIF63
-;If SSPCON1.WCOL = On Then
-	banksel	SSP1CON1
-	btfss	SSP1CON1,WCOL
-	goto	ENDIF64
-;If HI2CCurrentMode <= 10 Then Goto RetryHI2CSend
-	banksel	HI2CCURRENTMODE
-	movf	HI2CCURRENTMODE,W
-	sublw	10
-	btfsc	STATUS, C
-	goto	RETRYHI2CSEND
-ENDIF66
-;End If
-ENDIF64
-;Release clock (only needed by slave)
-;If HI2CCurrentMode <= 10 Then Set SSPCON1.CKP On
-	banksel	HI2CCURRENTMODE
-	movf	HI2CCURRENTMODE,W
-	sublw	10
-	btfss	STATUS, C
-	goto	ENDIF65
-	banksel	SSP1CON1
-	bsf	SSP1CON1,CKP
-ENDIF65
 	banksel	STATUS
 	return
 
@@ -1420,7 +1431,9 @@ ENDIF33
 ;HI2CSend LCD_I2C_Address_Current   ;indicate a write
 	movf	LCD_I2C_ADDRESS_CURRENT,W
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;i2c_lcd_d7 = LCDByte.7
 	bcf	I2C_LCD_BYTE,7
 	btfsc	LCDBYTE,7
@@ -1446,19 +1459,25 @@ ENDIF37
 ;HI2CSend i2c_lcd_byte
 	movf	I2C_LCD_BYTE,W
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;i2c_lcd_e = 1;
 	bsf	I2C_LCD_BYTE,2
 ;HI2CSend i2c_lcd_byte
 	movf	I2C_LCD_BYTE,W
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;i2c_lcd_e = 0;
 	bcf	I2C_LCD_BYTE,2
 ;HI2CSend i2c_lcd_byte
 	movf	I2C_LCD_BYTE,W
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;'' Send lower nibble
 ;i2c_lcd_d7 = LCDByte.3
 	bcf	I2C_LCD_BYTE,7
@@ -1485,18 +1504,23 @@ ENDIF41
 ;HI2CSend i2c_lcd_byte
 	movf	I2C_LCD_BYTE,W
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;i2c_lcd_e = 1;
 	bsf	I2C_LCD_BYTE,2
 ;HI2CSend i2c_lcd_byte
 	movf	I2C_LCD_BYTE,W
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;i2c_lcd_e = 0;
 	bcf	I2C_LCD_BYTE,2
 ;HI2CSend i2c_lcd_byte
 	movf	I2C_LCD_BYTE,W
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
 ;HI2CStop
 	pagesel	HI2CSTOP
@@ -1545,7 +1569,9 @@ SysDoLoop_S32
 ;HI2CSend(DS_AddrWrite)                     ;inidcate a write
 	movlw	162
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;loop While HI2CAckPollState
 	movf	hi2cackpollstate,F
 	btfss	STATUS,Z
@@ -1554,6 +1580,7 @@ SysDoLoop_E32
 ;HI2CSend(5)                      ;begin with address 3
 	movlw	5
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
 ;HI2CReStart
 	pagesel	HI2CRESTART
@@ -1562,7 +1589,9 @@ SysDoLoop_E32
 ;HI2CSend(DS_AddrRead)
 	movlw	163
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;HI2CReceive(DS_Date, ACK)              ;get date
 	movlw	255
 	movwf	HI2CGETACK
@@ -1640,7 +1669,9 @@ SysDoLoop_S31
 ;HI2CSend(DS_AddrWrite)                     ;inidcate a write
 	movlw	162
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;loop While HI2CAckPollState
 	movf	hi2cackpollstate,F
 	btfss	STATUS,Z
@@ -1649,6 +1680,7 @@ SysDoLoop_E31
 ;HI2CSend(2)                      ;begin
 	movlw	2
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
 ;HI2CReStart
 	pagesel	HI2CRESTART
@@ -1657,7 +1689,9 @@ SysDoLoop_E31
 ;HI2CSend(DS_AddrRead)
 	movlw	163
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;HI2CReceive(DS_Sec, ACK)              ;get the seconds
 	movlw	255
 	movwf	HI2CGETACK
@@ -1748,7 +1782,9 @@ SysDoLoop_S30
 ;HI2CSend(DS_AddrWrite)                     ;inidcate a write
 	movlw	162
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;loop While HI2CAckPollState
 	movf	hi2cackpollstate,F
 	btfss	STATUS,Z
@@ -1757,7 +1793,9 @@ SysDoLoop_E30
 ;HI2CSend(2)                      ;begin
 	movlw	2
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;HI2CSend(DecToBcd(DS_Sec))       ;then set the seven
 	movf	DS_SEC,W
 	movwf	VA
@@ -1766,7 +1804,9 @@ SysDoLoop_E30
 	pagesel	$
 	movf	DECTOBCD,W
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;HI2CSend(DecToBcd(DS_Min))       ;consecutive values
 	movf	DS_MIN,W
 	movwf	VA
@@ -1775,7 +1815,9 @@ SysDoLoop_E30
 	pagesel	$
 	movf	DECTOBCD,W
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;HI2CSend(DecToBcd(DS_Hour))
 	movf	DS_HOUR,W
 	movwf	VA
@@ -1784,7 +1826,9 @@ SysDoLoop_E30
 	pagesel	$
 	movf	DECTOBCD,W
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;HI2CSend(DecToBcd(DS_Date))
 	movf	DS_DATE,W
 	movwf	VA
@@ -1793,7 +1837,9 @@ SysDoLoop_E30
 	pagesel	$
 	movf	DECTOBCD,W
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;HI2CSend(DecToBcd(DS_DOW))
 	movf	DS_DOW,W
 	movwf	VA
@@ -1802,7 +1848,9 @@ SysDoLoop_E30
 	pagesel	$
 	movf	DECTOBCD,W
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;HI2CSend(DecToBcd(DS_Month))
 	movf	DS_MONTH,W
 	movwf	VA
@@ -1811,7 +1859,9 @@ SysDoLoop_E30
 	pagesel	$
 	movf	DECTOBCD,W
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;HI2CSend(DecToBcd(DS_Year))
 	movf	DS_YEAR,W
 	movwf	VA
@@ -1820,7 +1870,9 @@ SysDoLoop_E30
 	pagesel	$
 	movf	DECTOBCD,W
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;HI2CStop
 	pagesel	HI2CSTOP
 	goto	HI2CSTOP
@@ -1838,7 +1890,9 @@ SysDoLoop_S33
 ;HI2CSend(DS_AddrWrite)                     ;inidcate a write
 	movlw	162
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;loop While HI2CAckPollState
 	movf	hi2cackpollstate,F
 	btfss	STATUS,Z
@@ -1847,6 +1901,7 @@ SysDoLoop_E33
 ;HI2CSend(4)                      ;located in address 2
 	movlw	4
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
 ;HI2CReStart
 	pagesel	HI2CRESTART
@@ -1855,7 +1910,9 @@ SysDoLoop_E33
 ;HI2CSend(DS_AddrRead)
 	movlw	163
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;HI2CReceive(DS_Hour, NACK)       ;get current hours and mode
 	clrf	HI2CGETACK
 	call	HI2CRECEIVE
@@ -1958,99 +2015,24 @@ ENDIF20
 ;HI2CSend(DS_AddrWrite)
 	movlw	162
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;HI2CSend(4)
 	movlw	4
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;HI2CSend(DS_Hour)                ;send hours and flag back again
 	movf	DS_HOUR,W
 	movwf	I2CBYTE
+	pagesel	HI2CSEND
 	call	HI2CSEND
+	pagesel	$
 ;HI2CStop
 	pagesel	HI2CSTOP
 	goto	HI2CSTOP
-
-;********************************************************************************
-
-;Overloaded signature: BYTE:
-PRINT130
-;LCDValueTemp = 0
-	clrf	LCDVALUETEMP
-;Set LCD_RS On
-	bsf	SYSLCDTEMP,1
-;IF LCDValue >= 100 Then
-	movlw	100
-	subwf	LCDVALUE,W
-	btfss	STATUS, C
-	goto	ENDIF81
-;LCDValueTemp = LCDValue / 100
-	movf	LCDVALUE,W
-	movwf	SysBYTETempA
-	movlw	100
-	movwf	SysBYTETempB
-	pagesel	SysDivSub
-	call	SysDivSub
-	pagesel	$
-	movf	SysBYTETempA,W
-	movwf	LCDVALUETEMP
-;LCDValue = SysCalcTempX
-	movf	SYSCALCTEMPX,W
-	movwf	LCDVALUE
-;LCDWriteByte(LCDValueTemp + 48)
-	movlw	48
-	addwf	LCDVALUETEMP,W
-	movwf	LCDBYTE
-	call	LCDNORMALWRITEBYTE
-;End If
-ENDIF81
-;If LCDValueTemp > 0 Or LCDValue >= 10 Then
-	movf	LCDVALUETEMP,W
-	movwf	SysBYTETempB
-	clrf	SysBYTETempA
-	pagesel	SysCompLessThan
-	call	SysCompLessThan
-	pagesel	$
-	movf	SysByteTempX,W
-	movwf	SysTemp1
-	movf	LCDVALUE,W
-	movwf	SysBYTETempA
-	movlw	10
-	movwf	SysBYTETempB
-	pagesel	SysCompLessThan
-	call	SysCompLessThan
-	pagesel	$
-	comf	SysByteTempX,F
-	movf	SysTemp1,W
-	iorwf	SysByteTempX,W
-	movwf	SysTemp2
-	btfss	SysTemp2,0
-	goto	ENDIF82
-;LCDValueTemp = LCDValue / 10
-	movf	LCDVALUE,W
-	movwf	SysBYTETempA
-	movlw	10
-	movwf	SysBYTETempB
-	pagesel	SysDivSub
-	call	SysDivSub
-	pagesel	$
-	movf	SysBYTETempA,W
-	movwf	LCDVALUETEMP
-;LCDValue = SysCalcTempX
-	movf	SYSCALCTEMPX,W
-	movwf	LCDVALUE
-;LCDWriteByte(LCDValueTemp + 48)
-	movlw	48
-	addwf	LCDVALUETEMP,W
-	movwf	LCDBYTE
-	call	LCDNORMALWRITEBYTE
-;End If
-ENDIF82
-;LCDWriteByte (LCDValue + 48)
-	movlw	48
-	addwf	LCDVALUE,W
-	movwf	LCDBYTE
-	goto	LCDNORMALWRITEBYTE
 
 ;********************************************************************************
 
@@ -2204,7 +2186,9 @@ SysSelectEnd1
 ;Print date
 	movf	DATE,W
 	movwf	LCDVALUE
+	pagesel	PRINT130
 	call	PRINT130
+	pagesel	$
 ;Print "/"
 	movlw	low StringTable16
 	movwf	SysPRINTDATAHandler
@@ -2216,7 +2200,9 @@ SysSelectEnd1
 ;Print month
 	movf	MONTH,W
 	movwf	LCDVALUE
+	pagesel	PRINT130
 	call	PRINT130
+	pagesel	$
 ;Print "/20"                       ;make four-digit year
 	movlw	low StringTable17
 	movwf	SysPRINTDATAHandler
@@ -2244,7 +2230,9 @@ ENDIF80
 ;Print year
 	movf	YEAR,W
 	movwf	LCDVALUE
+	pagesel	PRINT130
 	call	PRINT130
+	pagesel	$
 ;Print " "                        ;blank any garbage
 	movlw	low StringTable18
 	movwf	SysPRINTDATAHandler
@@ -2281,7 +2269,9 @@ ENDIF73
 ;Print hour
 	movf	HOUR,W
 	movwf	LCDVALUE
+	pagesel	PRINT130
 	call	PRINT130
+	pagesel	$
 ;Print ":"
 	movlw	low StringTable5
 	movwf	SysPRINTDATAHandler
@@ -2308,7 +2298,9 @@ ENDIF74
 ;Print min
 	movf	MIN,W
 	movwf	LCDVALUE
+	pagesel	PRINT130
 	call	PRINT130
+	pagesel	$
 ;Print ":"
 	movlw	low StringTable5
 	movwf	SysPRINTDATAHandler
@@ -2335,7 +2327,9 @@ ENDIF75
 ;Print sec
 	movf	SEC,W
 	movwf	LCDVALUE
+	pagesel	PRINT130
 	call	PRINT130
+	pagesel	$
 ;if mode = 12 then                 ;Print a.m or p.m
 	movlw	12
 	subwf	MODE,W
@@ -3230,6 +3224,7 @@ CLS
 ;Wait 12 10us
 	movlw	12
 	movwf	SysWaitTemp10US
+	pagesel	Delay_10US
 	goto	Delay_10US
 
 ;********************************************************************************
@@ -3258,20 +3253,6 @@ FN_DECTOBCD
 	movf	SysBYTETempX,W
 	addwf	SysTemp2,W
 	movwf	DECTOBCD
-	return
-
-;********************************************************************************
-
-Delay_10US
-D10US_START
-	movlw	25
-	movwf	DELAYTEMP
-DelayUS0
-	decfsz	DELAYTEMP,F
-	goto	DelayUS0
-	nop
-	decfsz	SysWaitTemp10US, F
-	goto	D10US_START
 	return
 
 ;********************************************************************************
@@ -3402,6 +3383,65 @@ HI2CRESTART
 	call	HI2CWAITMSSP
 ;End If
 ENDIF61
+	return
+
+;********************************************************************************
+
+HI2CSEND
+RETRYHI2CSEND
+;Clear WCOL
+;SET SSPCON1.WCOL OFF
+	banksel	SSP1CON1
+	bcf	SSP1CON1,WCOL
+;Load data to send
+;SSPBUF = I2CByte
+	banksel	I2CBYTE
+	movf	I2CBYTE,W
+	banksel	SSP1BUF
+	movwf	SSP1BUF
+;HI2CWaitMSSP
+	banksel	STATUS
+	call	HI2CWAITMSSP
+;if ACKSTAT =  1 then
+	banksel	SSP1CON2
+	btfss	SSP1CON2,ACKSTAT
+	goto	ELSE63_1
+;HI2CAckPollState = true
+	movlw	255
+	banksel	HI2CACKPOLLSTATE
+	movwf	HI2CACKPOLLSTATE
+;else
+	goto	ENDIF63
+ELSE63_1
+;HI2CAckPollState = false
+	banksel	HI2CACKPOLLSTATE
+	clrf	HI2CACKPOLLSTATE
+;end if
+ENDIF63
+;If SSPCON1.WCOL = On Then
+	banksel	SSP1CON1
+	btfss	SSP1CON1,WCOL
+	goto	ENDIF64
+;If HI2CCurrentMode <= 10 Then Goto RetryHI2CSend
+	banksel	HI2CCURRENTMODE
+	movf	HI2CCURRENTMODE,W
+	sublw	10
+	btfsc	STATUS, C
+	goto	RETRYHI2CSEND
+ENDIF66
+;End If
+ENDIF64
+;Release clock (only needed by slave)
+;If HI2CCurrentMode <= 10 Then Set SSPCON1.CKP On
+	banksel	HI2CCURRENTMODE
+	movf	HI2CCURRENTMODE,W
+	sublw	10
+	btfss	STATUS, C
+	goto	ENDIF65
+	banksel	SSP1CON1
+	bsf	SSP1CON1,CKP
+ENDIF65
+	banksel	STATUS
 	return
 
 ;********************************************************************************
@@ -3729,6 +3769,7 @@ ENDIF26
 ;wait 5 10us 'test
 	movlw	5
 	movwf	SysWaitTemp10US
+	pagesel	Delay_10US
 	goto	Delay_10US
 
 ;********************************************************************************
@@ -3773,9 +3814,7 @@ SysDoLoop_S27
 ;HI2CSend(DS_AddrWrite)                     ;inidcate a write
 	movlw	162
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;loop While HI2CAckPollState
 	movf	hi2cackpollstate,F
 	btfss	STATUS,Z
@@ -3784,17 +3823,13 @@ SysDoLoop_E27
 ;HI2CSend(CLKOUT_CTRL_REG)                     ;indicate register CLKOUT_CTRL_REG
 	movlw	13
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CReStart
 	call	HI2CRESTART
 ;HI2CSend(DS_AddrRead)
 	movlw	163
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CReceive(DS_Sec, NACK)       ;get the current seconds
 	clrf	HI2CGETACK
 	pagesel	HI2CRECEIVE
@@ -3820,21 +3855,15 @@ ENDIF17
 ;HI2CSend(DS_AddrWrite)
 	movlw	162
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CSend(CLKOUT_CTRL_REG)                     ;indicate register 0
 	movlw	13
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CSend(DS_Sec)                ;now send updated value
 	movf	DS_SEC,W
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CStop
 	goto	HI2CSTOP
 
@@ -3849,9 +3878,7 @@ SysDoLoop_S28
 ;HI2CSend(DS_AddrWrite)                     ;inidcate a write
 	movlw	162
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;loop While HI2CAckPollState
 	movf	hi2cackpollstate,F
 	btfss	STATUS,Z
@@ -3860,17 +3887,13 @@ SysDoLoop_E28
 ;HI2CSend(CLKOUT_CTRL_REG)                     ;indicate register CLKOUT_CTRL_REG
 	movlw	13
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CReStart
 	call	HI2CRESTART
 ;HI2CSend(DS_AddrRead)
 	movlw	163
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CReceive(DS_Sec, NACK)       ;get the current seconds
 	clrf	HI2CGETACK
 	pagesel	HI2CRECEIVE
@@ -3890,21 +3913,15 @@ SysDoLoop_E28
 ;HI2CSend(DS_AddrWrite)
 	movlw	162
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CSend(CLKOUT_CTRL_REG)                     ;indicate register 0
 	movlw	13
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CSend(DS_Sec)                ;now send updated value
 	movf	DS_SEC,W
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CStop
 	goto	HI2CSTOP
 
@@ -3919,9 +3936,7 @@ SysDoLoop_S34
 ;HI2CSend(DS_AddrWrite)                     ;inidcate a write
 	movlw	162
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;loop While HI2CAckPollState
 	movf	hi2cackpollstate,F
 	btfss	STATUS,Z
@@ -3930,17 +3945,13 @@ SysDoLoop_E34
 ;HI2CSend(4)                      ;go to address 2
 	movlw	4
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CReStart
 	call	HI2CRESTART
 ;HI2CSend(DS_AddrRead)
 	movlw	163
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CReceive(DS_A_P, NACK)        ;get entire hour byte
 	clrf	HI2CGETACK
 	pagesel	HI2CRECEIVE
@@ -3978,9 +3989,7 @@ SysDoLoop_S29
 ;HI2CSend(DS_AddrWrite)                     ;inidcate a write
 	movlw	162
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;loop While HI2CAckPollState
 	movf	hi2cackpollstate,F
 	btfss	STATUS,Z
@@ -3989,60 +3998,44 @@ SysDoLoop_E29
 ;HI2CSend(VL_SEC_REG)                      ;begin
 	movlw	2
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CSend(0)                      ;then set the seven
 	clrf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CSend(0)                      ;consecutive locations
 	clrf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CSend(0)
 	clrf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CSend( DecToBcd ( 28 ) )
 	movlw	28
 	movwf	VA
 	call	FN_DECTOBCD
 	movf	DECTOBCD,W
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CSend( DecToBcd ( 2 ) )
 	movlw	2
 	movwf	VA
 	call	FN_DECTOBCD
 	movf	DECTOBCD,W
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CSend( DecToBcd ( 2 ) )
 	movlw	2
 	movwf	VA
 	call	FN_DECTOBCD
 	movf	DECTOBCD,W
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CSend( DecToBcd ( 18) )
 	movlw	18
 	movwf	VA
 	call	FN_DECTOBCD
 	movf	DECTOBCD,W
 	movwf	I2CBYTE
-	pagesel	HI2CSEND
 	call	HI2CSEND
-	pagesel	$
 ;HI2CStop
 	goto	HI2CSTOP
 
@@ -4098,10 +4091,89 @@ SysForLoopEnd1
 
 ;********************************************************************************
 
+;Overloaded signature: BYTE:
+PRINT130
+;LCDValueTemp = 0
+	clrf	LCDVALUETEMP
+;Set LCD_RS On
+	bsf	SYSLCDTEMP,1
+;IF LCDValue >= 100 Then
+	movlw	100
+	subwf	LCDVALUE,W
+	btfss	STATUS, C
+	goto	ENDIF81
+;LCDValueTemp = LCDValue / 100
+	movf	LCDVALUE,W
+	movwf	SysBYTETempA
+	movlw	100
+	movwf	SysBYTETempB
+	call	SysDivSub
+	movf	SysBYTETempA,W
+	movwf	LCDVALUETEMP
+;LCDValue = SysCalcTempX
+	movf	SYSCALCTEMPX,W
+	movwf	LCDVALUE
+;LCDWriteByte(LCDValueTemp + 48)
+	movlw	48
+	addwf	LCDVALUETEMP,W
+	movwf	LCDBYTE
+	pagesel	LCDNORMALWRITEBYTE
+	call	LCDNORMALWRITEBYTE
+	pagesel	$
+;End If
+ENDIF81
+;If LCDValueTemp > 0 Or LCDValue >= 10 Then
+	movf	LCDVALUETEMP,W
+	movwf	SysBYTETempB
+	clrf	SysBYTETempA
+	call	SysCompLessThan
+	movf	SysByteTempX,W
+	movwf	SysTemp1
+	movf	LCDVALUE,W
+	movwf	SysBYTETempA
+	movlw	10
+	movwf	SysBYTETempB
+	call	SysCompLessThan
+	comf	SysByteTempX,F
+	movf	SysTemp1,W
+	iorwf	SysByteTempX,W
+	movwf	SysTemp2
+	btfss	SysTemp2,0
+	goto	ENDIF82
+;LCDValueTemp = LCDValue / 10
+	movf	LCDVALUE,W
+	movwf	SysBYTETempA
+	movlw	10
+	movwf	SysBYTETempB
+	call	SysDivSub
+	movf	SysBYTETempA,W
+	movwf	LCDVALUETEMP
+;LCDValue = SysCalcTempX
+	movf	SYSCALCTEMPX,W
+	movwf	LCDVALUE
+;LCDWriteByte(LCDValueTemp + 48)
+	movlw	48
+	addwf	LCDVALUETEMP,W
+	movwf	LCDBYTE
+	pagesel	LCDNORMALWRITEBYTE
+	call	LCDNORMALWRITEBYTE
+	pagesel	$
+;End If
+ENDIF82
+;LCDWriteByte (LCDValue + 48)
+	movlw	48
+	addwf	LCDVALUE,W
+	movwf	LCDBYTE
+	pagesel	LCDNORMALWRITEBYTE
+	goto	LCDNORMALWRITEBYTE
+
+;********************************************************************************
+
 SETDATE
 ;***** Date
 ;cls
 	call	CLS
+	pagesel	$
 ;Print "Set Date:"
 	movlw	low StringTable27
 	movwf	SysPRINTDATAHandler
@@ -4113,6 +4185,7 @@ SETDATE
 	movwf	LCDLINE
 	clrf	LCDCOLUMN
 	call	LOCATE
+	pagesel	$
 ;printDate
 	pagesel	PRINTDATE
 	call	PRINTDATE
@@ -4145,6 +4218,7 @@ ENDIF15
 	movwf	LCDLINE
 	clrf	LCDCOLUMN
 	call	LOCATE
+	pagesel	$
 ;printDate
 	pagesel	PRINTDATE
 	call	PRINTDATE
@@ -4187,6 +4261,7 @@ SETMONTH
 ;***** Month
 ;cls
 	call	CLS
+	pagesel	$
 ;Print "Set Month:"
 	movlw	low StringTable26
 	movwf	SysPRINTDATAHandler
@@ -4198,6 +4273,7 @@ SETMONTH
 	movwf	LCDLINE
 	clrf	LCDCOLUMN
 	call	LOCATE
+	pagesel	$
 ;printDate
 	pagesel	PRINTDATE
 	call	PRINTDATE
@@ -4225,6 +4301,7 @@ ENDIF14
 	movwf	LCDLINE
 	clrf	LCDCOLUMN
 	call	LOCATE
+	pagesel	$
 ;printDate
 	pagesel	PRINTDATE
 	call	PRINTDATE
@@ -4272,6 +4349,7 @@ SETYEAR
 ;***** Year
 ;cls
 	call	CLS
+	pagesel	$
 ;Print "Set Year:"
 	movlw	low StringTable28
 	movwf	SysPRINTDATAHandler
@@ -4283,6 +4361,7 @@ SETYEAR
 	movwf	LCDLINE
 	clrf	LCDCOLUMN
 	call	LOCATE
+	pagesel	$
 ;printDate
 	pagesel	PRINTDATE
 	call	PRINTDATE
@@ -4308,6 +4387,7 @@ ENDIF16
 	movwf	LCDLINE
 	clrf	LCDCOLUMN
 	call	LOCATE
+	pagesel	$
 ;printDate
 	pagesel	PRINTDATE
 	call	PRINTDATE
