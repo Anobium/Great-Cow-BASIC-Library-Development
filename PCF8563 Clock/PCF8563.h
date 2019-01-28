@@ -44,6 +44,11 @@
  #define DS_AddrRead  0xA3
 
 
+  #define DEFAULT_DAY       1
+  #define DEFAULT_WEEKDAY   2
+  #define DEFAULT_MONTH     1
+  #define DEFAULT_YEAR      19
+
   #define  CTRL_REG_1          0x00
   #define  CTRL_REG_2          0x01
   #define  VL_SEC_REG          0x02
@@ -73,14 +78,14 @@
 
 function DecToBcd(in va ) as byte
   ;Convert pure decimal number to binary coded decimal
-  DecToBcd=( va /10)*16+ va %10
+  DecToBcd=( va /10)*16+ va % 10
 end function
 
 ;-----
 
 function BcdToDec(in va ) as byte
   ;Convert binary coded decimal to pure decimal
-  BcdToDec=( va /16)*10+ va %16
+  BcdToDec=( va /16)*10+ ( va % 16 )
 end function
 
 ;-----
@@ -181,8 +186,9 @@ end sub
 ;-----
 
 sub PCF8563_ResetClock
-  ;Reset clock to 00:00:00 Tues 01/01/18.
+  ;Reset clock to 00:00:00 Tues 01/01/19.
   ;Also sets 24-hour mode and enables the clock.
+  ;Weeksday at 0 to 6
 
   #ifdef HI2C_DATA
 
@@ -194,10 +200,10 @@ sub PCF8563_ResetClock
     HI2CSend(0)                      ;then set the seven
     HI2CSend(0)                      ;consecutive locations
     HI2CSend(0)
-    HI2CSend( DecToBcd ( 28 ) )
-    HI2CSend( DecToBcd ( 2 ) )
-    HI2CSend( DecToBcd ( 2 ) )
-    HI2CSend( DecToBcd ( 18) )
+    HI2CSend( DecToBcd ( DEFAULT_DAY ) )
+    HI2CSend( DecToBcd ( DEFAULT_WEEKDAY ) )
+    HI2CSend( DecToBcd ( DEFAULT_MONTH ) )
+    HI2CSend( DecToBcd ( DEFAULT_YEAR ) )
     HI2CStop
   #endif
 
@@ -209,10 +215,10 @@ sub PCF8563_ResetClock
     I2CSend(0)                      ;then set the seven
     I2CSend(0)                      ;consecutive locations
     I2CSend(0)
-    I2CSend( DecToBcd ( 1 ) )
-    I2CSend( DecToBcd ( 2 ) )
-    I2CSend( DecToBcd ( 3 ) )
-    I2CSend( DecToBcd ( 18) )
+    I2CSend( DecToBcd ( DEFAULT_DAY ) )
+    I2CSend( DecToBcd ( DEFAULT_WEEKDAY ) )
+    I2CSend( DecToBcd ( DEFAULT_MONTH ) )
+    I2CSend( DecToBcd ( DEFAULT_YEAR ) )
     I2CStop
   #endif
 end sub
@@ -298,7 +304,7 @@ sub PCF8563_SetDate(in DS_DOW, DS_Date, in DS_Month, in DS_Year)
         HI2CReStart                          ;generate a start signal
         HI2CSend(DS_AddrWrite)                     ;inidcate a write
      loop While HI2CAckPollState
-    HI2CSend(5)                      ;begin with address 3
+    HI2CSend(5)                      ;begin with at this address
     HI2CSend(DecToBcd(DS_Date))      ;consecutive values
     HI2CSend(DecToBcd(DS_DOW))       ;then set the four
     HI2CSend(DecToBcd(DS_Month))
@@ -310,7 +316,7 @@ sub PCF8563_SetDate(in DS_DOW, DS_Date, in DS_Month, in DS_Year)
   #ifdef I2C_DATA
     I2CStart
     I2CSend(DS_AddrWrite)
-    I2CSend(5)                      ;begin with address 3
+    I2CSend(5)                      ;begin with at this address
     I2CSend(DecToBcd(DS_Date))      ;consecutive values
     I2CSend(DecToBcd(DS_DOW))       ;then set the four
     I2CSend(DecToBcd(DS_Month))
@@ -417,15 +423,9 @@ sub PCF8563_ReadTime(out DS_Hour, out DS_Min, out DS_Sec, out DS_A_P)
     HI2CReceive(DS_Sec, ACK)              ;get the seconds
     DS_Sec = BcdToDec(DS_Sec & 127) ;strip off CH bit
     HI2CReceive(DS_Min, ACK)              ;get the minutes
-    DS_Min = BcdToDec(DS_Min)
+    DS_Min = BcdToDec(DS_Min & 127 )
     HI2CReceive(DS_Hour, NACK)       ;get the hours
-    if DS_Hour.6 then               ;12-hour mode
-      DS_A_P = DS_Hour.5            ;a.m. or p.m.
-      DS_Hour = BcdToDec(DS_Hour & 31)
-    else
-      DS_Hour = BcdToDec(DS_Hour)   ;24-hour mode
-      DS_A_P = (DS_Hour > 11)       ;a.m. or p.m.
-    end if
+    DS_Hour = BcdToDec(DS_Hour & 63 )
     HI2CStop
   #endif
 
@@ -436,17 +436,11 @@ sub PCF8563_ReadTime(out DS_Hour, out DS_Min, out DS_Sec, out DS_A_P)
     I2CStart
     I2CSend(DS_AddrRead)
     I2CReceive(DS_Sec, ACK)              ;get the seconds
-    DS_Sec = BcdToDec(DS_Sec & 127) ;strip off CH bit
+    DS_Sec = BcdToDec(DS_Sec & 127 ) ;strip off CH bit
     I2CReceive(DS_Min, ACK)              ;get the minutes
-    DS_Min = BcdToDec(DS_Min)
+    DS_Min = BcdToDec(DS_Min & 127 )
     I2CReceive(DS_Hour, NACK)       ;get the hours
-    if DS_Hour.6 then               ;12-hour mode
-      DS_A_P = DS_Hour.5            ;a.m. or p.m.
-      DS_Hour = BcdToDec(DS_Hour & 31)
-    else
-      DS_Hour = BcdToDec(DS_Hour)   ;24-hour mode
-      DS_A_P = (DS_Hour > 11)       ;a.m. or p.m.
-    end if
+    DS_Hour = BcdToDec(DS_Hour & 63 )
     I2CStop
   #endif
 end sub
@@ -462,22 +456,20 @@ sub PCF8563_ReadDate(out DS_DOW, out DS_Date, out DS_Month, out DS_Year)
       HI2CSend(DS_AddrWrite)                     ;inidcate a write
     loop While HI2CAckPollState
 
-    HI2CSend(5)                      ;begin with address 3
+    HI2CSend(5)                      ;begin with at this address
     HI2CReStart
     HI2CSend(DS_AddrRead)
+    debug=1
     HI2CReceive(DS_Date, ACK)              ;get date
-    DS_Date = BcdToDec(DS_Date)
-
+    DS_Date = BcdToDec(DS_Date & 0b00111111 )
     HI2CReceive(DS_DOW, ACK)             ;get dow the week
     DS_DOW = BcdToDec(DS_DOW)
-    DS_DOW = ( DS_DOW and 7 ) + 1
-
+    DS_DOW = DS_DOW & 0b00000111
     HI2CReceive(DS_Month, ACK)            ;get month
     DS_Month.7 = 0
-    DS_Month = BcdToDec(DS_Month)
-
+    DS_Month = BcdToDec(DS_Month & 0b00111111 )
     HI2CReceive(DS_Year, NACK)       ;get year
-    DS_Year = BcdToDec(DS_Year)
+    DS_Year = BcdToDec(DS_Year )
     HI2CStop
 
   #endif
@@ -485,25 +477,27 @@ sub PCF8563_ReadDate(out DS_DOW, out DS_Date, out DS_Month, out DS_Year)
   #ifdef I2C_DATA
     I2CStart
     I2CSend(DS_AddrWrite)
-    I2CSend(5)                      ;begin with address 3
+    I2CSend(5)                      ;begin with at this address
     I2CReStart
     I2CSend(DS_AddrRead)
     I2CReceive(DS_Date, ACK)              ;get date
-    DS_Date = BcdToDec(DS_Date)
-
-
+    DS_Date = BcdToDec(DS_Date & 0b00111111 )
     I2CReceive(DS_DOW, ACK)             ;get dow the week
-    DS_DOW = BcdToDec(DS_DOW)
-    DS_DOW = ( DS_DOW and 7 ) + 1
-
+    DS_DOW = BcdToDec(DS_DOW & 0b00000111)
     I2CReceive(DS_Month, ACK)            ;get month
     DS_Month.7 = 0
-    DS_Month = BcdToDec(DS_Month)
-
+    DS_Month = BcdToDec(DS_Month & 0b00011111)
     I2CReceive(DS_Year, NACK)       ;get year
-    DS_Year = BcdToDec(DS_Year)
+    DS_Year = BcdToDec(DS_Year )
     I2CStop
   #endif
+
+
+
+
+
+
+
 end sub
 
 ;-----

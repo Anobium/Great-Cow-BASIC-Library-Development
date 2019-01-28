@@ -7,47 +7,46 @@
 <h1>Compilation Report</h1>
 <p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2019-01-21 (Windows 32 bit)</p>
 <h2>Compilation time</h2>
-<p> (Compile time: 3.076172 seconds)</p>
-<p> (Assembly time: 0.4648438 seconds)</p>
-<p> (Download time: 1.071289 seconds)</p>
-<p> (Total time: 4.612305 seconds)</p>
+<p> (Compile time: 1.592773 seconds)</p>
+<p> (Assembly time: 0.2607422 seconds)</p>
+<p> (Download time: 0.9912109 seconds)</p>
+<p> (Total time: 2.844727 seconds)</p>
 <h2>Chip resource usage:</h2>
 <p>Chip Model: 16F15376</p>
-<p>Program Memory: 3004/16384 words (18.33%)</p>
-<p>RAM: 109/2048 bytes (5.32%)</p>
+<p>Program Memory: 2867/16384 words (17.5%)</p>
+<p>RAM: 110/2048 bytes (5.37%)</p>
 <h2>RAM Allocation</h2>
 <table border="1">
 </table>
 <h2>Subroutines</h2>
 <table border="1">
 <tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Page</th><th>Outgoing calls</th></tr>
-<tr><td>Main</td><td>70</td><td>116</td><td>1</td><td>HIC2INIT(1), INITUSART(1), Delay_S(1), CHANGEMODE(1), CHANGESETTING(1), UPDATEDISP(1), PCF8563_READDATE(1), PCF8563_ENABLECLOCKOUTFREQUENCY(1), PCF8563_ENABLE(1), PCF8563_RESETCLOCK(1), CLS(1), PRINT(2), LOCATE(3), LCDCURSOR(1), INITLCD(41), INITPPS(85), INITSYS(92)</td></tr>
+<tr><td>Main</td><td>70</td><td>129</td><td>1</td><td>HIC2INIT(1), INITUSART(1), Delay_S(1), CHANGEMODE(1), CHANGESETTING(1), UPDATEDISP(1), PCF8563_READDATE(1), PCF8563_ENABLECLOCKOUTFREQUENCY(1), PCF8563_ENABLE(1), PCF8563_SETCLOCK(1), CLS(1), PRINT(2), LOCATE(3), LCDCURSOR(1), INITLCD(41), INITPPS(84), INITSYS(91)</td></tr>
 <tr><td>INITPPS</td><td>5</td><td>17</td><td>1</td><td></td></tr>
-<tr><td>PRINTTIME</td><td>25</td><td>97</td><td>1</td><td>PRINT(3), PRINT(8)</td></tr>
-<tr><td>PRINTDATE</td><td>37</td><td>164</td><td>1</td><td>SYSREADSTRING(1), SYSCOPYSTRING(1), PRINT(5), STR(1), PRINT(15)</td></tr>
-<tr><td>UPDATEDISP</td><td>29</td><td>178</td><td>1</td><td>PRINTDATE(1), PRINTTIME(1), LOCATE(2), HSERPRINTCRLF(1), PCF8563_READDATE(1), HSERPRINT(1), HSERSEND(8), HSERPRINT(8), PCF8563_READTIME(1)</td></tr>
+<tr><td>PRINTTIME</td><td>25</td><td>91</td><td>1</td><td>PRINT(3), PRINT(8)</td></tr>
+<tr><td>PRINTDATE</td><td>37</td><td>158</td><td>1</td><td>SYSREADSTRING(1), SYSCOPYSTRING(1), PRINT(5), STR(1), PRINT(15)</td></tr>
+<tr><td>UPDATEDISP</td><td>21</td><td>110</td><td>1</td><td>PRINTDATE(1), PRINTTIME(1), LOCATE(2), HSERPRINT(1), PCF8563_READDATE(1), HSERSEND(5), HSERPRINT(3), HSERPRINTCRLF(1), PCF8563_READTIME(1)</td></tr>
 <tr><td>CHANGESETTING</td><td>118</td><td>331</td><td>1</td><td>SYSCOMPEQUAL(1), Delay_MS(7), PCF8563_ENABLE(1), PCF8563_SETCLOCK(1), PRINTTIME(6), PRINTDATE(2), LOCATE(9), PRINT(6), CLS(7), SETYEAR(1), SETDATE(2), SETMONTH(2), PCF8563_SETHOURMODE(4), PCF8563_READHOURMODE(1)</td></tr>
 <tr><td>CHANGEMODE</td><td>10</td><td>27</td><td>2</td><td>Delay_MS(1), PCF8563_SETHOURMODE(2)</td></tr>
-<tr><td>SETMONTH</td><td>21</td><td>54</td><td>2</td><td>Delay_MS(2), PRINTDATE(2), LOCATE(2), PRINT(1), CLS(1)</td></tr>
-<tr><td>SETDATE</td><td>21</td><td>54</td><td>2</td><td>Delay_MS(2), PRINTDATE(2), LOCATE(2), PRINT(1), CLS(1)</td></tr>
-<tr><td>SETYEAR</td><td>20</td><td>48</td><td>2</td><td>Delay_MS(2), PRINTDATE(2), LOCATE(2), PRINT(1), CLS(1)</td></tr>
+<tr><td>SETMONTH</td><td>21</td><td>51</td><td>2</td><td>Delay_MS(2), PRINTDATE(2), LOCATE(2), PRINT(1), CLS(1)</td></tr>
+<tr><td>SETDATE</td><td>21</td><td>51</td><td>2</td><td>Delay_MS(2), PRINTDATE(2), LOCATE(2), PRINT(1), CLS(1)</td></tr>
+<tr><td>SETYEAR</td><td>20</td><td>45</td><td>2</td><td>Delay_MS(2), PRINTDATE(2), LOCATE(2), PRINT(1), CLS(1)</td></tr>
 <tr><td>DECTOBCD</td><td>1</td><td>22</td><td>2</td><td>SYSMULTSUB(1), SYSDIVSUB(2)</td></tr>
-<tr><td>BCDTODEC</td><td>1</td><td>22</td><td>2</td><td>SYSMULTSUB(1), SYSDIVSUB(2)</td></tr>
-<tr><td>PCF8563_ENABLE</td><td>38</td><td>37</td><td>2</td><td>HI2CSTOP(1), HI2CRECEIVE(1), HI2CSEND(6), HI2CRESTART(3)</td></tr>
-<tr><td>PCF8563_ENABLECLOCKOUTFREQUENCY</td><td>32</td><td>36</td><td>2</td><td>HI2CSTOP(1), HI2CRECEIVE(1), HI2CSEND(6), HI2CRESTART(3)</td></tr>
-<tr><td>PCF8563_RESETCLOCK</td><td>29</td><td>41</td><td>2</td><td>HI2CSTOP(1), DECTOBCD(4), HI2CSEND(9), HI2CRESTART(1)</td></tr>
-<tr><td>PCF8563_SETCLOCK</td><td>28</td><td>88</td><td>1</td><td>HI2CSTOP(1), DECTOBCD(7), HI2CSEND(9), HI2CRESTART(1)</td></tr>
-<tr><td>PCF8563_READTIME</td><td>42</td><td>82</td><td>1</td><td>SYSCOMPLESSTHAN(1), HI2CSTOP(1), BCDTODEC(4), HI2CRECEIVE(3), HI2CSEND(3), HI2CRESTART(2)</td></tr>
-<tr><td>PCF8563_READDATE</td><td>38</td><td>75</td><td>1</td><td>HI2CSTOP(1), BCDTODEC(4), HI2CRECEIVE(4), HI2CSEND(3), HI2CRESTART(2)</td></tr>
-<tr><td>PCF8563_SETHOURMODE</td><td>72</td><td>108</td><td>1</td><td>HI2CSTOP(1), DECTOBCD(3), BCDTODEC(2), HI2CRECEIVE(1), HI2CSEND(6), HI2CRESTART(3)</td></tr>
-<tr><td>PCF8563_READHOURMODE</td><td>30</td><td>29</td><td>2</td><td>HI2CSTOP(1), HI2CRECEIVE(1), HI2CSEND(3), HI2CRESTART(2)</td></tr>
-<tr><td>LOCATE</td><td>7</td><td>27</td><td>2</td><td>SYSMULTSUB(1), Delay_10US(1), LCDNORMALWRITEBYTE(1)</td></tr>
-<tr><td>CLS</td><td>5</td><td>19</td><td>2</td><td>Delay_10US(1), Delay_MS(1), LCDNORMALWRITEBYTE(2)</td></tr>
+<tr><td>BCDTODEC</td><td>1</td><td>23</td><td>2</td><td>SYSMULTSUB(1), SYSDIVSUB(2)</td></tr>
+<tr><td>PCF8563_ENABLE</td><td>38</td><td>49</td><td>2</td><td>HI2CSTOP(1), HI2CRECEIVE(1), HI2CSEND(6), HI2CRESTART(3)</td></tr>
+<tr><td>PCF8563_ENABLECLOCKOUTFREQUENCY</td><td>32</td><td>48</td><td>2</td><td>HI2CSTOP(1), HI2CRECEIVE(1), HI2CSEND(6), HI2CRESTART(3)</td></tr>
+<tr><td>PCF8563_SETCLOCK</td><td>28</td><td>70</td><td>1</td><td>HI2CSTOP(1), DECTOBCD(7), HI2CSEND(9), HI2CRESTART(1)</td></tr>
+<tr><td>PCF8563_READTIME</td><td>30</td><td>59</td><td>2</td><td>HI2CSTOP(1), BCDTODEC(3), HI2CRECEIVE(3), HI2CSEND(3), HI2CRESTART(2)</td></tr>
+<tr><td>PCF8563_READDATE</td><td>38</td><td>72</td><td>1</td><td>HI2CSTOP(1), BCDTODEC(4), HI2CRECEIVE(4), HI2CSEND(3), HI2CRESTART(2)</td></tr>
+<tr><td>PCF8563_SETHOURMODE</td><td>72</td><td>97</td><td>1</td><td>HI2CSTOP(1), DECTOBCD(3), BCDTODEC(2), HI2CRECEIVE(1), HI2CSEND(6), HI2CRESTART(3)</td></tr>
+<tr><td>PCF8563_READHOURMODE</td><td>30</td><td>35</td><td>2</td><td>HI2CSTOP(1), HI2CRECEIVE(1), HI2CSEND(3), HI2CRESTART(2)</td></tr>
+<tr><td>LOCATE</td><td>7</td><td>26</td><td>2</td><td>SYSMULTSUB(1), Delay_10US(1), LCDNORMALWRITEBYTE(1)</td></tr>
+<tr><td>CLS</td><td>5</td><td>18</td><td>2</td><td>Delay_10US(1), Delay_MS(1), LCDNORMALWRITEBYTE(2)</td></tr>
 <tr><td>INITLCD</td><td>273</td><td>24</td><td>1</td><td>Delay_MS(1), INITI2CLCD(1), HI2CMODE(1)</td></tr>
 <tr><td>INITI2CLCD</td><td>20</td><td>89</td><td>1</td><td>Delay_MS(10), CLS(1), LCDNORMALWRITEBYTE(9)</td></tr>
 <tr><td>PRINT</td><td>8</td><td>32</td><td>2</td><td>LCDNORMALWRITEBYTE(1)</td></tr>
-<tr><td>PRINT</td><td>13</td><td>58</td><td>2</td><td>SYSDIVSUB(2), SYSCOMPLESSTHAN(2), LCDNORMALWRITEBYTE(3)</td></tr>
-<tr><td>LCDNORMALWRITEBYTE</td><td>283</td><td>97</td><td>1</td><td>HI2CSTOP(1), HI2CSEND(7), HI2CSTART(1)</td></tr>
+<tr><td>PRINT</td><td>13</td><td>61</td><td>1</td><td>SYSDIVSUB(2), SYSCOMPLESSTHAN(2), LCDNORMALWRITEBYTE(3)</td></tr>
+<tr><td>LCDNORMALWRITEBYTE</td><td>283</td><td>84</td><td>1</td><td>HI2CSTOP(1), HI2CSEND(7), HI2CSTART(1)</td></tr>
 <tr><td>LCDCURSOR</td><td>30</td><td>68</td><td>1</td><td>LCDNORMALWRITEBYTE(1)</td></tr>
 <tr><td>INITSYS</td><td>704</td><td>27</td><td>1</td><td></td></tr>
 <tr><td>SYSCOPYSTRING</td><td>118</td><td>17</td><td>2</td><td></td></tr>
@@ -64,16 +63,16 @@
 <tr><td>INITUSART</td><td>141</td><td>15</td><td>1</td><td></td></tr>
 <tr><td>HSERSEND</td><td>122</td><td>19</td><td>2</td><td>Delay_MS(1)</td></tr>
 <tr><td>HSERPRINT</td><td>12</td><td>29</td><td>2</td><td>HSERSEND(1)</td></tr>
-<tr><td>HSERPRINT</td><td>18</td><td>53</td><td>2</td><td>SYSDIVSUB(2), SYSCOMPLESSTHAN(2), HSERSEND(3)</td></tr>
+<tr><td>HSERPRINT</td><td>18</td><td>67</td><td>1</td><td>SYSDIVSUB(2), SYSCOMPLESSTHAN(2), HSERSEND(3)</td></tr>
 <tr><td>HI2CMODE</td><td>27</td><td>39</td><td>2</td><td></td></tr>
 <tr><td>HI2CSTART</td><td>16</td><td>14</td><td>2</td><td>HI2CWAITMSSP(1)</td></tr>
 <tr><td>HI2CRESTART</td><td>8</td><td>9</td><td>2</td><td>HI2CWAITMSSP(1)</td></tr>
 <tr><td>HI2CSTOP</td><td>13</td><td>16</td><td>2</td><td>HI2CWAITMSSP(1)</td></tr>
-<tr><td>HI2CSEND</td><td>19</td><td>34</td><td>2</td><td>HI2CWAITMSSP(1)</td></tr>
+<tr><td>HI2CSEND</td><td>19</td><td>36</td><td>1</td><td>HI2CWAITMSSP(1)</td></tr>
 <tr><td>HI2CRECEIVE</td><td>25</td><td>58</td><td>1</td><td>HI2CWAITMSSP(1)</td></tr>
 <tr><td>HI2CWAITMSSP</td><td>24</td><td>20</td><td>2</td><td></td></tr>
 <tr><td>HIC2INIT</td><td>4</td><td>2</td><td>1</td><td></td></tr>
-<tr><td>Delay_10US</td><td>0</td><td>8</td><td>1</td><td></td></tr>
+<tr><td>Delay_10US</td><td>0</td><td>8</td><td>2</td><td></td></tr>
 <tr><td>Delay_MS</td><td>0</td><td>14</td><td>2</td><td></td></tr>
 <tr><td>Delay_S</td><td>0</td><td>8</td><td>2</td><td>Delay_MS(1)</td></tr>
 <tr><td>SysStringTables</td><td>0</td><td>210</td><td>1</td><td></td></tr>

@@ -172,8 +172,9 @@ DIR PORTC.0 OUT
   wait 2 s
   CLS
 
-'PCF8563_SetClock( 13, 45, 0, 19,20,12, 18)
-PCF8563_ResetClock
+'sub PCF8563_SetClock(in DS_Hour, in DS_Min, in DS_Sec, in DS_DOW, in DS_Date, in DS_Month, in DS_Year)
+PCF8563_SetClock(        13,         45,        0,         4,          20,        12,          18)
+'PCF8563_ResetClock
 PCF8563_EnableClockout ( 1 )
 PCF8563_EnableClockoutFrequency ( CLKOUT_CTRL_REG_1_Hz )
 
@@ -279,6 +280,7 @@ end
 
     if oldsec <> sec then
 'erv
+HSerPrintCRLF
     HSerPrint hour
     HSerSend 9
     HSerPrint min
@@ -286,23 +288,28 @@ end
     HSerSend 9
     HSerPrint sec
     HSerSend 9
-    HSerPrint am_pm
-    HSerSend 9
-    HSerPrint ">"
+'    HSerPrint am_pm
 
-      if !(hour | min | sec) then       ;time to update
+    HSerSend 9
+
+
+      if sec.1 = 1 then       ;time to update
         PCF8563_ReadDate(DOW, date, month, year)
+    HSerPrint "*"
 
-            HSerPrint DOW
-    HSerSend 9
-    HSerPrint date
-    HSerSend 9
-    HSerPrint month
-    HSerSend 9
-    HSerPrint year
-    HSerPrintCRLF
+
+'    HSerPrint  sec
+'    HSerSend 9
+'    HSerPrint DOW
+'    HSerSend 9
+'    HSerPrint date
+'    HSerSend 9
+'    HSerPrint month
+'    HSerSend 9
+'    HSerPrint year
 
       end if
+
 
       locate 0,0                        ;home the cursor
       printTime                         ;show time
@@ -310,7 +317,12 @@ end
       locate 1,0                        ;show the date
       printDate
       oldsec =  sec
+
+
     end if
+
+
+
   end sub
 
   ;-----
