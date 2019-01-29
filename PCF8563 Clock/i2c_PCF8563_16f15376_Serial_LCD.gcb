@@ -4,7 +4,7 @@
 '''Two types of LCD are supported using this method, as shown below:
 ''':        Set LCD_10 to 10 for the YwRobot LCD1602 IIC V1 or the Sainsmart LCD_PIC I2C adapter
 ''':        Set LCD_10 to 12 for the Ywmjkdz I2C adapter with pot bent over top of chip
-'''The PCF8563 is attached to the I2C ports with appropiate resistors to the supply voltage.  Typically a 5k or 2.2k resistor 'pulling up' to the supply voltage can be used.
+'''The PCF85x3 is attached to the I2C ports with appropiate resistors to the supply voltage.  Typically a 5k or 2.2k resistor 'pulling up' to the supply voltage can be used.
 ''':
 ''':    There are two pushbuttons: Mode and Set equates to Key1 and Key2. Connected to portb.0 and portb.1 resepectively.
 ''':
@@ -24,8 +24,8 @@
 
 '''@author          EvanV
 '''@licence GPL
-'''@version 1.2a
-'''@date    23.02.15
+'''@version 0.9a
+'''@date    29.1.2019
 '''********************************************************************************
 
 ; ----- Configuration
@@ -54,12 +54,9 @@
     End Sub
     'Template comment at the end of the config file
 
- #include "PCF8563.h"
+ #include "PCF85X3.gcb"
  #define DS_AddrWrite 0xA2
  #define DS_AddrRead  0xA3
-  'USART settings
-  #define USART_BAUD_RATE 9600
-  #define USART_TX_BLOCKING
 
 
   '''Set up LCD
@@ -81,55 +78,17 @@
     Dir hi2c_DATA in
     Dir hi2c_CLOCK in
 
-; ------ CLC Settings
+; ----- Define Clock and the input switch hardware settings
+  #define setBut      portb.0         ;Set pushbutton
+  #define modeBut     portb.1         ;Mode pushbutton
 
-
-            'Module: CLC1/CLC2/CLC3/CLC4
-            CLCIN2PPS = 0x0008    'RB0 > CLCIN2
-            'Module: CLC2
-            RC0PPS = 0x0002    'CLC2OUT > RC0
-
-    RC0PPS = 0x02;   //RC0->CLC2:CLC2OUT;
-    CLCIN0PPS = 0x00;   //RA0->CLC2:CLCIN0;
-    CLCIN2PPS = 0x08;   //RB0->CLC2:CLCIN2;
-
-DIR PORTC.0 OUT
-    'Set the CLC2 to the options selected in the User Interface
-
-    'LC2G1POL not_inverted; LC2G2POL not_inverted; LC2G3POL not_inverted; LC2G4POL not_inverted; LC2POL not_inverted;
-    CLC2POL = 0x00;
-    'LC2D1S CLCIN2 (CLCIN2PPS);
-    CLC2SEL0 = 0x02;
-    'LC2D2S CLCIN0 (CLCIN0PPS);
-    CLC2SEL1 = 0x00;
-    'LC2D3S CLCIN0 (CLCIN0PPS);
-    CLC2SEL2 = 0x00;
-    'LC2D4S CLCIN0 (CLCIN0PPS);
-    CLC2SEL3 = 0x00;
-    'LC2G1D3N disabled; LC2G1D2N disabled; LC2G1D4N disabled; LC2G1D1T enabled; LC2G1D3T disabled; LC2G1D2T disabled; LC2G1D4T disabled; LC2G1D1N disabled;
-    CLC2GLS0 = 0x02;
-    'LC2G2D2N disabled; LC2G2D1N disabled; LC2G2D4N disabled; LC2G2D3N disabled; LC2G2D2T disabled; LC2G2D1T disabled; LC2G2D4T disabled; LC2G2D3T disabled;
-    CLC2GLS1 = 0x00;
-    'LC2G3D1N disabled; LC2G3D2N disabled; LC2G3D3N disabled; LC2G3D4N disabled; LC2G3D1T disabled; LC2G3D2T disabled; LC2G3D3T disabled; LC2G3D4T disabled;
-    CLC2GLS2 = 0x00;
-    'LC2G4D1N disabled; LC2G4D2N disabled; LC2G4D3N disabled; LC2G4D4N disabled; LC2G4D1T disabled; LC2G4D2T disabled; LC2G4D3T disabled; LC2G4D4T disabled;
-    CLC2GLS3 = 0x00;
-    'LC2EN enabled; INTN disabled; INTP disabled; MODE OR-XOR;
-    CLC2CON = 0x81;
-
-
-
-
-; ----- Define Hardware settings
   dir setBut in
   dir modeBut in
 
   #define clocktype   1               ;0 is US or 1 is UK style
-  #define debounce    50 mS            ;settling time for switches
-  #define delay       150 mS          ;delay time for pushbutton
+  #define debounce    50 ms           ;settling time for switches
+  #define delay       150 ms          ;delay time for pushbutton
   #define pressed     1               ;flag for pressed pushbutton
-  #define setBut      portb.0         ;Set pushbutton
-  #define modeBut     portb.1         ;Mode pushbutton
 
   #define Alarm0 0x00                 ;a reference to the alarm 0
   #define Alarm1 0x01                 ;a reference to the alarm 1
@@ -139,10 +98,10 @@ DIR PORTC.0 OUT
 
   Dim DAYSMAX, DAYSMAX as Byte
   dim changed as bit
-  dim hour, min, sec, am_pm as byte
+  dim hour, min, sec as byte
   dim oldsec as byte
   dim date, month, year, DOW as byte
-  dim mode, Oldmode, dayMax as byte
+  dim dayMax as byte
   oldsec = 255                        ;      init value
 
 ;----- Tables
@@ -164,24 +123,52 @@ DIR PORTC.0 OUT
 
 ;----- Program
 
+  CreateCustomCharacters
+
   LCDCursor CURSOROFF
   locate 0,0
-  Print "PCF8563"
+  Print "PCF85x3 Clock"
   locate 1,0
-  Print "Great Cow Basic"
+  Print "Great Cow Basic 2019"
   wait 2 s
   CLS
 
-'sub PCF8563_SetClock(in DS_Hour, in DS_Min, in DS_Sec, in DS_DOW, in DS_Date, in DS_Month, in DS_Year)
-PCF8563_SetClock(        13,         45,        0,         4,          20,        12,          18)
-'PCF8563_ResetClock
-PCF8563_EnableClockout ( 1 )
-PCF8563_EnableClockoutFrequency ( CLKOUT_CTRL_REG_1_Hz )
+  'Constants when calling PCF85x3_ResetClock that can/could be set.
+  #define  PCF85x3_DEFAULT_SEC         0
+  #define  PCF85x3_DEFAULT_MIN         52
+  #define  PCF85x3_DEFAULT_HOUR        15
+  #define  PCF85x3_DEFAULT_DAY         29
+  #define  PCF85x3_DEFAULT_WEEKDAY     2
+  #define  PCF85x3_DEFAULT_MONTH       1
+  #define  PCF85x3_DEFAULT_YEAR        19
+  'The constants above are used as the defaults when you reset the clock
+  PCF85x3_ResetClock
+  PCF85x3_Enable
 
-locate 2,0
+  'or, set the clock this way
+  PCF85x3_SetClock(        20,         17,        0,         2,          29,        1,          19)
+
+  'set the ClockOut by enabling like this
+  PCF85x3_EnableClockout ( true )
+
+  'set the ClockOut frequency like this, using the following Constants
+      'PCF85x3_CLKOUT_CTRL_REG_32_768_kHz
+      'PCF85x3_CLKOUT_CTRL_REG_1_024_kHz
+      'PCF85x3_CLKOUT_CTRL_REG_32_Hz
+      'PCF85x3_CLKOUT_CTRL_REG_1_Hz
+  PCF85x3_EnableClockoutFrequency ( PCF85x3_CLKOUT_CTRL_REG_1_Hz )
+
+  'set the alarm like this...
+  '      PCF85x3_SetAlarm( hour, mins )
+  'or
+  '      PCF85x3_SetAlarm( hour, mins, day of the week[0-6], day of the month [1-31] )
+
+  'set the alarm for 07:00 hrs
+  PCF85x3_SetAlarm( 7, 15 )
+  PCF85x3_EnableAlarm ( PCF85x3_Alarm2Assertion_MinuteHour )
 
 ;Main body of program commences here.
-  PCF8563_ReadDate(DOW, date, month, year)   ;get initial date
+  PCF85x3_ReadDate(DOW, date, month, year)   ;get initial date
 
   do
 
@@ -191,18 +178,18 @@ locate 2,0
     end if
 
     if modeBut = pressed then
-      changeMode                      ;12 or 24 hour mode
+      ShowAlarm
     end if
 
   loop
+
 end
   ;----- Subroutines
 
   sub printTime
-    if mode = 24 then
-      if hour < 10 then               ;left pad with zero
-        Print "0"
-      end if
+
+    if hour < 10 then                 ;left pad with zero
+      Print "0"
     end if
     Print hour
 
@@ -218,15 +205,8 @@ end
     end if
     Print sec
 
-    if mode = 12 then                 ;Print a.m or p.m
-      if am_pm then                   ;only in 12-hour mode
-        Print " p.m. "
-      else
-        Print " a.m. "
-      end if
-    else
-      Print "     "                   ;wipe out garbage
-    end if
+    Print "     "                    ;wipe out any garbage
+
   end sub
 
   ;-----
@@ -276,40 +256,22 @@ end
 
   sub updateDisp
     ;for best efficiency, date is only updated once a day
-    PCF8563_ReadTime(hour, min, sec, am_pm)
+    PCF85x3_ReadTime(hour, min, sec)
 
     if oldsec <> sec then
-'erv
-HSerPrintCRLF
-    HSerPrint hour
-    HSerSend 9
-    HSerPrint min
-    HSerSend 9
-    HSerSend 9
-    HSerPrint sec
-    HSerSend 9
-'    HSerPrint am_pm
 
-    HSerSend 9
+      if sec = 0 then                             ;time to update
+        PCF85x3_ReadDate(DOW, date, month, year)
 
-
-      if sec.1 = 1 then       ;time to update
-        PCF8563_ReadDate(DOW, date, month, year)
-    HSerPrint "*"
-
-
-'    HSerPrint  sec
-'    HSerSend 9
-'    HSerPrint DOW
-'    HSerSend 9
-'    HSerPrint date
-'    HSerSend 9
-'    HSerPrint month
-'    HSerSend 9
-'    HSerPrint year
-
+        'Show clock integrity
+        locate 0, 19
+        ' If PCF85x3_ReadVL is 0 then the clock integrity is good... show a happy face
+        if PCF85x3_ReadVL = 0 then
+            LCDWriteChar 0
+        else
+            LCDWriteChar 1
+        end if
       end if
-
 
       locate 0,0                        ;home the cursor
       printTime                         ;show time
@@ -317,7 +279,6 @@ HSerPrintCRLF
       locate 1,0                        ;show the date
       printDate
       oldsec =  sec
-
 
     end if
 
@@ -329,9 +290,6 @@ HSerPrintCRLF
 
   sub changeSetting
     changed = false                   ;assume no change will be made
-    PCF8563_ReadHourMode(Oldmode)      ;and the current mode
-    mode = 24                         ;ensure the display is correct
-    PCF8563_SetHourMode(24)            ;change settings in 24-hour mode
 
     do while setBut = pressed         ;wait for Set release
       wait debounce
@@ -358,8 +316,8 @@ HSerPrintCRLF
     do
       do while modeBut = pressed      ;Mode button held
         DOW++                         ;increment while pressed
-        if DOW > 7 then               ;1 = Sunday, etc.
-          DOW = 1
+        if DOW > 6 then               ;0 = Sunday, etc.
+          DOW = 0
         end if
 
         locate 1,0                    ;Print updated display
@@ -378,10 +336,6 @@ HSerPrintCRLF
     cls
     Print "Set Hours:"
     locate 1,0
-    if OldMode = 12 and am_pm then    ; make correction of AM_PM mode by adding 12 hours to handle mode changes
-       hour = hour + 12
-    end if
-
     printTime
 
     do
@@ -464,13 +418,12 @@ HSerPrintCRLF
         wait debounce
         if ModeBut = pressed then
            cls                               ;clear last message
-           PCF8563_SetHourMode(Oldmode)       ;restore current mode
-           exit Sub                          ;do not set, exit set routine
+                                             ;do nothing - you could add setting the clock
+           exit Sub                          ;exit set routine
         end if
       loop
 
-      PCF8563_SetHourMode(24)                 ;change settings in 24-hour mode
-      PCF8563_SetClock(hour, min, sec, DOW, date, month, year)
+      PCF85x3_SetClock(hour, min, sec, DOW, date, month, year)
     end if
 
     do while (setBut = pressed)       ;wait for Set release
@@ -478,23 +431,13 @@ HSerPrintCRLF
 
     wait debounce                     ;let it settle
     cls                               ;clear last message
-    PCF8563_SetHourMode(Oldmode)      ;restore current mode
-    PCF8563_EnableOscillator( true )  ;ensure the clock is running
-    mode = Oldmode                    ;restore mode
+    PCF85x3_Enable                    ;ensure the clock is running
   end sub
 
   ;-----
 
   sub changeMode
-    PCF8563_SetHourMode(24)            ;change settings in 24-hour mode
-
-    if mode = 12 then                 ;toggle between 12 and 24
-      mode = 24
-    else
-      mode = 12
-    end if
-
-    PCF8563_SetHourMode(mode)          ;change to new mode
+   'Does nothing
 
     do while modeBut = pressed        ;wait for a release
       wait debounce
@@ -590,3 +533,61 @@ HSerPrintCRLF
 
 
   end sub
+
+
+  Sub ShowAlarm
+
+      locate 3,0
+      dim myreg as Byte
+      print "Alarm "
+      PCF85x3_ReadRegister ( 0x0a, myreg )
+      print leftpad( str(BcdToDec( myreg  & 0x7f )),2, "0" )
+      print ":"
+      PCF85x3_ReadRegister ( 0x09, myreg )
+      print leftpad( str(BcdToDec( myreg  & 0x7f )),2, "0" )
+
+'      locate 2,12
+'      PCF85x3_ReadRegister ( 0x09, myreg )
+'      print ByteToBin ( BcdToDec( myreg ) )
+'
+'      locate 3,12
+'      PCF85x3_ReadRegister ( 0x0a, myreg )
+'      print ByteToBin ( BcdToDec( myreg ) )
+
+  End Sub
+
+
+  Sub CreateCustomCharacters
+
+      'Create an array to store the character until it is copied
+    Dim CharArray(8)
+
+    'Set the array to hold the character
+    'Binary has been used to improve the readability of the code, but is not essential
+    CharArray(1) = b'00011011'
+    CharArray(2) = b'00011011'
+    CharArray(3) = b'00000000'
+    CharArray(4) = b'00000100'
+    CharArray(5) = b'00000000'
+    CharArray(6) = b'00010001'
+    CharArray(7) = b'00010001'
+    CharArray(8) = b'00001110'
+
+    'Copy the character from the array to the LCD
+    LCDCreateChar 0, CharArray()
+
+    'Set the array to hold the character
+    'Binary has been used to improve the readability of the code, but is not essential
+    CharArray(1) = b'00011011'
+    CharArray(2) = b'00011011'
+    CharArray(3) = b'00000000'
+    CharArray(4) = b'00000100'
+    CharArray(5) = b'00000000'
+    CharArray(6) = b'00001110'
+    CharArray(7) = b'00010001'
+    CharArray(8) = b'00010001'
+
+    'Copy the character from the array to the LCD
+    LCDCreateChar 1, CharArray()
+
+  End Sub
