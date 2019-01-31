@@ -139,7 +139,7 @@
 
 ;----- Program
 
-  CreateCustomCharacters
+'  CreateCustomCharacters
 
   LCDCursor CURSOROFF
   locate 0,0
