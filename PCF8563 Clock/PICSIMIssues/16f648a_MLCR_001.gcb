@@ -1,0 +1,76 @@
+
+'''@author          EvanV
+'''@licence GPL
+'''@version 0.9a
+'''@date    29.1.2019
+'''********************************************************************************
+
+#chip 16f648a, 4
+#option explicit
+#config mclr=off
+
+;Setup LCD Parameters
+#define LCD_IO 3
+
+'Change as necessary
+#define LCD_DB     PORTb.3            ; databit
+#define LCD_CB     PORTb.4            ; clockbit
+#define LCD_EB     PORTa.0            ; enable bit
+
+CreateCustomCharacters
+
+CLS
+Print "Great Cow BASIC"
+locate 1,0
+Print "2019"
+wait 4 s
+CLS
+print "Smiley face"
+
+dir porta.5 in
+do
+    locate 1,0
+
+    if porta.5 = 0 then
+        LCDWriteChar 0
+    else
+        LCDWriteChar 1
+    end if
+    wait 1 s
+loop
+
+
+  Sub CreateCustomCharacters
+
+      'Create an array to store the character until it is copied
+    Dim CharArray(8)
+
+    'Set the array to hold the character
+    'Binary has been used to improve the readability of the code, but is not essential
+    CharArray(1) = b'00011011'
+    CharArray(2) = b'00011011'
+    CharArray(3) = b'00000000'
+    CharArray(4) = b'00000100'
+    CharArray(5) = b'00000000'
+    CharArray(6) = b'00010001'
+    CharArray(7) = b'00010001'
+    CharArray(8) = b'00001110'
+
+    'Copy the character from the array to the LCD
+    LCDCreateChar 0, CharArray()
+
+    'Set the array to hold the character
+    'Binary has been used to improve the readability of the code, but is not essential
+    CharArray(1) = b'00011011'
+    CharArray(2) = b'00011011'
+    CharArray(3) = b'00000000'
+    CharArray(4) = b'00000100'
+    CharArray(5) = b'00000000'
+    CharArray(6) = b'00001110'
+    CharArray(7) = b'00010001'
+    CharArray(8) = b'00010001'
+
+    'Copy the character from the array to the LCD
+    LCDCreateChar 1, CharArray()
+
+  End Sub
