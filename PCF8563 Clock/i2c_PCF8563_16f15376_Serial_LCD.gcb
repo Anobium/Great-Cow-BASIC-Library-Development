@@ -86,7 +86,7 @@
   dir modeBut in
 
   #define clocktype   1               ;0 is US or 1 is UK style
-  #define debounce    50 ms           ;settling time for switches
+  #define debounce    150 ms           ;settling time for switches
   #define delay       150 ms          ;delay time for pushbutton
   #define pressed     1               ;flag for pressed pushbutton
 
@@ -142,11 +142,11 @@
   #define  PCF85x3_DEFAULT_MONTH       1
   #define  PCF85x3_DEFAULT_YEAR        19
   'The constants above are used as the defaults when you reset the clock
-  PCF85x3_ResetClock
+  'PCF85x3_ResetClock
   PCF85x3_Enable
 
   'or, set the clock this way
-  PCF85x3_SetClock(        20,         17,        0,         2,          29,        1,          19)
+'  PCF85x3_SetClock(        8,         12,        45,         2,          29,        1,          19)
 
   'set the ClockOut by enabling like this
   PCF85x3_EnableClockout ( true )
@@ -164,8 +164,9 @@
   '      PCF85x3_SetAlarm( hour, mins, day of the week[0-6], day of the month [1-31] )
 
   'set the alarm for 07:00 hrs
-  PCF85x3_SetAlarm( 7, 15 )
-  PCF85x3_EnableAlarm ( PCF85x3_Alarm2Assertion_MinuteHour )
+  PCF85x3_SetAlarm( 17 )
+  PCF85x3_ClearAlarm
+'  PCF85x3_EnableAlarm ( PCF85x3_AlarmAssertion_Minute )
 
 ;Main body of program commences here.
   PCF85x3_ReadDate(DOW, date, month, year)   ;get initial date
@@ -281,7 +282,10 @@ end
       oldsec =  sec
 
     end if
-
+      dim myreg as byte
+      locate 0,12
+      PCF85x3_ReadRegister ( PCF85x3_CTRL_REG_2, myreg )
+      print ByteToBin (  myreg & 0x1f )
 
 
   end sub
@@ -324,6 +328,7 @@ end
         printDate
         wait while modeBut = pressed  ;wait for repeat
         changed = true                ;a change was made
+        wait while modeBut <> pressed  ;wait for repeat
       loop
     loop while setBut <> pressed
 
@@ -540,19 +545,19 @@ end
       locate 3,0
       dim myreg as Byte
       print "Alarm "
-      PCF85x3_ReadRegister ( 0x0a, myreg )
+      PCF85x3_ReadRegister ( PCF85x3_HOURS_ALARM_REG, myreg )
       print leftpad( str(BcdToDec( myreg  & 0x7f )),2, "0" )
       print ":"
-      PCF85x3_ReadRegister ( 0x09, myreg )
+      PCF85x3_ReadRegister ( PCF85x3_MINS_ALARM_REG, myreg )
       print leftpad( str(BcdToDec( myreg  & 0x7f )),2, "0" )
 
-'      locate 2,12
-'      PCF85x3_ReadRegister ( 0x09, myreg )
-'      print ByteToBin ( BcdToDec( myreg ) )
-'
-'      locate 3,12
-'      PCF85x3_ReadRegister ( 0x0a, myreg )
-'      print ByteToBin ( BcdToDec( myreg ) )
+      locate 2,12
+      PCF85x3_ReadRegister ( PCF85x3_HOURS_ALARM_REG, myreg )
+      print ByteToBin ( myreg )
+
+      locate 3,12
+      PCF85x3_ReadRegister ( PCF85x3_MINS_ALARM_REG, myreg )
+      print ByteToBin (  myreg )
 
   End Sub
 

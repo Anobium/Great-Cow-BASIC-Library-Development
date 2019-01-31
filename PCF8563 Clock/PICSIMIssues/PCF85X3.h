@@ -389,8 +389,6 @@ sub PCF85x3_SetAlarm( in DS_Min)
     I2CStop
   #endif
 
-  PCF85x3_EnableAlarm ( PCF85x3_AlarmAssertion_Minute )
-
 end sub
 
 ;-----

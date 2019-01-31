@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2019-01-21 (Windows 32 bit)</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 4.25 seconds)</p>
+<p> (Assembly time: 0.171875 seconds)</p>
+<p> (Download time: 0 seconds)</p>
+<p> (Total time: 4.421875 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 16F648A</p>
+<p>Program Memory: 460/4096 words (11.23%)</p>
+<p>RAM: 43/256 bytes (16.8%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Page</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>17</td><td>80</td><td>1</td><td>INITLCD(10), SYSREADSTRING(4), Delay_S(1), LCDWRITECHAR(2), LOCATE(2), PRINT(4), CLS(2), CREATECUSTOMCHARACTERS(1), INITSYS(14)</td></tr>
+<tr><td>CREATECUSTOMCHARACTERS</td><td>19</td><td>49</td><td>1</td><td>LCDCREATECHAR(2)</td></tr>
+<tr><td>LOCATE</td><td>7</td><td>24</td><td>1</td><td>SYSMULTSUB(1), Delay_10US(1), LCDNORMALWRITEBYTE(1)</td></tr>
+<tr><td>CLS</td><td>5</td><td>14</td><td>1</td><td>Delay_10US(1), Delay_MS(1), LCDNORMALWRITEBYTE(2)</td></tr>
+<tr><td>LCD3_CMD</td><td>2</td><td>4</td><td>1</td><td>LCDNORMALWRITEBYTE(1)</td></tr>
+<tr><td>INITLCD</td><td>273</td><td>52</td><td>1</td><td>Delay_MS(3), LCD3_CMD(8), LCDBACKLIGHT(1)</td></tr>
+<tr><td>PRINT</td><td>8</td><td>31</td><td>1</td><td>LCDNORMALWRITEBYTE(1)</td></tr>
+<tr><td>LCDWRITECHAR</td><td>2</td><td>5</td><td>1</td><td>LCDNORMALWRITEBYTE(1)</td></tr>
+<tr><td>LCDNORMALWRITEBYTE</td><td>283</td><td>43</td><td>1</td><td>Delay_MS(3)</td></tr>
+<tr><td>LCDCREATECHAR</td><td>32</td><td>39</td><td>1</td><td>SYSMULTSUB(1), Delay_10US(3), LCDNORMALWRITEBYTE(3)</td></tr>
+<tr><td>LCDBACKLIGHT</td><td>27</td><td>1</td><td>1</td><td></td></tr>
+<tr><td>INITSYS</td><td>704</td><td>5</td><td>1</td><td></td></tr>
+<tr><td>SYSREADSTRING</td><td>101</td><td>28</td><td>1</td><td></td></tr>
+<tr><td>SYSMULTSUB</td><td>39</td><td>12</td><td>1</td><td></td></tr>
+<tr><td>Delay_10US</td><td>0</td><td>7</td><td>1</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>14</td><td>1</td><td></td></tr>
+<tr><td>Delay_S</td><td>0</td><td>8</td><td>1</td><td>Delay_MS(1)</td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>44</td><td>1</td><td></td></tr>
+</table>
+</body>
+</html>
