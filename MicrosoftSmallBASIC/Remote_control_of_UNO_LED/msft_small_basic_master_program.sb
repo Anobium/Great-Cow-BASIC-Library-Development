@@ -15,7 +15,7 @@
 
 
 'Set-up the communication port to the UNO
-comPort = "COM11"
+comPort = "COM10"
 
 Initialise()
 
@@ -29,6 +29,7 @@ Sub Initialise
   GraphicsWindow.Height = 100
   GraphicsWindow.Title = "Great Cow BASIC UNO LED Controller"
 
+ 
   'draw pin control buttons'
   pin0high = Controls.AddButton("PIN0 High", 20, 10)
   pin0low = Controls.AddButton("PIN0 Low", 100, 10)
@@ -37,9 +38,13 @@ Sub Initialise
   statusbox = Controls.AddTextBox(20,50)
   value = Controls.AddTextBox(210,13)
   send = Controls.AddButton("Send Command", 380, 10)
-
+  
+  Controls.SetTextBoxText(statusbox,"Connect UNO via USB")
+  GraphicsWindow.ShowMessage("Click 'OK' when you have the UNO connected","Great Cow BASIC")
+  
   'Open connection to UNO'
   Controls.SetTextBoxText(statusbox,"COM port link: "+ LDCommPort.OpenPort(comPort, 9600))
+
 
   'Assign variables'
   Controls.ButtonClicked = OnButtonClicked
