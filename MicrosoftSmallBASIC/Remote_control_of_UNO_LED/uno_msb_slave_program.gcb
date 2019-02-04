@@ -1,0 +1,43 @@
+'''A demonstration program for GCGB and GCB.
+'''--------------------------------------------------------------------------------------------------------------------------------
+'''This program will enable the control of the UNO LED from the PC control application written in Microsoft Small BASIC
+'''@author  EvanV
+'''@licence GPL
+'''@version 1.0a
+'''@date    04.02.2019
+'''********************************************************************************
+
+; ----- Configuration
+
+#chip mega328P, 16     'Arduino UNO
+#option Explicit
+
+  'USART settings
+  #define USART_BAUD_RATE 9600
+  #define USART_TX_BLOCKING
+
+  dir PORTB.5 out
+  HSerPrint "Small BASIC Responder"
+
+  repeat 10
+
+      PORTB.5 = ! PORTB.5
+      wait 50 ms
+
+  end Repeat
+
+  dim MyString as string
+
+  Do Forever
+
+     HSerGetString MyString, 1
+
+     If MyString = "pin0=on" Then
+       Set PORTB.5 On
+     End If
+     If MyString = "pin0=off" Then
+       Set PORTB.5 Off
+     End If
+
+
+  Loop

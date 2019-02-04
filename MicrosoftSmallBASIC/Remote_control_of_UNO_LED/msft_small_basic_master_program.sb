@@ -1,0 +1,62 @@
+'''A demonstration program for GCGB and GCB.
+'''--------------------------------------------------------------------------------------------------------------------------------
+'''This program will enable the control of the UNO LED from the PC control application written in Microsoft Small BASIC
+'''A really simply communications tools for Great Cow BASIC
+'''Critical things to do...
+'''  1.Load the UNO with the UNO slave program called uno_msb_slave_program.gcb
+''' 2.Ensure you get the comPort (shown below correct).
+''' 3.Enjoy
+''''
+'''@author  EvanV
+'''@licence GPL
+'''@version 1.0a
+'''@date    04.02.2019
+'''********************************************************************************
+
+
+'Set-up the communication port to the UNO
+comPort = "COM11"
+
+Initialise()
+
+While ("True")
+  Program.Delay(10)
+EndWhile
+
+Sub Initialise
+  'draw window'
+  GraphicsWindow.Width = 500
+  GraphicsWindow.Height = 100
+  GraphicsWindow.Title = "Great Cow BASIC UNO LED Controller"
+
+  'draw pin control buttons'
+  pin0high = Controls.AddButton("PIN0 High", 20, 10)
+  pin0low = Controls.AddButton("PIN0 Low", 100, 10)
+
+  'draw status and command buttons & boxes'
+  statusbox = Controls.AddTextBox(20,50)
+  value = Controls.AddTextBox(210,13)
+  send = Controls.AddButton("Send Command", 380, 10)
+
+  'Open connection to microbit'
+  Controls.SetTextBoxText(statusbox,"COM port link: "+ LDCommPort.OpenPort(comPort, 9600))
+
+  'Assign variables'
+  Controls.ButtonClicked = OnButtonClicked
+  nl = Text.GetCharacter(13) 'new line character'
+EndSub
+
+Sub OnButtonClicked
+  button = Controls.LastClickedButton
+  val = Controls.GetTextBoxText(value)
+
+  'if button pressed, send command and new line character'
+  If (button = pin0high) Then
+    LDCommPort.TXString("pin0=on"+nl)
+  ElseIf (button = pin0low) Then
+    LDCommPort.TXString("pin0=off"+nl)
+  EndIf
+  If (button = send) And (val <> "") Then
+    LDCommPort.TXString(val+nl)
+  EndIf
+EndSub
