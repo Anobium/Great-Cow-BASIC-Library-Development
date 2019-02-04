@@ -38,7 +38,7 @@ Sub Initialise
   value = Controls.AddTextBox(210,13)
   send = Controls.AddButton("Send Command", 380, 10)
 
-  'Open connection to microbit'
+  'Open connection to UNO'
   Controls.SetTextBoxText(statusbox,"COM port link: "+ LDCommPort.OpenPort(comPort, 9600))
 
   'Assign variables'
