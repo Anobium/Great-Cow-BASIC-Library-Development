@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2019-01-21 (Windows 32 bit)</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 3.6875 seconds)</p>
+<p> (Assembly time: 0.1875 seconds)</p>
+<p> (Download time: 4.25 seconds)</p>
+<p> (Total time: 8.125 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 16F1939</p>
+<p>Program Memory: 2799/16384 words (17.08%)</p>
+<p>RAM: 341/1024 bytes (33.3%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Page</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>313</td><td>931</td><td>1</td><td>INITUSART(1), SYSMULTSUB32(1), SYSCOPYSTRING(3), SYSREADSTRING(8), SYSCOMPLESSTHAN16(2), SYSCOMPLESSTHAN32(1), Delay_MS(4), Delay_S(20), GLCDISPAUTODATAWR(1), GLCDCMDADDRSEND_T6963(3), PUT_T6963(1), HSERPRINT(2), PRINT(1), PRINT(1), PRINT(2), GLCDCLS_T6963(1), LCDSPACE_T6963(1), GLCDSENDCOMMAND_T6963(6), LCDCURSOR_T6963(12), LCDHEX_T6963(2), INITLCD(17), LOCATE_T6963(32), CLS_T6963(12), PRINT(26), GCBBUILDTIMESTR(1), GCBBUILDSTR(1), INITGLCD_T6963(1), INITSYS(43)</td></tr>
+<tr><td>PUT_T6963</td><td>3</td><td>13</td><td>2</td><td>GLCDSENDCOMMAND_T6963(1), GLCDSENDDATA_T6963(1), LOCATE_T6963(1)</td></tr>
+<tr><td>LOCATE_T6963</td><td>13</td><td>76</td><td>1</td><td>SYSMULTSUB16(1), SYSCOMPLESSTHAN(2), GLCDSENDCOMMAND_T6963(1), GLCDCMDADDRSEND_T6963(2)</td></tr>
+<tr><td>CLS_T6963</td><td>13</td><td>53</td><td>2</td><td>SYSCOMPLESSTHAN16(2), GLCDISPAUTODATAWR(1), GLCDSENDCOMMAND_T6963(3), GLCDCMDADDRSEND_T6963(2)</td></tr>
+<tr><td>LCDHEX_T6963</td><td>18</td><td>71</td><td>1</td><td>SYSDIVSUB(1), CHR(2), PRINT(3)</td></tr>
+<tr><td>LCDSPACE_T6963</td><td>7</td><td>19</td><td>2</td><td>PRINT(1)</td></tr>
+<tr><td>LCDCURSOR_T6963</td><td>35</td><td>77</td><td>1</td><td>GLCDSENDCOMMAND_T6963(5)</td></tr>
+<tr><td>LCDNORMALWRITEBYTE_T6963</td><td>2</td><td>7</td><td>2</td><td>GLCDSENDCOMMAND_T6963(1), GLCDSENDDATA_T6963(1)</td></tr>
+<tr><td>INITGLCD_T6963</td><td>35</td><td>97</td><td>1</td><td>Delay_MS(1), CLS_T6963(1), GLCDCLS_T6963(1), GLCDSENDCOMMAND_T6963(3), GLCDCMDADDRSEND_T6963(5)</td></tr>
+<tr><td>GLCDCLS_T6963</td><td>11</td><td>53</td><td>2</td><td>SYSCOMPLESSTHAN16(2), GLCDISPAUTODATAWR(1), GLCDSENDCOMMAND_T6963(1), GLCDCMDADDRSEND_T6963(2)</td></tr>
+<tr><td>GLCDCMDADDRSEND_T6963</td><td>3</td><td>7</td><td>2</td><td>GLCDSENDCOMMAND_T6963(1), GLCDSENDDATA_T6963(2)</td></tr>
+<tr><td>GLCDSENDCOMMAND_T6963</td><td>12</td><td>36</td><td>2</td><td>GLCDBUSYCHECK_T6963(1)</td></tr>
+<tr><td>GLCDISPAUTODATAWR</td><td>12</td><td>36</td><td>2</td><td>GLCDISPAUTOWRCHK_T6963(1)</td></tr>
+<tr><td>GLCDSENDDATA_T6963</td><td>12</td><td>36</td><td>2</td><td>GLCDBUSYCHECK_T6963(1)</td></tr>
+<tr><td>GLCDBUSYCHECK_T6963</td><td>14</td><td>62</td><td>2</td><td></td></tr>
+<tr><td>GLCDISPAUTOWRCHK_T6963</td><td>12</td><td>46</td><td>2</td><td></td></tr>
+<tr><td>GCBBUILDSTR</td><td>1</td><td>9</td><td>2</td><td>SYSREADSTRING(1)</td></tr>
+<tr><td>GCBBUILDTIMESTR</td><td>1</td><td>9</td><td>2</td><td>SYSREADSTRING(1)</td></tr>
+<tr><td>INITLCD</td><td>273</td><td>3</td><td>1</td><td></td></tr>
+<tr><td>PRINT</td><td>8</td><td>32</td><td>1</td><td>LCDNORMALWRITEBYTE_T6963(1)</td></tr>
+<tr><td>PRINT</td><td>13</td><td>58</td><td>2</td><td>SYSDIVSUB(2), SYSCOMPLESSTHAN(2), LCDNORMALWRITEBYTE_T6963(3)</td></tr>
+<tr><td>PRINT</td><td>30</td><td>154</td><td>1</td><td>SYSDIVSUB16(4), SYSCOMPLESSTHAN16(4), LCDNORMALWRITEBYTE_T6963(5)</td></tr>
+<tr><td>PRINT</td><td>12</td><td>83</td><td>1</td><td>SYSDIVSUB32(1), SYSCOMPEQUAL32(1), LCDNORMALWRITEBYTE_T6963(1)</td></tr>
+<tr><td>INITSYS</td><td>704</td><td>23</td><td>1</td><td></td></tr>
+<tr><td>SYSCOPYSTRING</td><td>118</td><td>17</td><td>2</td><td></td></tr>
+<tr><td>SYSREADSTRING</td><td>101</td><td>22</td><td>2</td><td></td></tr>
+<tr><td>SYSMULTSUB16</td><td>73</td><td>36</td><td>2</td><td>SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>SYSMULTSUB32</td><td>43</td><td>64</td><td>2</td><td>SYSCOMPLESSTHAN32(1)</td></tr>
+<tr><td>SYSDIVSUB</td><td>48</td><td>20</td><td>2</td><td></td></tr>
+<tr><td>SYSDIVSUB16</td><td>38</td><td>52</td><td>2</td><td>SYSCOMPEQUAL16(1)</td></tr>
+<tr><td>SYSDIVSUB32</td><td>40</td><td>92</td><td>1</td><td>SYSCOMPEQUAL32(1)</td></tr>
+<tr><td>SYSCOMPEQUAL16</td><td>34</td><td>11</td><td>2</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL32</td><td>52</td><td>19</td><td>2</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN</td><td>23</td><td>7</td><td>2</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>15</td><td>2</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN32</td><td>63</td><td>25</td><td>2</td><td></td></tr>
+<tr><td>CHR</td><td>6</td><td>17</td><td>2</td><td></td></tr>
+<tr><td>INITUSART</td><td>141</td><td>15</td><td>1</td><td></td></tr>
+<tr><td>HSERSEND</td><td>122</td><td>17</td><td>2</td><td>Delay_MS(1)</td></tr>
+<tr><td>HSERPRINT</td><td>12</td><td>29</td><td>2</td><td>HSERSEND(1)</td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>14</td><td>2</td><td></td></tr>
+<tr><td>Delay_S</td><td>0</td><td>8</td><td>2</td><td>Delay_MS(1)</td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>328</td><td>1</td><td></td></tr>
+</table>
+</body>
+</html>

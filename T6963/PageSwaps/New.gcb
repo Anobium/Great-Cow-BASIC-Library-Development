@@ -1,0 +1,1335 @@
+'''A demonstration program for GCGB and GCB.
+'''--------------------------------------------------------------------------------------------------------------------------------
+'''This program is a simple GLCD demonstration of the T6963 GLCD capabilities.
+'''This program will draws lines, boxes, circles and prints strings and numbers.
+'''The GLCD is connected to the microprocessor as shown in the hardware section of this code.
+'''@author  EvanV
+'''@licence GPL
+'''@version 0.9a
+'''@date    3.1.19
+'''********************************************************************************
+
+  #chip 16f1939,32
+  #option explicit
+  #config Osc = INT, VCAPEN_OFF, MCLRE_On, PLLEN_ON, CLKOUTEN_OFF
+
+  #include <glcd.h>
+  #define GLCD_TYPE 0               ' This is the devlopment value, will be set later, leave a zero.
+  #define GLCD_TYPE_T6963 0
+'  #startup InitGLCD_T6963
+
+  'USART settings
+  #define USART_BAUD_RATE 9600
+  #define USART_TX_BLOCKING
+
+  #define GLCD_DATA_PORT PORTD
+
+  #define STA0         GLCD_DATA_PORT.0   'Check command execution capability
+  #define STA1         GLCD_DATA_PORT.1   'Check data read/write capability
+  #define STA2         GLCD_DATA_PORT.2   'Check Auto mode data read capability
+  #define STA3         GLCD_DATA_PORT.3   'Check Auto mode data write capability
+  #define STA5         GLCD_DATA_PORT.5   'Check controller operation capability
+  #define STA6         GLCD_DATA_PORT.6   'Error flag. Used for screen peek and screen copy
+  #define STA7         GLCD_DATA_PORT.7   'Check the blink condition
+
+  #define GLCD_CS        PORTa.7          'Chip Enable (Active Low)
+  #define GLCD_CD        PORTa.0
+  #define GLCD_RD        PORTA.1           'LCD Read control line  pin number
+  #define GLCD_WR        PORTA.2           'LCD Write control line pin number
+  #define GLCD_RESET     PORTA.3
+  #define GLCD_FS        PORTA.5            'FS1 I Font Select 6x8 font: FS1=“High”=1 8x8 font FS1=“Low”=1 for GLCD_FS_SELECT
+  #define GLCD_FS_SELECT 1
+
+  '***********************************************************************************************
+  '* Note    :   The T6963 controller's RAM address space from $0000 - $FFFF, total 64kbyte RAM.
+  '*       It is just the RAM address set, not the actual RAM amount can be set!
+  '*
+  '***********************************************************************************************
+  #define TEXT_HOME_ADDR      0x0000                                                         'This is specific to the GLCD display
+  #define GRH_HOME_ADDR       0x3FFF                                                         'This is specific to the GLCD display
+  #define CG_HOME_ADDR        0x77FF                                                        'This is specific to the GLCD display
+  #define COLUMN              40    'Set column number to be 40 , 32, 30 etc.                 This is specific to the GLCD display
+  #define MAX_ROW_PIXEL       64    'MAX_ROW_PIXEL the physical matrix length (y direction)   This is specific to the GLCD display
+  #define MAX_COL_PIXEL       240   'MAX_COL_PIXEL the physical matrix width (x direction)    This is specific to the GLCD display
+
+
+#script
+  'Adjust the columns to suit the pixel size select
+  if GLCD_FS_SELECT = 1 then
+      MAX_COLUMNS = MAX_COL_PIXEL / 6
+      FontSize_T6963 = 6
+  end if
+  if GLCD_FS_SELECT = 0 then
+      MAX_COLUMNS = MAX_COL_PIXEL / 8
+      FontSize_T6963 = 8
+  end if
+  'set the max rows constant
+  MAX_ROWS = MAX_ROW_PIXEL/8
+
+
+  'Set default screen parameters to TEXT_GRH_ON ( 0x9c ) if not user constant defined
+  DefaultDisplayModeFound_T6963 = 0
+  if DefaultDisplayMode_T6963 Then
+      DefaultDisplayModeInitialState_T6963_script = DefaultDisplayMode_T6963   'equates to user setting
+      DefaultDisplayModeFound_T6963 = 1
+  end if
+  if DefaultDisplayModeFound_T6963 = 0  Then
+      DefaultDisplayModeInitialState_T6963_script = 0x9C   'equates to TEXT_GRH_ON
+  end if
+
+
+LCDPage0_T6963 = TEXT_HOME_ADDR
+LCDPage1_T6963 = LCDPage0_T6963 + INT( COLUMN * 8  )
+LCDPage2_T6963 = LCDPage1_T6963 + INT( COLUMN * 8  )
+LCDPage3_T6963 = LCDPage2_T6963 + INT( COLUMN * 8  )
+LCDPage4_T6963 = LCDPage3_T6963 + INT( COLUMN * 8  )
+LCDPage5_T6963 = LCDPage4_T6963 + INT( COLUMN * 8  )
+LCDPage6_T6963 = LCDPage5_T6963 + INT( COLUMN * 8  )
+LCDPage7_T6963 = LCDPage6_T6963 + INT( COLUMN * 8  )
+LCDPage8_T6963 = LCDPage7_T6963 + INT( COLUMN * 8  )
+LCDPage9_T6963 = LCDPage8_T6963 + INT( COLUMN * 8  )
+LCDPage10_T6963 = LCDPage9_T6963 + INT( COLUMN * 8  )
+
+GLCDPage0_T6963 = GRH_HOME_ADDR
+GLCDPage1_T6963 = GLCDPage0_T6963 + INT( MAX_COL_PIXEL  * MAX_ROW_PIXEL  )
+GLCDPage2_T6963 = GLCDPage1_T6963 + INT( MAX_COL_PIXEL  * MAX_ROW_PIXEL  )
+GLCDPage3_T6963 = GLCDPage2_T6963 + INT( MAX_COL_PIXEL  * MAX_ROW_PIXEL  )
+GLCDPage4_T6963 = GLCDPage3_T6963 + INT( MAX_COL_PIXEL  * MAX_ROW_PIXEL  )
+GLCDPage5_T6963 = GLCDPage4_T6963 + INT( MAX_COL_PIXEL  * MAX_ROW_PIXEL  )
+GLCDPage6_T6963 = GLCDPage5_T6963 + INT( MAX_COL_PIXEL  * MAX_ROW_PIXEL  )
+GLCDPage7_T6963 = GLCDPage6_T6963 + INT( MAX_COL_PIXEL  * MAX_ROW_PIXEL  )
+GLCDPage8_T6963 = GLCDPage7_T6963 + INT( MAX_COL_PIXEL  * MAX_ROW_PIXEL  )
+GLCDPage9_T6963 = GLCDPage8_T6963 + INT( MAX_COL_PIXEL  * MAX_ROW_PIXEL  )
+GLCDPage10_T6963 = GLCDPage9_T6963 + INT( MAX_COL_PIXEL  * MAX_ROW_PIXEL  )
+
+
+    LCDCursor = LCDCursor_T6963
+    PUT = PUT_T6963
+    GET = GET_T6963
+    LOCATE = LOCATE_T6963
+    CLS = CLS_T6963
+    LCDHOME = LCDHOME_T6963
+    LCDcmd = LCDcmd_T6963
+    LCDdata = LCDdata_T6963
+    LCDHex = LCDHex_T6963
+    LCDSpace = LCDSpace_T6963
+    LCDCursor = LCDCursor_T6963
+    LCDNormalWriteByte = LCDNormalWriteByte_T6963
+
+    GLCDRotate = GLCDRotate_T6963
+    FilledBox = FilledBox_T6963
+    GLCDCLS = GLCDCLS_T6963
+    CLS = CLS_T6963
+    BigPrint = BigPrint_ILI9486L
+
+#endscript
+
+   ' Change timing for 32 mhz
+   #define T6963ReadDelay    0    ; = 1 normal usage
+   #define T6963WriteDelay   0    ; = 1 normal usage
+   #define T6963ClockDelay   0    ; = 1 normal usage
+
+
+
+    Dim BYTENUMBER, CCOUNT as Byte
+
+    CCount = 0
+    dim longNumber as long
+    longNumber = 4294967290 ' max value = 4294967296
+    dim wordNumber as Word
+    dim outString as string
+    wordNumber = 0
+    byteNumber = 0
+#define debugc4 portc.4
+dir debugc4 out
+
+'        dir GLCD_DATA_PORT out
+'    dir GLCD_CS        out
+'    dir GLCD_CD        out
+'    dir GLCD_RD        out
+'    dir GLCD_WR        out
+'    dir GLCD_RESET     out
+'    dir GLCD_FS        out
+
+    debugc4 = 0
+    InitGLCD_T6963
+
+#define GLCD_WIDTH 240
+
+GLCDRotate Landscape_Rev
+'#DEFINE GLCD_OLED_FONT
+
+BigPrint ( 0, 0, "WG24064A-TMI-TZ#")
+BigPrint ( 0, 20, "Feb 2019")
+wait 2 s
+
+
+current_GRH_HOME_ADDR = GLCDPage1_T6963
+    GLCDispCmdAddrSend( GLCDPage1_T6963, GRAPH_HOME_SET): GLCDCLS
+Cls
+Print "Anobium"
+line 0,0,239,63
+GLCDPrint ( 10,10, "GLCDPage1_T6963" )
+wait 4 s
+
+    GLCDispCmdAddrSend( GLCDPage0_T6963, GRAPH_HOME_SET)
+
+wait 4 s
+    GLCDispCmdAddrSend( GLCDPage1_T6963, GRAPH_HOME_SET)
+    wait 4 s
+
+cls
+Print "Page 2"
+current_GRH_HOME_ADDR = GLCDPage0_T6963
+    GLCDispCmdAddrSend( GLCDPage0_T6963, GRAPH_HOME_SET): GLCDCLS
+GLCDCLS
+
+'GLCDfntDefaultSize=1
+'GLCDFontWidth = 5
+
+
+
+      ' Prepare the static components of the screen
+      GLCDPrint ( 2,   0, "PrintStr")                                ; Print some text
+      GLCDPrint ( 64,  0, "LAT@")                                    ; Print some more text
+      GLCDPrint ( 88,  0, ChipMhz)                                   ; Print chip speed
+      GLCDPrint ( 100, 0, "Mhz")                                     ; Print some text
+      GLCDDrawString( 2,8,"DrawStr")                                 ; Draw some text
+      box 0,0,GLCD_WIDTH-1, GLCD_HEIGHT-1                            ; Draw a box
+      box GLCD_WIDTH-5, GLCD_HEIGHT-5,GLCD_WIDTH-1, GLCD_HEIGHT-1    ; Draw a box
+      Circle( 44,41,15)                                              ; Draw a circle
+      line 64,31,0,31                                                ; Draw a line
+
+      DO forever
+         for CCount = 32 to 127
+              GLCDPrint ( 64 ,  36,  hex(longNumber_E ) )                 ; Print a HEX string
+              GLCDPrint ( 76 ,  36,  hex(longNumber_U ) )                 ; Print a HEX string
+              GLCDPrint ( 88 ,  36,  hex(longNumber_H ) )                 ; Print a HEX string
+              GLCDPrint ( 100 ,  36, hex(longNumber   ) )                 ; Print a HEX string
+              GLCDPrint ( 112 ,  36, "h" )                                ; Print a HEX string
+
+
+              GLCDPrint ( 64 ,  44, pad(str(wordNumber), 5 ) )           ; Print a padded string
+              GLCDPrint ( 64 ,  52, pad(str(byteNumber), 3 ) )           ; Print a padded string
+
+
+              filledbox (46,9,56,19,0)                                           ; Draw a Box
+              box (46,9,56,19)
+              GLCDDrawChar(49, 10, CCount )                               ; Draw a character
+              outString = str( CCount )                                  ; Prepare a string
+              GLCDDrawString(64, 9, pad(outString,3) )                   ; Draw a string
+
+              filledbox 3,43,11,51, wordNumber                           ; Draw a filled box
+
+              FilledCircle( 44,41,9, longNumber xor 1)                   ; Draw a filled box
+              line 0,63,64,31                                            ; Draw a line
+
+                                                                         ; Do some simple maths
+              longNumber = longNumber + 7 : wordNumber = wordNumber + 3 : byteNumber++
+          NEXT
+      LOOP
+
+  end
+
+
+'    GLCDCLS
+'    PSET 0,0,1
+'    PSET 1,0,1
+'    PSET 2,0,1
+'    PSET 3,0,1
+'    PSET 4,0,1
+'    PSET 5,0,1
+'    PSET 6,0,1
+'    PSET 7,0,1
+'
+'    PSET 0,0,1
+'    PSET 0,1,1
+'    PSET 0,2,1
+'    PSET 0,3,1
+'    PSET 0,4,1
+'    PSET 0,5,1
+'    PSET 0,6,1
+'    PSET 0,7,1
+'
+'
+'
+'LINE 0, 0, 10, 10, 1
+
+
+
+
+
+
+
+
+end
+
+    ' ------ Version Control - optional
+
+    #include "GCBVersionNumber.cnt"
+    'Include the GCBVersionNumber.cnt to increment versionString and create the build time string called GCBBuildTimeStr.
+    ' versionString a string is created automatically.
+    ' GCBBuildTimeStr is a string that is also created automatically.
+    ' use "GCBVersionNumber.cnt" as this will create a local copy of the versionString tracker.
+    ' if you use <GCBVersionNumber.cnt> this is a system wide versionString tracker.
+
+
+    dim versionString as string * 40
+    versionString = "Build"+GCBBuildStr
+    versionString = versionString + "@"+GCBBuildTimeStr
+
+
+    print versionString
+    wait 2 s
+
+    Cls
+    print "Hello"
+    locate 4, 30
+    print "World"
+
+    dim myLoop as Byte
+
+    for myLoop = 0 to 255
+        locate 4,4
+        print "0x"
+        lcdhex ( myLoop, LeadingZeroActive )
+'        wait 50 ms
+    next
+    end
+
+
+
+    end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+; ----- Main body of program commences here.
+    Do Forever
+        CLS
+        PRINT "START TEST"
+        locate 1,0
+        PRINT "DISPLAY ON"
+        wait 3 s
+
+        CLS
+        Locate 0,0
+        Print "Cursor ON"
+        Locate 1,0
+        LCDcursor CursorOn
+        wait 3 S
+
+        CLS
+        LCDcursor CursorOFF
+        locate 0,0
+        Print "Cursor OFF"
+        wait 3 s
+
+        CLS
+        Locate 0,0
+        Print "FLASH ON"
+        Locate 1,0
+        LCDcursor FLASHON
+        wait 3 s
+
+        CLS
+        locate 0,0
+        Print "FLASH OFF"
+        LCDCURSOR FLASHOFF
+        wait 3 sec
+
+        Locate 0,0
+        Print "CURSR & FLSH ON"
+        locate 1,0
+        LCDCURSOR CURSORON
+        LCDCURSOR FLASHON, 8
+        Wait 3 sec
+
+        Locate 0,0
+        Print "CURSR & FLSH OFF"
+        locate 1,0
+        LCDCURSOR CursorOFF
+        LCDCURSOR FLASHOFF
+        Wait 3 sec
+
+        CLS
+        Locate 0,4
+        PRINT "Flashing"
+        Locate 1,4
+        Print "Display"
+        wait 500 ms
+
+        repeat 10
+            LCDCURSOR LCDOFF
+            wait 500 ms
+            LCDCURSOR LCDON
+            wait 500 ms
+        end repeat
+
+        CLS
+        Locate 0,0
+        Print "DISPLAY OFF"
+        Locate 1,0
+        Print "FOR 5 SEC"
+        Wait 2 SEC
+        LCDCURSOR LCDOFF
+        WAIT 5 s
+
+        CLS
+        Locate 0,0
+        LCDCURSOR LCDON
+        Print "END TEST"
+        wait 3 s
+
+    loop
+
+
+
+    ' ------ Version Control - optional
+
+'    #include "GCBVersionNumber.cnt"
+'    'Include the GCBVersionNumber.cnt to increment versionString and create the build time string called GCBBuildTimeStr.
+'    ' versionString a string is created automatically.
+'    ' GCBBuildTimeStr is a string that is also created automatically.
+'    ' use "GCBVersionNumber.cnt" as this will create a local copy of the versionString tracker.
+'    ' if you use <GCBVersionNumber.cnt> this is a system wide versionString tracker.
+'
+'
+'    dim versionString as string * 40
+'    versionString = "Build"+GCBBuildStr
+'    versionString = versionString + "@"+GCBBuildTimeStr
+
+
+    locate 0,0
+
+    GLCDSendCommand_T6963(TEXT_GRH_CURSOR_ON_BLINK_ON)
+    GLCDSendCommand_T6963(LINE_8_CURSOR)
+
+    print "Hello"
+    wait 4 s
+    locate 0,0
+    LCDSpace ( 10 )
+wait 1 s
+
+
+end
+'#define INT_CG_MODE         0x80    '0b10000xxx, Internal CG ROM mode
+'#define EXT_CG_MODE         0x88    '0b10001xxx, External CG RAM mode
+'#define OR_MODE             0x80    '0b1000x000, OR mode, internal CG ROM mODE
+'#define XOR_MODE            0x81    '0b1000x001, XOR mode, internal CG ROM mode
+'#define AND_MODE            0x83    '0b1000x011, AND mode, internal CG ROM mode
+'#define TEXT_ATTR_MODE      0x84    '0b1000x100, text attribute mode, internal CG ROM mode
+'    GLCDispCmdSend(AUTO_WR_OFF)
+'
+'    GLCDispCmdSend(AUTO_WR_ON)
+'    GLCDispCmdSend(ATTR_REVERSE)
+'    GLCDispCmdSend(AUTO_WR_OFF)
+'    GLCDispCmdSend(TEXT_ATTR_MODE)
+'    GLCDispCmdSend(CURSOR_BLINK_ON)
+'    GLCDispCmdSend(TEXT_GRH_ON)
+'    GLCDispCmdSend(LINE_8_CURSOR)
+
+LOCATE 0,0
+
+
+
+
+do
+loop
+end
+
+    GLCDCLS_T6963
+
+
+
+'
+    debugc4 = 1
+'
+
+'
+
+dim TempSTR as String
+dim TempVal as Long
+
+'systat calculation
+dim refa as long
+dim refb as Long
+dim answer as Long
+refb =236
+Tempval=2000
+answer= refb*Tempval
+
+
+     dim myString as String * 128
+     locate 0,0
+     myString = "basil HATZILAIOS [hatzbs@yahoo.gr]"
+     print myString
+
+
+     locate 1,0
+     #define myConstant 10
+     print myConstant
+
+     locate 2,0
+     dim myByte as byte
+     myByte = 20
+     print myByte
+
+     locate 3,0
+     dim myWord as word
+     myWord = 0xffff
+     print myWord
+
+     locate 4,0
+     dim mylong as long
+     mylong =0xffffffff
+     print mylong
+
+
+     locate 5,0
+     myString = "This is line 5"
+     HSerPrint myString
+     print myString
+
+     locate 6,0
+     myString = "This is line 6"
+     print myString
+
+     locate 7,0
+     myString = "This is line 7"
+     print myString
+wait 1 s
+
+
+
+
+'#define DISPLAY_OFF         0x90    '0b10010000, display off
+'#define CURSOR_ON_BLINK_OFF 0x92    '0b1001xx10, cursor on without blinking
+'#define CURSOR_BLINK_ON     0x93    '0b1001xx11, cursor on with blinking
+'#define TEXT_ON             0x94    '0b100101xx, text on, graphics off
+'#define GRAPHIC_ON          0x98    '0b100110xx, text off, graphics on
+'#define TEXT_GRH_ON         0x9C    '0b100111xx, text on, graphics on
+
+'#define INT_CG_MODE         0x80    '0b10000xxx, Internal CG ROM mode
+'#define EXT_CG_MODE         0x88    '0b10001xxx, External CG RAM mode
+'#define OR_MODE             0x80    '0b1000x000, OR mode, internal CG ROM mODE
+'#define XOR_MODE            0x81    '0b1000x001, XOR mode, internal CG ROM mode
+'#define AND_MODE            0x83    '0b1000x011, AND mode, internal CG ROM mode
+'#define TEXT_ATTR_MODE      0x84    '0b1000x100, text attribute mode, internal CG ROM mode
+
+'#define LINE_8_CURSOR   0xA7    '8-line cursor mode
+'#define LINE_7_CURSOR   0xA6  '7-line cursor mode
+'#define LINE_6_CURSOR   0xA5  '6-line cursor mode
+'#define LINE_5_CURSOR   0xA4  '5-line cursor mode
+'#define LINE_4_CURSOR   0xA3  '4-line cursor mode
+'#define LINE_3_CURSOR   0xA2  '3-Line cursor mode
+'#define LINE_2_CURSOR   0xA1  '2-Line cursor mode
+'#define LINE_1_CURSOR   0xA0    '1-Line cursor mode
+
+cls
+locate 0,0
+print "Turning off"
+wait 1 s
+GLCDSendCommand_T6963  0x9d
+GLCDSendCommand_T6963  0xa7
+'GLCDSendCommand_T6963 0x92
+wait 2 s
+cls
+print "Turning on"
+wait 1 s
+GLCDSendCommand_T6963  0x9d
+wait 2 s
+
+
+cls
+     locate 7,39
+     myString = "*"
+     print myString
+
+      Put ( 3, 0, 0x21 )
+      for mylong = 0 to 255
+           locate 0,0
+      LCDhex ( mylong, LeadingZeroActive )
+      wait 500 ms
+      next
+
+
+
+end
+
+wait 5 s
+
+    GLCDCmdAddrSend_T6963( 320 ,TEXT_HOME_SET)
+wait 2 s
+          dim addr as word
+
+          GLCDispCmdAddrSend(320,ADDR_PTR_SET) 'Set address pointer
+
+    'Set Auto Write ON
+    GLCDispCmdSend(AUTO_WR_ON)
+    dim row_T6963, col_T6963 as word
+    'row runs from 0 ... (MAX_ROW_PIXEL/8 -1), in form of a cell of (FontSize x 8) bits
+    for  row_T6963 =  0 to ( MAX_ROW_PIXEL/8 ) -1
+        'write blank to clear screen the first page only, col = 0...(COLUMN-1)
+        for col_T6963 = 0 to COLUMN - 1
+
+            GLCDispAutoDataWr ( 0 )
+
+        next
+
+    next
+      GLCDispCmdAddrSend(320,ADDR_PTR_SET)
+     myString = "This is line 1 Page 2"
+     HSerPrint myString
+     print myString
+'
+
+      #define pset PSet_T6963
+
+
+
+
+
+
+
+#define LCD_IO T36363
+
+Sub PUT_T6963 (In LCDPutLine, In LCDPutColumn, In LCDChar)
+          LOCATE LCDPutLine, LCDPutColumn
+          GLCDispDataWr( LCDChar )      'Adjust standard ASCII to T6963 ASCII
+          GLCDispCmdSend(DATA_WR)       'Write data
+End Sub_T6963
+
+'Non-functional - the device does not support BYTE read of a character only bit read of pixel
+Function GET_T6963 (LCDPutLine, LCDPutColumn)
+
+End Function
+
+Sub LOCATE_T6963 (In LCDLine, In LCDColumn)
+
+    dim addr as word
+
+    addr = LCDColumn
+    addr_h =  LCDLine
+    'Set address pointer
+    GLCDispCmdAddrSend(addr,ADDR_PTR_SET)
+    GLCDispCmdSend(CURSOR_PTR_SET)
+
+    if LCDLine > MAX_ROWS -1 then
+        exit Sub
+    end if
+    if LCDColumn >  MAX_COLUMNS -1  then
+        exit Sub
+    end if
+    addr = (LCDLine*[word]COLUMN) + [word]LCDColumn + [word]TEXT_HOME_ADDR
+    'Set address pointer
+    GLCDispCmdAddrSend(addr,ADDR_PTR_SET)
+
+end Sub
+
+Sub CLS_T6963
+
+  #if GLCD_TYPE = GLCD_TYPE_T6963
+
+    dim row_T6963, col_T6963 as word
+
+    'Set address pointer to address (TEXT_HOME_ADDR)
+    GLCDispCmdAddrSend(TEXT_HOME_ADDR,ADDR_PTR_SET)
+
+    'Set Auto Write ON
+    GLCDispCmdSend(AUTO_WR_ON)
+
+    'row runs from 0 ... (MAX_ROW_PIXEL/8 -1), in form of a cell of (FontSize x 8) bits
+    for  row_T6963 =  0 to ( MAX_ROW_PIXEL/8 ) -1
+        'write blank to clear screen the first page only, col = 0...(COLUMN-1)
+        for col_T6963 = 0 to COLUMN - 1
+
+            GLCDispAutoDataWr ( 0 )
+
+        next
+
+    next
+    GLCDispCmdSend(AUTO_WR_OFF)
+    GLCDispCmdAddrSend(TEXT_HOME_ADDR,ADDR_PTR_SET)
+    GLCDispCmdSend(CURSOR_PTR_SET)
+
+  #endif
+
+End Sub
+
+Sub LCDHOME_T6963
+    GLCDispCmdAddrSend(TEXT_HOME_ADDR,ADDR_PTR_SET)
+End Sub
+
+Sub LCDcmd_T6963 ( In LCDValue )
+        'Send Command.... this is unvalidated.. send whatever is passed!
+        GLCDispCmdSend(LCDValue)
+end sub
+
+Sub LCDdata_T6963 ( In LCDDataByte )
+
+    GLCDBusyCheck_T6963
+
+    GLCD_DATA_PORT = LCDDataByte
+    wait T6963ClockDelay us
+    GLCD_CD = 0
+    wait T6963ClockDelay us
+    GLCD_WR = 0
+    wait T6963ClockDelay us
+    GLCD_RD = 1
+    wait T6963ClockDelay us
+    GLCD_CS = 0
+    wait T6963WriteDelay us
+    GLCD_CS = 1
+
+end sub
+
+
+sub LCDHex_T6963  (In LCDValue, optional in LCDChar = 1)
+
+    dim HighChar, LowChar as Byte
+
+    'Extract nibbles and convert to ascii values
+    HighChar = (LCDValue / 16)  + 48
+    LowChar  = (LCDValue and 15) + 48
+
+    'Check for alpha and convert.
+    If HighChar > 57 Then HighChar = HighChar + 7
+    If LowChar > 57 Then  LowChar = LowChar + 7
+
+    'Write chars to LCD - if user specifies LeadingZeroActive then print the leading char
+    IF LCDChar = LeadingZeroActive then
+       if LCDValue < 16 then
+          Print "0"
+       end if
+    END IF
+
+    'Write high char if LCDValue is > 15 (DEC)
+    IF LCDValue > 15 then Print Chr(HighChar)
+
+    Print Chr(LowChar)
+
+end sub
+
+
+
+' Sub to print a number of spaces - upto COLUMN
+sub LCDSpace_T6963(in LCDValue)
+          if LCDValue > COLUMN then LCDValue = COLUMN
+          do until LCDValue = 0
+                    Print " "
+                    LCDValue --
+          loop
+end sub
+
+
+sub LCDCursor_T6963(In LCDCRSR, optional in line_x_cursor = 1 )
+
+      'for LCDCURSOR Sub
+      #define LCDON 4
+
+      #define FLASHON 3
+      #define FLASH 3
+      #define CursorON 2
+
+      #define FLASHOFF 0xFC   'an AND MASK
+      #define CursorOFF 0xFD  'an AND MASK
+      #define LCDOFF 0xFB     'an AND MASK
+
+      dim DefaultDisplayModeState_T6963 as byte
+      'adjust for line count
+      line_x_cursor = line_x_cursor - 1
+      'protect if zero is passed as parameter and well as the default
+      if line_x_cursor > 8 then
+        line_x_cursor = 0
+      end if
+
+      If LCDCRSR = ON  Then DefaultDisplayModeState_T6963 = DefaultDisplayModeState_T6963 OR LCDON
+      IF LCDCRSR = LCDON Then DefaultDisplayModeState_T6963 = DefaultDisplayModeState_T6963 OR LCDON
+
+      If LCDCRSR = OFF Then DefaultDisplayModeState_T6963 = DefaultDisplayModeState_T6963 AND LCDOFF
+      If LCDCRSR = LCDOFF Then DefaultDisplayModeState_T6963 = DefaultDisplayModeState_T6963 AND LCDOFF
+
+      If LCDCRSR = CursorOn Then
+          DefaultDisplayModeState_T6963 = DefaultDisplayModeState_T6963 OR CursorON
+          GLCDSendCommand_T6963(line_x_cursor)
+      end if
+
+      If LCDCRSR = CursorOFF then
+          DefaultDisplayModeState_T6963 = DefaultDisplayModeState_T6963 and CursorOFF
+          GLCDSendCommand_T6963(LINE_1_CURSOR)
+      end if
+
+
+      If LCDCRSR = FLASH  Then
+          DefaultDisplayModeState_T6963 = DefaultDisplayModeState_T6963 OR FLASHON
+          line_x_cursor = line_x_cursor or line_1_cursor
+          GLCDSendCommand_T6963( line_x_cursor )
+      End if
+
+      If LCDCRSR = FLASHOFF then
+          DefaultDisplayModeState_T6963 = DefaultDisplayModeState_T6963 and FLASHOFF
+          GLCDSendCommand_T6963( line_1_cursor )
+      end if
+
+      GLCDSendCommand_T6963(DefaultDisplayModeState_T6963)
+
+end sub
+
+sub LCDNormalWriteByte_T6963 ( In LCDByte )
+    GLCDispDataWr( LCDByte - 0x20 )      'Adjust standard ASCII to T6963 ASCII
+    GLCDispCmdSend(DATA_WR_INC)          'Address pointer increment ON
+end sub
+
+
+'      ' Prepare the static components of the screen
+'      GLCDPrint ( 0,   0, "PrintStr")                                ; Print some text
+'      GLCDPrint ( 64,  0, "LAT@")                                    ; Print some more text
+'      GLCDPrint ( 88,  0, ChipMhz)                                   ; Print chip speed
+'      GLCDPrint ( 100, 0, "Mhz")                                     ; Print some text
+'      GLCDDrawString( 0,8,"DrawStr")                                 ; Draw some text
+'      box 0,0,GLCD_WIDTH-1, GLCD_HEIGHT-1                            ; Draw a box
+'      box GLCD_WIDTH-5, GLCD_HEIGHT-5,GLCD_WIDTH-1, GLCD_HEIGHT-1    ; Draw a box
+'      Circle( 44,41,15)                                              ; Draw a circle
+'      line 64,31,0,31                                                ; Draw a line
+'
+'      DO forever
+'         for CCount = 32 to 127
+'              GLCDPrint ( 64 ,  36,  hex(longNumber_E ) )                 ; Print a HEX string
+'              GLCDPrint ( 76 ,  36,  hex(longNumber_U ) )                 ; Print a HEX string
+'              GLCDPrint ( 88 ,  36,  hex(longNumber_H ) )                 ; Print a HEX string
+'              GLCDPrint ( 100 ,  36, hex(longNumber   ) )                 ; Print a HEX string
+'              GLCDPrint ( 112 ,  36, "h" )                                ; Print a HEX string
+'
+'
+'              GLCDPrint ( 64 ,  44, pad(str(wordNumber), 5 ) )           ; Print a padded string
+'              GLCDPrint ( 64 ,  52, pad(str(byteNumber), 3 ) )           ; Print a padded string
+'
+'
+'              box (46,9,56,19)                                           ; Draw a Box
+'              GLCDDrawChar(48, 9, CCount )                               ; Draw a character
+'              outString = str( CCount )                                  ; Prepare a string
+'              GLCDDrawString(64, 9, pad(outString,3) )                   ; Draw a string
+'
+'              filledbox 3,43,11,51, wordNumber                           ; Draw a filled box
+'
+'              FilledCircle( 44,41,9, longNumber xor 1)                   ; Draw a filled box
+'              line 0,63,64,31                                            ; Draw a line
+'
+'                                                                         ; Do some simple maths
+'              longNumber = longNumber + 7 : wordNumber = wordNumber + 3 : byteNumber++
+'          NEXT
+'      LOOP
+'
+'  end
+
+
+  dim current_GRH_HOME_ADDR as word
+
+Sub InitGLCD_T6963
+
+
+  'Setup code for T6963 controllers
+  #if GLCD_TYPE = GLCD_TYPE_T6963
+
+    dim T6963_GLCD_HEIGHT, T6963_GLCD_WIDTH as word
+
+'    #define T6963ReadDelay   9     ; 2 normal usage, 3 for 32 mhz!
+'    #define T6963WriteDelay  1     ; 1 normal usage, 0 works
+'    #define T6963ClockDelay  1     ; 1 normal usage, 0 works
+'    #define GLCDDirection    0     ; 0 normal mode
+
+
+
+    'Set pin directions
+    dir GLCD_DATA_PORT out
+    dir GLCD_CS        out
+    dir GLCD_CD        out
+    dir GLCD_RD        out
+    dir GLCD_WR        out
+    dir GLCD_RESET     out
+    dir GLCD_FS        out
+    'Reset cycle
+    GLCD_RESET = 0
+    GLCD_CD = 1
+    GLCD_CS = 1
+    GLCD_RD = 1
+    GLCD_WR = 1
+    GLCD_FS  = GLCD_FS_SELECT
+    GLCD_DATA_PORT = 0
+    wait 5 ms
+    GLCD_RESET = 1
+
+'
+'***********************************************************************************************
+'*                   GLOBAL CONSTANTS
+'***********************************************************************************************
+'
+#define ENABLE              1
+#define DISABLE             0
+#define BLACK               1
+#define WHITE               0
+
+'
+'***********************************************************************************************
+'*                   DISPLAY MODE
+'***********************************************************************************************
+'
+#define DISPLAY_OFF                            0x90    '0b10010000, display off
+#define CURSOR_ON_BLINK_OFF                    0x92    '0b1001xx10, cursor on without blinking
+#define CURSOR_BLINK_ON                        0x93    '0b1001xx11, cursor on with blinking
+#define TEXT_ON                                0x94    '0b100101xx, text on, graphics off
+#define TEXT_ON                                0x94    '0b100101xx, text on, graphics off
+#define TEXT_ON                                0x94    '0b100101xx, text on, graphics off
+#define TEXT_ON_CURSOR_ON_BLINK_OFF            0x96    '0b10010110, text on, graphics off, cursor on without blinking
+#define TEXT_ON_CURSOR_ON_BLINK_ON             0x97    '0b10010111, text on, graphics off, cursor on with blinking
+#define GRAPHIC_ON                             0x98    '0b100110xx, text off, graphics on
+#define TEXT_GRH_ON                            0x9C    '0b100111xx, text on, graphics on
+#define TEXT_GRH_C                             0x9C    '0b100111xx, text on, graphics on
+#define TEXT_GRH_CURSOR_ON_BLINK_OFF           0x9E    '0b10011110, text on, graphics on, cursor on without blinking
+#define TEXT_GRH_CURSOR_ON_BLINK_ON            0x9F    '0b10011111, text on, graphics on, cursor on with blinking
+
+
+
+'
+'***********************************************************************************************
+'*                     MODE
+'***********************************************************************************************
+'* Example:  OR_MODE|EXT_CG_MODE   ->  OR mode, external CG ram mode
+'*       AND_MODE        ->  AND mode, internal CG ROM mode
+'***********************************************************************************************
+'
+'
+'***********************************************************************************************
+'*   In internal CG ROM MODE (INT_CG_MODE), character codes 00h - 7Fh represent the
+'*   pre-defined "internal" CG ROM characters, and codes 80h - FFh represent the
+'*   users own "external" characters. In external CG ROM MODE (EXT_CG_MODE),
+'*   all 256 codes from 00h - FFh can be used to represent the users own characters.
+'***********************************************************************************************
+'
+
+#define INT_CG_MODE         0x80    '0b10000xxx, Internal CG ROM mode
+#define EXT_CG_MODE         0x88    '0b10001xxx, External CG RAM mode
+#define OR_MODE             0x80    '0b1000x000, OR mode, internal CG ROM mODE
+#define XOR_MODE            0x81    '0b1000x001, XOR mode, internal CG ROM mode
+#define AND_MODE            0x83    '0b1000x011, AND mode, internal CG ROM mode
+#define TEXT_ATTR_MODE      0x84    '0b1000x100, text attribute mode, internal CG ROM mode
+
+
+
+'
+'***********************************************************************************************
+'*                   CURSOR MODE
+'***********************************************************************************************
+'
+#define LINE_8_CURSOR   0xA7    '8-line cursor mode
+#define LINE_7_CURSOR   0xA6  '7-line cursor mode
+#define LINE_6_CURSOR   0xA5  '6-line cursor mode
+#define LINE_5_CURSOR   0xA4  '5-line cursor mode
+#define LINE_4_CURSOR   0xA3  '4-line cursor mode
+#define LINE_3_CURSOR   0xA2  '3-Line cursor mode
+#define LINE_2_CURSOR   0xA1  '2-Line cursor mode
+#define LINE_1_CURSOR   0xA0    '1-Line cursor mode
+
+'
+'***********************************************************************************************
+'*                 TEXT ATTRIBUTE MODE
+'***********************************************************************************************
+'
+#define ATTR_NORMAL         0x00    'Normal Display
+#define ATTR_REVERSE        0x05    'Reverse Display
+#define ATTR_INHIBIT        0x03    'Inhibit Display
+#define ATTR_BLINK          0x08    'Blinking of Normal Display
+#define ATTR_BLINK_REVERSE  0x0D    'Blinking of Reverse Display
+#define ATTR_BLINK_INHIBIT  0x0B    'Blinking of Inhibit Display
+
+
+#define CURSOR_PTR_SET      0x21    'Cursor Pointer Set
+#define OFFSET_REG_SET      0x22    'Set Offset Command
+#define ADDR_PTR_SET        0x24    'Set Address Pointer Command
+
+#define TEXT_HOME_SET       0x40    'Text Home Address Set: Data = low, high addr
+#define TEXT_AREA_SET       0x41    'Text Area Set: Data = columns, 0
+#define GRAPH_HOME_SET      0x42    'Graphics Home address Set: Data = low, high addr
+#define GRAPH_AREA_SET      0x43    'Graphics Area Set: Data = columns, 0
+#define SCREEN_PEEK         0xE0    'Read data from screen command
+#define SCREEN_COPY         0xE8    'Screen Copy
+
+#define AUTO_WR_ON          0xB0
+#define DATA_AUTO_RD        0xB1
+#define AUTO_WR_OFF         0xB2
+
+#define DATA_WR_INC         0xC0    ' Data write and increment addrespointer
+#define DATA_RD_INC         0xC1    ' Data read and increment  addrespointer
+#define DATA_WR_DEC         0xC2    ' Data write and decrement addrespointer
+#define DATA_RD_DEC         0xC3    ' Data read and decrement  addrespointer
+#define DATA_WR             0xC4    ' Data write - no addr change
+#define DATA_RD             0xC5    ' Data read  - no addr change
+
+   'Set Text Home address to TEXT_HOME_ADDR
+    GLCDCmdAddrSend_T6963(TEXT_HOME_ADDR,TEXT_HOME_SET)
+   'Set Graph Home address to GRH_HOME_ADDR
+    GLCDCmdAddrSend_T6963(GRH_HOME_ADDR,GRAPH_HOME_SET)
+   'Set Text Area to COLUMN column mode
+    GLCDCmdAddrSend_T6963(COLUMN,TEXT_AREA_SET)
+   'Set Graph Area to COLUMN column mode
+    GLCDCmdAddrSend_T6963(COLUMN,GRAPH_AREA_SET)
+
+   'Set Offset register to 0x0002, CG Ram start address = $1400 (CG_HOME_ADDR)
+   'first character code $80 for CG Ram
+    GLCDCmdAddrSend_T6963(0x0002,OFFSET_REG_SET)
+
+'    'Set Text Home address to TEXT_HOME_ADDR
+'    GLCDSendData_T6963 ( 0x00 )    'Send LSB of 'Addr' first
+'    GLCDSendData_T6963 ( 0x00 )    'Send MSB of 'Addr' afterwards
+'    GLCDSendCommand_T6963 ( 0x40 )
+'
+'    'Set Graph Home address to GRH_HOME_ADDR
+'    GLCDSendData_T6963 ( 0x00 )
+'    GLCDSendData_T6963 ( 0x02 )
+'    GLCDSendCommand_T6963 ( 0x42 )
+'
+'    'Set Text Area to COLUMN column mode
+'    GLCDSendData_T6963 ( 0x20 )
+'    GLCDSendData_T6963 ( 0x00 )
+'    GLCDSendCommand_T6963 ( 0x41 )
+'
+'    'Set Graph Area to COLUMN column mode
+'    GLCDSendData_T6963 ( 0x20 )
+'    GLCDSendData_T6963 ( 0x00 )
+'    GLCDSendCommand_T6963 ( 0x43 )
+'
+'    'Set Offset register to 0x0002, CG Ram start address = $1400 (CG_HOME_ADDR)
+'    'first character code $80 for CG Ram
+'    GLCDSendData_T6963 ( 0x02 )
+'    GLCDSendData_T6963 ( 0x00 )
+'    GLCDSendCommand_T6963 ( 0x22 )
+'
+    GLCDSendCommand_T6963 ( OR_MODE )
+
+    dim DefaultDisplayModeState_T6963 as byte
+    DefaultDisplayModeState_T6963 = DefaultDisplayModeInitialState_T6963_script
+    GLCDSendCommand_T6963 ( DefaultDisplayModeState_T6963 )
+    GLCDSendCommand_T6963(LINE_1_CURSOR)
+'    wait 1 s
+'    GLCDSendData_T6963 ( 0x00 )
+'    GLCDSendData_T6963 ( 0x10 )
+'    GLCDSendCommand_T6963 ( 0x42 )
+'
+'    GLCDSendData_T6963 ( 0x28 )
+'    GLCDSendData_T6963 ( 0x00 )
+'    GLCDSendCommand_T6963 ( 0x43 )
+'
+'    GLCDSendData_T6963 ( 0x00 )
+'    GLCDSendData_T6963 ( 0x00 )
+'    GLCDSendCommand_T6963 ( 0x40 )
+'
+'    GLCDSendData_T6963 ( 0x28 )
+'    GLCDSendData_T6963 ( 0x00 )
+'    GLCDSendCommand_T6963 ( 0x41 )
+
+    'Colours
+    GLCDBackground = 0
+    GLCDForeground = 1
+    GLCDFontWidth = 5
+    GLCDfntDefault = 0
+    GLCDfntDefaultsize = 1
+
+    T6963_GLCD_WIDTH = GLCD_WIDTH
+    T6963_GLCD_HEIGHT = GLCD_HEIGHT
+
+    GLCDRotate
+    'Clear screen
+    current_GRH_HOME_ADDR = GLCDPage0_T6963
+    GLCDCLS
+    CLS
+
+
+  #endif
+
+
+End Sub
+
+
+'Subs
+'''Clears the GLCD screen
+Sub GLCDCLS_T6963
+  ' initialise global variable. Required variable for Circle in all DEVICE DRIVERS- DO NOT DELETE
+  GLCD_yordinate = 0
+
+  #if GLCD_TYPE = GLCD_TYPE_T6963
+
+    'Set address pointer to address (GRH_HOME_ADDR)
+    GLCDispCmdAddrSend(current_GRH_HOME_ADDR, ADDR_PTR_SET)
+    'Set Auto Write ON
+    GLCDispCmdSend(AUTO_WR_ON)
+    'Row runs from 0 ... (MAX_ROW_PIXEL-1), in form of a byte size of (FontSize x 1) bits
+    for  row_T6963 =  0 to  MAX_ROW_PIXEL -1
+            'write blank to clear screen the first page only, col = 0...(COLUMN-1)
+        for col_T6963 = 0 to COLUMN - 1
+            GLCDispAutoDataWr ( 0x00 )
+        next
+    next
+    GLCDispCmdSend(AUTO_WR_OFF)
+    GLCDispCmdAddrSend(current_GRH_HOME_ADDR, ADDR_PTR_SET)
+
+
+  #endif
+
+End Sub
+
+
+
+'''Draws a pixel on the GLCD
+'''@param GLCDX X coordinate of pixel
+'''@param GLCDY Y coordinate of pixel
+'''@param GLCDColour State of pixel (0 = background, 1 = foreground )
+Sub PSet_T6963(In GLCDX as word, In GLCDY as word, In GLCDColour As Word)
+
+  #if GLCD_TYPE = GLCD_TYPE_T6963
+
+    dim T6963_GLCD_HEIGHT, T6963_GLCD_WIDTH as word
+
+    select case GLCDRotateState
+        case PORTRAIT
+              'NOT supportED
+        case LANDSCAPE
+              'default
+        case PORTRAIT_REV
+              'NOT supportED
+        case LANDSCAPE_REV
+             GLCDX  = T6963_GLCD_WIDTH - GLCDX - 1
+             GLCDY  = T6963_GLCD_HEIGHT - GLCDY - 1
+        case else
+              'default
+    end select
+
+
+    dim addr as word
+    dim cmd as byte
+
+
+
+
+    addr = ( GLCDY  * COLUMN ) + (GLCDX /FontSize_T6963) + GRH_HOME_ADDR
+
+    GLCDispCmdAddrSend(addr, ADDR_PTR_SET)
+
+    if ( GLCDColour = 1 ) then
+      cmd = (0b11111000)|(FontSize_T6963- 1 -((GLCDX)%FontSize_T6963))
+    else
+      cmd = (0b11110000)|(FontSize_T6963- 1 -((GLCDX)%FontSize_T6963))
+    end if
+    GLCDispCmdSend(cmd);
+
+  #endif
+
+End Sub
+
+
+sub   GLCDRotate_T6963 ( optional in GLCDRotateState as byte = LANDSCAPE  )
+
+
+dim T6963_GLCD_HEIGHT, T6963_GLCD_WIDTH as word
+
+  select case GLCDRotateState
+        case LANDSCAPE   '0 degree
+             T6963_GLCD_WIDTH = GLCD_WIDTH
+             T6963_GLCD_HEIGHT = GLCD_HEIGHT
+        case Portrait
+             T6963_GLCD_WIDTH = GLCD_HEIGHT
+             T6963_GLCD_HEIGHT = GLCD_WIDTH
+        case LANDSCAPE_REV
+             T6963_GLCD_WIDTH = GLCD_WIDTH
+             T6963_GLCD_HEIGHT = GLCD_HEIGHT
+        case PORTRAIT_REV
+             T6963_GLCD_WIDTH = GLCD_HEIGHT
+             T6963_GLCD_HEIGHT = GLCD_WIDTH
+        case else
+             T6963_GLCD_WIDTH = GLCD_WIDTH
+             T6963_GLCD_HEIGHT = GLCD_HEIGHT
+  end select
+
+end sub
+
+
+'''Draws a filled box on the GLCD screen
+'''@param LineX1 Top left corner X location
+'''@param LineY1 Top left corner Y location
+'''@param LineX2 Bottom right corner X location
+'''@param LineY2 Bottom right corner Y location
+'''@param LineColour Colour of box (0 = erase, 1 = draw, default is 1)
+Sub FilledBox_T6963(In LineX1 as word, In LineY1 as word, In LineX2 as word, In LineY2 as word, Optional In LineColour As Word = GLCDForeground)
+  dim GLCDTemp, DrawLine as word
+  'Make sure that starting point (1) is always less than end point (2)
+  If LineX1 > LineX2 Then
+    GLCDTemp = LineX1
+    LineX1 = LineX2
+    LineX2 = GLCDTemp
+  End If
+  If LineY1 > LineY2 Then
+    GLCDTemp = LineY1
+    LineY1 = LineY2
+    LineY2 = GLCDTemp
+  End If
+
+
+  'Fill with colour
+  'Draw lines going across
+  For DrawLine = LineX1 To LineX2
+    For GLCDTemp = LineY1 To LineY2
+      PSet DrawLine, GLCDTemp, LineColour
+    Next
+  Next
+
+End Sub
+
+#define GLCDispCmdAddrSend  GLCDCmdAddrSend_T6963
+sub GLCDCmdAddrSend_T6963 ( in LCDDataWord as word, In LCDCmdByte )
+
+  GLCDSendData_T6963 ( LCDDataWord )
+  GLCDSendData_T6963 ( LCDDataWord_h )
+  GLCDSendCommand_T6963 ( LCDCmdByte )
+
+end sub
+
+#define  GLCDispCmdSend GLCDSendCommand_T6963
+Sub GLCDSendCommand_T6963 ( In LCDCmdByte )
+
+    GLCDBusyCheck_T6963
+
+    GLCD_DATA_PORT = LCDCmdByte
+    wait T6963ClockDelay us
+    GLCD_CD = 1
+    wait T6963ClockDelay us
+    GLCD_WR = 0
+    wait T6963ClockDelay us
+    GLCD_RD = 1
+    wait T6963ClockDelay us
+
+    GLCD_CS = 0
+    wait T6963WriteDelay us
+    GLCD_CS = 1
+
+End Sub
+
+
+
+Sub GLCDispAutoDataWr   ( In LCDDataByte )
+
+    GLCDispAutoWrChk_T6963
+
+    GLCD_DATA_PORT = LCDDataByte
+    wait T6963ClockDelay us
+    GLCD_CD = 0
+    wait T6963ClockDelay us
+    GLCD_WR = 0
+    wait T6963ClockDelay us
+    GLCD_RD = 1
+    wait T6963ClockDelay us
+
+    GLCD_CS = 0
+    wait T6963WriteDelay us
+    GLCD_CS = 1
+
+End Sub
+
+
+'#define GLCDispDataWr  GLCDSendData_T6963
+Sub GLCDSendData_T6963 ( In LCDDataByte )
+
+    GLCDBusyCheck_T6963
+
+    GLCD_DATA_PORT = LCDDataByte
+    wait T6963ClockDelay us
+    GLCD_CD = 0
+    wait T6963ClockDelay us
+    GLCD_WR = 0
+    wait T6963ClockDelay us
+    GLCD_RD = 1
+    wait T6963ClockDelay us
+    GLCD_CS = 0
+    wait T6963WriteDelay us
+    GLCD_CS = 1
+
+End Sub
+
+
+Sub GLCDBusyCheck_T6963
+
+    dir GLCD_DATA_PORT in
+
+    GLCD_CD = 1
+    wait T6963ClockDelay us
+    GLCD_WR = 1
+    wait T6963ClockDelay us
+    GLCD_RD = 0
+    wait T6963ClockDelay us
+
+    GLCD_CS = 0
+    wait T6963ClockDelay us
+    wait while (!STA0)  'Busy Check here
+    wait T6963ClockDelay us
+    wait while (!STA1)   'Busy Check here
+    GLCD_CS = 1
+    dir GLCD_DATA_PORT out
+
+End Sub
+
+
+'''Inspect the status of the autowrite. Has the last byte been written?
+Sub GLCDispAutoWrChk_T6963
+
+    dir GLCD_DATA_PORT in
+
+    GLCD_CD = 1
+    wait T6963ClockDelay us
+    GLCD_WR = 1
+    wait T6963ClockDelay us
+    GLCD_RD = 0
+    wait T6963ClockDelay us
+    GLCD_CS = 0
+    wait T6963ClockDelay us
+    wait while (!STA3)  'Busy Check here
+    GLCD_CS = 1
+    dir GLCD_DATA_PORT out
+
+End Sub
+
