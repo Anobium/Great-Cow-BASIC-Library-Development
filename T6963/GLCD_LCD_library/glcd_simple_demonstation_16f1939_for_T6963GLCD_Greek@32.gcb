@@ -15,6 +15,7 @@
 
   #include <glcd.h>
   #define GLCD_TYPE GLCD_TYPE_T6963_64
+  #define GLCD_EXTENDEDFONTSET1
 
   '***********************************************************************************************
   'define the connectivity - the ports
@@ -53,7 +54,24 @@
         BigPrint ( 0, 20, "Feb 2019")
         wait 2 s
 
+
+        GLCDTest:
+        '#DEFINE GLCD_OLED_FONT
         CLS
+        GLCDCLS
+        glcdprint 50, 40, "Ge?? s?? ??sµe"
+
+        glcdprint 5, 55, "GLCD ???????? ?p?st????? ???ssa?"
+        wait 4 s
+
+        CLS
+        GLCDCLS
+        BigPrint ( 0, 0, "WG24064A-TMI-TZ#")
+        BigPrint ( 0, 40, "Anobium :-)")
+
+        wait 5 s
+        CLS
+        GLCDCLS
 
     loop
     end

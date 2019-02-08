@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2019-01-21 (Windows 32 bit)</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 3.25 seconds)</p>
+<p> (Assembly time: 0.375 seconds)</p>
+<p> (Download time: 6.0625 seconds)</p>
+<p> (Total time: 9.6875 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 16F1939</p>
+<p>Program Memory: 8038/16384 words (49.06%)</p>
+<p>RAM: 133/1024 bytes (12.99%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Page</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>44</td><td>224</td><td>1</td><td>SYSCOMPLESSTHAN16(4), INITLCD(2), INITGLCD_T6963(49), SYSREADSTRING(3), Delay_MS(2), Delay_S(4), PRINT(1), LOCATE_T6963(1), GLCDCLSCLS(2), SELECTGLCDPAGE_T6963(2), BOX(1), GLCDBMPLOAD(2), GLCDCLS_T6963(1), GLCDPRINT(1), BIGPRINT_ILI9486L(3), INITSYS(30)</td></tr>
+<tr><td>GLCDCLSCLS</td><td>2</td><td>2</td><td>4</td><td>CLS_T6963(1), GLCDCLS_T6963(1)</td></tr>
+<tr><td>GLCDBMPLOAD</td><td>85</td><td>726</td><td>1</td><td>SYSCOMPEQUAL(1), SYSDIVSUB(3), SYSCOMPLESSTHAN(8), SYSCOMPEQUAL16(15), PSET_T6963(4)</td></tr>
+<tr><td>GLCDPRINT</td><td>18</td><td>85</td><td>4</td><td>SYSMULTSUB(1), GLCDDRAWCHAR(1)</td></tr>
+<tr><td>GLCDDRAWCHAR</td><td>102</td><td>305</td><td>2</td><td>SYSMULTSUB(1), SYSCOMPLESSTHAN(2), SYSCOMPEQUAL16(1), PSET_T6963(3)</td></tr>
+<tr><td>BOX</td><td>20</td><td>161</td><td>4</td><td>SYSCOMPLESSTHAN16(6), PSET_T6963(4)</td></tr>
+<tr><td>INITGLCD_ILI9486L</td><td>122</td><td>1</td><td>1</td><td></td></tr>
+<tr><td>BIGPRINT_ILI9486L</td><td>10</td><td>63</td><td>4</td><td>DRAWBIGCHAR_ILI9486L(1)</td></tr>
+<tr><td>DRAWBIGCHAR_ILI9486L</td><td>71</td><td>576</td><td>2</td><td>SYSMULTSUB(2), SYSDIVSUB(1), SYSCOMPLESSTHAN(26), PSET_T6963(1)</td></tr>
+<tr><td>SELECTGLCDPAGE_T6963</td><td>3</td><td>12</td><td>4</td><td>GLCDCMDADDRSEND_T6963(1)</td></tr>
+<tr><td>LOCATE_T6963</td><td>14</td><td>71</td><td>4</td><td>SYSMULTSUB16(1), SYSCOMPLESSTHAN(2), GLCDSENDCOMMAND_T6963(1), GLCDCMDADDRSEND_T6963(2)</td></tr>
+<tr><td>CLS_T6963</td><td>14</td><td>62</td><td>4</td><td>SYSCOMPLESSTHAN16(2), GLCDISPAUTODATAWR_T6963(1), GLCDSENDCOMMAND_T6963(3), GLCDCMDADDRSEND_T6963(2)</td></tr>
+<tr><td>LCDNORMALWRITEBYTE_T6963</td><td>2</td><td>7</td><td>4</td><td>GLCDSENDCOMMAND_T6963(1), GLCDSENDDATA_T6963(1)</td></tr>
+<tr><td>INITGLCD_T6963</td><td>43</td><td>114</td><td>1</td><td>Delay_MS(1), CLS_T6963(1), GLCDCLS_T6963(1), GLCDROTATE_T6963(1), GLCDSENDCOMMAND_T6963(3), GLCDCMDADDRSEND_T6963(5)</td></tr>
+<tr><td>GLCDCLS_T6963</td><td>14</td><td>53</td><td>4</td><td>SYSCOMPLESSTHAN(2), GLCDISPAUTODATAWR_T6963(1), GLCDSENDCOMMAND_T6963(2), GLCDCMDADDRSEND_T6963(2)</td></tr>
+<tr><td>PSET_T6963</td><td>23</td><td>168</td><td>4</td><td>SYSDIVSUB16(3), SYSMULTSUB16(1), SYSCOMPEQUAL16(1), GLCDSENDCOMMAND_T6963(1), GLCDCMDADDRSEND_T6963(1)</td></tr>
+<tr><td>GLCDROTATE_T6963</td><td>18</td><td>50</td><td>4</td><td></td></tr>
+<tr><td>GLCDCMDADDRSEND_T6963</td><td>3</td><td>7</td><td>4</td><td>GLCDSENDCOMMAND_T6963(1), GLCDSENDDATA_T6963(2)</td></tr>
+<tr><td>GLCDSENDCOMMAND_T6963</td><td>12</td><td>11</td><td>4</td><td>GLCDBUSYCHECK_T6963(1)</td></tr>
+<tr><td>GLCDISPAUTODATAWR_T6963</td><td>12</td><td>13</td><td>4</td><td>GLCDISPAUTOWRCHK_T6963(1)</td></tr>
+<tr><td>GLCDSENDDATA_T6963</td><td>12</td><td>11</td><td>4</td><td>GLCDBUSYCHECK_T6963(1)</td></tr>
+<tr><td>GLCDBUSYCHECK_T6963</td><td>14</td><td>37</td><td>4</td><td></td></tr>
+<tr><td>GLCDISPAUTOWRCHK_T6963</td><td>12</td><td>26</td><td>2</td><td></td></tr>
+<tr><td>INITLCD</td><td>273</td><td>3</td><td>1</td><td></td></tr>
+<tr><td>PRINT</td><td>8</td><td>36</td><td>4</td><td>LCDNORMALWRITEBYTE_T6963(1)</td></tr>
+<tr><td>INITSYS</td><td>704</td><td>23</td><td>1</td><td></td></tr>
+<tr><td>SYSREADSTRING</td><td>101</td><td>16</td><td>4</td><td></td></tr>
+<tr><td>SYSMULTSUB</td><td>39</td><td>12</td><td>4</td><td></td></tr>
+<tr><td>SYSMULTSUB16</td><td>73</td><td>36</td><td>4</td><td>SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>SYSDIVSUB</td><td>48</td><td>20</td><td>4</td><td></td></tr>
+<tr><td>SYSDIVSUB16</td><td>38</td><td>52</td><td>4</td><td>SYSCOMPEQUAL16(1)</td></tr>
+<tr><td>SYSCOMPEQUAL</td><td>20</td><td>6</td><td>4</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL16</td><td>34</td><td>11</td><td>4</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN</td><td>23</td><td>7</td><td>3</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>15</td><td>4</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>14</td><td>4</td><td></td></tr>
+<tr><td>Delay_S</td><td>0</td><td>8</td><td>4</td><td>Delay_MS(1)</td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>82</td><td>4</td><td></td></tr>
+<tr><td>GLCDTABLE1</td><td>0</td><td>506</td><td>2</td><td></td></tr>
+<tr><td>GLCDTABLE1_H</td><td>0</td><td>23</td><td>3</td><td></td></tr>
+<tr><td>GLCDTABLE2</td><td>0</td><td>672</td><td>1</td><td></td></tr>
+<tr><td>GLCDTABLE2_H</td><td>0</td><td>21</td><td>4</td><td></td></tr>
+<tr><td>GLCDTABLE3</td><td>0</td><td>17</td><td>1</td><td></td></tr>
+<tr><td>GLCDTABLE4</td><td>0</td><td>17</td><td>4</td><td></td></tr>
+<tr><td>GLCDTABLE5</td><td>0</td><td>17</td><td>4</td><td></td></tr>
+<tr><td>GLCDCHARCOL3</td><td>0</td><td>126</td><td>2</td><td></td></tr>
+<tr><td>GLCDCHARCOL4</td><td>0</td><td>126</td><td>4</td><td></td></tr>
+<tr><td>GLCDCHARCOL5</td><td>0</td><td>126</td><td>4</td><td></td></tr>
+<tr><td>GLCDCHARCOL6</td><td>0</td><td>126</td><td>4</td><td></td></tr>
+<tr><td>GLCDCHARCOL7</td><td>0</td><td>126</td><td>4</td><td></td></tr>
+<tr><td>BIGFONT32_41</td><td>0</td><td>252</td><td>3</td><td></td></tr>
+<tr><td>BIGFONT42_51</td><td>0</td><td>253</td><td>2</td><td></td></tr>
+<tr><td>BIGFONT52_61</td><td>0</td><td>254</td><td>1</td><td></td></tr>
+<tr><td>BIGFONT62_71</td><td>0</td><td>253</td><td>3</td><td></td></tr>
+<tr><td>BIGFONT72_81</td><td>0</td><td>254</td><td>2</td><td></td></tr>
+<tr><td>BIGFONT82_91</td><td>0</td><td>252</td><td>3</td><td></td></tr>
+<tr><td>BIGFONT92_101</td><td>0</td><td>252</td><td>3</td><td></td></tr>
+<tr><td>BIGFONT102_111</td><td>0</td><td>252</td><td>3</td><td></td></tr>
+<tr><td>BIGFONT112_121</td><td>0</td><td>253</td><td>3</td><td></td></tr>
+<tr><td>BIGFONT122_126</td><td>0</td><td>122</td><td>4</td><td></td></tr>
+<tr><td>BIGFONT193_202</td><td>0</td><td>253</td><td>3</td><td></td></tr>
+<tr><td>BIGFONT203_212</td><td>0</td><td>251</td><td>3</td><td></td></tr>
+<tr><td>BIGFONT213_216</td><td>0</td><td>108</td><td>4</td><td></td></tr>
+</table>
+</body>
+</html>
