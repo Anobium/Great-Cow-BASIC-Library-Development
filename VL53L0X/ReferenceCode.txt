@@ -1,0 +1,75 @@
+Device = 16F628A
+
+Config FOSC_INTOSCIO, WDTE_OFF, PWRTE_OFF, MCLRE_OFF, BOREN_OFF, LVP_OFF, CPD_OFF, CP_OFF
+
+;**** End of Fuse Configurator Settings ****
+;-------------------------------------------------------------------------------
+
+Xtal 4
+CMCON = 7
+VRCON = 0
+Declare PortB_Pullups = Off
+Declare Watchdog =Off
+Declare All_Digital On
+
+'VL53L0x Registros
+Symbol W_ADDRESS    = $52
+Symbol R_ADDRESS    = $53
+
+'Puertos
+Symbol SDA = PORTA.0
+Symbol SCL = PORTA.1
+Symbol Data_TX = PORTA.2
+
+'Variables
+Dim DatoVL As Byte
+Dim DataSensor[12] As Byte
+Dim Distancia As Word
+'Comunicacion serie
+Declare Serial_Baud 4800  
+Declare RsOut_Pin Data_TX
+Declare RsOut_Mode TRUE 
+
+ DelayMS 100
+
+ RsOut "Test sensor VL53L0x V11-12-17 by MTH Argentina",13,10,13,10
+
+ GoSub VerVL53
+ RsOut "Sensor listo, comenzando lectura...",13,10
+ DelayMS 1000
+
+'Loop de programa
+While 1=1
+Clrwdt
+'REG_RESULT_RANGE_STATUS 
+I2COut SDA,SCL,W_ADDRESS,[$00,$01]
+'REG_RESULT_RANGE_STATUS 
+I2COut SDA,SCL,W_ADDRESS,[$14]
+'Lee 12 datos del Sensor:
+I2CIn  SDA,SCL,R_ADDRESS,[Str DataSensor]
+'Si el dato en DataSensor[0] es igual a 0x5E procesa distancia
+If DataSensor[0]=$5E Then Distancia=DataSensor[10]*256+DataSensor[11] '#combine integers
+  'Representa distancia:
+RsOut "Distancia: ",Dec Distancia," mm",13,10 
+
+  DelayMS 100
+ Wend
+'Consulta datos de sensor
+VerVL53:
+'VL53L0X_REG_IDENTIFICATION_REVISION_ID
+I2CIn  SDA,SCL,R_ADDRESS,$C2,[DatoVL]
+  RsOut "Revision ID: ",Hex2 DatoVL,13,10
+
+'VL53L0X_REG_IDENTIFICATION_MODEL_ID
+I2CIn  SDA,SCL,R_ADDRESS,$C0,[DatoVL]
+  RsOut "Device ID: ",Hex2 DatoVL,13,10
+
+'VL53L0X_REG_PRE_RANGE_CONFIG_VCSEL_PERIOD
+I2CIn  SDA,SCL,R_ADDRESS,$50,[DatoVL]
+  RsOut "Pre Range Config Period: ",Hex2 DatoVL,13,10 
+
+'VL53L0X_REG_FINAL_RANGE_CONFIG_VCSEL_PERIOD
+I2CIn  SDA,SCL,R_ADDRESS,$70,[DatoVL]
+  RsOut "Fina Period: ",Hex2 DatoVL,13,10
+
+ Return
