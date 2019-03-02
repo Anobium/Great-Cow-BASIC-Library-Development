@@ -1,0 +1,92 @@
+'VL53L0x Registers Write and Read
+
+Symbol Da1    	  = b10	
+Symbol Da2    	  = b11
+Symbol Da3    	  = b12
+Symbol Da4    	  = b13
+Symbol Da5    	  = b14	
+Symbol Da6    	  = b15
+Symbol Da7    	  = b16
+Symbol Da8    	  = b17
+Symbol Da9    	  = b18	
+Symbol Da10   	  = b19
+Symbol Da11   	  = b20
+Symbol Da12   	  = b21
+
+Symbol devError	  = b22
+Symbol datoVL	  = b23
+Symbol Distance	  = w12
+Symbol Signal	  = w13
+Symbol SPAD		  = w14
+Symbol Ambient 	  = w15
+
+
+hi2csetup I2CMASTER, $52, i2cfast, i2cbyte
+
+do
+	hi2cin $C0,(b0)
+	sertxd (b0,cr,lf) ' EE
+	pause 10
+
+	hi2cin $C1,(b0)
+	sertxd (b0,cr,lf) ' AA
+	pause 10
+
+	hi2cin $C2,(b0)
+	sertxd (b0,cr,lf) ' 10
+	pause 1000
+
+
+
+
+'loop
+	
+
+'do ' Main loop
+
+
+' Soft reset
+hi2cout $89,($01)
+pause 200
+
+
+
+'Sys range start
+hi2cout $00,($01)
+pause 50
+  
+  
+'Read 12 raw data of Sensor:
+hi2cin $14,(da1,da2,da3,da4,da5,da6,da7,da8,da9,da10,da11  ,da12)
+
+sertxd (#da1," ",#da2," ",#da3," ",#da4," ",#da5," ",#da6," ",#da7," ",#da8," ",#da9," ",#da10," ",#da11," ",#da12,cr,lf)
+
+'Resolve sensor errors
+devError = Da1 & 0x78 >> 3 ' // Check for errors
+sertxd("Status: ")
+If devError = $00 Then  sertxd ("Data OK!") : endif  ' No device error If devError = $01 Then  sertxd ("VCSEL CONTINUITY TEST FAILURE!") : endif If devError = $02 Then  sertxd ("VCSEL WATCHDOG TEST FAILURE!") : endif If devError = $03 Then  sertxd ("NO VHV VALUE FOUND!") : endif If devError = $04 Then  sertxd ("MSRC NO TARGET!") : endif If devError = $05 Then  sertxd ("SNR CHECK!") : endif If devError = $06 Then  sertxd ("RANGE PHASE CHECK!") : endif If devError = $07 Then  sertxd ("SIGMA THRESHOLD CHECK!") : endif If devError = $08 Then  sertxd ("TCC!"): endif If devError = $09 Then  sertxd ("PHASE CONSISTENCY!") : endif If devError = $0A Then  sertxd ("MIN CLIP!" ): endif If devError = $0B Then  sertxd ("RANGE COMPLETE!") : endif If devError = $0C Then  sertxd ("ALGO UNDERFLOW!") : endif If devError = $0D Then  sertxd ("ALGO OVERFLOW!") : endif If devError = $0E Then  sertxd ("RANGE IGNORE THRESHOLD!") : endif
+
+sertxd (" (",devError,")",cr,lf)
+
+
+'Resolve info of sensor VL53L0x:
+  'If devError = $00 or devError = $06 update Distance
+  'If devError = $00 Or devError = $06Then
+Distance=Da11*256+Da12
+'endif
+  'Effective SPAD Return Count        
+SPAD = Da3 + Da4 /255
+  'Signal Rate
+Signal = Da7*256+Da8
+  'Ambient Rate
+Ambient= Da9*256+Da10
+
+'Send terminal info:
+sertxd ( "Distance: ", #Distance," mm",13,10 ) sertxd ( "Ambient Rate = ", #Ambient,"mc/s",13,10 ) sertxd ( "Signal Rate = ",#Signal,"mc/s",13,10 ) sertxd ( "SPAD = ",#SPAD,13,10 )
+
+
+loop
+~~~
+https://www.youtube.com/watch?v=2c7-Tb32bdE&feature=youtu.be
+
+

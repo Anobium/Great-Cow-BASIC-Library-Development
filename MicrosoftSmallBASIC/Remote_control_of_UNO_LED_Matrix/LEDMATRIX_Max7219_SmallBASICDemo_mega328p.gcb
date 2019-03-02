@@ -1,0 +1,61 @@
+'''A demonstration program for GCGB and GCB.
+'''--------------------------------------------------------------------------------------------------------------------------------
+'''This program to show text on the LED Matrix.
+''':
+'''The parameters are passed from a Small BASIC program
+''':
+'''@author  Evan R. Venn
+'''@licence GPL
+'''@version 1.00
+'''@date    02.03.2019
+'''********************************************************************************
+; ----- Configuration
+  #chip mega328p, 16
+  #config MCLRE=on
+  #include <max7219_ledmatrix_driver.h>
+'  #option Explicit
+
+; ----- Constants
+  'Set SPI pins for the Max7219
+  #define Max7219_DI    portb.4    'pin12
+  #define Max7219_DO    portb.3    'pin11
+  #define Max7219_SCK   portb.5    'pin13
+  #define Max7219_CS    portb.2    'pin10
+
+  'Specifics for device configuration
+  #define MAX7219_X_Devices 4
+
+  #define MAX7219_LEDMatrix_HardwareSPI     ' remove and make a comment out if you want to use Software SPI for this device
+
+'; ----- Main body of program commences here.
+
+  'Set the pin directions
+  #define USART_BAUD_RATE 9600
+  #define USART_BLOCKING
+
+
+  dim myString as string * 100
+
+
+  Max7219_LEDMatrix_Brightness ( 1 )
+  GLCDPrint ( 0, 0, "Reset" )
+  Max7219_LEDMatrix_Update
+
+  do Forever
+
+      myString = ""
+      Do while len(myString) = 0
+          HSerGetString MyString
+      Loop
+      GLCDCLS
+      if myString(0) > ( MAX7219_X_Devices / 4 )* 5 then  '5 chars per matrix
+         myString = myString + "       "
+         Max7219_LEDMatrix_ScrollMessage ( myString , 0 )
+
+      else
+        GLCDPrint ( 0, 0, myString )
+        Max7219_LEDMatrix_Update
+      end if
+
+
+  loop
