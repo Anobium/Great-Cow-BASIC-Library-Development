@@ -21,68 +21,72 @@
 ;********************************************************************************
 
 ;Set aside memory locations for variables
-.EQU	COMPORT=272
-.EQU	CURMS=273
-.EQU	CURMS_H=274
-.EQU	HI2CACKPOLLSTATE=275
-.EQU	HI2CCURRENTMODE=276
-.EQU	HI2CGETACK=277
-.EQU	HI2CSTARTOCCURRED=278
-.EQU	HI2CWAITMSSPTIMEOUT=279
-.EQU	HSERPRINTCRLFCOUNT=280
-.EQU	HUMIDITY=281
-.EQU	HUMIDITY_H=282
-.EQU	HUNDREDTHS=283
-.EQU	I2CBYTE=284
-.EQU	LSTMS=285
-.EQU	LSTMS_H=286
-.EQU	MILLIS=287
-.EQU	MILLIS_E=290
-.EQU	MILLIS_H=288
-.EQU	MILLIS_U=289
-.EQU	MSCTR_=291
-.EQU	MSCTR__E=294
-.EQU	MSCTR__H=292
-.EQU	MSCTR__U=293
-.EQU	PRINTLEN=295
-.EQU	SAVESREG=296
-.EQU	SAVESYSTEMP3=297
-.EQU	SAVESYSVALUECOPY=298
-.EQU	SERDATA=299
-.EQU	SI7021_HIGHBYTE=300
-.EQU	SI7021_LOWBYTE=301
-.EQU	STR=266
-.EQU	STRINGPOINTER=302
-.EQU	SYSCHARCOUNT=303
-.EQU	SYSINTSTATESAVE0=304
-.EQU	SYSLONGDIVMULTA=305
-.EQU	SYSLONGDIVMULTA_E=308
-.EQU	SYSLONGDIVMULTA_H=306
-.EQU	SYSLONGDIVMULTA_U=307
-.EQU	SYSLONGDIVMULTB=309
-.EQU	SYSLONGDIVMULTB_E=312
-.EQU	SYSLONGDIVMULTB_H=310
-.EQU	SYSLONGDIVMULTB_U=311
-.EQU	SYSLONGDIVMULTX=313
-.EQU	SYSLONGDIVMULTX_E=316
-.EQU	SYSLONGDIVMULTX_H=314
-.EQU	SYSLONGDIVMULTX_U=315
-.EQU	SYSPRINTDATAHANDLER=317
-.EQU	SYSPRINTDATAHANDLER_H=318
-.EQU	SYSPRINTTEMP=319
-.EQU	SYSREPEATTEMP1=320
-.EQU	SYSSTRDATA=321
+.EQU	COMPORT=348
+.EQU	CURMS=349
+.EQU	CURMS_H=350
+.EQU	HI2CACKPOLLSTATE=351
+.EQU	HI2CCURRENTMODE=352
+.EQU	HI2CGETACK=353
+.EQU	HI2CSTARTOCCURRED=354
+.EQU	HI2CWAITMSSPTIMEOUT=355
+.EQU	HSERPRINTCRLFCOUNT=356
+.EQU	HUMIDITY=357
+.EQU	HUMIDITY_H=358
+.EQU	HUNDREDTHS=359
+.EQU	I2CBYTE=360
+.EQU	LSTMS=361
+.EQU	LSTMS_H=362
+.EQU	MILLIS=363
+.EQU	MILLIS_E=366
+.EQU	MILLIS_H=364
+.EQU	MILLIS_U=365
+.EQU	MSCTR_=367
+.EQU	MSCTR__E=370
+.EQU	MSCTR__H=368
+.EQU	MSCTR__U=369
+.EQU	OUTVALUETEMP=371
+.EQU	PRINTLEN=372
+.EQU	SAVESREG=373
+.EQU	SAVESYSTEMP3=374
+.EQU	SAVESYSVALUECOPY=375
+.EQU	SERDATA=376
+.EQU	SERPRINTVAL=377
+.EQU	SERPRINTVAL_H=378
+.EQU	SI7021_HIGHBYTE=379
+.EQU	SI7021_LOWBYTE=380
+.EQU	STR=342
+.EQU	STRINGPOINTER=381
+.EQU	SYSCHARCOUNT=382
+.EQU	SYSINTSTATESAVE0=383
+.EQU	SYSLONGDIVMULTA=384
+.EQU	SYSLONGDIVMULTA_E=387
+.EQU	SYSLONGDIVMULTA_H=385
+.EQU	SYSLONGDIVMULTA_U=386
+.EQU	SYSLONGDIVMULTB=388
+.EQU	SYSLONGDIVMULTB_E=391
+.EQU	SYSLONGDIVMULTB_H=389
+.EQU	SYSLONGDIVMULTB_U=390
+.EQU	SYSLONGDIVMULTX=392
+.EQU	SYSLONGDIVMULTX_E=395
+.EQU	SYSLONGDIVMULTX_H=393
+.EQU	SYSLONGDIVMULTX_U=394
+.EQU	SYSPRINTDATAHANDLER=396
+.EQU	SYSPRINTDATAHANDLER_H=397
+.EQU	SYSPRINTTEMP=398
+.EQU	SYSREPEATTEMP1=399
+.EQU	SYSSTRDATA=400
 .EQU	SYSSTRINGPARAM1=256
-.EQU	SYSVALTEMP=322
-.EQU	SYSVALTEMP_H=323
-.EQU	TEMPERATUREC=324
-.EQU	TEMPERATUREC_H=325
-.EQU	TEMPERATUREF=326
-.EQU	TEMPERATUREF_H=327
-.EQU	TMR0=328
-.EQU	TMR0_TMP=329
-.EQU	TMRPRES=330
-.EQU	TMRSOURCE=331
+.EQU	SYSSTRINGPARAM2=299
+.EQU	SYSVALTEMP=401
+.EQU	SYSVALTEMP_H=402
+.EQU	TEMPERATUREC=403
+.EQU	TEMPERATUREC_H=404
+.EQU	TEMPERATUREF=405
+.EQU	TEMPERATUREF_H=406
+.EQU	TMR0=407
+.EQU	TMR0_TMP=408
+.EQU	TMRPRES=409
+.EQU	TMRSOURCE=410
 
 ;********************************************************************************
 
@@ -145,9 +149,9 @@
 ;********************************************************************************
 
 ;Alias variables
-#define	SIRAW	301
-#define	SIRAW_H	300
-#define	SYSSTR_0	266
+#define	SIRAW	380
+#define	SIRAW_H	379
+#define	SYSSTR_0	342
 
 ;********************************************************************************
 
@@ -225,7 +229,7 @@ BASPROGRAMSTART:
 	sei
 
 ;Start of the main program
-;#define SAMPLERATE 4000     ' Flash rate in mS
+;#define SAMPLERATE 5     ' Flash rate in S
 ;#define hi2c_BAUD_RATE 100
 ;#define hi2c_DATA PORTC.4
 ;#define hi2c_CLOCK PORTC.5
@@ -238,6 +242,7 @@ BASPROGRAMSTART:
 ;Dim Humidity,Temperature,TemperatureC,TemperatureF as Word
 ;DIM Temperature as WORD
 ;Dim Hundredths as Byte
+;#define READSENSOR  Read_Temperature : Read_Humidity
 ;#define USART_BAUD_RATE 9600
 ;#define USART_TX_BLOCKING
 ;#define USART_DELAY 10 ms
@@ -251,6 +256,35 @@ BASPROGRAMSTART:
 	ldi	SysValueCopy,0
 	sts	CURMS,SysValueCopy
 	sts	CURMS_H,SysValueCopy
+;Initial read
+;HSerPrintCRLF 2
+	ldi	SysValueCopy,2
+	sts	HSERPRINTCRLFCOUNT,SysValueCopy
+	ldi	SysValueCopy,1
+	sts	COMPORT,SysValueCopy
+	rcall	HSERPRINTCRLF
+;HSerPrint "Si7021 I2C HUMIDITY AND TEMPERATURE SENSOR"
+	ldi	SysStringB,low(SYSSTRINGPARAM1)
+	ldi	SysStringB_H,high(SYSSTRINGPARAM1)
+	ldi	SysReadA,low(StringTable1<<1)
+	ldi	SysReadA_H,high(StringTable1<<1)
+	rcall	SysReadString
+	ldi	SysValueCopy,low(SYSSTRINGPARAM1)
+	sts	SysPRINTDATAHandler,SysValueCopy
+	ldi	SysValueCopy,high(SYSSTRINGPARAM1)
+	sts	SysPRINTDATAHandler_H,SysValueCopy
+	ldi	SysValueCopy,1
+	sts	COMPORT,SysValueCopy
+	rcall	HSERPRINT265
+;HSerPrintCRLF
+	ldi	SysValueCopy,1
+	sts	HSERPRINTCRLFCOUNT,SysValueCopy
+	ldi	SysValueCopy,1
+	sts	COMPORT,SysValueCopy
+	rcall	HSERPRINTCRLF
+;READSENSOR
+	rcall	READ_TEMPERATURE
+	rcall	READ_HUMIDITY
 ;Main                    ' This loop runs over and over forever.
 ;Do
 SysDoLoop_S1:
@@ -260,7 +294,7 @@ SysDoLoop_S1:
 	sts	CURMS,SysValueCopy
 	lds	SysValueCopy,MILLIS_H
 	sts	CURMS_H,SysValueCopy
-;if CurMs - LstMs >= SAMPLERATE then  ' required Time has Elapsed
+;if CurMs - LstMs >= SAMPLERATE * 1000 then  ' required Time has Elapsed
 	lds	SysTemp2,CURMS
 	lds	SysTemp3,LSTMS
 	sub	SysTemp2,SysTemp3
@@ -271,16 +305,15 @@ SysDoLoop_S1:
 	mov	SysTemp1_H,SysTemp2
 	mov	SysWORDTempA,SysTemp1
 	mov	SysWORDTempA_H,SysTemp1_H
-	ldi	SysWORDTempB,160
-	ldi	SysWORDTempB_H,15
+	ldi	SysWORDTempB,136
+	ldi	SysWORDTempB_H,19
 	rcall	SysCompLessThan16
 	com	SysByteTempX
 	sbrs	SysByteTempX,0
 	rjmp	ENDIF1
-;Read_Humidity
-	rcall	READ_HUMIDITY
-;Read_Temperature
+;READSENSOR
 	rcall	READ_TEMPERATURE
+	rcall	READ_HUMIDITY
 ;LstMs = CurMs                   ' And Record Toggle Time
 	lds	SysValueCopy,CURMS
 	sts	LSTMS,SysValueCopy
@@ -301,7 +334,7 @@ AVRHI2CMODE:
 ;If HI2CCurrentMode = Master Then
 	lds	SysCalcTempA,HI2CCURRENTMODE
 	cpi	SysCalcTempA,12
-	brne	ENDIF17
+	brne	ENDIF21
 ;TWSR = CST_PRESCALER
 	ldi	SysValueCopy,0
 	sts	TWSR,SysValueCopy
@@ -309,14 +342,14 @@ AVRHI2CMODE:
 	ldi	SysValueCopy,72
 	sts	TWBR,SysValueCopy
 ;end if
-ENDIF17:
+ENDIF21:
 ;if HI2CCurrentMode = Slave then
 	lds	SysCalcTempA,HI2CCURRENTMODE
 	tst	SysCalcTempA
-	brne	ENDIF18
+	brne	ENDIF22
 ;[tbd]
 ;end if
-ENDIF18:
+ENDIF22:
 ;ldi  SysValueCopy, 0|(1<<TWEN)
 	ldi	SYSVALUECOPY, 0|(1<<TWEN)
 ;sts  TWCR,SysValueCopy
@@ -332,7 +365,7 @@ AVRHI2CRECEIVE:
 ;if HI2CGetAck.0 = 0 then
 	lds	SysBitTest,HI2CGETACK
 	sbrc	SysBitTest,0
-	rjmp	ELSE23_1
+	rjmp	ELSE27_1
 ;lds SysValueCopy,TWCR
 	lds	SYSVALUECOPY,TWCR
 ;sbr       SysValueCopy, (1<<TWINT)
@@ -342,8 +375,8 @@ AVRHI2CRECEIVE:
 ;sts TWCR,SysValueCopy
 	sts	TWCR,SYSVALUECOPY
 ;else
-	rjmp	ENDIF23
-ELSE23_1:
+	rjmp	ENDIF27
+ELSE27_1:
 ;Acknowledge
 ;lds SysValueCopy,TWCR
 	lds	SYSVALUECOPY,TWCR
@@ -354,7 +387,7 @@ ELSE23_1:
 ;sts TWCR,SysValueCopy
 	sts	TWCR,SYSVALUECOPY
 ;end if
-ENDIF23:
+ENDIF27:
 ;nop
 	nop
 ;nop
@@ -399,33 +432,33 @@ SysDoLoop_E3:
 ;if I2CByte = AVR_I2C_START then
 	lds	SysCalcTempA,I2CBYTE
 	cpi	SysCalcTempA,8
-	brne	ELSE21_1
+	brne	ELSE25_1
 ;HI2CStartOccurred = true
 	rcall	FN_HI2CSTARTOCCURRED
 ;goto exitAVRHI2CReStart
 	rjmp	EXITAVRHI2CRESTART
 ;else
-	rjmp	ENDIF21
-ELSE21_1:
+	rjmp	ENDIF25
+ELSE25_1:
 ;HI2CStartOccurred = false
 	rcall	FN_HI2CSTARTOCCURRED
 ;end if
-ENDIF21:
+ENDIF25:
 ;if I2CByte = AVR_I2C_ReSTART then
 	lds	SysCalcTempA,I2CBYTE
 	cpi	SysCalcTempA,16
-	brne	ELSE22_1
+	brne	ELSE26_1
 ;HI2CStartOccurred = true
 	rcall	FN_HI2CSTARTOCCURRED
 ;goto exitAVRHI2CReStart
 	rjmp	EXITAVRHI2CRESTART
 ;else
-	rjmp	ENDIF22
-ELSE22_1:
+	rjmp	ENDIF26
+ELSE26_1:
 ;HI2CStartOccurred = false
 	rcall	FN_HI2CSTARTOCCURRED
 ;end if
-ENDIF22:
+ENDIF26:
 EXITAVRHI2CRESTART:
 	ret
 
@@ -546,14 +579,14 @@ AVRHI2CSTART:
 ;if HI2CCurrentMode = 0 then
 	lds	SysCalcTempA,HI2CCURRENTMODE
 	tst	SysCalcTempA
-	brne	ENDIF19
+	brne	ENDIF23
 ;assume MASTER
 ;HI2CMode Master
 	ldi	SysValueCopy,12
 	sts	HI2CCURRENTMODE,SysValueCopy
 	rcall	AVRHI2CMODE
 ;end if
-ENDIF19:
+ENDIF23:
 ;lds SysValueCopy,TWCR
 	lds	SYSVALUECOPY,TWCR
 ;sbr   SysValueCopy, (1<<TWINT)|(1<<TWSTA)| (1<<TWEN)
@@ -576,16 +609,16 @@ SysDoLoop_E2:
 ;if I2CByte = AVR_I2C_START then
 	lds	SysCalcTempA,I2CBYTE
 	cpi	SysCalcTempA,8
-	brne	ELSE20_1
+	brne	ELSE24_1
 ;HI2CStartOccurred = true
 	rcall	FN_HI2CSTARTOCCURRED
 ;else
-	rjmp	ENDIF20
-ELSE20_1:
+	rjmp	ENDIF24
+ELSE24_1:
 ;HI2CStartOccurred = false
 	rcall	FN_HI2CSTARTOCCURRED
 ;end if
-ENDIF20:
+ENDIF24:
 	ret
 
 ;********************************************************************************
@@ -627,7 +660,7 @@ FN_HI2CSTARTOCCURRED:
 	ldi	SysCalcTempA,10
 	lds	SysCalcTempB,HI2CCURRENTMODE
 	cp	SysCalcTempA,SysCalcTempB
-	brsh	ELSE25_1
+	brsh	ELSE29_1
 ;HI2CStartOccurred = TRUE
 	ldi	SysValueCopy,255
 	sts	HI2CSTARTOCCURRED,SysValueCopy
@@ -635,13 +668,13 @@ FN_HI2CSTARTOCCURRED:
 	ret
 ;Slave mode, check if start condition received last
 ;Else
-	rjmp	ENDIF25
-ELSE25_1:
+	rjmp	ENDIF29
+ELSE29_1:
 ;HI2CStartOccurred = FALSE
 	ldi	SysValueCopy,0
 	sts	HI2CSTARTOCCURRED,SysValueCopy
 ;End If
-ENDIF25:
+ENDIF29:
 	ret
 
 ;********************************************************************************
@@ -656,7 +689,7 @@ HIC2INIT:
 ;********************************************************************************
 
 ;Overloaded signature: STRING:byte:
-HSERPRINT264:
+HSERPRINT265:
 ;PrintLen = LEN(PrintData$)
 ;PrintLen = PrintData(0)
 	lds	SysStringA,SysPRINTDATAHandler
@@ -698,6 +731,140 @@ SysForLoop1:
 SysForLoopEnd1:
 ;End If
 ENDIF14:
+;CR
+	ret
+
+;********************************************************************************
+
+;Overloaded signature: WORD:byte:
+HSERPRINT267:
+;Dim SysCalcTempX As Word
+;OutValueTemp = 0
+	ldi	SysValueCopy,0
+	sts	OUTVALUETEMP,SysValueCopy
+;If SerPrintVal >= 10000 then
+	lds	SysWORDTempA,SERPRINTVAL
+	lds	SysWORDTempA_H,SERPRINTVAL_H
+	ldi	SysWORDTempB,16
+	ldi	SysWORDTempB_H,39
+	rcall	SysCompLessThan16
+	com	SysByteTempX
+	sbrs	SysByteTempX,0
+	rjmp	ENDIF17
+;OutValueTemp = SerPrintVal / 10000 [word]
+	lds	SysWORDTempA,SERPRINTVAL
+	lds	SysWORDTempA_H,SERPRINTVAL_H
+	ldi	SysWORDTempB,16
+	ldi	SysWORDTempB_H,39
+	rcall	SysDivSub16
+	sts	OUTVALUETEMP,SysWORDTempA
+;SerPrintVal = SysCalcTempX
+	sts	SERPRINTVAL,SYSCALCTEMPX
+	sts	SERPRINTVAL_H,SYSCALCTEMPX_H
+;HSerSend(OutValueTemp + 48 ,comport )
+	lds	SysTemp3,OUTVALUETEMP
+	ldi	SysTemp4,48
+	add	SysTemp3,SysTemp4
+	sts	SERDATA,SysTemp3
+	rcall	HSERSEND
+;Goto HSerPrintWord1000
+	rjmp	HSERPRINTWORD1000
+;End If
+ENDIF17:
+;If SerPrintVal >= 1000 then
+	lds	SysWORDTempA,SERPRINTVAL
+	lds	SysWORDTempA_H,SERPRINTVAL_H
+	ldi	SysWORDTempB,232
+	ldi	SysWORDTempB_H,3
+	rcall	SysCompLessThan16
+	com	SysByteTempX
+	sbrs	SysByteTempX,0
+	rjmp	ENDIF18
+HSERPRINTWORD1000:
+;OutValueTemp = SerPrintVal / 1000 [word]
+	lds	SysWORDTempA,SERPRINTVAL
+	lds	SysWORDTempA_H,SERPRINTVAL_H
+	ldi	SysWORDTempB,232
+	ldi	SysWORDTempB_H,3
+	rcall	SysDivSub16
+	sts	OUTVALUETEMP,SysWORDTempA
+;SerPrintVal = SysCalcTempX
+	sts	SERPRINTVAL,SYSCALCTEMPX
+	sts	SERPRINTVAL_H,SYSCALCTEMPX_H
+;HSerSend(OutValueTemp + 48 ,comport  )
+	lds	SysTemp3,OUTVALUETEMP
+	ldi	SysTemp4,48
+	add	SysTemp3,SysTemp4
+	sts	SERDATA,SysTemp3
+	rcall	HSERSEND
+;Goto HSerPrintWord100
+	rjmp	HSERPRINTWORD100
+;End If
+ENDIF18:
+;If SerPrintVal >= 100 then
+	lds	SysWORDTempA,SERPRINTVAL
+	lds	SysWORDTempA_H,SERPRINTVAL_H
+	ldi	SysWORDTempB,100
+	ldi	SysWORDTempB_H,0
+	rcall	SysCompLessThan16
+	com	SysByteTempX
+	sbrs	SysByteTempX,0
+	rjmp	ENDIF19
+HSERPRINTWORD100:
+;OutValueTemp = SerPrintVal / 100 [word]
+	lds	SysWORDTempA,SERPRINTVAL
+	lds	SysWORDTempA_H,SERPRINTVAL_H
+	ldi	SysWORDTempB,100
+	ldi	SysWORDTempB_H,0
+	rcall	SysDivSub16
+	sts	OUTVALUETEMP,SysWORDTempA
+;SerPrintVal = SysCalcTempX
+	sts	SERPRINTVAL,SYSCALCTEMPX
+	sts	SERPRINTVAL_H,SYSCALCTEMPX_H
+;HSerSend(OutValueTemp + 48 ,comport )
+	lds	SysTemp3,OUTVALUETEMP
+	ldi	SysTemp4,48
+	add	SysTemp3,SysTemp4
+	sts	SERDATA,SysTemp3
+	rcall	HSERSEND
+;Goto HSerPrintWord10
+	rjmp	HSERPRINTWORD10
+;End If
+ENDIF19:
+;If SerPrintVal >= 10 then
+	lds	SysWORDTempA,SERPRINTVAL
+	lds	SysWORDTempA_H,SERPRINTVAL_H
+	ldi	SysWORDTempB,10
+	ldi	SysWORDTempB_H,0
+	rcall	SysCompLessThan16
+	com	SysByteTempX
+	sbrs	SysByteTempX,0
+	rjmp	ENDIF20
+HSERPRINTWORD10:
+;OutValueTemp = SerPrintVal / 10 [word]
+	lds	SysWORDTempA,SERPRINTVAL
+	lds	SysWORDTempA_H,SERPRINTVAL_H
+	ldi	SysWORDTempB,10
+	ldi	SysWORDTempB_H,0
+	rcall	SysDivSub16
+	sts	OUTVALUETEMP,SysWORDTempA
+;SerPrintVal = SysCalcTempX
+	sts	SERPRINTVAL,SYSCALCTEMPX
+	sts	SERPRINTVAL_H,SYSCALCTEMPX_H
+;HSerSend(OutValueTemp + 48 ,comport )
+	lds	SysTemp3,OUTVALUETEMP
+	ldi	SysTemp4,48
+	add	SysTemp3,SysTemp4
+	sts	SERDATA,SysTemp3
+	rcall	HSERSEND
+;End If
+ENDIF20:
+;HSerSend(SerPrintVal + 48 ,comport  )
+	lds	SysTemp3,SERPRINTVAL
+	ldi	SysTemp4,48
+	add	SysTemp3,SysTemp4
+	sts	SERDATA,SysTemp3
+	rcall	HSERSEND
 ;CR
 	ret
 
@@ -778,7 +945,7 @@ INITSYS:
 ;********************************************************************************
 
 ;Overloaded signature: BYTE:BYTE:
-INITTIMER0161:
+INITTIMER0162:
 ;Just need to buffer TMR0Pres
 ;(And change it for external clock)
 ;TMRPres, TMRSource now shared and local - WMR
@@ -786,12 +953,12 @@ INITTIMER0161:
 ;If TMRSource = Ext Then
 	lds	SysCalcTempA,TMRSOURCE
 	cpi	SysCalcTempA,2
-	brne	ENDIF24
+	brne	ENDIF28
 ;TMRPres = AVR_EXT_TMR_0_RE
 	ldi	SysValueCopy,7
 	sts	TMRPRES,SysValueCopy
 ;End If
-ENDIF24:
+ENDIF28:
 ;TMR0_TMP = TMRPres
 	lds	SysValueCopy,TMRPRES
 	sts	TMR0_TMP,SysValueCopy
@@ -847,7 +1014,7 @@ INIT_MSCTR_INT:
 	sts	TMRSOURCE,SysValueCopy
 	ldi	SysValueCopy,3
 	sts	TMRPRES,SysValueCopy
-	rcall	INITTIMER0161
+	rcall	INITTIMER0162
 ;asm ShowDebug  Call_SetTimer_Millis_macro
 ;call_settimer_millis_macro
 ;SetTimer_Millis Tmr0InitVal
@@ -1020,18 +1187,18 @@ READ_HUMIDITY:
 	rcall	SysCompLessThan16
 	sbrs	SysByteTempX,0
 	rjmp	ENDIF2
-	ldi	SysStringB,low(SYSSTRINGPARAM1)
-	ldi	SysStringB_H,high(SYSSTRINGPARAM1)
-	ldi	SysReadA,low(StringTable1<<1)
-	ldi	SysReadA_H,high(StringTable1<<1)
+	ldi	SysStringB,low(SYSSTRINGPARAM2)
+	ldi	SysStringB_H,high(SYSSTRINGPARAM2)
+	ldi	SysReadA,low(StringTable2<<1)
+	ldi	SysReadA_H,high(StringTable2<<1)
 	rcall	SysReadString
-	ldi	SysValueCopy,low(SYSSTRINGPARAM1)
+	ldi	SysValueCopy,low(SYSSTRINGPARAM2)
 	sts	SysPRINTDATAHandler,SysValueCopy
-	ldi	SysValueCopy,high(SYSSTRINGPARAM1)
+	ldi	SysValueCopy,high(SYSSTRINGPARAM2)
 	sts	SysPRINTDATAHandler_H,SysValueCopy
 	ldi	SysValueCopy,1
 	sts	COMPORT,SysValueCopy
-	rcall	HSERPRINT264
+	rcall	HSERPRINT265
 ENDIF2:
 ;hserPrint "Humidity="+str(Humidity) : hserPrint "%"
 	lds	SysValueCopy,HUMIDITY
@@ -1039,44 +1206,38 @@ ENDIF2:
 	lds	SysValueCopy,HUMIDITY_H
 	sts	SYSVALTEMP_H,SysValueCopy
 	rcall	FN_STR
-	ldi	SysStringB,low(SYSSTRINGPARAM1)
-	ldi	SysStringB_H,high(SYSSTRINGPARAM1)
+	ldi	SysStringB,low(SYSSTRINGPARAM2)
+	ldi	SysStringB_H,high(SYSSTRINGPARAM2)
 	clr	SysStringLength
 	ld	SysValueCopy, Y+
-	ldi	SysReadA,low(StringTable2<<1)
-	ldi	SysReadA_H,high(StringTable2<<1)
+	ldi	SysReadA,low(StringTable3<<1)
+	ldi	SysReadA_H,high(StringTable3<<1)
 	rcall	SysReadStringPart
 	ldi	SysStringA,low(STR)
 	ldi	SysStringA_H,high(STR)
 	rcall	SysCopyStringPart
-	ldi	SysStringA,low(SYSSTRINGPARAM1)
-	ldi	SysStringA_H,high(SYSSTRINGPARAM1)
+	ldi	SysStringA,low(SYSSTRINGPARAM2)
+	ldi	SysStringA_H,high(SYSSTRINGPARAM2)
 	st	X, SysStringLength
-	ldi	SysValueCopy,low(SYSSTRINGPARAM1)
+	ldi	SysValueCopy,low(SYSSTRINGPARAM2)
 	sts	SysPRINTDATAHandler,SysValueCopy
-	ldi	SysValueCopy,high(SYSSTRINGPARAM1)
+	ldi	SysValueCopy,high(SYSSTRINGPARAM2)
 	sts	SysPRINTDATAHandler_H,SysValueCopy
 	ldi	SysValueCopy,1
 	sts	COMPORT,SysValueCopy
-	rcall	HSERPRINT264
-	ldi	SysStringB,low(SYSSTRINGPARAM1)
-	ldi	SysStringB_H,high(SYSSTRINGPARAM1)
-	ldi	SysReadA,low(StringTable3<<1)
-	ldi	SysReadA_H,high(StringTable3<<1)
+	rcall	HSERPRINT265
+	ldi	SysStringB,low(SYSSTRINGPARAM2)
+	ldi	SysStringB_H,high(SYSSTRINGPARAM2)
+	ldi	SysReadA,low(StringTable4<<1)
+	ldi	SysReadA_H,high(StringTable4<<1)
 	rcall	SysReadString
-	ldi	SysValueCopy,low(SYSSTRINGPARAM1)
+	ldi	SysValueCopy,low(SYSSTRINGPARAM2)
 	sts	SysPRINTDATAHandler,SysValueCopy
-	ldi	SysValueCopy,high(SYSSTRINGPARAM1)
+	ldi	SysValueCopy,high(SYSSTRINGPARAM2)
 	sts	SysPRINTDATAHandler_H,SysValueCopy
 	ldi	SysValueCopy,1
 	sts	COMPORT,SysValueCopy
-	rcall	HSERPRINT264
-;HSerPrintCRLF
-	ldi	SysValueCopy,1
-	sts	HSERPRINTCRLFCOUNT,SysValueCopy
-	ldi	SysValueCopy,1
-	sts	COMPORT,SysValueCopy
-	rjmp	HSERPRINTCRLF
+	rjmp	HSERPRINT265
 
 ;********************************************************************************
 
@@ -1211,69 +1372,96 @@ READ_TEMPERATURE:
 	rcall	SysDivSub16
 	sts	TEMPERATUREC,SysWORDTempA
 	sts	TEMPERATUREC_H,SysWORDTempA_H
+;HSerPrintCRLF
+	ldi	SysValueCopy,1
+	sts	HSERPRINTCRLFCOUNT,SysValueCopy
+	ldi	SysValueCopy,1
+	sts	COMPORT,SysValueCopy
+	rcall	HSERPRINTCRLF
+;HSerPrint SiRaw
+	lds	SysValueCopy,SIRAW
+	sts	SERPRINTVAL,SysValueCopy
+	lds	SysValueCopy,SIRAW_H
+	sts	SERPRINTVAL_H,SysValueCopy
+	ldi	SysValueCopy,1
+	sts	COMPORT,SysValueCopy
+	rcall	HSERPRINT267
+;HSerPrint ": "
+	ldi	SysStringB,low(SYSSTRINGPARAM2)
+	ldi	SysStringB_H,high(SYSSTRINGPARAM2)
+	ldi	SysReadA,low(StringTable5<<1)
+	ldi	SysReadA_H,high(StringTable5<<1)
+	rcall	SysReadString
+	ldi	SysValueCopy,low(SYSSTRINGPARAM2)
+	sts	SysPRINTDATAHandler,SysValueCopy
+	ldi	SysValueCopy,high(SYSSTRINGPARAM2)
+	sts	SysPRINTDATAHandler_H,SysValueCopy
+	ldi	SysValueCopy,1
+	sts	COMPORT,SysValueCopy
+	rcall	HSERPRINT265
 ;hserPrint "Temp ="+str(TemperatureC) : hserPrint "." : hserPrint str(Hundredths)+" "
 	lds	SysValueCopy,TEMPERATUREC
 	sts	SYSVALTEMP,SysValueCopy
 	lds	SysValueCopy,TEMPERATUREC_H
 	sts	SYSVALTEMP_H,SysValueCopy
 	rcall	FN_STR
-	ldi	SysStringB,low(SYSSTRINGPARAM1)
-	ldi	SysStringB_H,high(SYSSTRINGPARAM1)
+	ldi	SysStringB,low(SYSSTRINGPARAM2)
+	ldi	SysStringB_H,high(SYSSTRINGPARAM2)
 	clr	SysStringLength
 	ld	SysValueCopy, Y+
-	ldi	SysReadA,low(StringTable4<<1)
-	ldi	SysReadA_H,high(StringTable4<<1)
+	ldi	SysReadA,low(StringTable6<<1)
+	ldi	SysReadA_H,high(StringTable6<<1)
 	rcall	SysReadStringPart
 	ldi	SysStringA,low(STR)
 	ldi	SysStringA_H,high(STR)
 	rcall	SysCopyStringPart
-	ldi	SysStringA,low(SYSSTRINGPARAM1)
-	ldi	SysStringA_H,high(SYSSTRINGPARAM1)
+	ldi	SysStringA,low(SYSSTRINGPARAM2)
+	ldi	SysStringA_H,high(SYSSTRINGPARAM2)
 	st	X, SysStringLength
-	ldi	SysValueCopy,low(SYSSTRINGPARAM1)
+	ldi	SysValueCopy,low(SYSSTRINGPARAM2)
 	sts	SysPRINTDATAHandler,SysValueCopy
-	ldi	SysValueCopy,high(SYSSTRINGPARAM1)
+	ldi	SysValueCopy,high(SYSSTRINGPARAM2)
 	sts	SysPRINTDATAHandler_H,SysValueCopy
 	ldi	SysValueCopy,1
 	sts	COMPORT,SysValueCopy
-	rcall	HSERPRINT264
-	ldi	SysStringB,low(SYSSTRINGPARAM1)
-	ldi	SysStringB_H,high(SYSSTRINGPARAM1)
-	ldi	SysReadA,low(StringTable5<<1)
-	ldi	SysReadA_H,high(StringTable5<<1)
+	rcall	HSERPRINT265
+	ldi	SysStringB,low(SYSSTRINGPARAM2)
+	ldi	SysStringB_H,high(SYSSTRINGPARAM2)
+	ldi	SysReadA,low(StringTable7<<1)
+	ldi	SysReadA_H,high(StringTable7<<1)
 	rcall	SysReadString
-	ldi	SysValueCopy,low(SYSSTRINGPARAM1)
+	ldi	SysValueCopy,low(SYSSTRINGPARAM2)
 	sts	SysPRINTDATAHandler,SysValueCopy
-	ldi	SysValueCopy,high(SYSSTRINGPARAM1)
+	ldi	SysValueCopy,high(SYSSTRINGPARAM2)
 	sts	SysPRINTDATAHandler_H,SysValueCopy
 	ldi	SysValueCopy,1
 	sts	COMPORT,SysValueCopy
-	rcall	HSERPRINT264
+	rcall	HSERPRINT265
 	lds	SysValueCopy,HUNDREDTHS
 	sts	SYSVALTEMP,SysValueCopy
 	ldi	SysValueCopy,0
 	sts	SYSVALTEMP_H,SysValueCopy
 	rcall	FN_STR
-	ldi	SysStringB,low(SYSSTRINGPARAM1)
-	ldi	SysStringB_H,high(SYSSTRINGPARAM1)
+	ldi	SysStringB,low(SYSSTRINGPARAM2)
+	ldi	SysStringB_H,high(SYSSTRINGPARAM2)
 	clr	SysStringLength
 	ld	SysValueCopy, Y+
 	ldi	SysStringA,low(STR)
 	ldi	SysStringA_H,high(STR)
 	rcall	SysCopyStringPart
-	ldi	SysReadA,low(StringTable6<<1)
-	ldi	SysReadA_H,high(StringTable6<<1)
+	ldi	SysReadA,low(StringTable8<<1)
+	ldi	SysReadA_H,high(StringTable8<<1)
 	rcall	SysReadStringPart
-	ldi	SysStringA,low(SYSSTRINGPARAM1)
-	ldi	SysStringA_H,high(SYSSTRINGPARAM1)
+	ldi	SysStringA,low(SYSSTRINGPARAM2)
+	ldi	SysStringA_H,high(SYSSTRINGPARAM2)
 	st	X, SysStringLength
-	ldi	SysValueCopy,low(SYSSTRINGPARAM1)
+	ldi	SysValueCopy,low(SYSSTRINGPARAM2)
 	sts	SysPRINTDATAHandler,SysValueCopy
-	ldi	SysValueCopy,high(SYSSTRINGPARAM1)
+	ldi	SysValueCopy,high(SYSSTRINGPARAM2)
 	sts	SysPRINTDATAHandler_H,SysValueCopy
 	ldi	SysValueCopy,1
 	sts	COMPORT,SysValueCopy
-	rjmp	HSERPRINT264
+	rjmp	HSERPRINT265
 
 ;********************************************************************************
 
@@ -2046,26 +2234,34 @@ SysIntContextSave:
 SysStringTables:
 
 StringTable1:
-.DB	1,48
+.DB	42,83,105,55,48,50,49,32,73,50,67,32,72,85,77,73,68,73,84,89,32,65,78,68,32,84,69,77,80,69,82,65,84,85,82,69,32,83,69,78,83,79,82,0
 
 
 StringTable2:
-.DB	9,72,117,109,105,100,105,116,121,61
+.DB	1,48
 
 
 StringTable3:
-.DB	1,37
+.DB	9,72,117,109,105,100,105,116,121,61
 
 
 StringTable4:
-.DB	6,84,101,109,112,32,61,0
+.DB	1,37
 
 
 StringTable5:
-.DB	1,46
+.DB	2,58,32,0
 
 
 StringTable6:
+.DB	6,84,101,109,112,32,61,0
+
+
+StringTable7:
+.DB	1,46
+
+
+StringTable8:
 .DB	1,32
 
 

@@ -1,7 +1,7 @@
 #chip mega328p,16
 #option explicit
 #include <millis.h>       ' Include the Library
-#define SAMPLERATE 4000     ' Flash rate in mS
+#define SAMPLERATE 5     ' Flash rate in S
 
 #define hi2c_BAUD_RATE 100
 #define hi2c_DATA PORTC.4
@@ -15,6 +15,8 @@ Dim Humidity,Temperature,TemperatureC,TemperatureF as Word
 DIM Temperature as WORD
 
 Dim Hundredths as Byte
+#define READSENSOR  Read_Temperature : Read_Humidity
+
 
 #define USART_BAUD_RATE 9600
 #define USART_TX_BLOCKING
@@ -25,17 +27,22 @@ Dim Hundredths as Byte
     ' Main                    ' This loop runs over and over forever.
     LstMs = 0
     CurMs = 0
+    'Initial read
+    HSerPrintCRLF 2
+    HSerPrint "Si7021 I2C HUMIDITY AND TEMPERATURE SENSOR"
+    HSerPrintCRLF
+    READSENSOR
 
     ' Main                    ' This loop runs over and over forever.
+
     Do
       CurMs = millis()
 
-      if CurMs - LstMs >= SAMPLERATE then  ' required Time has Elapsed
+      if CurMs - LstMs >= SAMPLERATE * 1000 then  ' required Time has Elapsed
 
-        Read_Humidity
-        Read_Temperature
-
+        READSENSOR
         LstMs = CurMs                   ' And Record Toggle Time
+
       end if
 
     Loop
@@ -60,7 +67,7 @@ Sub Read_Humidity
 ;  Locate 1,12
   If Humidity  < 10 then hserPrint "0"
   hserPrint "Humidity="+str(Humidity) : hserPrint "%"
-  HSerPrintCRLF
+
 
 End Sub
 
@@ -84,7 +91,9 @@ Sub Read_Temperature
 
   Hundredths = TemperatureC % 100  'Modulu Divide
   TemperatureC = TemperatureC / 100
-
+  HSerPrintCRLF
+  HSerPrint SiRaw
+  HSerPrint ": "
   hserPrint "Temp ="+str(TemperatureC) : hserPrint "." : hserPrint str(Hundredths)+" "
 
 End Sub
