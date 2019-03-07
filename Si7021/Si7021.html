@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2019-02-14 (Windows 32 bit)</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 1.125 seconds)</p>
+<p> (Assembly time: 0.125 seconds)</p>
+<p> (Download time: 2.5 seconds)</p>
+<p> (Total time: 3.75 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: MEGA328P</p>
+<p>Program Memory: 1622/16384 words (9.9%)</p>
+<p>RAM: 76/2048 bytes (3.71%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>24</td><td>70</td><td>MSCTR_INT_HDLR(1), HIC2INIT(11), SYSCOMPLESSTHAN16(1), READ_TEMPERATURE(1), READ_HUMIDITY(1), MILLIS(1), AVRHI2CMODE(1), INITSYS(36)</td></tr>
+<tr><td>READ_HUMIDITY</td><td>18</td><td>176</td><td>SYSCOPYSTRING(1), SYSREADSTRING(3), SYSDIVSUB32(1), SYSMULTSUB32(1), SYSCOMPLESSTHAN16(1), Delay_MS(1), HSERPRINTCRLF(1), STR(1), HSERPRINT(3), AVRHI2CSTOP(1), AVRHI2CRECEIVE(2), AVRHI2CRESTART(2), AVRHI2CSEND(4), AVRHI2CSTART(1)</td></tr>
+<tr><td>READ_TEMPERATURE</td><td>18</td><td>251</td><td>SYSCOPYSTRING(2), SYSREADSTRING(3), SYSDIVSUB16(4), SYSDIVSUB32(2), SYSMULTSUB32(2), Delay_MS(1), STR(2), HSERPRINT(3), AVRHI2CSTOP(1), AVRHI2CRECEIVE(2), AVRHI2CRESTART(1), AVRHI2CSEND(3), AVRHI2CSTART(1)</td></tr>
+<tr><td>MSCTR_INT_HDLR</td><td>4</td><td>27</td><td></td></tr>
+<tr><td>INIT_MSCTR_INT</td><td>110</td><td>36</td><td>INITTIMER0(1), MILLIS(1)</td></tr>
+<tr><td>MILLIS</td><td>4</td><td>29</td><td></td></tr>
+<tr><td>INITTIMER0</td><td>70</td><td>12</td><td></td></tr>
+<tr><td>INITSYS</td><td>701</td><td>7</td><td></td></tr>
+<tr><td>SYSCOPYSTRING</td><td>118</td><td>13</td><td></td></tr>
+<tr><td>SYSREADSTRING</td><td>101</td><td>24</td><td></td></tr>
+<tr><td>SYSMULTSUB32</td><td>43</td><td>124</td><td>SYSCOMPLESSTHAN32(1)</td></tr>
+<tr><td>SYSDIVSUB16</td><td>38</td><td>48</td><td>SYSCOMPEQUAL16(1)</td></tr>
+<tr><td>SYSDIVSUB32</td><td>40</td><td>176</td><td>SYSCOMPEQUAL32(1)</td></tr>
+<tr><td>SYSCOMPEQUAL16</td><td>34</td><td>7</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL32</td><td>52</td><td>11</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>10</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN32</td><td>63</td><td>15</td><td></td></tr>
+<tr><td>STR</td><td>36</td><td>200</td><td>SYSDIVSUB16(4), SYSCOMPLESSTHAN16(4)</td></tr>
+<tr><td>HSERPRINTCRLF</td><td>4</td><td>27</td><td>HSERSEND(2)</td></tr>
+<tr><td>INITUSART</td><td>141</td><td>23</td><td></td></tr>
+<tr><td>HSERSEND</td><td>122</td><td>13</td><td></td></tr>
+<tr><td>HSERPRINT</td><td>12</td><td>46</td><td>HSERSEND(1)</td></tr>
+<tr><td>HI2CSTARTOCCURRED</td><td>13</td><td>14</td><td></td></tr>
+<tr><td>AVRHI2CMODE</td><td>11</td><td>21</td><td></td></tr>
+<tr><td>AVRHI2CSTART</td><td>14</td><td>35</td><td>HI2CSTARTOCCURRED(2), AVRHI2CMODE(1)</td></tr>
+<tr><td>AVRHI2CRESTART</td><td>19</td><td>37</td><td>HI2CSTARTOCCURRED(4)</td></tr>
+<tr><td>AVRHI2CSTOP</td><td>3</td><td>6</td><td></td></tr>
+<tr><td>AVRHI2CSEND</td><td>31</td><td>86</td><td>HI2CSTARTOCCURRED(1)</td></tr>
+<tr><td>AVRHI2CRECEIVE</td><td>16</td><td>29</td><td></td></tr>
+<tr><td>HIC2INIT</td><td>4</td><td>4</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>12</td><td></td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>13</td><td></td></tr>
+<tr><td>SysIntContextSave</td><td>0</td><td>8</td><td></td></tr>
+<tr><td>SysIntContextRestore</td><td>0</td><td>8</td><td></td></tr>
+<tr><td>IntTIMER0_OVF</td><td>0</td><td>4</td><td></td></tr>
+</table>
+</body>
+</html>

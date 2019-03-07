@@ -1,0 +1,179 @@
+'    Si7020 humidity / Temperature Sensor Demo for the GCBASIC compiler
+'    Copyright (C) 2018  William Roth
+
+'    This code is free software; you can redistribute it and/or
+'    modify it under the terms of the GNU Lesser General Public
+'    License as published by the Free Software Foundation; either
+'    version 2.1 of the License, or (at your option) any later version.
+
+'    This code is distributed in the hope that it will be useful,
+'    but WITHOUT ANY WARRANTY; without even the implied warranty of
+'    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+'    Lesser General Public License for more details.
+
+'    You should have received a copy of the GNU Lesser General Public
+'    License along with this code; if not, write to the Free Software
+'    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+
+ #chip 16f18326, 16
+ #config FEXTOSC = OFF, RSTOSC = HFINT32
+ #config MCLRE = ON, WDTE=OFF
+ #CONFIG BOREN = Off
+
+ #option explicit
+ #include <lowlevel\hwi2c2.h>
+
+ #startup InitPPS, 85
+
+ #define HI2C_DATA PORTC.1
+ #define HI2C_CLOCK PORTC.2
+
+ #define HI2C2_DATA PORTC.4
+ #define HI2C2_CLOCK PORTC.3
+
+ '  '''Set up LCD Display
+ #define LCD_IO 10
+ #define LCD_I2C_Address_1 0x7E
+
+'I2C
+ hi2cMode Master
+ CLS
+
+ Hi2C2Mode Master
+ wait 100 ms
+
+ Dir hi2c_DATA in
+ Dir hi2c_CLOCK in
+ Dir hi2c2_DATA in
+ Dir hi2c2_CLOCK in
+
+
+ 'Pin aliases
+ #define Turn_Motor PORTA.2
+ #define Humidifier PORTC.0
+ #define Stop_Switch PORTA.4
+ #define Turn_Switch PortA.5
+
+ 'Variables
+ Dim Si7021_HighByte, Si7021_LowByte as byte
+ Dim SiRaw Alias Si7021_HighByte, Si7021_LowByte as Word
+
+ Dim Humidity as Word
+ DIM Temperature as WORD
+
+ Dim Cntr as Byte       'each timer count is 250 ms
+ Dim Hundredths as Byte
+ Dim TemperatureC as WORD
+ Dim TemperatureF as WOrd
+
+ SiRaw = 0
+ cntr = 0
+
+
+  CLS
+
+  'Print Fixed locations
+  Locate 0,0
+  Print "Set Value:  "
+  Locate 1,0
+  Print "Humidity :"
+  Locate 2,0
+  Print "Temperature: "
+
+  'Setup 2 SecTimer
+  PR0 = 244 '// 250 ms
+  Inittimer0 (OSC, Pre0_32 + TMR0_LFINTOSC, 0)
+  Starttimer 0
+  On interrupt Timer0Overflow Call Counter_ISR
+
+
+
+Main:
+  Do
+     'waiting for interrupt
+  Loop
+
+
+sub Counter_ISR  'ISR
+
+   Cntr++  'increment 250 ms counter
+
+   'One Second timer
+   If Cntr >= 4 then  '1 seconds has elapsed
+        Cntr = 0
+
+        Call Read_Humidity
+        Call Read_Temperature
+   End if
+
+End Sub
+
+
+
+Sub Read_Humidity
+  Hi2C2Start
+  HI2C2Send (0x80)  'Write
+  Hi2c2Send (0xF5)
+  Hi2C2ReStart
+  HI2C2Send (0x81)  'read
+  wait 50 ms   ' for conversion ( could be less)
+  Hi2C2ReStart
+
+  HI2C2Send (0x81)  'read
+  Hi2C2Receive (Si7021_HighByte, ACK)
+  Hi2C2Receive (Si7021_Lowbyte, NACK)
+  Hi2C2stop
+
+  'now do the maths
+  Humidity = (([long]SiRaw * 125) / 65536) -6
+
+  Locate 1,12
+  If Humidity  < 10 then Print "0"
+  Print Humidity : Print "%"
+
+
+End Sub
+
+Sub Read_Temperature
+  Hi2C2Start
+  HI2C2Send (0x80)  'Write
+  Hi2c2Send (0xE0)
+
+  Hi2C2ReStart
+  HI2C2Send (0x81)  'read
+  Hi2C2Receive (Si7021_HighByte, ACK)
+  Hi2C2Receive (Si7021_Lowbyte, NACK)
+  Hi2C2stop
+  wait 20 ms
+
+  TemperatureC = (([long]SiRaw * 17572) / 65536) - 4685
+  TemperatureF =   (([long]TemperatureC * 9) /5) + 3200
+
+  Hundredths = TemperatureF % 100  'Modulud Divide
+  TemperatureF = TemperatureF / 100
+
+  Locate 2,14
+  Print TemperatureF : Print "." : Print Hundredths
+
+End Sub
+
+
+
+sub InitPPS
+
+  UNLOCKPPS
+     'Module: MSSP1
+      SSP1CLKPPS = 0x12    'RC2 > SCL1
+      RC2PPS = 0x18        'SCL1 > RC2 (bi-directional)
+      RC1PPS = 0x0019      'SDA1 > RC1
+      SSP1DATPPS = 0x11    'RC1 > SDA1 (bi-directional)
+
+     'Module: MSSP2
+      SSP2CLKPPS = 0x13    'RC3 > SCL2
+      RC3PPS = 0x1A        'SCL2 > RC3 (bi-directional)
+      RC4PPS = 0x1B        'SDA2 > RC4
+      SSP2DATPPS = 0x14    'RC4 > SDA2 (bi-directional)
+  LOCKPPS
+
+End Sub

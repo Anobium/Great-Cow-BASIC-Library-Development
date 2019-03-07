@@ -1,0 +1,88 @@
+#chip mega328p,16
+#option explicit
+#include <millis.h>       ' Include the Library
+#define SAMPLERATE 4000     ' Flash rate in mS
+
+#define hi2c_BAUD_RATE 100
+#define hi2c_DATA PORTC.4
+#define hi2c_CLOCK PORTC.5
+hi2cMode Master
+
+Dim Si7021_HighByte, Si7021_LowByte as byte
+Dim SiRaw Alias Si7021_HighByte, Si7021_LowByte as Word
+
+Dim Humidity,Temperature,TemperatureC,TemperatureF as Word
+DIM Temperature as WORD
+
+Dim Hundredths as Byte
+
+#define USART_BAUD_RATE 9600
+#define USART_TX_BLOCKING
+#define USART_DELAY 10 ms
+
+
+Dim CurMs, LstMs as word  ' declare working variables
+' Main                    ' This loop runs over and over forever.
+LstMs = 0
+CurMs = 0
+
+' Main                    ' This loop runs over and over forever.
+Do
+  CurMs = millis()
+
+  if CurMs - LstMs >= SAMPLERATE then  ' required Time has Elapsed
+
+    Read_Humidity
+    Read_Temperature
+
+    LstMs = CurMs                   ' And Record Toggle Time
+  end if
+
+Loop
+
+
+Sub Read_Humidity
+  Hi2CStart
+  HI2cSend (0x80)  'Write
+  Hi2cSend (0xF5)
+  Hi2CReStart
+  HI2CSend (0x81)  'read
+  wait 50 ms   ' for conversion ( could be less)
+  Hi2CReStart
+
+  HI2CSend (0x81)  'read
+  Hi2CReceive (Si7021_HighByte, ACK)
+  Hi2CReceive (Si7021_Lowbyte, NACK)
+  Hi2Cstop
+  'now do the maths
+  Humidity = (([long]SiRaw * 125) / 65536) -6
+
+;  Locate 1,12
+  If Humidity  < 10 then hserPrint "0"
+  hserPrint "Humidity="+str(Humidity) : hserPrint "%"
+  HSerPrintCRLF
+
+End Sub
+
+Sub Read_Temperature
+  Hi2CStart
+  HI2CSend (0x80)  'Write
+  Hi2cSend (0xE0)
+
+  Hi2CReStart
+  HI2CSend (0x81)  'read
+  Hi2CReceive (Si7021_HighByte, ACK)
+  Hi2CReceive (Si7021_Lowbyte, NACK)
+  Hi2Cstop
+  wait 20 ms
+
+  TemperatureC = (([long]SiRaw * 17572) / 65536) - 4685
+  TemperatureF =   (([long]TemperatureC * 9) /5) + 3200
+
+  Hundredths = TemperatureF % 100  'Modulud Divide
+  TemperatureF = TemperatureF / 100
+
+;  Locate 2,14
+  hserPrint "Temp.="+str(TemperatureC) : hserPrint "." : hserPrint str(Hundredths)+" "
+
+End Sub

@@ -23,9 +23,10 @@
   #define Max7219_CS    portb.2    'pin10
 
   'Specifics for device configuration
-  #define MAX7219_X_Devices 4
+  #define MAX7219_X_Devices 8
 
   #define MAX7219_LEDMatrix_HardwareSPI     ' remove and make a comment out if you want to use Software SPI for this device
+  #define HWSPIMode MasterSlow
 
 '; ----- Main body of program commences here.
 
@@ -34,7 +35,7 @@
   #define USART_BLOCKING
 
 
-  dim myString as string * 100
+  dim myString as string * 32
 
 
   Max7219_LEDMatrix_Brightness ( 1 )

@@ -1,0 +1,198 @@
+  #chip mega328p, 16
+  #option explicit
+
+
+    #include <glcd.h>
+    #include <uno_mega328p.h>
+
+    #define GLCD_TYPE GLCD_TYPE_uc8230
+
+    'Pin mappings for SPI - this GLCD driver supports Hardware SPI and Software SPI
+    #define GLCD_RD       ANALOG_0          ' read command line
+    #define GLCD_WR       ANALOG_1          ' write command line
+    #define GLCD_RS       ANALOG_2          ' Command/Data line
+    #define GLCD_CS       ANALOG_3          ' Chip select line
+    #define GLCD_RST      ANALOG_4          ' Reset line
+
+
+
+    #define GLCD_DB0       DIGITAL_8
+    #define GLCD_DB1       DIGITAL_9
+    #define GLCD_DB2       DIGITAL_2
+    #define GLCD_DB3       DIGITAL_3
+    #define GLCD_DB4       DIGITAL_4
+    #define GLCD_DB5       DIGITAL_5
+    #define GLCD_DB6       DIGITAL_6
+    #define GLCD_DB7       DIGITAL_7
+
+
+    'GLCD selected extension font set. ASCII characters 31-254, the extended font uses 1358 bytes of program memory
+    #define GLCD_EXTENDEDFONTSET1
+    GLCDfntDefaultsize = 1
+
+'    'GLCDCLS  supports GLCDBackground as default
+'    'GLCDCLS  also support passing color parameter.
+'    'GLCDCLS [color]
+'    GLCDRotate ( Landscape_rev )     ' optionally you can rotate the screen.
+'
+'
+'    'Available colors
+'    'TFT_BLACK
+'    'TFT_RED
+'    'TFT_GREEN
+'    'TFT_BLUE
+'    'TFT_WHITE
+'    'TFT_PURPLE
+'    'TFT_YELLOW
+'    'TFT_CYAN
+'    'TFT_DARKGREY
+'    'TFT_L_GRAY
+'    'TFT_WHITE
+'    'TFT_MAROON
+'    'TFT_OLIVE
+'    'TFT_LIME
+'    'TFT_AQUA
+'    'TFT_TEAL
+'    'TFT_NAVY
+'    'TFT_FUCHSIA
+
+
+    GLCDRotate ( Portrait )
+    GLCDCLS TFT_RED
+    GLCDPrint 0,0, "Portrait"
+    wait 1 s
+
+    GLCDRotate ( Landscape )
+    GLCDCLS TFT_BLACK
+    GLCDPrint 0,0, "Landscape"
+    wait 1 s
+
+    GLCDRotate ( Portrait_Rev )
+    GLCDCLS TFT_RED
+    GLCDPrint 0,0, "PortraitRev"
+    wait 1 s
+
+    GLCDRotate ( Landscape_Rev )
+    GLCDCLS TFT_BLACK
+    GLCDPrint 0,0, "LandscapeRev"
+    wait 1 s
+
+    GLCDRotate ( Portrait )
+    GLCDCLS TFT_RED
+    GLCDPrint 0,0, "Portrait"
+    wait 1 s
+
+
+    repeat 2
+
+            GLCDRotate ( Landscape )
+            GLCDCLS TFT_BLUE
+
+            GLCDForeground = TFT_MAROON
+            GLCDfntDefaultsize = 1
+            GLCDPrint ( 2, 2, "GLCDPrint String" )
+
+
+            GLCDForeground = TFT_WHITE
+            GLCDfntDefaultsize = 2
+            GLCDPrint ( 2, 12, "GLCDPrint String" )
+
+
+            GLCDForeground = TFT_YELLOW
+            GLCDfntDefaultsize = 3
+            GLCDPrint ( 2,30, "GLCDPrint String" )
+
+            longNumber = 0xFFFFFFFF
+            wordNumber = 0xFFFF
+            byteNumber = 0xFF
+
+            wait 1 s
+
+            GLCDRotate ( PORTRAIT )
+            GLCDCLS TFT_WHITE
+
+            GLCDForeground = TFT_MAROON
+            GLCDfntDefaultsize = 1
+            GLCDPrint ( 2, 2, bytenumber )
+
+
+            GLCDForeground = TFT_BLACK
+            GLCDfntDefaultsize = 2
+            GLCDPrint ( 2, 12, wordNumber )
+
+
+            GLCDForeground = TFT_CYAN
+            GLCDfntDefaultsize = 3
+            GLCDPrint ( 2,30, longnumber )
+
+            wait 2 s
+
+    end Repeat
+
+
+  Dim CCOUNT, BYTENUMBER, OLDFONT, OLDFONT as Byte
+  Dim longNumber as Long
+  Dim wordNumber as Word
+  GLCDCLS TFT_BLUE
+  'Set font size.
+  GLCDfntDefaultsize = 2
+  longNumber = 0 ' max value = 4294967290
+  wordNumber = 0
+  byteNumber = 0
+
+  GLCDRotate ( Portrait )
+
+  GLCDDrawString (2, 1, "GCB",TFT_WHITE)
+  GLCDDrawString (56,1,"v.98.01",TFT_YELLOW)
+  GLCDDrawString (2, 18, "DrawStr",TFT_WHITE)
+
+  GLCDDrawString ( 2, 52, "Long:" )
+  GLCDDrawString ( 2, 70, "Word:" )
+  GLCDDrawString ( 2, 88, "Byte:" )
+
+  GLCDDrawString ( 128, 18, "Asc:"+"  " )
+
+  box 0,0,GLCD_WIDTH-1, GLCD_HEIGHT-1, TFT_YELLOW
+  box GLCD_WIDTH-5, GLCD_HEIGHT-5,GLCD_WIDTH-1, GLCD_HEIGHT-1, TFT_WHITE
+
+  Circle( GLCD_WIDTH/2, GLCD_HEIGHT/2, 50, TFT_WHITE )            ;center
+  FilledCircle( GLCD_WIDTH/2, GLCD_HEIGHT/2, 25, TFT_DARKGREY  )
+
+  line 0,  GLCD_HEIGHT-1 , GLCD_WIDTH/2 +100,  (GLCD_HEIGHT /2) - 50, TFT_CYAN
+  line  0, (GLCD_HEIGHT /2) - 50, GLCD_WIDTH/2 +100, (GLCD_HEIGHT /2) - 50, TFT_CYAN
+
+  filledbox 2,GLCD_HEIGHT/2+10,42,GLCD_HEIGHT/2+50, TFT_RED
+
+  oldfont = GLCDfntDefaultsize
+  GLCDfntDefaultsize = 2
+  GLCDDrawString ( 68, GLCDDeviceHeight - 60 , "uc8230 Driver" , TFT_WHITE )
+
+  GLCDfntDefaultsize = 1
+  GLCDDrawString ( GLCD_WIDTH - 54, 2 , "Nov 2017" , TFT_WHITE )
+  GLCDDrawString ( GLCD_WIDTH - 66, 10 , "UNO Shield" , TFT_WHITE )
+
+  GLCDForeground = TFT_WHITE
+  GLCDfntDefaultsize = 2
+  GLCDDrawString ( 42 , GLCD_HEIGHT - 30 , "Great Cow BASIC" )
+
+  'Revert the font size
+  GLCDfntDefaultsize = 2
+  DO forever
+
+    GLCDPrint ( 64 , 52, longNumber)
+    GLCDPrint ( 64 , 70, pad( str(wordnumber),5))
+    GLCDPrint ( 64 , 88, pad( str(bytenumber),3))
+
+    GLCDDrawChar(99, 18, CCount )
+    Box 98,19,117,43, TFT_WHITE               'Draw a box around the Char below
+
+    GLCDPrint ( 180, 22 , pad( str(CCount),3) )
+
+    CCount++
+    if CCount = 0 then CCount = 31
+    if CCount = 128 then CCount = 192
+    longNumber = longNumber + 7
+    wordNumber = wordNumber + 3
+    byteNumber++
+
+  LOOP
