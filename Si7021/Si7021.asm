@@ -34,6 +34,8 @@
 .EQU	HUMIDITY_H=358
 .EQU	HUNDREDTHS=359
 .EQU	I2CBYTE=360
+.EQU	IWH=240
+.EQU	IWL=241
 .EQU	LSTMS=361
 .EQU	LSTMS_H=362
 .EQU	MILLIS=363
@@ -149,6 +151,8 @@
 ;********************************************************************************
 
 ;Alias variables
+#define	IW	241
+#define	IW_H	240
 #define	SIRAW	380
 #define	SIRAW_H	379
 #define	SYSSTR_0	342
@@ -230,6 +234,20 @@ BASPROGRAMSTART:
 
 ;Start of the main program
 ;#define SAMPLERATE 5     ' Flash rate in S
+;DIM  iwH as byte at 0xf0
+;DIM  iwL as byte at 0xf1
+;Dim iw as word alias iwH, iwL
+;iwH = 2
+	ldi	SysValueCopy,2
+	sts	IWH,SysValueCopy
+;iwl = 1
+	ldi	SysValueCopy,1
+	sts	IWL,SysValueCopy
+;iw = 55
+	ldi	SysValueCopy,55
+	sts	IW,SysValueCopy
+	ldi	SysValueCopy,0
+	sts	IW_H,SysValueCopy
 ;#define hi2c_BAUD_RATE 100
 ;#define hi2c_DATA PORTC.4
 ;#define hi2c_CLOCK PORTC.5
