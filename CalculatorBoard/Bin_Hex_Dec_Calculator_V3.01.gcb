@@ -1,4 +1,4 @@
-#Chip 16F1829, 32
+#Chip 16F18446, 32
 #Config CP=Off
 'Read protected
 
@@ -793,7 +793,13 @@ Sub Show_SplashScreen
     Locate 1,0
     Print " (C) MkEDS 2018 "
 
-    Wait 750 mS
+    Wait 1500 mS
+    CLS
+    Print ChipNameStr
+    Locate 1,0
+    Print " (C) MkEDS 2018 "
+
+    Wait 1500 mS
     CLS
 
 End Sub
