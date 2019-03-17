@@ -7,11 +7,20 @@
 
 #Include "Bin_Hex_Dec_Calculator_Define.h"
 #define Codeversion "3.14 15th Mar"
+#include <millis.h>       ' Include the Library
 
+    #define TimeOut 20000     ' Flash rate in mS
+
+    ' Main                    ' This loop runs over and over forever.
+    LstMs = 0
+    CurMs = 0
+    TimeOutState = false
 
 '#Define Debug
 
 'Variables used
+Dim     TimeOutState  As Bit
+Dim     CurMs, LstMs  as word  ' declare working variables
 
 Dim     Dat           As Byte
 Dim     Temp          As Byte
@@ -162,6 +171,8 @@ Sub MainLoop_Sub
 
     If Button_Value < 255 Then
 
+        TimeOutState = false
+
         If Button_Value = BtMode Then
             Check_Mode
         End If
@@ -260,6 +271,17 @@ Sub MainLoop_Sub
         Loop Until Button_Value = 255
 
     End If
+
+
+
+
+    Dim     CurMs, LstMs  as word  ' declare working variables
+    CurMs = millis()
+    if CurMs - LstMs >= TimeOut then  ' required Time has Elapsed
+      'Animate_Screen
+      LstMs = CurMs                   ' And Record Toggle Time
+    end if
+
 
 End Sub
 
@@ -819,6 +841,23 @@ Sub Show_SplashScreen
     Wait 1500 mS
     CLS
 
+End Sub
+
+Sub Animate_Screen
+    CLS
+    Dim xx, yy as Byte
+'    for xx = 0 to 15
+'
+'    next
+    repeat 16
+    print "*"
+    end Repeat
+    wait 25 ms
+    locate 1,0
+    repeat 16
+    print "*"
+    end Repeat
+    wait 25 ms
 End Sub
 
 Sub MakeLCDGraphics
