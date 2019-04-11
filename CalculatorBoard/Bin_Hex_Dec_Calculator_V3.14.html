@@ -5,15 +5,15 @@
 </head>
 <body>
 <h1>Compilation Report</h1>
-<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2019-02-14 (Windows 32 bit)</p>
+<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2019-04-02  (Windows 32 bit)</p>
 <h2>Compilation time</h2>
-<p> (Compile time: 2.039063 seconds)</p>
-<p> (Assembly time: 0.359375 seconds)</p>
-<p> (Download time: 7.257813 seconds)</p>
-<p> (Total time: 9.65625 seconds)</p>
+<p> (Compile time: 1.988281 seconds)</p>
+<p> (Assembly time: 0.34375 seconds)</p>
+<p> (Download time: 5.753906 seconds)</p>
+<p> (Total time: 8.085938 seconds)</p>
 <h2>Chip resource usage:</h2>
 <p>Chip Model: 16F1829</p>
-<p>Program Memory: 6521/8192 words (79.6%)</p>
+<p>Program Memory: 6511/8192 words (79.48%)</p>
 <p>RAM: 157/1024 bytes (15.33%)</p>
 <h2>RAM Allocation</h2>
 <table border="1">
@@ -22,27 +22,27 @@
 <table border="1">
 <tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Page</th><th>Outgoing calls</th></tr>
 <tr><td>Main</td><td>61</td><td>33</td><td>1</td><td>INITRANDOM(1), MSCTR_INT_HDLR(1), INITLCD(29), MAINLOOP_SUBL(1), MAINLOOP_SUB(1), SETPORTDIR(329), STARTUP(1), INITSYS(103)</td></tr>
-<tr><td>STARTUP</td><td>64</td><td>175</td><td>2</td><td>SHOW_VALUESSUBL(1), CLS(1), SHOW_VALUESSUB(1), EPWRITE(1), SHOW_SPLASHSCREEN(1), MAKELCDGRAPHICS(1), SYSEPREAD(3)</td></tr>
-<tr><td>MAINLOOP_SUB</td><td>92</td><td>316</td><td>2</td><td>SYSCOMPEQUAL16(1), SYSCOMPLESSTHAN16(4), Delay_MS(1), MILLIS(1), PRINT(3), LOCATE(3), SHOW_VALUESSUB(5), BUILD_VALUE(1), CHECK_MODULO(1), CHECK_AN(1), CHECK_EN(1), CHECK_OR(1), CHECK_MODE(1), GET_BUTTONS(2)</td></tr>
+<tr><td>STARTUP</td><td>64</td><td>176</td><td>2</td><td>SHOW_VALUESSUBL(1), CLS(1), SHOW_VALUESSUB(1), EPWRITE(1), SHOW_SPLASHSCREEN(1), MAKELCDGRAPHICS(1), SYSEPREAD(3)</td></tr>
+<tr><td>MAINLOOP_SUB</td><td>92</td><td>313</td><td>2</td><td>SYSCOMPEQUAL16(1), SYSCOMPLESSTHAN16(4), Delay_MS(1), MILLIS(1), PRINT(3), LOCATE(3), SHOW_VALUESSUB(5), BUILD_VALUE(1), CHECK_MODULO(1), CHECK_AN(1), CHECK_EN(1), CHECK_OR(1), CHECK_MODE(1), GET_BUTTONS(2)</td></tr>
 <tr><td>MAINLOOP_SUBL</td><td>77</td><td>341</td><td>1</td><td>SYSCOMPEQUAL32(1), SYSCOMPLESSTHAN32(3), Delay_MS(1), PRINT(3), LOCATE(3), SHOW_VALUESSUBL(5), BUILD_VALUEL(1), CHECK_MODULO(1), CHECK_AN(1), CHECK_EN(1), CHECK_OR(1), CHECK_MODE(1), GET_BUTTONS(2)</td></tr>
-<tr><td>GET_BUTTONS</td><td>46</td><td>114</td><td>3</td><td>DECODE_ROW3(1), DECODE_ROW2(1), DECODE_ROW1(1)</td></tr>
+<tr><td>GET_BUTTONS</td><td>46</td><td>120</td><td>2</td><td>DECODE_ROW3(1), DECODE_ROW2(1), DECODE_ROW1(1)</td></tr>
 <tr><td>DECODE_ROW1</td><td>19</td><td>56</td><td>3</td><td></td></tr>
 <tr><td>DECODE_ROW2</td><td>19</td><td>57</td><td>3</td><td></td></tr>
 <tr><td>DECODE_ROW3</td><td>19</td><td>57</td><td>3</td><td></td></tr>
 <tr><td>BUILD_VALUE</td><td>43</td><td>157</td><td>3</td><td>SYSCOMPLESSTHAN16(4), SYSCOMPEQUAL16(4), DO_RAND(1), DO_NOT(1), DO_NUMBER(1), DO_MATHS(1)</td></tr>
-<tr><td>BUILD_VALUEL</td><td>43</td><td>192</td><td>2</td><td>SYSCOMPLESSTHAN32(1), SYSCOMPLESSTHAN16(3), SYSCOMPEQUAL16(4), DO_RANDL(1), DO_NOTL(1), DO_NUMBERL(1), DO_MATHS(1)</td></tr>
+<tr><td>BUILD_VALUEL</td><td>43</td><td>190</td><td>2</td><td>SYSCOMPLESSTHAN32(1), SYSCOMPLESSTHAN16(3), SYSCOMPEQUAL16(4), DO_RANDL(1), DO_NOTL(1), DO_NUMBERL(1), DO_MATHS(1)</td></tr>
 <tr><td>GET_ZEROVALUE</td><td>8</td><td>24</td><td>4</td><td></td></tr>
 <tr><td>SHOW_VALUESSUB</td><td>44</td><td>272</td><td>2</td><td>SYSCOMPLESSTHAN16(5), Delay_MS(1), PRINT(1), SHOW_BUTTON(1), SHOW_MODE(1), LCDHEX(2), PRINT(6), PRINT(16), LOCATE(3)</td></tr>
 <tr><td>SHOW_VALUESSUBL</td><td>46</td><td>363</td><td>1</td><td>SYSCOMPLESSTHAN16(1), SYSCOMPLESSTHAN32(9), Delay_MS(1), PRINT(1), SHOW_BUTTON(1), SHOW_MODE(1), LCDHEX(4), PRINT(11), LOCATE(2)</td></tr>
-<tr><td>SHOW_SPLASHSCREEN</td><td>59</td><td>308</td><td>2</td><td>Delay_MS(4), PRINT(1), CLS(3), EPWRITE(2), PRINT(16), LOCATE(10), GET_BUTTONS(1)</td></tr>
-<tr><td>MAKELCDGRAPHICS</td><td>27</td><td>79</td><td>2</td><td>LCDCREATECHAR(3)</td></tr>
+<tr><td>SHOW_SPLASHSCREEN</td><td>58</td><td>297</td><td>2</td><td>Delay_MS(4), PRINT(1), CLS(3), EPWRITE(2), PRINT(15), LOCATE(10), GET_BUTTONS(1)</td></tr>
+<tr><td>MAKELCDGRAPHICS</td><td>27</td><td>76</td><td>3</td><td>LCDCREATECHAR(3)</td></tr>
 <tr><td>SHOW_MODE</td><td>20</td><td>86</td><td>3</td><td>PRINT(5), LOCATE(4)</td></tr>
 <tr><td>SHOW_BUTTON</td><td>69</td><td>423</td><td>1</td><td>LCDWRITECHAR(3), PRINT(27), LOCATE(2)</td></tr>
 <tr><td>CHECK_MODE</td><td>34</td><td>92</td><td>3</td><td>Delay_MS(3), EPWRITE(1), SYSEPREAD(1), GET_BUTTONS(3)</td></tr>
-<tr><td>CHECK_OR</td><td>18</td><td>44</td><td>3</td><td>Delay_MS(3), GET_BUTTONS(2)</td></tr>
-<tr><td>CHECK_EN</td><td>18</td><td>44</td><td>3</td><td>Delay_MS(3), GET_BUTTONS(2)</td></tr>
-<tr><td>CHECK_AN</td><td>18</td><td>42</td><td>4</td><td>Delay_MS(3), GET_BUTTONS(2)</td></tr>
-<tr><td>CHECK_MODULO</td><td>18</td><td>42</td><td>4</td><td>Delay_MS(3), GET_BUTTONS(2)</td></tr>
+<tr><td>CHECK_OR</td><td>18</td><td>42</td><td>3</td><td>Delay_MS(3), GET_BUTTONS(2)</td></tr>
+<tr><td>CHECK_EN</td><td>18</td><td>42</td><td>3</td><td>Delay_MS(3), GET_BUTTONS(2)</td></tr>
+<tr><td>CHECK_AN</td><td>18</td><td>42</td><td>3</td><td>Delay_MS(3), GET_BUTTONS(2)</td></tr>
+<tr><td>CHECK_MODULO</td><td>18</td><td>46</td><td>4</td><td>Delay_MS(3), GET_BUTTONS(2)</td></tr>
 <tr><td>DO_MATHS</td><td>91</td><td>449</td><td>1</td><td>SYSMULTSUB16(1), SYSDIVSUB16(2), SYSCOMPEQUAL16(1), Delay_MS(4), SYSCOMPLESSTHAN16(7), GET_BUTTONS(4), SHOW_VALUESSUB(7), DO_MATHSL(1)</td></tr>
 <tr><td>DO_NOT</td><td>31</td><td>87</td><td>3</td><td>SYSCOMPEQUAL16(3), SHOW_BUTTON(1), SHOW_MODE(1), DO_NOTL(1)</td></tr>
 <tr><td>DO_NUMBER</td><td>30</td><td>143</td><td>3</td><td>SYSMULTSUB16(4), SYSCOMPEQUAL16(2), SYSCOMPLESSTHAN16(2), GET_ZEROVALUE(1), DO_NUMBERL(1)</td></tr>
@@ -50,15 +50,15 @@
 <tr><td>DO_MATHSL</td><td>38</td><td>285</td><td>2</td><td>SYSMULTSUB32(1), SYSDIVSUB32(2), SYSCOMPEQUAL32(1), Delay_MS(1), DO_MATHS(1)</td></tr>
 <tr><td>DO_NOTL</td><td>31</td><td>126</td><td>3</td><td>SYSCOMPEQUAL32(3), SHOW_BUTTON(1), SHOW_MODE(1), DO_NOT(1)</td></tr>
 <tr><td>DO_NUMBERL</td><td>28</td><td>188</td><td>2</td><td>SYSMULTSUB32(4), SYSCOMPEQUAL16(2), SYSCOMPLESSTHAN16(1), GET_ZEROVALUE(1), DO_NUMBER(1)</td></tr>
-<tr><td>DO_RANDL</td><td>38</td><td>191</td><td>1</td><td>SYSCOMPLESSTHAN32(1), SHOW_VALUESSUBL(1), RANDOM(5), RANDOMIZE(1), DO_RAND(1)</td></tr>
+<tr><td>DO_RANDL</td><td>38</td><td>193</td><td>2</td><td>SYSCOMPLESSTHAN32(1), SHOW_VALUESSUBL(1), RANDOM(5), RANDOMIZE(1), DO_RAND(1)</td></tr>
 <tr><td>SETPORTDIR</td><td>12</td><td>15</td><td>1</td><td></td></tr>
 <tr><td>MSCTR_INT_HDLR</td><td>4</td><td>10</td><td>4</td><td></td></tr>
 <tr><td>INIT_MSCTR_INT</td><td>110</td><td>20</td><td>1</td><td>INITTIMER0(1), MILLIS(1)</td></tr>
-<tr><td>MILLIS</td><td>4</td><td>21</td><td>3</td><td></td></tr>
-<tr><td>EPWRITE</td><td>55</td><td>25</td><td>1</td><td></td></tr>
+<tr><td>MILLIS</td><td>4</td><td>21</td><td>4</td><td></td></tr>
+<tr><td>EPWRITE</td><td>55</td><td>25</td><td>4</td><td></td></tr>
 <tr><td>SYSEPREAD</td><td>32</td><td>16</td><td>4</td><td></td></tr>
 <tr><td>LOCATE</td><td>7</td><td>30</td><td>4</td><td>SYSMULTSUB(1), Delay_10US(1), LCDNORMALWRITEBYTE(1)</td></tr>
-<tr><td>CLS</td><td>5</td><td>20</td><td>4</td><td>Delay_10US(1), Delay_MS(1), LCDNORMALWRITEBYTE(2)</td></tr>
+<tr><td>CLS</td><td>5</td><td>22</td><td>4</td><td>Delay_10US(1), Delay_MS(1), LCDNORMALWRITEBYTE(2)</td></tr>
 <tr><td>INITLCD</td><td>273</td><td>123</td><td>1</td><td>Delay_MS(4), CLS(1), LCDNORMALWRITEBYTE(3), LCDREADY(1)</td></tr>
 <tr><td>PRINT</td><td>8</td><td>39</td><td>3</td><td>LCDNORMALWRITEBYTE(1)</td></tr>
 <tr><td>PRINT</td><td>13</td><td>68</td><td>3</td><td>SYSDIVSUB(2), SYSCOMPLESSTHAN(2), LCDNORMALWRITEBYTE(3)</td></tr>
@@ -66,7 +66,7 @@
 <tr><td>PRINT</td><td>12</td><td>83</td><td>3</td><td>SYSDIVSUB32(1), SYSCOMPEQUAL32(1), LCDNORMALWRITEBYTE(1)</td></tr>
 <tr><td>LCDHEX</td><td>18</td><td>63</td><td>3</td><td>SYSDIVSUB(1), LCDWRITECHAR(3)</td></tr>
 <tr><td>LCDWRITECHAR</td><td>2</td><td>9</td><td>4</td><td>LCDNORMALWRITEBYTE(1)</td></tr>
-<tr><td>LCDREADY</td><td>46</td><td>8</td><td>4</td><td>Delay_MS(1)</td></tr>
+<tr><td>LCDREADY</td><td>46</td><td>10</td><td>4</td><td>Delay_MS(1)</td></tr>
 <tr><td>LCDNORMALWRITEBYTE</td><td>285</td><td>108</td><td>3</td><td></td></tr>
 <tr><td>LCDCREATECHAR</td><td>32</td><td>54</td><td>3</td><td>SYSMULTSUB(1), Delay_10US(3), LCDNORMALWRITEBYTE(3)</td></tr>
 <tr><td>INITTIMER0</td><td>70</td><td>20</td><td>4</td><td></td></tr>
@@ -86,8 +86,8 @@
 <tr><td>RANDOM</td><td>8</td><td>38</td><td>4</td><td></td></tr>
 <tr><td>RANDOMIZE</td><td>5</td><td>21</td><td>4</td><td>SYSCOMPEQUAL16(1)</td></tr>
 <tr><td>Delay_10US</td><td>0</td><td>8</td><td>4</td><td></td></tr>
-<tr><td>Delay_MS</td><td>0</td><td>14</td><td>4</td><td></td></tr>
-<tr><td>SysStringTables</td><td>0</td><td>221</td><td>2</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>14</td><td>3</td><td></td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>217</td><td>1</td><td></td></tr>
 </table>
 </body>
 </html>

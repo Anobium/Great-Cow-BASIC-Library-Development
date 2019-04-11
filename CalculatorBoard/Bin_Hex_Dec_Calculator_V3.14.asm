@@ -1,4 +1,4 @@
-;Program compiled by Great Cow BASIC (0.98.<<>> 2019-02-14 (Windows 32 bit))
+;Program compiled by Great Cow BASIC (0.98.<<>> 2019-04-02  (Windows 32 bit))
 ;Need help? See the GCBASIC forums at http://sourceforge.net/projects/gcbasic/forums,
 ;check the documentation or email w_cholmondeley at users dot sourceforge dot net.
 
@@ -971,311 +971,6 @@ ENDIF139
 
 ;********************************************************************************
 
-DO_RANDL
-;If Bit_Mode < Bit_32 Then
-	movlw	2
-	subwf	BIT_MODE,W
-	btfsc	STATUS, C
-	goto	ENDIF218
-;Do_Rand
-	pagesel	DO_RAND
-	call	DO_RAND
-	pagesel	$
-;Exit Sub
-	return
-;End If
-ENDIF218
-;If RandomSeed = 0 Then
-	banksel	RANDOMSEED
-	movf	RANDOMSEED,F
-	btfss	STATUS, Z
-	goto	ENDIF219
-;Randomize RSeed
-	movf	RSEED,W
-	movwf	RANDOMTEMP
-	clrf	RANDOMTEMP_H
-	banksel	STATUS
-	pagesel	RANDOMIZE
-	call	RANDOMIZE
-	pagesel	$
-;Let RandomSeed = 1
-	movlw	1
-	banksel	RANDOMSEED
-	movwf	RANDOMSEED
-;End If
-ENDIF219
-;Let ResultL = 0
-	clrf	RESULTL
-	clrf	RESULTL_H
-	clrf	RESULTL_U
-	clrf	RESULTL_E
-;If TenThou = 1 Then
-	decf	TENTHOU,W
-	btfss	STATUS, Z
-	goto	ELSE220_1
-;Do
-SysDoLoop_S6
-;Let RandB1 = Random
-	banksel	STATUS
-	pagesel	FN_RANDOM
-	call	FN_RANDOM
-	pagesel	$
-	banksel	RANDOM
-	movf	RANDOM,W
-	banksel	RANDB1
-	movwf	RANDB1
-;Let RandB2 = Random
-	pagesel	FN_RANDOM
-	call	FN_RANDOM
-	pagesel	$
-	banksel	RANDOM
-	movf	RANDOM,W
-	banksel	RANDB2
-	movwf	RANDB2
-;Let RandB3 = Random
-	pagesel	FN_RANDOM
-	call	FN_RANDOM
-	pagesel	$
-	banksel	RANDOM
-	movf	RANDOM,W
-	movwf	RANDB3
-;Let RandB4 = Random
-	banksel	STATUS
-	pagesel	FN_RANDOM
-	call	FN_RANDOM
-	pagesel	$
-	banksel	RANDOM
-	movf	RANDOM,W
-	movwf	RANDB4
-;Let ResultL.0  = RandB1.0
-	bcf	RESULTL,0
-	banksel	RANDB1
-	btfss	RANDB1,0
-	goto	ENDIF221
-	banksel	RESULTL
-	bsf	RESULTL,0
-ENDIF221
-;Let ResultL.1  = RandB2.1
-	banksel	RESULTL
-	bcf	RESULTL,1
-	banksel	RANDB2
-	btfss	RANDB2,1
-	goto	ENDIF222
-	banksel	RESULTL
-	bsf	RESULTL,1
-ENDIF222
-;Let ResultL.2  = RandB3.2
-	banksel	RESULTL
-	bcf	RESULTL,2
-	btfsc	RANDB3,2
-	bsf	RESULTL,2
-ENDIF223
-;Let ResultL.3  = RandB4.3
-	bcf	RESULTL,3
-	btfsc	RANDB4,3
-	bsf	RESULTL,3
-ENDIF224
-;Let ResultL.4  = RandB1.2
-	bcf	RESULTL,4
-	banksel	RANDB1
-	btfss	RANDB1,2
-	goto	ENDIF225
-	banksel	RESULTL
-	bsf	RESULTL,4
-ENDIF225
-;Let ResultL.5  = RandB2.3
-	banksel	RESULTL
-	bcf	RESULTL,5
-	banksel	RANDB2
-	btfss	RANDB2,3
-	goto	ENDIF226
-	banksel	RESULTL
-	bsf	RESULTL,5
-ENDIF226
-;Let ResultL.6  = RandB3.4
-	banksel	RESULTL
-	bcf	RESULTL,6
-	btfsc	RANDB3,4
-	bsf	RESULTL,6
-ENDIF227
-;Let ResultL.7  = RandB4.5
-	bcf	RESULTL,7
-	btfsc	RANDB4,5
-	bsf	RESULTL,7
-ENDIF228
-;Let ResultL.8  = RandB1.3
-	bcf	RESULTL_H,0
-	banksel	RANDB1
-	btfss	RANDB1,3
-	goto	ENDIF229
-	banksel	RESULTL_H
-	bsf	RESULTL_H,0
-ENDIF229
-;Let ResultL.9  = RandB2.4
-	banksel	RESULTL_H
-	bcf	RESULTL_H,1
-	banksel	RANDB2
-	btfss	RANDB2,4
-	goto	ENDIF230
-	banksel	RESULTL_H
-	bsf	RESULTL_H,1
-ENDIF230
-;Let ResultL.10 = RandB3.5
-	banksel	RESULTL_H
-	bcf	RESULTL_H,2
-	btfsc	RANDB3,5
-	bsf	RESULTL_H,2
-ENDIF231
-;Let ResultL.11 = RandB4.6
-	bcf	RESULTL_H,3
-	btfsc	RANDB4,6
-	bsf	RESULTL_H,3
-ENDIF232
-;Let ResultL.12 = RandB1.4
-	bcf	RESULTL_H,4
-	banksel	RANDB1
-	btfss	RANDB1,4
-	goto	ENDIF233
-	banksel	RESULTL_H
-	bsf	RESULTL_H,4
-ENDIF233
-;Let ResultL.13 = RandB2.5
-	banksel	RESULTL_H
-	bcf	RESULTL_H,5
-	banksel	RANDB2
-	btfss	RANDB2,5
-	goto	ENDIF234
-	banksel	RESULTL_H
-	bsf	RESULTL_H,5
-ENDIF234
-;Let ResultL.14 = 0
-	banksel	RESULTL_H
-	bcf	RESULTL_H,6
-;Let ResultL.15 = 0
-	bcf	RESULTL_H,7
-;Loop until ResultL < 9999
-	movf	resultl,W
-	movwf	SysLONGTempA
-	movf	resultl_H,W
-	movwf	SysLONGTempA_H
-	movf	resultl_U,W
-	movwf	SysLONGTempA_U
-	movf	resultl_E,W
-	movwf	SysLONGTempA_E
-	movlw	15
-	movwf	SysLONGTempB
-	movlw	39
-	movwf	SysLONGTempB_H
-	clrf	SysLONGTempB_U
-	clrf	SysLONGTempB_E
-	banksel	STATUS
-	pagesel	SysCompLessThan32
-	call	SysCompLessThan32
-	pagesel	$
-	btfss	SysByteTempX,0
-	goto	SysDoLoop_S6
-SysDoLoop_E6
-;Let ResultL = ResultL + 1 'Prevent zero being returned
-	banksel	RESULTL
-	incf	RESULTL,F
-	btfsc	STATUS,Z
-	incf	RESULTL_H,F
-	btfsc	STATUS,Z
-	incf	RESULTL_U,F
-	btfsc	STATUS,Z
-	incf	RESULTL_E,F
-;Else
-	goto	ENDIF220
-ELSE220_1
-;Let ResultL = Random
-	banksel	STATUS
-	pagesel	FN_RANDOM
-	call	FN_RANDOM
-	pagesel	$
-	banksel	RANDOM
-	movf	RANDOM,W
-	movwf	RESULTL
-	clrf	RESULTL_H
-	clrf	RESULTL_U
-	clrf	RESULTL_E
-;End If
-ENDIF220
-;Show_ValuesSubL(ResultL)
-	movf	RESULTL,W
-	banksel	D_VALUEL
-	movwf	D_VALUEL
-	banksel	RESULTL_H
-	movf	RESULTL_H,W
-	banksel	D_VALUEL_H
-	movwf	D_VALUEL_H
-	banksel	RESULTL_U
-	movf	RESULTL_U,W
-	banksel	D_VALUEL_U
-	movwf	D_VALUEL_U
-	banksel	RESULTL_E
-	movf	RESULTL_E,W
-	banksel	D_VALUEL_E
-	movwf	D_VALUEL_E
-	call	SHOW_VALUESSUBL
-;Let Op = 2
-	movlw	2
-	movwf	OP
-	return
-
-;********************************************************************************
-
-EPWRITE
-;Variable alias
-;Dim EEAddress As Word Alias EEADRH, EEADR
-;Dim EEDataValue Alias EEDATL_REF
-;Disable interrupt
-;IntOff
-	banksel	SYSINTSTATESAVE0
-	bcf	SYSINTSTATESAVE0,1
-	btfsc	INTCON,GIE
-	bsf	SYSINTSTATESAVE0,1
-ENDIF278
-	bcf	INTCON,GIE
-;Select data memory
-;SET EEPGD OFF
-	banksel	EECON1
-	bcf	EECON1,EEPGD
-;Set CFGS OFF
-	bcf	EECON1,CFGS
-;Start write
-;SET WREN ON
-	bsf	EECON1,WREN
-;EECON2 = 0x55
-	movlw	85
-	movwf	EECON2
-;EECON2 = 0xAA
-	movlw	170
-	movwf	EECON2
-;SET WR ON
-	bsf	EECON1,WR
-;SET WREN OFF
-	bcf	EECON1,WREN
-;Wait for write to complete
-;WAIT WHILE WR ON
-SysWaitLoop1
-	btfsc	EECON1,WR
-	goto	SysWaitLoop1
-;SET WREN OFF
-	bcf	EECON1,WREN
-;Restore interrupt
-;IntOn
-	banksel	SYSINTSTATESAVE0
-	btfss	SYSINTSTATESAVE0,1
-	bcf	INTCON,GIE
-ENDIF279
-	btfsc	SYSINTSTATESAVE0,1
-	bsf	INTCON,GIE
-ENDIF280
-	banksel	STATUS
-	return
-
-;********************************************************************************
-
 INITLCD
 ;Initialization routines based upon code examples
 ;in HD44780 datasheet
@@ -1476,10 +1171,10 @@ DelayUS11
 INITRANDOM
 ;Dim RandomSeed As Word
 ;RandomSeed = RandStart
-	movlw	40
+	movlw	134
 	banksel	RANDOMSEED
 	movwf	RANDOMSEED
-	movlw	212
+	movlw	121
 	movwf	RANDOMSEED_H
 	banksel	STATUS
 	return
@@ -2106,10 +1801,10 @@ SysSelect5Case2
 	btfss	STATUS, Z
 	goto	SysSelect5Case3
 ;Print "1"
-	movlw	low StringTable23
+	movlw	low StringTable22
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable23) | 128
+	movlw	(high StringTable22) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2123,10 +1818,10 @@ SysSelect5Case3
 	btfss	STATUS, Z
 	goto	SysSelect5Case4
 ;Print "2"
-	movlw	low StringTable24
+	movlw	low StringTable23
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable24) | 128
+	movlw	(high StringTable23) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2140,10 +1835,10 @@ SysSelect5Case4
 	btfss	STATUS, Z
 	goto	SysSelect5Case5
 ;Print "3"
-	movlw	low StringTable25
+	movlw	low StringTable24
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable25) | 128
+	movlw	(high StringTable24) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2157,10 +1852,10 @@ SysSelect5Case5
 	btfss	STATUS, Z
 	goto	SysSelect5Case6
 ;Print "4"
-	movlw	low StringTable26
+	movlw	low StringTable25
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable26) | 128
+	movlw	(high StringTable25) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2174,10 +1869,10 @@ SysSelect5Case6
 	btfss	STATUS, Z
 	goto	SysSelect5Case7
 ;Print "5"
-	movlw	low StringTable27
+	movlw	low StringTable26
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable27) | 128
+	movlw	(high StringTable26) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2191,10 +1886,10 @@ SysSelect5Case7
 	btfss	STATUS, Z
 	goto	SysSelect5Case8
 ;Print "6"
-	movlw	low StringTable28
+	movlw	low StringTable27
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable28) | 128
+	movlw	(high StringTable27) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2208,10 +1903,10 @@ SysSelect5Case8
 	btfss	STATUS, Z
 	goto	SysSelect5Case9
 ;Print "7"
-	movlw	low StringTable29
+	movlw	low StringTable28
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable29) | 128
+	movlw	(high StringTable28) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2225,10 +1920,10 @@ SysSelect5Case9
 	btfss	STATUS, Z
 	goto	SysSelect5Case10
 ;Print "8"
-	movlw	low StringTable30
+	movlw	low StringTable29
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable30) | 128
+	movlw	(high StringTable29) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2242,10 +1937,10 @@ SysSelect5Case10
 	btfss	STATUS, Z
 	goto	SysSelect5Case11
 ;Print "9"
-	movlw	low StringTable31
+	movlw	low StringTable30
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable31) | 128
+	movlw	(high StringTable30) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2259,10 +1954,10 @@ SysSelect5Case11
 	btfss	STATUS, Z
 	goto	SysSelect5Case12
 ;Print "A"
-	movlw	low StringTable32
+	movlw	low StringTable31
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable32) | 128
+	movlw	(high StringTable31) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2276,10 +1971,10 @@ SysSelect5Case12
 	btfss	STATUS, Z
 	goto	SysSelect5Case13
 ;Print "B"
-	movlw	low StringTable33
+	movlw	low StringTable32
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable33) | 128
+	movlw	(high StringTable32) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2293,10 +1988,10 @@ SysSelect5Case13
 	btfss	STATUS, Z
 	goto	SysSelect5Case14
 ;Print "C"
-	movlw	low StringTable34
+	movlw	low StringTable33
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable34) | 128
+	movlw	(high StringTable33) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2310,10 +2005,10 @@ SysSelect5Case14
 	btfss	STATUS, Z
 	goto	SysSelect5Case15
 ;Print "D"
-	movlw	low StringTable35
+	movlw	low StringTable34
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable35) | 128
+	movlw	(high StringTable34) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2327,10 +2022,10 @@ SysSelect5Case15
 	btfss	STATUS, Z
 	goto	SysSelect5Case16
 ;Print "E"
-	movlw	low StringTable36
+	movlw	low StringTable35
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable36) | 128
+	movlw	(high StringTable35) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2344,10 +2039,10 @@ SysSelect5Case16
 	btfss	STATUS, Z
 	goto	SysSelect5Case17
 ;Print "F"
-	movlw	low StringTable37
+	movlw	low StringTable36
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable37) | 128
+	movlw	(high StringTable36) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2361,10 +2056,10 @@ SysSelect5Case17
 	btfss	STATUS, Z
 	goto	SysSelect5Case18
 ;Print "="
-	movlw	low StringTable38
+	movlw	low StringTable37
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable38) | 128
+	movlw	(high StringTable37) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2378,10 +2073,10 @@ SysSelect5Case18
 	btfss	STATUS, Z
 	goto	SysSelect5Case19
 ;Print "+"
-	movlw	low StringTable39
+	movlw	low StringTable38
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable39) | 128
+	movlw	(high StringTable38) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2395,10 +2090,10 @@ SysSelect5Case19
 	btfss	STATUS, Z
 	goto	SysSelect5Case20
 ;Print "-"
-	movlw	low StringTable40
+	movlw	low StringTable39
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable40) | 128
+	movlw	(high StringTable39) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2412,10 +2107,10 @@ SysSelect5Case20
 	btfss	STATUS, Z
 	goto	SysSelect5Case21
 ;Print "/"
-	movlw	low StringTable41
+	movlw	low StringTable40
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable41) | 128
+	movlw	(high StringTable40) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2429,10 +2124,10 @@ SysSelect5Case21
 	btfss	STATUS, Z
 	goto	SysSelect5Case22
 ;Print "x"
-	movlw	low StringTable42
+	movlw	low StringTable41
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable42) | 128
+	movlw	(high StringTable41) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2446,10 +2141,10 @@ SysSelect5Case22
 	btfss	STATUS, Z
 	goto	SysSelect5Case23
 ;Print "&"
-	movlw	low StringTable43
+	movlw	low StringTable42
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable43) | 128
+	movlw	(high StringTable42) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2463,10 +2158,10 @@ SysSelect5Case23
 	btfss	STATUS, Z
 	goto	SysSelect5Case24
 ;Print "%"
-	movlw	low StringTable44
+	movlw	low StringTable43
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable44) | 128
+	movlw	(high StringTable43) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2507,10 +2202,10 @@ SysSelect5Case26
 	btfss	STATUS, Z
 	goto	SysSelect5Case27
 ;Print "m"
-	movlw	low StringTable45
+	movlw	low StringTable44
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable45) | 128
+	movlw	(high StringTable44) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2524,10 +2219,10 @@ SysSelect5Case27
 	btfss	STATUS, Z
 	goto	SysSelect5Case28
 ;Print "c"
-	movlw	low StringTable46
+	movlw	low StringTable45
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable46) | 128
+	movlw	(high StringTable45) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -2554,10 +2249,10 @@ SysSelect5Case29
 	btfss	STATUS, Z
 	goto	SysSelectEnd5
 ;Print "R"
-	movlw	low StringTable47
+	movlw	low StringTable46
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable47) | 128
+	movlw	(high StringTable46) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -3007,6 +2702,368 @@ ENDIF107
 
 ;********************************************************************************
 
+SysStringTables
+	movf	SysStringA_H,W
+	movwf	PCLATH
+	movf	SysStringA,W
+	incf	SysStringA,F
+	btfsc	STATUS,Z
+	incf	SysStringA_H,F
+	movwf	PCL
+
+StringTable2
+	retlw	13
+	retlw	51	;3
+	retlw	46	;.
+	retlw	49	;1
+	retlw	52	;4
+	retlw	32	; 
+	retlw	49	;1
+	retlw	53	;5
+	retlw	116	;t
+	retlw	104	;h
+	retlw	32	; 
+	retlw	77	;M
+	retlw	97	;a
+	retlw	114	;r
+
+
+StringTable3
+	retlw	3
+	retlw	65	;A
+	retlw	110	;n
+	retlw	115	;s
+
+
+StringTable4
+	retlw	1
+	retlw	32	; 
+
+
+StringTable5
+	retlw	3
+	retlw	32	; 
+	retlw	32	; 
+	retlw	32	; 
+
+
+StringTable6
+	retlw	1
+	retlw	104	;h
+
+
+StringTable7
+	retlw	1
+	retlw	100	;d
+
+
+StringTable8
+	retlw	1
+	retlw	48	;0
+
+
+StringTable9
+	retlw	1
+	retlw	42	;*
+
+
+StringTable10
+	retlw	1
+	retlw	94	;^
+
+
+StringTable11
+	retlw	1
+	retlw	97	;a
+
+
+StringTable12
+	retlw	15
+	retlw	49	;1
+	retlw	54	;6
+	retlw	98	;b
+	retlw	105	;i
+	retlw	116	;t
+	retlw	32	; 
+	retlw	66	;B
+	retlw	105	;i
+	retlw	110	;n
+	retlw	32	; 
+	retlw	45	;-
+	retlw	32	; 
+	retlw	68	;D
+	retlw	101	;e
+	retlw	99	;c
+
+
+StringTable13
+	retlw	15
+	retlw	32	; 
+	retlw	51	;3
+	retlw	50	;2
+	retlw	98	;b
+	retlw	105	;i
+	retlw	116	;t
+	retlw	32	; 
+	retlw	32	; 
+	retlw	68	;D
+	retlw	101	;e
+	retlw	99	;c
+	retlw	105	;i
+	retlw	109	;m
+	retlw	97	;a
+	retlw	108	;l
+
+
+StringTable14
+	retlw	15
+	retlw	32	; 
+	retlw	45	;-
+	retlw	32	; 
+	retlw	72	;H
+	retlw	101	;e
+	retlw	120	;x
+	retlw	97	;a
+	retlw	100	;d
+	retlw	101	;e
+	retlw	99	;c
+	retlw	105	;i
+	retlw	109	;m
+	retlw	97	;a
+	retlw	108	;l
+	retlw	32	; 
+
+
+StringTable15
+	retlw	16
+	retlw	32	; 
+	retlw	42	;*
+	retlw	73	;I
+	retlw	110	;n
+	retlw	116	;t
+	retlw	101	;e
+	retlw	103	;g
+	retlw	101	;e
+	retlw	114	;r
+	retlw	32	; 
+	retlw	111	;o
+	retlw	110	;n
+	retlw	108	;l
+	retlw	121	;y
+	retlw	42	;*
+	retlw	32	; 
+
+
+StringTable16
+	retlw	16
+	retlw	32	; 
+	retlw	32	; 
+	retlw	32	; 
+	retlw	67	;C
+	retlw	97	;a
+	retlw	108	;l
+	retlw	99	;c
+	retlw	117	;u
+	retlw	108	;l
+	retlw	97	;a
+	retlw	116	;t
+	retlw	111	;o
+	retlw	114	;r
+	retlw	32	; 
+	retlw	32	; 
+	retlw	32	; 
+
+
+StringTable17
+	retlw	3
+	retlw	118	;v
+	retlw	58	;:
+	retlw	32	; 
+
+
+StringTable18
+	retlw	1
+	retlw	44	;,
+
+
+StringTable19
+	retlw	3
+	retlw	77	;M
+	retlw	104	;h
+	retlw	122	;z
+
+
+StringTable20
+	retlw	16
+	retlw	32	; 
+	retlw	40	;(
+	retlw	67	;C
+	retlw	41	;)
+	retlw	32	; 
+	retlw	77	;M
+	retlw	107	;k
+	retlw	69	;E
+	retlw	68	;D
+	retlw	83	;S
+	retlw	32	; 
+	retlw	50	;2
+	retlw	48	;0
+	retlw	49	;1
+	retlw	56	;8
+	retlw	32	; 
+
+
+StringTable21
+	retlw	1
+	retlw	98	;b
+
+
+StringTable22
+	retlw	1
+	retlw	49	;1
+
+
+StringTable23
+	retlw	1
+	retlw	50	;2
+
+
+StringTable24
+	retlw	1
+	retlw	51	;3
+
+
+StringTable25
+	retlw	1
+	retlw	52	;4
+
+
+StringTable26
+	retlw	1
+	retlw	53	;5
+
+
+StringTable27
+	retlw	1
+	retlw	54	;6
+
+
+StringTable28
+	retlw	1
+	retlw	55	;7
+
+
+StringTable29
+	retlw	1
+	retlw	56	;8
+
+
+StringTable30
+	retlw	1
+	retlw	57	;9
+
+
+StringTable31
+	retlw	1
+	retlw	65	;A
+
+
+StringTable32
+	retlw	1
+	retlw	66	;B
+
+
+StringTable33
+	retlw	1
+	retlw	67	;C
+
+
+StringTable34
+	retlw	1
+	retlw	68	;D
+
+
+StringTable35
+	retlw	1
+	retlw	69	;E
+
+
+StringTable36
+	retlw	1
+	retlw	70	;F
+
+
+StringTable37
+	retlw	1
+	retlw	61	; (equals)
+
+
+StringTable38
+	retlw	1
+	retlw	43	;+
+
+
+StringTable39
+	retlw	1
+	retlw	45	;-
+
+
+StringTable40
+	retlw	1
+	retlw	47	;/
+
+
+StringTable41
+	retlw	1
+	retlw	120	;x
+
+
+StringTable42
+	retlw	1
+	retlw	38	;&
+
+
+StringTable43
+	retlw	1
+	retlw	37	;%
+
+
+StringTable44
+	retlw	1
+	retlw	109	;m
+
+
+StringTable45
+	retlw	1
+	retlw	99	;c
+
+
+StringTable46
+	retlw	1
+	retlw	82	;R
+
+
+StringTable47
+	retlw	4
+	retlw	49	;1
+	retlw	46	;.
+	retlw	48	;0
+	retlw	48	;0
+
+
+StringTable89
+	retlw	7
+	retlw	49	;1
+	retlw	54	;6
+	retlw	70	;F
+	retlw	49	;1
+	retlw	56	;8
+	retlw	50	;2
+	retlw	57	;9
+
+
+;********************************************************************************
+
 ;Start of program memory page 1
 	ORG	2048
 BUILD_VALUEL
@@ -3250,12 +3307,9 @@ ENDIF71
 	pagesel	SysCompEqual16
 	call	SysCompEqual16
 	pagesel	$
-	btfss	SysByteTempX,0
-	goto	ENDIF72
+	btfsc	SysByteTempX,0
 ;Do_RandL
-	pagesel	DO_RANDL
 	call	DO_RANDL
-	pagesel	$
 ;End If
 ENDIF72
 	return
@@ -3838,11 +3892,456 @@ ENDIF214
 
 ;********************************************************************************
 
+DO_RANDL
+;If Bit_Mode < Bit_32 Then
+	movlw	2
+	subwf	BIT_MODE,W
+	btfsc	STATUS, C
+	goto	ENDIF218
+;Do_Rand
+	pagesel	DO_RAND
+	call	DO_RAND
+	pagesel	$
+;Exit Sub
+	return
+;End If
+ENDIF218
+;If RandomSeed = 0 Then
+	banksel	RANDOMSEED
+	movf	RANDOMSEED,F
+	btfss	STATUS, Z
+	goto	ENDIF219
+;Randomize RSeed
+	movf	RSEED,W
+	movwf	RANDOMTEMP
+	clrf	RANDOMTEMP_H
+	banksel	STATUS
+	pagesel	RANDOMIZE
+	call	RANDOMIZE
+	pagesel	$
+;Let RandomSeed = 1
+	movlw	1
+	banksel	RANDOMSEED
+	movwf	RANDOMSEED
+;End If
+ENDIF219
+;Let ResultL = 0
+	clrf	RESULTL
+	clrf	RESULTL_H
+	clrf	RESULTL_U
+	clrf	RESULTL_E
+;If TenThou = 1 Then
+	decf	TENTHOU,W
+	btfss	STATUS, Z
+	goto	ELSE220_1
+;Do
+SysDoLoop_S6
+;Let RandB1 = Random
+	banksel	STATUS
+	pagesel	FN_RANDOM
+	call	FN_RANDOM
+	pagesel	$
+	banksel	RANDOM
+	movf	RANDOM,W
+	banksel	RANDB1
+	movwf	RANDB1
+;Let RandB2 = Random
+	pagesel	FN_RANDOM
+	call	FN_RANDOM
+	pagesel	$
+	banksel	RANDOM
+	movf	RANDOM,W
+	banksel	RANDB2
+	movwf	RANDB2
+;Let RandB3 = Random
+	pagesel	FN_RANDOM
+	call	FN_RANDOM
+	pagesel	$
+	banksel	RANDOM
+	movf	RANDOM,W
+	movwf	RANDB3
+;Let RandB4 = Random
+	banksel	STATUS
+	pagesel	FN_RANDOM
+	call	FN_RANDOM
+	pagesel	$
+	banksel	RANDOM
+	movf	RANDOM,W
+	movwf	RANDB4
+;Let ResultL.0  = RandB1.0
+	bcf	RESULTL,0
+	banksel	RANDB1
+	btfss	RANDB1,0
+	goto	ENDIF221
+	banksel	RESULTL
+	bsf	RESULTL,0
+ENDIF221
+;Let ResultL.1  = RandB2.1
+	banksel	RESULTL
+	bcf	RESULTL,1
+	banksel	RANDB2
+	btfss	RANDB2,1
+	goto	ENDIF222
+	banksel	RESULTL
+	bsf	RESULTL,1
+ENDIF222
+;Let ResultL.2  = RandB3.2
+	banksel	RESULTL
+	bcf	RESULTL,2
+	btfsc	RANDB3,2
+	bsf	RESULTL,2
+ENDIF223
+;Let ResultL.3  = RandB4.3
+	bcf	RESULTL,3
+	btfsc	RANDB4,3
+	bsf	RESULTL,3
+ENDIF224
+;Let ResultL.4  = RandB1.2
+	bcf	RESULTL,4
+	banksel	RANDB1
+	btfss	RANDB1,2
+	goto	ENDIF225
+	banksel	RESULTL
+	bsf	RESULTL,4
+ENDIF225
+;Let ResultL.5  = RandB2.3
+	banksel	RESULTL
+	bcf	RESULTL,5
+	banksel	RANDB2
+	btfss	RANDB2,3
+	goto	ENDIF226
+	banksel	RESULTL
+	bsf	RESULTL,5
+ENDIF226
+;Let ResultL.6  = RandB3.4
+	banksel	RESULTL
+	bcf	RESULTL,6
+	btfsc	RANDB3,4
+	bsf	RESULTL,6
+ENDIF227
+;Let ResultL.7  = RandB4.5
+	bcf	RESULTL,7
+	btfsc	RANDB4,5
+	bsf	RESULTL,7
+ENDIF228
+;Let ResultL.8  = RandB1.3
+	bcf	RESULTL_H,0
+	banksel	RANDB1
+	btfss	RANDB1,3
+	goto	ENDIF229
+	banksel	RESULTL_H
+	bsf	RESULTL_H,0
+ENDIF229
+;Let ResultL.9  = RandB2.4
+	banksel	RESULTL_H
+	bcf	RESULTL_H,1
+	banksel	RANDB2
+	btfss	RANDB2,4
+	goto	ENDIF230
+	banksel	RESULTL_H
+	bsf	RESULTL_H,1
+ENDIF230
+;Let ResultL.10 = RandB3.5
+	banksel	RESULTL_H
+	bcf	RESULTL_H,2
+	btfsc	RANDB3,5
+	bsf	RESULTL_H,2
+ENDIF231
+;Let ResultL.11 = RandB4.6
+	bcf	RESULTL_H,3
+	btfsc	RANDB4,6
+	bsf	RESULTL_H,3
+ENDIF232
+;Let ResultL.12 = RandB1.4
+	bcf	RESULTL_H,4
+	banksel	RANDB1
+	btfss	RANDB1,4
+	goto	ENDIF233
+	banksel	RESULTL_H
+	bsf	RESULTL_H,4
+ENDIF233
+;Let ResultL.13 = RandB2.5
+	banksel	RESULTL_H
+	bcf	RESULTL_H,5
+	banksel	RANDB2
+	btfss	RANDB2,5
+	goto	ENDIF234
+	banksel	RESULTL_H
+	bsf	RESULTL_H,5
+ENDIF234
+;Let ResultL.14 = 0
+	banksel	RESULTL_H
+	bcf	RESULTL_H,6
+;Let ResultL.15 = 0
+	bcf	RESULTL_H,7
+;Loop until ResultL < 9999
+	movf	resultl,W
+	movwf	SysLONGTempA
+	movf	resultl_H,W
+	movwf	SysLONGTempA_H
+	movf	resultl_U,W
+	movwf	SysLONGTempA_U
+	movf	resultl_E,W
+	movwf	SysLONGTempA_E
+	movlw	15
+	movwf	SysLONGTempB
+	movlw	39
+	movwf	SysLONGTempB_H
+	clrf	SysLONGTempB_U
+	clrf	SysLONGTempB_E
+	banksel	STATUS
+	pagesel	SysCompLessThan32
+	call	SysCompLessThan32
+	pagesel	$
+	btfss	SysByteTempX,0
+	goto	SysDoLoop_S6
+SysDoLoop_E6
+;Let ResultL = ResultL + 1 'Prevent zero being returned
+	banksel	RESULTL
+	incf	RESULTL,F
+	btfsc	STATUS,Z
+	incf	RESULTL_H,F
+	btfsc	STATUS,Z
+	incf	RESULTL_U,F
+	btfsc	STATUS,Z
+	incf	RESULTL_E,F
+;Else
+	goto	ENDIF220
+ELSE220_1
+;Let ResultL = Random
+	banksel	STATUS
+	pagesel	FN_RANDOM
+	call	FN_RANDOM
+	pagesel	$
+	banksel	RANDOM
+	movf	RANDOM,W
+	movwf	RESULTL
+	clrf	RESULTL_H
+	clrf	RESULTL_U
+	clrf	RESULTL_E
+;End If
+ENDIF220
+;Show_ValuesSubL(ResultL)
+	movf	RESULTL,W
+	banksel	D_VALUEL
+	movwf	D_VALUEL
+	banksel	RESULTL_H
+	movf	RESULTL_H,W
+	banksel	D_VALUEL_H
+	movwf	D_VALUEL_H
+	banksel	RESULTL_U
+	movf	RESULTL_U,W
+	banksel	D_VALUEL_U
+	movwf	D_VALUEL_U
+	banksel	RESULTL_E
+	movf	RESULTL_E,W
+	banksel	D_VALUEL_E
+	movwf	D_VALUEL_E
+	pagesel	SHOW_VALUESSUBL
+	call	SHOW_VALUESSUBL
+	pagesel	$
+;Let Op = 2
+	movlw	2
+	movwf	OP
+	return
+
+;********************************************************************************
+
+GET_BUTTONS
+;For Row = 1 to 3
+	banksel	ROW
+	clrf	ROW
+SysForLoop1
+	incf	ROW,F
+;If Row = 1 Then
+	decf	ROW,W
+	btfss	STATUS, Z
+	goto	ENDIF47
+;Let Button_R1 = 0
+	banksel	LATC
+	bcf	LATC,3
+;Let Button_R2 = 1
+	bsf	LATC,6
+;Let Button_R3 = 1
+	bsf	LATC,7
+;End If
+ENDIF47
+;If Row = 2 Then
+	movlw	2
+	banksel	ROW
+	subwf	ROW,W
+	btfss	STATUS, Z
+	goto	ENDIF48
+;Let Button_R1 = 1
+	banksel	LATC
+	bsf	LATC,3
+;Let Button_R2 = 0
+	bcf	LATC,6
+;Let Button_R3 = 1
+	bsf	LATC,7
+;End If
+ENDIF48
+;If Row = 3 Then
+	movlw	3
+	banksel	ROW
+	subwf	ROW,W
+	btfss	STATUS, Z
+	goto	ENDIF49
+;Let Button_R1 = 1
+	banksel	LATC
+	bsf	LATC,3
+;Let Button_R2 = 1
+	bsf	LATC,6
+;Let Button_R3 = 0
+	bcf	LATC,7
+;End If
+ENDIF49
+;Let D_Lat = 0 'Load data to register
+	banksel	LATC
+	bcf	LATC,4
+;Let D_Clk = 0 'Send Dummy pulse to ready actual data
+	bcf	LATC,5
+;Wait 1 uS
+	movlw	2
+	movwf	DELAYTEMP
+DelayUS1
+	decfsz	DELAYTEMP,F
+	goto	DelayUS1
+	nop
+;Let D_Clk = 1
+	bsf	LATC,5
+;Wait 1 uS
+	movlw	2
+	movwf	DELAYTEMP
+DelayUS2
+	decfsz	DELAYTEMP,F
+	goto	DelayUS2
+	nop
+;Let Dat_Out = 0
+	banksel	DAT_OUT
+	clrf	DAT_OUT
+;Let D_Lat = 1 'Data now loaded, and ready for reading
+	banksel	LATC
+	bsf	LATC,4
+;For Clocks = 1 to 8
+	banksel	CLOCKS
+	clrf	CLOCKS
+SysForLoop2
+	incf	CLOCKS,F
+;Let D_Clk = 1               'Shift register clocked
+	banksel	LATC
+	bsf	LATC,5
+;Let Dat_Out.7 = D_Data       'Read the first 'bit' into Dat_Out,
+	banksel	DAT_OUT
+	bcf	DAT_OUT,7
+	btfsc	PORTA,4
+	bsf	DAT_OUT,7
+ENDIF56
+;using bit.7 gives the correct sequence
+;Let D_Clk = 0               'Close the clock
+	banksel	LATC
+	bcf	LATC,5
+;Wait 1 uS
+	movlw	2
+	movwf	DELAYTEMP
+DelayUS3
+	decfsz	DELAYTEMP,F
+	goto	DelayUS3
+	nop
+;Rotate Dat_Out Left Simple   'Move the data along one bit, ready for
+	banksel	DAT_OUT
+	rlf	DAT_OUT,W
+	rlf	DAT_OUT,F
+;the next bit, left gives the correct sequence
+;Next Clocks
+	movlw	8
+	subwf	CLOCKS,W
+	btfss	STATUS, C
+	goto	SysForLoop2
+ENDIF50
+SysForLoopEnd2
+;If Dat_Out < 255 Then
+	movlw	255
+	subwf	DAT_OUT,W
+	btfsc	STATUS, C
+	goto	ELSE51_1
+;Data is sent from 74HC165 in reverse order, so invert it
+;so that input zero is read as '1' and input 7 as '254'
+;Let Dat_Out = 255 - Dat_Out
+	movf	DAT_OUT,W
+	sublw	255
+	movwf	DAT_OUT
+;If Row = 1 Then
+	banksel	ROW
+	decf	ROW,W
+	btfss	STATUS, Z
+	goto	ENDIF53
+;Decode_Row1(Dat_Out)
+	banksel	DAT_OUT
+	movf	DAT_OUT,W
+	movwf	DECODE_VALUE
+	pagesel	DECODE_ROW1
+	call	DECODE_ROW1
+	pagesel	$
+;End If
+ENDIF53
+;If Row = 2 Then
+	movlw	2
+	banksel	ROW
+	subwf	ROW,W
+	btfss	STATUS, Z
+	goto	ENDIF54
+;Decode_Row2(Dat_Out)
+	banksel	DAT_OUT
+	movf	DAT_OUT,W
+	movwf	DECODE_VALUE
+	pagesel	DECODE_ROW2
+	call	DECODE_ROW2
+	pagesel	$
+;End If
+ENDIF54
+;If Row = 3 Then
+	movlw	3
+	banksel	ROW
+	subwf	ROW,W
+	btfss	STATUS, Z
+	goto	ENDIF55
+;Decode_Row3(Dat_Out)
+	banksel	DAT_OUT
+	movf	DAT_OUT,W
+	movwf	DECODE_VALUE
+	pagesel	DECODE_ROW3
+	call	DECODE_ROW3
+	pagesel	$
+;End If
+ENDIF55
+;Exit Sub
+	banksel	STATUS
+	return
+;Else
+	goto	ENDIF51
+ELSE51_1
+;Let Button_Value = 255
+	movlw	255
+	movwf	BUTTON_VALUE
+;End If
+ENDIF51
+;Next
+	movlw	3
+	banksel	ROW
+	subwf	ROW,W
+	btfss	STATUS, C
+	goto	SysForLoop1
+ENDIF52
+SysForLoopEnd1
+	banksel	STATUS
+	return
+
+;********************************************************************************
+
 MAINLOOP_SUB
 ;Get_Buttons
-	pagesel	GET_BUTTONS
 	call	GET_BUTTONS
-	pagesel	$
 ;If Button_Value < 255 Then
 	movlw	255
 	subwf	BUTTON_VALUE,W
@@ -4220,10 +4719,9 @@ SysDoLoop_S2
 	clrf	SysWaitTempMS_H
 	pagesel	Delay_MS
 	call	Delay_MS
-;Get_Buttons
-	pagesel	GET_BUTTONS
-	call	GET_BUTTONS
 	pagesel	$
+;Get_Buttons
+	call	GET_BUTTONS
 ;Loop Until Button_Value = 255
 	incf	BUTTON_VALUE,W
 	btfss	STATUS, Z
@@ -4277,124 +4775,9 @@ ENDIF11
 
 ;********************************************************************************
 
-MAKELCDGRAPHICS
-;Or CG0
-;CGArray(1) = b'00010001'
-	movlw	17
-	banksel	SYSCGARRAY_1
-	movwf	SYSCGARRAY_1
-;CGArray(2) = b'00010001'
-	movlw	17
-	movwf	SYSCGARRAY_2
-;CGArray(3) = b'00010001'
-	movlw	17
-	movwf	SYSCGARRAY_3
-;CGArray(4) = b'00001010'
-	movlw	10
-	movwf	SYSCGARRAY_4
-;CGArray(5) = b'00000100'
-	movlw	4
-	movwf	SYSCGARRAY_5
-;CGArray(6) = b'00000000'
-	clrf	SYSCGARRAY_6
-;CGArray(7) = b'00000000'
-	clrf	SYSCGARRAY_7
-;CGArray(8) = b'00000000'
-	clrf	SYSCGARRAY_8
-;LCDCreateChar 0, CGArray()
-	banksel	LCDCHARLOC
-	clrf	LCDCHARLOC
-	movlw	low CGARRAY
-	banksel	SYSLCDCHARDATAHANDLER
-	movwf	SysLCDCHARDATAHandler
-	movlw	high CGARRAY
-	movwf	SysLCDCHARDATAHandler_H
-	banksel	STATUS
-	pagesel	LCDCREATECHAR
-	call	LCDCREATECHAR
-	pagesel	$
-;Xor CG1
-;CGArray(1) = b'00010001'
-	movlw	17
-	banksel	SYSCGARRAY_1
-	movwf	SYSCGARRAY_1
-;CGArray(2) = b'00010001'
-	movlw	17
-	movwf	SYSCGARRAY_2
-;CGArray(3) = b'00010001'
-	movlw	17
-	movwf	SYSCGARRAY_3
-;CGArray(4) = b'00001010'
-	movlw	10
-	movwf	SYSCGARRAY_4
-;CGArray(5) = b'00000100'
-	movlw	4
-	movwf	SYSCGARRAY_5
-;CGArray(6) = b'00000000'
-	clrf	SYSCGARRAY_6
-;CGArray(7) = b'00011111'
-	movlw	31
-	movwf	SYSCGARRAY_7
-;CGArray(8) = b'00000000'
-	clrf	SYSCGARRAY_8
-;LCDCreateChar 1, CGArray()
-	movlw	1
-	banksel	LCDCHARLOC
-	movwf	LCDCHARLOC
-	movlw	low CGARRAY
-	banksel	SYSLCDCHARDATAHANDLER
-	movwf	SysLCDCHARDATAHandler
-	movlw	high CGARRAY
-	movwf	SysLCDCHARDATAHandler_H
-	banksel	STATUS
-	pagesel	LCDCREATECHAR
-	call	LCDCREATECHAR
-	pagesel	$
-;Not CG2
-;CGArray(1) = b'00011111'
-	movlw	31
-	banksel	SYSCGARRAY_1
-	movwf	SYSCGARRAY_1
-;CGArray(2) = b'00011111'
-	movlw	31
-	movwf	SYSCGARRAY_2
-;CGArray(3) = b'00010001'
-	movlw	17
-	movwf	SYSCGARRAY_3
-;CGArray(4) = b'00011111'
-	movlw	31
-	movwf	SYSCGARRAY_4
-;CGArray(5) = b'00010001'
-	movlw	17
-	movwf	SYSCGARRAY_5
-;CGArray(6) = b'00011111'
-	movlw	31
-	movwf	SYSCGARRAY_6
-;CGArray(7) = b'00011111'
-	movlw	31
-	movwf	SYSCGARRAY_7
-;CGArray(8) = b'00000000'
-	clrf	SYSCGARRAY_8
-;LCDCreateChar 2, CGArray()
-	movlw	2
-	banksel	LCDCHARLOC
-	movwf	LCDCHARLOC
-	movlw	low CGARRAY
-	banksel	SYSLCDCHARDATAHANDLER
-	movwf	SysLCDCHARDATAHandler
-	movlw	high CGARRAY
-	movwf	SysLCDCHARDATAHandler_H
-	banksel	STATUS
-	pagesel	LCDCREATECHAR
-	goto	LCDCREATECHAR
-
-;********************************************************************************
-
 SHOW_SPLASHSCREEN
 ;Get_Buttons
-	pagesel	GET_BUTTONS
 	call	GET_BUTTONS
-	pagesel	$
 ;If Button_Value = BtAn Then
 	movlw	21
 	subwf	BUTTON_VALUE,W
@@ -4671,20 +5054,11 @@ ENDIF111
 	call	LOCATE
 	pagesel	$
 ;Print "h: "
-	movlw	low StringTable18
-	banksel	SYSPRINTDATAHANDLER
-	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable18) | 128
-	movwf	SysPRINTDATAHandler_H
-	banksel	STATUS
-	pagesel	PRINT144
-	call	PRINT144
-	pagesel	$
 ;Print HCodeversion
-	movlw	low StringTable48
+	movlw	low StringTable47
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable48) | 128
+	movlw	(high StringTable47) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -4709,20 +5083,20 @@ ENDIF111
 	call	LOCATE
 	pagesel	$
 ;Print ChipNameStr
-	movlw	low StringTable90
+	movlw	low StringTable89
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable90) | 128
+	movlw	(high StringTable89) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
 	call	PRINT144
 	pagesel	$
 ;Print ","
-	movlw	low StringTable19
+	movlw	low StringTable18
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable19) | 128
+	movlw	(high StringTable18) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -4735,10 +5109,10 @@ ENDIF111
 	call	PRINT145
 	pagesel	$
 ;Print "Mhz"
-	movlw	low StringTable20
+	movlw	low StringTable19
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable20) | 128
+	movlw	(high StringTable19) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -4752,10 +5126,10 @@ ENDIF111
 	call	LOCATE
 	pagesel	$
 ;Print " (C) MkEDS 2018 "
-	movlw	low StringTable21
+	movlw	low StringTable20
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable21) | 128
+	movlw	(high StringTable20) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	pagesel	PRINT144
@@ -5305,6 +5679,7 @@ ENDIF6
 	bcf	LATC,5
 ;MakeLCDGraphics
 	banksel	STATUS
+	pagesel	MAKELCDGRAPHICS
 	call	MAKELCDGRAPHICS
 	pagesel	$
 ;Show_SplashScreen
@@ -5364,375 +5739,6 @@ ELSE8_1
 ;End If
 ENDIF8
 	return
-
-;********************************************************************************
-
-SysStringTables
-	movf	SysStringA_H,W
-	movwf	PCLATH
-	movf	SysStringA,W
-	incf	SysStringA,F
-	btfsc	STATUS,Z
-	incf	SysStringA_H,F
-	movwf	PCL
-
-StringTable2
-	retlw	13
-	retlw	51	;3
-	retlw	46	;.
-	retlw	49	;1
-	retlw	52	;4
-	retlw	32	; 
-	retlw	49	;1
-	retlw	53	;5
-	retlw	116	;t
-	retlw	104	;h
-	retlw	32	; 
-	retlw	77	;M
-	retlw	97	;a
-	retlw	114	;r
-
-
-StringTable3
-	retlw	3
-	retlw	65	;A
-	retlw	110	;n
-	retlw	115	;s
-
-
-StringTable4
-	retlw	1
-	retlw	32	; 
-
-
-StringTable5
-	retlw	3
-	retlw	32	; 
-	retlw	32	; 
-	retlw	32	; 
-
-
-StringTable6
-	retlw	1
-	retlw	104	;h
-
-
-StringTable7
-	retlw	1
-	retlw	100	;d
-
-
-StringTable8
-	retlw	1
-	retlw	48	;0
-
-
-StringTable9
-	retlw	1
-	retlw	42	;*
-
-
-StringTable10
-	retlw	1
-	retlw	94	;^
-
-
-StringTable11
-	retlw	1
-	retlw	97	;a
-
-
-StringTable12
-	retlw	15
-	retlw	49	;1
-	retlw	54	;6
-	retlw	98	;b
-	retlw	105	;i
-	retlw	116	;t
-	retlw	32	; 
-	retlw	66	;B
-	retlw	105	;i
-	retlw	110	;n
-	retlw	32	; 
-	retlw	45	;-
-	retlw	32	; 
-	retlw	68	;D
-	retlw	101	;e
-	retlw	99	;c
-
-
-StringTable13
-	retlw	15
-	retlw	32	; 
-	retlw	51	;3
-	retlw	50	;2
-	retlw	98	;b
-	retlw	105	;i
-	retlw	116	;t
-	retlw	32	; 
-	retlw	32	; 
-	retlw	68	;D
-	retlw	101	;e
-	retlw	99	;c
-	retlw	105	;i
-	retlw	109	;m
-	retlw	97	;a
-	retlw	108	;l
-
-
-StringTable14
-	retlw	15
-	retlw	32	; 
-	retlw	45	;-
-	retlw	32	; 
-	retlw	72	;H
-	retlw	101	;e
-	retlw	120	;x
-	retlw	97	;a
-	retlw	100	;d
-	retlw	101	;e
-	retlw	99	;c
-	retlw	105	;i
-	retlw	109	;m
-	retlw	97	;a
-	retlw	108	;l
-	retlw	32	; 
-
-
-StringTable15
-	retlw	16
-	retlw	32	; 
-	retlw	42	;*
-	retlw	73	;I
-	retlw	110	;n
-	retlw	116	;t
-	retlw	101	;e
-	retlw	103	;g
-	retlw	101	;e
-	retlw	114	;r
-	retlw	32	; 
-	retlw	111	;o
-	retlw	110	;n
-	retlw	108	;l
-	retlw	121	;y
-	retlw	42	;*
-	retlw	32	; 
-
-
-StringTable16
-	retlw	16
-	retlw	32	; 
-	retlw	32	; 
-	retlw	32	; 
-	retlw	67	;C
-	retlw	97	;a
-	retlw	108	;l
-	retlw	99	;c
-	retlw	117	;u
-	retlw	108	;l
-	retlw	97	;a
-	retlw	116	;t
-	retlw	111	;o
-	retlw	114	;r
-	retlw	32	; 
-	retlw	32	; 
-	retlw	32	; 
-
-
-StringTable17
-	retlw	3
-	retlw	118	;v
-	retlw	58	;:
-	retlw	32	; 
-
-
-StringTable18
-	retlw	3
-	retlw	104	;h
-	retlw	58	;:
-	retlw	32	; 
-
-
-StringTable19
-	retlw	1
-	retlw	44	;,
-
-
-StringTable20
-	retlw	3
-	retlw	77	;M
-	retlw	104	;h
-	retlw	122	;z
-
-
-StringTable21
-	retlw	16
-	retlw	32	; 
-	retlw	40	;(
-	retlw	67	;C
-	retlw	41	;)
-	retlw	32	; 
-	retlw	77	;M
-	retlw	107	;k
-	retlw	69	;E
-	retlw	68	;D
-	retlw	83	;S
-	retlw	32	; 
-	retlw	50	;2
-	retlw	48	;0
-	retlw	49	;1
-	retlw	56	;8
-	retlw	32	; 
-
-
-StringTable22
-	retlw	1
-	retlw	98	;b
-
-
-StringTable23
-	retlw	1
-	retlw	49	;1
-
-
-StringTable24
-	retlw	1
-	retlw	50	;2
-
-
-StringTable25
-	retlw	1
-	retlw	51	;3
-
-
-StringTable26
-	retlw	1
-	retlw	52	;4
-
-
-StringTable27
-	retlw	1
-	retlw	53	;5
-
-
-StringTable28
-	retlw	1
-	retlw	54	;6
-
-
-StringTable29
-	retlw	1
-	retlw	55	;7
-
-
-StringTable30
-	retlw	1
-	retlw	56	;8
-
-
-StringTable31
-	retlw	1
-	retlw	57	;9
-
-
-StringTable32
-	retlw	1
-	retlw	65	;A
-
-
-StringTable33
-	retlw	1
-	retlw	66	;B
-
-
-StringTable34
-	retlw	1
-	retlw	67	;C
-
-
-StringTable35
-	retlw	1
-	retlw	68	;D
-
-
-StringTable36
-	retlw	1
-	retlw	69	;E
-
-
-StringTable37
-	retlw	1
-	retlw	70	;F
-
-
-StringTable38
-	retlw	1
-	retlw	61	; (equals)
-
-
-StringTable39
-	retlw	1
-	retlw	43	;+
-
-
-StringTable40
-	retlw	1
-	retlw	45	;-
-
-
-StringTable41
-	retlw	1
-	retlw	47	;/
-
-
-StringTable42
-	retlw	1
-	retlw	120	;x
-
-
-StringTable43
-	retlw	1
-	retlw	38	;&
-
-
-StringTable44
-	retlw	1
-	retlw	37	;%
-
-
-StringTable45
-	retlw	1
-	retlw	109	;m
-
-
-StringTable46
-	retlw	1
-	retlw	99	;c
-
-
-StringTable47
-	retlw	1
-	retlw	82	;R
-
-
-StringTable48
-	retlw	4
-	retlw	49	;1
-	retlw	46	;.
-	retlw	48	;0
-	retlw	48	;0
-
-
-StringTable90
-	retlw	7
-	retlw	49	;1
-	retlw	54	;6
-	retlw	70	;F
-	retlw	49	;1
-	retlw	56	;8
-	retlw	50	;2
-	retlw	57	;9
-
 
 ;********************************************************************************
 
@@ -5955,14 +5961,82 @@ ENDIF62
 
 ;********************************************************************************
 
+CHECK_AN
+;Wait 50 mS
+	movlw	50
+	movwf	SysWaitTempMS
+	clrf	SysWaitTempMS_H
+	call	Delay_MS
+;If Button_Value = BtAn Then
+	movlw	21
+	subwf	BUTTON_VALUE,W
+	btfss	STATUS, Z
+	goto	ELSE132_1
+;Wait 100 mS
+	movlw	100
+	movwf	SysWaitTempMS
+	clrf	SysWaitTempMS_H
+	call	Delay_MS
+;Get_Buttons
+	pagesel	GET_BUTTONS
+	call	GET_BUTTONS
+	pagesel	$
+;If Button_Value = BtAn Then
+	movlw	21
+	subwf	BUTTON_VALUE,W
+	btfss	STATUS, Z
+	goto	ELSE133_1
+;Wait 100 mS
+	movlw	100
+	movwf	SysWaitTempMS
+	clrf	SysWaitTempMS_H
+	call	Delay_MS
+;Get_Buttons
+	pagesel	GET_BUTTONS
+	call	GET_BUTTONS
+	pagesel	$
+;If Button_Value = BtAn Then
+	movlw	21
+	subwf	BUTTON_VALUE,W
+	btfss	STATUS, Z
+	goto	ELSE134_1
+;Let Button_Value = BtRand
+	movlw	26
+	movwf	BUTTON_VALUE
+;Else
+	goto	ENDIF134
+ELSE134_1
+;Let Button_Value = BtAn
+	movlw	21
+	movwf	BUTTON_VALUE
+;End If
+ENDIF134
+;Else
+	goto	ENDIF133
+ELSE133_1
+;Let Button_Value = BtAn
+	movlw	21
+	movwf	BUTTON_VALUE
+;End If
+ENDIF133
+;Else
+	goto	ENDIF132
+ELSE132_1
+;Let Button_Value = BtAn
+	movlw	21
+	movwf	BUTTON_VALUE
+;End If
+ENDIF132
+	return
+
+;********************************************************************************
+
 CHECK_EN
 ;Wait 50 mS
 	movlw	50
 	movwf	SysWaitTempMS
 	clrf	SysWaitTempMS_H
-	pagesel	Delay_MS
 	call	Delay_MS
-	pagesel	$
 ;If Button_Value = BtEn Then
 	movlw	16
 	subwf	BUTTON_VALUE,W
@@ -5972,11 +6046,11 @@ CHECK_EN
 	movlw	100
 	movwf	SysWaitTempMS
 	clrf	SysWaitTempMS_H
-	pagesel	Delay_MS
 	call	Delay_MS
-	pagesel	$
 ;Get_Buttons
+	pagesel	GET_BUTTONS
 	call	GET_BUTTONS
+	pagesel	$
 ;If Button_Value = BtEn Then
 	movlw	16
 	subwf	BUTTON_VALUE,W
@@ -5986,11 +6060,11 @@ CHECK_EN
 	movlw	100
 	movwf	SysWaitTempMS
 	clrf	SysWaitTempMS_H
-	pagesel	Delay_MS
 	call	Delay_MS
-	pagesel	$
 ;Get_Buttons
+	pagesel	GET_BUTTONS
 	call	GET_BUTTONS
+	pagesel	$
 ;If Button_Value = BtEn Then
 	movlw	16
 	subwf	BUTTON_VALUE,W
@@ -6032,11 +6106,11 @@ CHECK_MODE
 	movlw	50
 	movwf	SysWaitTempMS
 	clrf	SysWaitTempMS_H
-	pagesel	Delay_MS
 	call	Delay_MS
-	pagesel	$
 ;Get_Buttons
+	pagesel	GET_BUTTONS
 	call	GET_BUTTONS
+	pagesel	$
 ;If Button_Value = BtMode Then
 	movlw	27
 	subwf	BUTTON_VALUE,W
@@ -6046,11 +6120,11 @@ CHECK_MODE
 	movlw	100
 	movwf	SysWaitTempMS
 	clrf	SysWaitTempMS_H
-	pagesel	Delay_MS
 	call	Delay_MS
-	pagesel	$
 ;Get_Buttons
+	pagesel	GET_BUTTONS
 	call	GET_BUTTONS
+	pagesel	$
 ;If Button_Value = BtMode Then
 	movlw	27
 	subwf	BUTTON_VALUE,W
@@ -6060,11 +6134,11 @@ CHECK_MODE
 	movlw	100
 	movwf	SysWaitTempMS
 	clrf	SysWaitTempMS_H
-	pagesel	Delay_MS
 	call	Delay_MS
-	pagesel	$
 ;Get_Buttons
+	pagesel	GET_BUTTONS
 	call	GET_BUTTONS
+	pagesel	$
 ;If Button_Value = BtMode Then
 	movlw	27
 	subwf	BUTTON_VALUE,W
@@ -6173,9 +6247,7 @@ CHECK_OR
 	movlw	50
 	movwf	SysWaitTempMS
 	clrf	SysWaitTempMS_H
-	pagesel	Delay_MS
 	call	Delay_MS
-	pagesel	$
 ;If Button_Value = BtOr Then
 	movlw	23
 	subwf	BUTTON_VALUE,W
@@ -6185,11 +6257,11 @@ CHECK_OR
 	movlw	100
 	movwf	SysWaitTempMS
 	clrf	SysWaitTempMS_H
-	pagesel	Delay_MS
 	call	Delay_MS
-	pagesel	$
 ;Get_Buttons
+	pagesel	GET_BUTTONS
 	call	GET_BUTTONS
+	pagesel	$
 ;If Button_Value = BtOr Then
 	movlw	23
 	subwf	BUTTON_VALUE,W
@@ -6199,11 +6271,11 @@ CHECK_OR
 	movlw	100
 	movwf	SysWaitTempMS
 	clrf	SysWaitTempMS_H
-	pagesel	Delay_MS
 	call	Delay_MS
-	pagesel	$
 ;Get_Buttons
+	pagesel	GET_BUTTONS
 	call	GET_BUTTONS
+	pagesel	$
 ;If Button_Value = BtOr Then
 	movlw	23
 	subwf	BUTTON_VALUE,W
@@ -7225,188 +7297,23 @@ ENDIF179
 
 ;********************************************************************************
 
-GET_BUTTONS
-;For Row = 1 to 3
-	banksel	ROW
-	clrf	ROW
-SysForLoop1
-	incf	ROW,F
-;If Row = 1 Then
-	decf	ROW,W
-	btfss	STATUS, Z
-	goto	ENDIF47
-;Let Button_R1 = 0
-	banksel	LATC
-	bcf	LATC,3
-;Let Button_R2 = 1
-	bsf	LATC,6
-;Let Button_R3 = 1
-	bsf	LATC,7
-;End If
-ENDIF47
-;If Row = 2 Then
-	movlw	2
-	banksel	ROW
-	subwf	ROW,W
-	btfss	STATUS, Z
-	goto	ENDIF48
-;Let Button_R1 = 1
-	banksel	LATC
-	bsf	LATC,3
-;Let Button_R2 = 0
-	bcf	LATC,6
-;Let Button_R3 = 1
-	bsf	LATC,7
-;End If
-ENDIF48
-;If Row = 3 Then
-	movlw	3
-	banksel	ROW
-	subwf	ROW,W
-	btfss	STATUS, Z
-	goto	ENDIF49
-;Let Button_R1 = 1
-	banksel	LATC
-	bsf	LATC,3
-;Let Button_R2 = 1
-	bsf	LATC,6
-;Let Button_R3 = 0
-	bcf	LATC,7
-;End If
-ENDIF49
-;Let D_Lat = 0 'Load data to register
-	banksel	LATC
-	bcf	LATC,4
-;Let D_Clk = 0 'Send Dummy pulse to ready actual data
-	bcf	LATC,5
-;Wait 1 uS
-	movlw	2
+Delay_MS
+	incf	SysWaitTempMS_H, F
+DMS_START
+	movlw	14
+	movwf	DELAYTEMP2
+DMS_OUTER
+	movlw	189
 	movwf	DELAYTEMP
-DelayUS1
-	decfsz	DELAYTEMP,F
-	goto	DelayUS1
-	nop
-;Let D_Clk = 1
-	bsf	LATC,5
-;Wait 1 uS
-	movlw	2
-	movwf	DELAYTEMP
-DelayUS2
-	decfsz	DELAYTEMP,F
-	goto	DelayUS2
-	nop
-;Let Dat_Out = 0
-	banksel	DAT_OUT
-	clrf	DAT_OUT
-;Let D_Lat = 1 'Data now loaded, and ready for reading
-	banksel	LATC
-	bsf	LATC,4
-;For Clocks = 1 to 8
-	banksel	CLOCKS
-	clrf	CLOCKS
-SysForLoop2
-	incf	CLOCKS,F
-;Let D_Clk = 1               'Shift register clocked
-	banksel	LATC
-	bsf	LATC,5
-;Let Dat_Out.7 = D_Data       'Read the first 'bit' into Dat_Out,
-	banksel	DAT_OUT
-	bcf	DAT_OUT,7
-	btfsc	PORTA,4
-	bsf	DAT_OUT,7
-ENDIF56
-;using bit.7 gives the correct sequence
-;Let D_Clk = 0               'Close the clock
-	banksel	LATC
-	bcf	LATC,5
-;Wait 1 uS
-	movlw	2
-	movwf	DELAYTEMP
-DelayUS3
-	decfsz	DELAYTEMP,F
-	goto	DelayUS3
-	nop
-;Rotate Dat_Out Left Simple   'Move the data along one bit, ready for
-	banksel	DAT_OUT
-	rlf	DAT_OUT,W
-	rlf	DAT_OUT,F
-;the next bit, left gives the correct sequence
-;Next Clocks
-	movlw	8
-	subwf	CLOCKS,W
-	btfss	STATUS, C
-	goto	SysForLoop2
-ENDIF50
-SysForLoopEnd2
-;If Dat_Out < 255 Then
-	movlw	255
-	subwf	DAT_OUT,W
-	btfsc	STATUS, C
-	goto	ELSE51_1
-;Data is sent from 74HC165 in reverse order, so invert it
-;so that input zero is read as '1' and input 7 as '254'
-;Let Dat_Out = 255 - Dat_Out
-	movf	DAT_OUT,W
-	sublw	255
-	movwf	DAT_OUT
-;If Row = 1 Then
-	banksel	ROW
-	decf	ROW,W
-	btfss	STATUS, Z
-	goto	ENDIF53
-;Decode_Row1(Dat_Out)
-	banksel	DAT_OUT
-	movf	DAT_OUT,W
-	movwf	DECODE_VALUE
-	call	DECODE_ROW1
-;End If
-ENDIF53
-;If Row = 2 Then
-	movlw	2
-	banksel	ROW
-	subwf	ROW,W
-	btfss	STATUS, Z
-	goto	ENDIF54
-;Decode_Row2(Dat_Out)
-	banksel	DAT_OUT
-	movf	DAT_OUT,W
-	movwf	DECODE_VALUE
-	call	DECODE_ROW2
-;End If
-ENDIF54
-;If Row = 3 Then
-	movlw	3
-	banksel	ROW
-	subwf	ROW,W
-	btfss	STATUS, Z
-	goto	ENDIF55
-;Decode_Row3(Dat_Out)
-	banksel	DAT_OUT
-	movf	DAT_OUT,W
-	movwf	DECODE_VALUE
-	call	DECODE_ROW3
-;End If
-ENDIF55
-;Exit Sub
-	banksel	STATUS
-	return
-;Else
-	goto	ENDIF51
-ELSE51_1
-;Let Button_Value = 255
-	movlw	255
-	movwf	BUTTON_VALUE
-;End If
-ENDIF51
-;Next
-	movlw	3
-	banksel	ROW
-	subwf	ROW,W
-	btfss	STATUS, C
-	goto	SysForLoop1
-ENDIF52
-SysForLoopEnd1
-	banksel	STATUS
+DMS_INNER
+	decfsz	DELAYTEMP, F
+	goto	DMS_INNER
+	decfsz	DELAYTEMP2, F
+	goto	DMS_OUTER
+	decfsz	SysWaitTempMS, F
+	goto	DMS_START
+	decfsz	SysWaitTempMS_H, F
+	goto	DMS_START
 	return
 
 ;********************************************************************************
@@ -7760,37 +7667,113 @@ ENDIF260
 
 ;********************************************************************************
 
-FN_MILLIS
-;dim Millis, MsCtr_ as long
-;disable interrupts while we read millis or we might get an
-;inconsistent value (e.g. in the middle of a write to millis)
-;IntOff
-	banksel	SYSINTSTATESAVE0
-	bcf	SYSINTSTATESAVE0,0
-	btfsc	INTCON,GIE
-	bsf	SYSINTSTATESAVE0,0
-ENDIF275
-	bcf	INTCON,GIE
-;Millis = MsCtr_
-	banksel	MSCTR_
-	movf	MSCTR_,W
-	movwf	MILLIS
-	movf	MSCTR__H,W
-	movwf	MILLIS_H
-	movf	MSCTR__U,W
-	movwf	MILLIS_U
-	movf	MSCTR__E,W
-	movwf	MILLIS_E
-;IntOn
-	banksel	SYSINTSTATESAVE0
-	btfss	SYSINTSTATESAVE0,0
-	bcf	INTCON,GIE
-ENDIF276
-	btfsc	SYSINTSTATESAVE0,0
-	bsf	INTCON,GIE
-ENDIF277
+MAKELCDGRAPHICS
+;Or CG0
+;CGArray(1) = b'00010001'
+	movlw	17
+	banksel	SYSCGARRAY_1
+	movwf	SYSCGARRAY_1
+;CGArray(2) = b'00010001'
+	movlw	17
+	movwf	SYSCGARRAY_2
+;CGArray(3) = b'00010001'
+	movlw	17
+	movwf	SYSCGARRAY_3
+;CGArray(4) = b'00001010'
+	movlw	10
+	movwf	SYSCGARRAY_4
+;CGArray(5) = b'00000100'
+	movlw	4
+	movwf	SYSCGARRAY_5
+;CGArray(6) = b'00000000'
+	clrf	SYSCGARRAY_6
+;CGArray(7) = b'00000000'
+	clrf	SYSCGARRAY_7
+;CGArray(8) = b'00000000'
+	clrf	SYSCGARRAY_8
+;LCDCreateChar 0, CGArray()
+	banksel	LCDCHARLOC
+	clrf	LCDCHARLOC
+	movlw	low CGARRAY
+	banksel	SYSLCDCHARDATAHANDLER
+	movwf	SysLCDCHARDATAHandler
+	movlw	high CGARRAY
+	movwf	SysLCDCHARDATAHandler_H
 	banksel	STATUS
-	return
+	call	LCDCREATECHAR
+	pagesel	$
+;Xor CG1
+;CGArray(1) = b'00010001'
+	movlw	17
+	banksel	SYSCGARRAY_1
+	movwf	SYSCGARRAY_1
+;CGArray(2) = b'00010001'
+	movlw	17
+	movwf	SYSCGARRAY_2
+;CGArray(3) = b'00010001'
+	movlw	17
+	movwf	SYSCGARRAY_3
+;CGArray(4) = b'00001010'
+	movlw	10
+	movwf	SYSCGARRAY_4
+;CGArray(5) = b'00000100'
+	movlw	4
+	movwf	SYSCGARRAY_5
+;CGArray(6) = b'00000000'
+	clrf	SYSCGARRAY_6
+;CGArray(7) = b'00011111'
+	movlw	31
+	movwf	SYSCGARRAY_7
+;CGArray(8) = b'00000000'
+	clrf	SYSCGARRAY_8
+;LCDCreateChar 1, CGArray()
+	movlw	1
+	banksel	LCDCHARLOC
+	movwf	LCDCHARLOC
+	movlw	low CGARRAY
+	banksel	SYSLCDCHARDATAHANDLER
+	movwf	SysLCDCHARDATAHandler
+	movlw	high CGARRAY
+	movwf	SysLCDCHARDATAHandler_H
+	banksel	STATUS
+	call	LCDCREATECHAR
+	pagesel	$
+;Not CG2
+;CGArray(1) = b'00011111'
+	movlw	31
+	banksel	SYSCGARRAY_1
+	movwf	SYSCGARRAY_1
+;CGArray(2) = b'00011111'
+	movlw	31
+	movwf	SYSCGARRAY_2
+;CGArray(3) = b'00010001'
+	movlw	17
+	movwf	SYSCGARRAY_3
+;CGArray(4) = b'00011111'
+	movlw	31
+	movwf	SYSCGARRAY_4
+;CGArray(5) = b'00010001'
+	movlw	17
+	movwf	SYSCGARRAY_5
+;CGArray(6) = b'00011111'
+	movlw	31
+	movwf	SYSCGARRAY_6
+;CGArray(7) = b'00011111'
+	movlw	31
+	movwf	SYSCGARRAY_7
+;CGArray(8) = b'00000000'
+	clrf	SYSCGARRAY_8
+;LCDCreateChar 2, CGArray()
+	movlw	2
+	banksel	LCDCHARLOC
+	movwf	LCDCHARLOC
+	movlw	low CGARRAY
+	banksel	SYSLCDCHARDATAHANDLER
+	movwf	SysLCDCHARDATAHandler
+	movlw	high CGARRAY
+	movwf	SysLCDCHARDATAHandler_H
+	banksel	STATUS
+	goto	LCDCREATECHAR
 
 ;********************************************************************************
 
@@ -8274,10 +8257,10 @@ SysSelect4Case2
 	btfss	STATUS, Z
 	goto	SysSelect4Case3
 ;Print "b"
-	movlw	low StringTable22
+	movlw	low StringTable21
 	banksel	SYSPRINTDATAHANDLER
 	movwf	SysPRINTDATAHandler
-	movlw	(high StringTable22) | 128
+	movlw	(high StringTable21) | 128
 	movwf	SysPRINTDATAHandler_H
 	banksel	STATUS
 	call	PRINT144
@@ -8665,82 +8648,14 @@ ENDIF267
 
 ;Start of program memory page 3
 	ORG	6144
-CHECK_AN
-;Wait 50 mS
-	movlw	50
-	movwf	SysWaitTempMS
-	clrf	SysWaitTempMS_H
-	call	Delay_MS
-;If Button_Value = BtAn Then
-	movlw	21
-	subwf	BUTTON_VALUE,W
-	btfss	STATUS, Z
-	goto	ELSE132_1
-;Wait 100 mS
-	movlw	100
-	movwf	SysWaitTempMS
-	clrf	SysWaitTempMS_H
-	call	Delay_MS
-;Get_Buttons
-	pagesel	GET_BUTTONS
-	call	GET_BUTTONS
-	pagesel	$
-;If Button_Value = BtAn Then
-	movlw	21
-	subwf	BUTTON_VALUE,W
-	btfss	STATUS, Z
-	goto	ELSE133_1
-;Wait 100 mS
-	movlw	100
-	movwf	SysWaitTempMS
-	clrf	SysWaitTempMS_H
-	call	Delay_MS
-;Get_Buttons
-	pagesel	GET_BUTTONS
-	call	GET_BUTTONS
-	pagesel	$
-;If Button_Value = BtAn Then
-	movlw	21
-	subwf	BUTTON_VALUE,W
-	btfss	STATUS, Z
-	goto	ELSE134_1
-;Let Button_Value = BtRand
-	movlw	26
-	movwf	BUTTON_VALUE
-;Else
-	goto	ENDIF134
-ELSE134_1
-;Let Button_Value = BtAn
-	movlw	21
-	movwf	BUTTON_VALUE
-;End If
-ENDIF134
-;Else
-	goto	ENDIF133
-ELSE133_1
-;Let Button_Value = BtAn
-	movlw	21
-	movwf	BUTTON_VALUE
-;End If
-ENDIF133
-;Else
-	goto	ENDIF132
-ELSE132_1
-;Let Button_Value = BtAn
-	movlw	21
-	movwf	BUTTON_VALUE
-;End If
-ENDIF132
-	return
-
-;********************************************************************************
-
 CHECK_MODULO
 ;Wait 50 mS
 	movlw	50
 	movwf	SysWaitTempMS
 	clrf	SysWaitTempMS_H
+	pagesel	Delay_MS
 	call	Delay_MS
+	pagesel	$
 ;If Button_Value = BtDi Then
 	movlw	19
 	subwf	BUTTON_VALUE,W
@@ -8750,6 +8665,7 @@ CHECK_MODULO
 	movlw	100
 	movwf	SysWaitTempMS
 	clrf	SysWaitTempMS_H
+	pagesel	Delay_MS
 	call	Delay_MS
 ;Get_Buttons
 	pagesel	GET_BUTTONS
@@ -8764,6 +8680,7 @@ CHECK_MODULO
 	movlw	100
 	movwf	SysWaitTempMS
 	clrf	SysWaitTempMS_H
+	pagesel	Delay_MS
 	call	Delay_MS
 ;Get_Buttons
 	pagesel	GET_BUTTONS
@@ -8821,7 +8738,9 @@ CLS
 	movlw	4
 	movwf	SysWaitTempMS
 	clrf	SysWaitTempMS_H
+	pagesel	Delay_MS
 	call	Delay_MS
+	pagesel	$
 ;Move to start of visible DDRAM
 ;LCDWriteByte(0x80)
 	movlw	128
@@ -8850,23 +8769,54 @@ DelayUS0
 
 ;********************************************************************************
 
-Delay_MS
-	incf	SysWaitTempMS_H, F
-DMS_START
-	movlw	14
-	movwf	DELAYTEMP2
-DMS_OUTER
-	movlw	189
-	movwf	DELAYTEMP
-DMS_INNER
-	decfsz	DELAYTEMP, F
-	goto	DMS_INNER
-	decfsz	DELAYTEMP2, F
-	goto	DMS_OUTER
-	decfsz	SysWaitTempMS, F
-	goto	DMS_START
-	decfsz	SysWaitTempMS_H, F
-	goto	DMS_START
+EPWRITE
+;Variable alias
+;Dim EEAddress As Word Alias EEADRH, EEADR
+;Dim EEDataValue Alias EEDATL_REF
+;Disable interrupt
+;IntOff
+	banksel	SYSINTSTATESAVE0
+	bcf	SYSINTSTATESAVE0,1
+	btfsc	INTCON,GIE
+	bsf	SYSINTSTATESAVE0,1
+ENDIF278
+	bcf	INTCON,GIE
+;Select data memory
+;SET EEPGD OFF
+	banksel	EECON1
+	bcf	EECON1,EEPGD
+;Set CFGS OFF
+	bcf	EECON1,CFGS
+;Start write
+;SET WREN ON
+	bsf	EECON1,WREN
+;EECON2 = 0x55
+	movlw	85
+	movwf	EECON2
+;EECON2 = 0xAA
+	movlw	170
+	movwf	EECON2
+;SET WR ON
+	bsf	EECON1,WR
+;SET WREN OFF
+	bcf	EECON1,WREN
+;Wait for write to complete
+;WAIT WHILE WR ON
+SysWaitLoop1
+	btfsc	EECON1,WR
+	goto	SysWaitLoop1
+;SET WREN OFF
+	bcf	EECON1,WREN
+;Restore interrupt
+;IntOn
+	banksel	SYSINTSTATESAVE0
+	btfss	SYSINTSTATESAVE0,1
+	bcf	INTCON,GIE
+ENDIF279
+	btfsc	SYSINTSTATESAVE0,1
+	bsf	INTCON,GIE
+ENDIF280
+	banksel	STATUS
 	return
 
 ;********************************************************************************
@@ -8963,7 +8913,9 @@ FN_LCDREADY
 	movlw	10
 	movwf	SysWaitTempMS
 	clrf	SysWaitTempMS_H
+	pagesel	Delay_MS
 	call	Delay_MS
+	pagesel	$
 ;LCDReady = TRUE
 	movlw	255
 	movwf	LCDREADY
@@ -9028,6 +8980,40 @@ ENDIF235
 	movlw	5
 	movwf	SysWaitTemp10US
 	goto	Delay_10US
+
+;********************************************************************************
+
+FN_MILLIS
+;dim Millis, MsCtr_ as long
+;disable interrupts while we read millis or we might get an
+;inconsistent value (e.g. in the middle of a write to millis)
+;IntOff
+	banksel	SYSINTSTATESAVE0
+	bcf	SYSINTSTATESAVE0,0
+	btfsc	INTCON,GIE
+	bsf	SYSINTSTATESAVE0,0
+ENDIF275
+	bcf	INTCON,GIE
+;Millis = MsCtr_
+	banksel	MSCTR_
+	movf	MSCTR_,W
+	movwf	MILLIS
+	movf	MSCTR__H,W
+	movwf	MILLIS_H
+	movf	MSCTR__U,W
+	movwf	MILLIS_U
+	movf	MSCTR__E,W
+	movwf	MILLIS_E
+;IntOn
+	banksel	SYSINTSTATESAVE0
+	btfss	SYSINTSTATESAVE0,0
+	bcf	INTCON,GIE
+ENDIF276
+	btfsc	SYSINTSTATESAVE0,0
+	bsf	INTCON,GIE
+ENDIF277
+	banksel	STATUS
+	return
 
 ;********************************************************************************
 
