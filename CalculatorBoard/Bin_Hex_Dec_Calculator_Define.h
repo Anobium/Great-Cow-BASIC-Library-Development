@@ -79,6 +79,8 @@
 #Define CG_Or         0 'Graphic symbol for Or
 #Define CG_Xor        1 'Graphic symbol for Xor
 #Define CG_Not        2 'Inverted Equals symbol for Not'
+#Define PacManFwd     3 'PacMan moving forward
+#Define PacManRev     4 'PacMan moving Back
 
 #Define EpMode        0 'Location of last used mode in EeProm'
 #Define Ep_Bit        1 'Location of 16bit or 32bit mode in EeProm

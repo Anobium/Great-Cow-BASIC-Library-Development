@@ -7,10 +7,10 @@
 #Option Explicit
 
 #Include "Bin_Hex_Dec_Calculator_Define.h"
-#Define       "3.15 11th Apr"
+#Define Codeversion    "3.15 11th Apr"
 #Define CopyRight   " (C) MkEDS 2019 "
 #Include <millis.h>       ' Include the millis() Library
-#Define TimeOut 120000     ' ScreenSaver timeout in mS currently 120 Seconds, or two minutes
+#Define TimeOut 12000     ' ScreenSaver timeout in mS currently 120 Seconds, or two minutes
 
 Dim     Dat           As Byte
 Dim     Temp          As Byte
@@ -886,10 +886,11 @@ Sub Show_SplashScreen
     CLS
     Print "V. "
     Print CodeVersion
+    Locate 1,0
+    print "H. "
+    Print HCodeversion
 
-    'Locate 1,0
-    'Print "h: "
-    'Print HCodeversion
+    Wait 1500 mS
 
     Locate 1,0
     Print CopyRight
