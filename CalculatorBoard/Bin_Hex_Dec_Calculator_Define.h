@@ -2,7 +2,6 @@
                      'have to be called within a subroutine.
                      '#StartUp is only allowed in header files
 
-#define HCodeversion "1.00"
 'LCD connection settings
 #Define LCD_IO 4
 #Define LCD_SPEED FAST
@@ -81,6 +80,8 @@
 #Define CG_Not        2 'Inverted Equals symbol for Not'
 #Define PacManFwd     3 'PacMan moving forward
 #Define PacManRev     4 'PacMan moving Back
+#Define BlankPill     5 'Blank 'Pill'
+#Define Pill          6 'Pill for PacMan
 
 #Define EpMode        0 'Location of last used mode in EeProm'
 #Define Ep_Bit        1 'Location of 16bit or 32bit mode in EeProm
