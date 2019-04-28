@@ -1,0 +1,21 @@
+HTTP/1.0 200 OK
+Content-Type: text/html
+X-Pad: avoid browser bug
+
+<html><head><title>GCB TCPIP</title>
+</head>
+<body>
+<font face=helvetica>
+<center><B><U><FONT SIZE=5 COLOR="#0000ff"><P>Great Cow BASIC TCP/IP Stack</P></B></U></FONT></center>
+<br><br>
+This page is served by a GCB HTTP µServer using the Great Cow BASIC TCP/IP stack.
+<br><br>
+Control & interface your GCB solutions via the web.
+<br><br>
+<a href="https://goo.gl/2JJMFT">Join the GCB Beta program</a>.
+<br><br>
+<img style="float: right;" src="http://goo.gl/1Vh8vM">
+<br>
+<br>
+<font size="1">@release 025.0b<br></font>
+</body></html>
