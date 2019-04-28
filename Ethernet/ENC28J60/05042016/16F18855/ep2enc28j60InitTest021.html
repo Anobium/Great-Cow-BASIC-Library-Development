@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (DD/MM/YYYY): 0.95 2016-04-24</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 16F18855</p>
+<p>Program Memory: 4343/8192 words (53.02%)</p>
+<p>RAM: 359/1024 bytes (35.06%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Page</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>77</td><td>217</td><td>1</td><td>INITUSART(7), ENC28J60_POLL(1), FNNOTBIT(1), ENC28J60_WRITEREG(1), ENC28J60_BITCLEAR(1), ENC28J60_BITSET(1), ENC28J60_INITIALISE(133), ENC28J60_INIT(1), INITSYS(1)</td></tr>
+<tr><td>ENC28J60_UTC_ADJUST</td><td>1</td><td>9</td><td>1</td><td></td></tr>
+<tr><td>ENC28J60_INITIALISE</td><td>9</td><td>51</td><td>1</td><td></td></tr>
+<tr><td>ENC28J60_INIT</td><td>63</td><td>451</td><td>1</td><td>SYSCOMPEQUAL(2), Delay_MS(3), ENC28J60_WRITEPHYREG(5), ENC28J60_WRITEREG(39), ENC28J60_READREG(2), FASTHWSPITRANSFER(1), SPIMODE(1)</td></tr>
+<tr><td>ENC28J60_ARPREPLY</td><td>17</td><td>138</td><td>2</td><td>ENC28J60_PACKETSEND(1), ENC28J60_WRITEBUFFER(1), ENC28J60_SETST_MAC(1)</td></tr>
+<tr><td>ENC28J60_BITSET</td><td>12</td><td>55</td><td>2</td><td>SYSDIVSUB(1), SYSCOMPLESSTHAN(1), FASTHWSPITRANSFER(2), ENC28J60_SELECTBANK(1)</td></tr>
+<tr><td>ENC28J60_BITCLEAR</td><td>12</td><td>55</td><td>2</td><td>SYSDIVSUB(1), SYSCOMPLESSTHAN(1), FASTHWSPITRANSFER(2), ENC28J60_SELECTBANK(1)</td></tr>
+<tr><td>ENC28J60_CALCCHECKSUM</td><td>15</td><td>163</td><td>2</td><td>SYSMULTSUB16(1), SYSCOMPLESSTHAN16(2), FNLSR(1)</td></tr>
+<tr><td>ENC28J60_GENERAL_CHECKSUM</td><td>19</td><td>163</td><td>2</td><td>SYSCOMPLESSTHAN16(2), FNLSR(1), FNLSL(2)</td></tr>
+<tr><td>ENC28J60_HTTP</td><td>82</td><td>406</td><td>1</td><td>ENC28J60_PACKETSEND(1), ENC28J60_TCP_CHECKSUM(1), ENC28J60_IP_HEADER_CHECKSUM(1), ENC28J60_PACKETSHAPE(1), SWAP(2), HSERPRINT(6), HSERPRINTCRLF(9), HSERPRINT(9)</td></tr>
+<tr><td>ENC28J60_IP_HEADER_CHECKSUM</td><td>20</td><td>49</td><td>2</td><td>SYSMULTSUB(1), ENC28J60_GENERAL_CHECKSUM(1)</td></tr>
+<tr><td>ENC28J60_PACKETRECEIVE</td><td>97</td><td>340</td><td>1</td><td>SYSCOMPEQUAL16(1), SYSCOMPEQUAL(5), ENC28J60_HTTP(1), ENC28J60_UDP(1), ENC28J60_PINGREPLY(1), ENC28J60_ARPREPLY(1), ENC28J60_READBUFFER(2), ENC28J60_WRITEREG(6), ENC28J60_BITSET(2), ENC28J60_READREG(4)</td></tr>
+<tr><td>ENC28J60_PACKETSEND</td><td>13</td><td>84</td><td>2</td><td>SYSCOMPEQUAL(2), ENC28J60_WRITEREG(2), ENC28J60_READREG(2), ENC28J60_BITCLEAR(3), ENC28J60_BITSET(3)</td></tr>
+<tr><td>ENC28J60_PACKETSHAPE</td><td>12</td><td>43</td><td>2</td><td></td></tr>
+<tr><td>ENC28J60_PINGREPLY</td><td>26</td><td>113</td><td>2</td><td>SYSMULTSUB16(1), ENC28J60_PACKETSEND(1), ENC28J60_WRITEBUFFER(1), ENC28J60_CALCCHECKSUM(2), ENC28J60_SETST_MAC(1)</td></tr>
+<tr><td>ENC28J60_POLL</td><td>4</td><td>25</td><td>3</td><td>ENC28J60_PACKETRECEIVE(1), ENC28J60_READREG(2)</td></tr>
+<tr><td>ENC28J60_READBUFFER</td><td>23</td><td>83</td><td>1</td><td>SYSCOMPLESSTHAN16(4)</td></tr>
+<tr><td>ENC28J60_READREG</td><td>26</td><td>73</td><td>2</td><td>SYSDIVSUB(1), SYSCOMPLESSTHAN(1), ENC28J60_SELECTBANK(1)</td></tr>
+<tr><td>ENC28J60_SELECTBANK</td><td>16</td><td>62</td><td>2</td><td>FASTHWSPITRANSFER(6)</td></tr>
+<tr><td>ENC28J60_SETST_MAC</td><td>9</td><td>61</td><td>2</td><td></td></tr>
+<tr><td>ENC28J60_SNTP_GET</td><td>72</td><td>169</td><td>2</td><td>SYSMULTSUB16(1), ENC28J60_PACKETSEND(1), ENC28J60_WRITEBUFFER(1), ENC28J60_UDP_CHECKSUM(1), ENC28J60_IP_HEADER_CHECKSUM(1)</td></tr>
+<tr><td>ENC28J60_SNTP</td><td>39</td><td>465</td><td>1</td><td>SYSDIVSUB32(7), SYSCOMPLESSTHAN32(3), HSERPRINTCRLF(2), HSERPRINT(5), HSERPRINT(8), ENC28J60_UTC_ADJUST(1)</td></tr>
+<tr><td>ENC28J60_TCP_CHECKSUM</td><td>0</td><td>1</td><td>2</td><td></td></tr>
+<tr><td>ENC28J60_UDP</td><td>43</td><td>75</td><td>2</td><td>SYSMULTSUB16(1), SYSCOMPEQUAL16(2), ENC28J60_SNTP_GET(1), ENC28J60_SNTP(1)</td></tr>
+<tr><td>ENC28J60_UDP_CHECKSUM</td><td>47</td><td>5</td><td>3</td><td></td></tr>
+<tr><td>ENC28J60_WRITEBUFFER</td><td>20</td><td>92</td><td>2</td><td>SYSCOMPLESSTHAN16(3), ENC28J60_WRITEREG(2)</td></tr>
+<tr><td>ENC28J60_WRITEREG</td><td>12</td><td>55</td><td>2</td><td>SYSDIVSUB(1), SYSCOMPLESSTHAN(1), FASTHWSPITRANSFER(2), ENC28J60_SELECTBANK(1)</td></tr>
+<tr><td>ENC28J60_WRITEPHYREG</td><td>5</td><td>45</td><td>3</td><td>SYSCOMPEQUAL(1), ENC28J60_WRITEREG(3), ENC28J60_READREG(2)</td></tr>
+<tr><td>SWAP</td><td>3</td><td>7</td><td>3</td><td></td></tr>
+<tr><td>FNLSR</td><td>5</td><td>22</td><td>3</td><td></td></tr>
+<tr><td>FNLSL</td><td>5</td><td>22</td><td>3</td><td></td></tr>
+<tr><td>FNNOTBIT</td><td>5</td><td>7</td><td>3</td><td></td></tr>
+<tr><td>INITSYS</td><td>479</td><td>15</td><td>3</td><td></td></tr>
+<tr><td>SYSMULTSUB</td><td>39</td><td>12</td><td>3</td><td></td></tr>
+<tr><td>SYSMULTSUB16</td><td>73</td><td>38</td><td>2</td><td>SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>SYSDIVSUB</td><td>48</td><td>20</td><td>3</td><td></td></tr>
+<tr><td>SYSDIVSUB32</td><td>40</td><td>96</td><td>2</td><td>SYSCOMPEQUAL32(1)</td></tr>
+<tr><td>SYSCOMPEQUAL</td><td>20</td><td>6</td><td>3</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL16</td><td>34</td><td>11</td><td>3</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL32</td><td>52</td><td>19</td><td>3</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN</td><td>23</td><td>7</td><td>3</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>15</td><td>3</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN32</td><td>63</td><td>25</td><td>3</td><td></td></tr>
+<tr><td>SPIMODE</td><td>75</td><td>57</td><td>2</td><td></td></tr>
+<tr><td>FASTHWSPITRANSFER</td><td>15</td><td>14</td><td>3</td><td></td></tr>
+<tr><td>HSERPRINTCRLF</td><td>6</td><td>35</td><td>2</td><td>Delay_MS(2), HSERSEND(2)</td></tr>
+<tr><td>INITUSART</td><td>117</td><td>15</td><td>1</td><td></td></tr>
+<tr><td>HSERSEND</td><td>127</td><td>14</td><td>3</td><td></td></tr>
+<tr><td>HSERPRINT</td><td>15</td><td>41</td><td>2</td><td>Delay_MS(1), HSERSEND(1)</td></tr>
+<tr><td>HSERPRINT</td><td>23</td><td>97</td><td>2</td><td>SYSDIVSUB(2), SYSCOMPLESSTHAN(2), Delay_MS(3), HSERSEND(3)</td></tr>
+<tr><td>HSERPRINT</td><td>20</td><td>91</td><td>2</td><td>SYSDIVSUB32(1), Delay_MS(1), SYSCOMPEQUAL32(1), HSERSEND(1)</td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>14</td><td>3</td><td></td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>95</td><td>2</td><td></td></tr>
+</table>
+</body>
+</html>

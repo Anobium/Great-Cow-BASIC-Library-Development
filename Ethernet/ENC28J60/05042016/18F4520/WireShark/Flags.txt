@@ -1,0 +1,21 @@
+ENC28j60 Ethernet Driver 026
+Initialised...
+
+
+
+Flags:10,0,0,34
+FIN 	SYN 	RST 	PSH 	ACK 	TCP_URG 
+0	1	0	0	0	0
+Hello
+
+
+Flags:10,0,0,34
+FIN 	SYN 	RST 	PSH 	ACK 	TCP_URG 
+0	0	0	0	1	0
+Hello
+
+
+Flags:10,0,0,34
+FIN 	SYN 	RST 	PSH 	ACK 	TCP_URG 
+0	0	1	0	1	0
+Hello

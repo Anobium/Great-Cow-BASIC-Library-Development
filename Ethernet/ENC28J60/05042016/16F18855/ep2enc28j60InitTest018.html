@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (DD/MM/YYYY): 0.95 2016-04-24</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 16F18855</p>
+<p>Program Memory: 2223/8192 words (27.14%)</p>
+<p>RAM: 254/1024 bytes (24.8%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Page</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>73</td><td>253</td><td>1</td><td>ENC28J60_POLL(1), FNNOTBIT(1), ENC28J60_WRITEREG(1), ENC28J60_WRITEBUFFERARP(1), ENC28J60_BITCLEAR(1), ENC28J60_BITSET(1), ENC28J60_INITIALISE(119), ENC28J60_INIT(1), INITSYS(1)</td></tr>
+<tr><td>ENC28J60_INITIALISE</td><td>9</td><td>51</td><td>1</td><td></td></tr>
+<tr><td>ENC28J60_INIT</td><td>63</td><td>331</td><td>1</td><td>SYSCOMPEQUAL(2), Delay_MS(3), ENC28J60_WRITEPHYREG(5), ENC28J60_WRITEREG(39), ENC28J60_READREG(2), FASTHWSPITRANSFER(1), SPIMODE(1)</td></tr>
+<tr><td>ENC28J60_WRITEREG</td><td>12</td><td>47</td><td>1</td><td>SYSDIVSUB(1), SYSCOMPLESSTHAN(1), FASTHWSPITRANSFER(2), ENC28J60_SELECTBANK(1)</td></tr>
+<tr><td>ENC28J60_WRITEPHYREG</td><td>5</td><td>41</td><td>2</td><td>SYSCOMPEQUAL(1), ENC28J60_WRITEREG(3), ENC28J60_READREG(2)</td></tr>
+<tr><td>ENC28J60_SELECTBANK</td><td>16</td><td>50</td><td>1</td><td>FASTHWSPITRANSFER(6)</td></tr>
+<tr><td>ENC28J60_READREG</td><td>26</td><td>68</td><td>1</td><td>SYSDIVSUB(1), SYSCOMPLESSTHAN(1), ENC28J60_SELECTBANK(1)</td></tr>
+<tr><td>ENC28J60_BITSET</td><td>12</td><td>47</td><td>1</td><td>SYSDIVSUB(1), SYSCOMPLESSTHAN(1), FASTHWSPITRANSFER(2), ENC28J60_SELECTBANK(1)</td></tr>
+<tr><td>ENC28J60_BITCLEAR</td><td>12</td><td>47</td><td>1</td><td>SYSDIVSUB(1), SYSCOMPLESSTHAN(1), FASTHWSPITRANSFER(2), ENC28J60_SELECTBANK(1)</td></tr>
+<tr><td>ENC28J60_PACKETSEND</td><td>13</td><td>76</td><td>1</td><td>SYSCOMPEQUAL(2), ENC28J60_WRITEREG(2), ENC28J60_READREG(2), ENC28J60_BITCLEAR(3), ENC28J60_BITSET(3)</td></tr>
+<tr><td>ENC28J60_WRITEBUFFERARP</td><td>44</td><td>126</td><td>1</td><td>ENC28J60_PACKETSEND(1), ENC28J60_WRITEBUFFER(1)</td></tr>
+<tr><td>ENC28J60_WRITEBUFFER</td><td>20</td><td>86</td><td>1</td><td>SYSCOMPLESSTHAN16(3), ENC28J60_WRITEREG(2)</td></tr>
+<tr><td>ENC28J60_READBUFFER</td><td>23</td><td>82</td><td>1</td><td>SYSCOMPLESSTHAN16(4)</td></tr>
+<tr><td>ENC28J60_PACKETRECEIVE</td><td>82</td><td>265</td><td>1</td><td>SYSCOMPEQUAL16(1), SYSCOMPEQUAL(5), ENC28J60_PINGREPLY(1), ENC28J60_ARPREPLY(1), ENC28J60_READBUFFER(2), ENC28J60_WRITEREG(6), ENC28J60_BITSET(2), ENC28J60_READREG(4)</td></tr>
+<tr><td>ENC28J60_POLL</td><td>4</td><td>23</td><td>2</td><td>ENC28J60_PACKETRECEIVE(1), ENC28J60_READREG(2)</td></tr>
+<tr><td>ENC28J60_SETST_MAC</td><td>9</td><td>54</td><td>1</td><td></td></tr>
+<tr><td>ENC28J60_ARPREPLY</td><td>17</td><td>118</td><td>1</td><td>ENC28J60_PACKETSEND(1), ENC28J60_WRITEBUFFER(1), ENC28J60_SETST_MAC(1)</td></tr>
+<tr><td>ENC28J60_PINGREPLY</td><td>26</td><td>100</td><td>1</td><td>SYSMULTSUB16(1), ENC28J60_PACKETSEND(1), ENC28J60_WRITEBUFFER(1), ENC28J60_CALCCHECKSUM(2), ENC28J60_SETST_MAC(1)</td></tr>
+<tr><td>ENC28J60_CALCCHECKSUM</td><td>15</td><td>135</td><td>1</td><td>SYSMULTSUB16(1), SYSCOMPLESSTHAN16(2), FNLSR(1)</td></tr>
+<tr><td>FNLSR</td><td>5</td><td>20</td><td>2</td><td></td></tr>
+<tr><td>FNNOTBIT</td><td>5</td><td>7</td><td>2</td><td></td></tr>
+<tr><td>INITSYS</td><td>479</td><td>15</td><td>2</td><td></td></tr>
+<tr><td>SYSMULTSUB16</td><td>73</td><td>38</td><td>1</td><td>SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>SYSDIVSUB</td><td>48</td><td>20</td><td>2</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL</td><td>20</td><td>6</td><td>2</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL16</td><td>34</td><td>11</td><td>1</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN</td><td>23</td><td>7</td><td>2</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>15</td><td>2</td><td></td></tr>
+<tr><td>SPIMODE</td><td>75</td><td>57</td><td>1</td><td></td></tr>
+<tr><td>FASTHWSPITRANSFER</td><td>15</td><td>13</td><td>2</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>14</td><td>2</td><td></td></tr>
+</table>
+</body>
+</html>

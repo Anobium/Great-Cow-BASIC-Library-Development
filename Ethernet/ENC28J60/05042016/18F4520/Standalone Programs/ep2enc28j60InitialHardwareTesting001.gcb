@@ -1,0 +1,110 @@
+'''A program  for GCGB and GCB.
+'''--------------------------------------------------------------------------------------------------------------------------------
+'''
+''':		Simple set linetest to 1 thru 5.  Then, test the line using a scope.
+'''			This does not use SPI but simply toggles line state for m hi to lo.
+
+
+'''@author 		[todo]
+'''@licence		GPL
+'''@version		[todo]
+'''@date   		[todo]
+'''********************************************************************************
+
+; ----- Configuration
+#chip 16f18855,32
+#Config FEXTOSC_OFF, RSTOSC_HFINT32
+#Config WRT_OFF, CPD_ON, MCLRE_ON
+
+
+#define ENC28J60_DI			portb.4							'Connected to Device SO
+#define ENC28J60_DO			portb.5							'Connected to Device SI
+#define ENC28J60_SCK		portb.3							'Connected to Clock
+#define ENC28J60_CS 		portb.2							'Chip select line
+#define ENC28J60_RESET  PORTb.1							'Reset line
+
+#define debugport portb.0
+
+'USART settings
+#define USART_BAUD_RATE 9600
+#define USART_BLOCKING
+#define USART_TX_BLOCKING
+
+; ----- Define Hardware settings
+set debugport off
+
+; ----- Variables
+  ' No Variables specified in this example. All byte variables are defined upon use.
+
+; ----- Quick Command Reference:
+
+; ----- Main body of program commences here.
+
+    wait 1 s
+    HSerPrintCRLF 2
+    HserPrint "ENC28J60 Ethernet Driver Initial Hardware Tests" : HSerPrintCRLF
+    HserPrint "Init Test": HSerPrintCRLF
+
+
+      #define ENC28J60_Select         Set ENC28J60_CS off
+      #define ENC28J60_Deselect       Set ENC28J60_CS on
+      #define ENC28J60_Reset_CMD			Set ENC28J60_RESET on: Wait 10 ms :Set ENC28J60_RESET off: Wait 10 ms :Set ENC28J60_RESET on: Wait 10 ms
+
+			'These are for TESTING ONLY! THESE ARE NOT THE CORRECT DIRECTIONS!!
+      Dir ENC28J60_DI OUT
+      Dir ENC28J60_DO Out
+      Dir ENC28J60_SCK Out
+      Dir ENC28J60_CS OUT
+      Dir ENC28J60_RESET OUT
+
+	linetest = 1
+
+	select case linetest
+
+		' End to end test on Clock to SCK pin... typically pin 6
+  	case 1
+      	do Forever
+              Set ENC28J60_SCK On
+							wait 10 ms
+              Set ENC28J60_SCK Off
+              wait 10 ms
+      	Loop
+
+		' End to end test on Data Out to SI pin... typically pin 5
+  	case 2
+      	do Forever
+              Set ENC28J60_DO On
+							wait 10 ms
+              Set ENC28J60_DO Off
+              wait 10 ms
+      	Loop
+
+		' End to end test on Data In to SO pin... typically pin 4
+  	case 3
+      	do Forever
+              Set ENC28J60_DI On
+							wait 10 ms
+              Set ENC28J60_DI Off
+              wait 10 ms
+      	Loop
+
+		' End to end test on Chip Select to CS pin... typically pin 7
+  	case 4
+      	do Forever
+              Set ENC28J60_CS On
+							wait 10 ms
+              Set ENC28J60_CS Off
+              wait 10 ms
+      	Loop
+
+		' End to end test on Chip Reset to RST pin... typically pin 8
+  	case 5
+      	do Forever
+              Set ENC28J60_RESET On
+							wait 10 ms
+              Set ENC28J60_RESET Off
+              wait 10 ms
+      	Loop
+
+
+	End Select

@@ -1,0 +1,2128 @@
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>FOR /L %G IN (1 1 65535) DO (
+ECHO %G  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 1  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+1
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 2  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+2
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 3  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+3
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 4  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+4
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 5  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+5
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 6  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+6
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 7  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+7
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 8  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+8
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 9  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+9
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 10  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+10
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 11  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+11
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 12  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+12
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 13  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+13
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 14  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+14
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 15  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+15
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 16  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+16
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 17  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+17
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 18  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+18
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 19  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+19
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 20  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+20
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 21  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+21
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 22  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+22
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 23  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+23
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 24  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+24
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 25  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+25
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 26  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+26
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 27  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+27
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 28  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+28
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 29  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+29
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 30  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+30
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 31  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+31
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 32  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+32
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 33  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+33
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 34  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+34
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 35  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+35
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 36  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+36
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 37  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+37
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 38  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+38
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 39  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+39
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 40  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+40
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 41  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+41
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 42  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+42
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 43  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+43
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 44  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+44
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 45  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+45
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 46  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+46
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 47  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+47
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 48  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+48
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 49  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+49
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 50  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+50
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 51  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+51
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 52  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+52
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 53  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+53
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 54  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+54
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 55  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+55
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 56  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+56
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 57  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+57
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 58  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+58
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 59  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+59
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 60  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+60
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 61  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+61
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 62  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+62
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 63  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+63
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 64  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+64
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 65  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+65
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 66  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+66
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 67  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+67
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 68  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+68
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 69  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+69
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 70  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+70
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 71  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+71
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 72  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+72
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 73  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+73
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 74  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+74
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 75  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+75
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 76  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+76
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 77  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+77
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 78  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+78
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 79  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+79
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 80  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+80
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 81  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+81
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 82  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+82
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 83  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+83
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 84  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+84
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 85  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+85
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 86  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+86
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 87  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+87
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 88  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+88
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 89  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+89
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 90  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+90
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 91  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+91
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 92  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+92
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 93  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+93
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 94  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+94
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 95  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+95
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 96  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+96
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 97  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+97
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 98  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+98
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 99  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+99
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 100  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+100
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 101  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+101
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 102  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+102
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 103  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+103
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 104  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+104
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 105  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+105
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 106  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+106
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 107  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+107
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 108  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+108
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 109  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+109
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 110  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+110
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 111  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+111
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 112  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+112
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 113  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+113
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 114  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+114
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 115  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+115
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 116  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+116
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 117  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+117
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 118  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+118
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 119  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+119
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 120  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+120
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 121  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+121
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 122  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+122
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 123  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+123
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 124  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+124
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 125  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+125
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 126  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+126
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 127  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+127
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 128  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+128
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 129  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+129
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 130  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+130
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 131  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+131
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 132  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+132
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 133  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+133
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 134  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+134
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 135  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+135
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 136  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+136
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 137  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+137
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 138  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+138
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 139  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+139
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 140  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+140
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 141  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+141
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 142  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+142
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 143  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+143
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 144  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+144
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 145  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+145
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 146  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+146
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 147  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+147
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 148  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+148
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 149  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+149
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 150  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+150
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 151  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+151
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 152  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+152
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 153  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+153
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 154  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+154
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 155  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+155
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 156  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+156
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 157  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+157
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 158  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+158
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 159  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+159
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 160  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+160
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 161  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+161
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 162  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+162
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 163  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+163
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 164  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+164
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 165  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+165
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 166  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+166
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 167  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+167
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 168  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+168
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 169  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+169
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 170  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+170
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 171  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+171
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 172  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+172
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Response time out
+
+Statistics: Received=0, Corupted=0, Lost=1
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 173  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+173
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Terminate batch job (Y/N)? 
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 174  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+174
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Terminate batch job (Y/N)? Terminate batch job (Y/N)? Terminate batch job (Y/N)? Terminate batch job (Y/N)? Terminate batch job (Y/N)? 
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 175  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+175
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Terminate batch job (Y/N)? 
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 176  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+176
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Terminate batch job (Y/N)? Terminate batch job (Y/N)? 
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 177  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+177
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+
+Terminate batch job (Y/N)? 
+
+D:\GCB\Dev_Drivers\ENC28J60\05042016\tools>(
+ECHO 178  
+ ECHOTOOL 192.168.0.1 /p UDP /n 1 
+) 
+178
+
+Hostname 192.168.0.1 resolved as 192.168.0.1
+

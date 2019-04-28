@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (DD/MM/YYYY): 0.95 2016-04-26</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 16F18855</p>
+<p>Program Memory: 4774/8192 words (58.28%)</p>
+<p>RAM: 499/1024 bytes (48.73%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Page</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>78</td><td>271</td><td>1</td><td>INITUSART(6), ENC28J60_POLL(1), ENC28J60_WRITEREG(1), ENC28J60_BITCLEAR(1), ENC28J60_BITSET(1), ENC28J60_INITIALISE(139), ENC28J60_INIT(1), HSERSEND(1), HSERPRINT(3), HSERPRINTCRLF(3), INITSYS(1)</td></tr>
+<tr><td>MY_UDP_HANDLER</td><td>46</td><td>187</td><td>2</td><td>SYSCOMPEQUAL16(4), HSERSEND(1), HSERPRINTCRLF(2), HSERPRINT(6)</td></tr>
+<tr><td>ENC28J60_INITIALISE</td><td>9</td><td>51</td><td>1</td><td></td></tr>
+<tr><td>ENC28J60_INIT</td><td>63</td><td>445</td><td>2</td><td>SYSCOMPEQUAL(2), Delay_MS(3), ENC28J60_WRITEPHYREG(5), ENC28J60_WRITEREG(39), ENC28J60_READREG(2), FASTHWSPITRANSFER(1), SPIMODE(1)</td></tr>
+<tr><td>ENC28J60_ARPREPLY</td><td>17</td><td>140</td><td>2</td><td>ENC28J60_PACKETSEND(1), ENC28J60_WRITEBUFFER(1), ENC28J60_SET_RESPONSE_MACADDRESS(1)</td></tr>
+<tr><td>ENC28J60_BITSET</td><td>12</td><td>47</td><td>3</td><td>SYSDIVSUB(1), SYSCOMPLESSTHAN(1), FASTHWSPITRANSFER(2), ENC28J60_SELECTBANK(1)</td></tr>
+<tr><td>ENC28J60_BITCLEAR</td><td>12</td><td>47</td><td>3</td><td>SYSDIVSUB(1), SYSCOMPLESSTHAN(1), FASTHWSPITRANSFER(2), ENC28J60_SELECTBANK(1)</td></tr>
+<tr><td>ENC28J60_CALCCHECKSUM</td><td>15</td><td>165</td><td>2</td><td>SYSMULTSUB16(1), SYSCOMPLESSTHAN16(2), FNLSR(1)</td></tr>
+<tr><td>ENC28J60_GENERAL_CHECKSUM</td><td>19</td><td>162</td><td>2</td><td>SYSCOMPLESSTHAN16(2), FNLSR(1), FNLSL(2)</td></tr>
+<tr><td>ENC28J60_HTTP</td><td>151</td><td>705</td><td>1</td><td>SYSMULTSUB16(2), ENC28J60_PACKETSEND(2), ENC28J60_WRITEBUFFER(2), ENC28J60_TCP_CHECKSUM(2), ENC28J60_IP_HEADER_CHECKSUM(2), ENC28J60_PACKETSHAPE(2), SWAP(4), HSERPRINT(6), HSERSEND(10), HSERPRINT(13), HSERPRINTCRLF(6)</td></tr>
+<tr><td>ENC28J60_IP_HEADER_CHECKSUM</td><td>19</td><td>45</td><td>3</td><td>SYSMULTSUB(1), ENC28J60_GENERAL_CHECKSUM(1)</td></tr>
+<tr><td>ENC28J60_PACKETRECEIVE</td><td>127</td><td>579</td><td>1</td><td>SYSMULTSUB16(2), SYSCOMPEQUAL16(3), SYSCOMPEQUAL(7), ENC28J60_HTTP(1), ENC28J60_PACKETSEND(1), ENC28J60_WRITEBUFFER(1), ENC28J60_UDP_CHECKSUM(1), SWAP(2), ENC28J60_SETIPADDRS(1), MY_UDP_HANDLER(1), ENC28J60_PINGREPLY(1), ENC28J60_ARPREPLY(1), ENC28J60_READBUFFER(2), HSERPRINTCRLF(1), ENC28J60_WRITEREG(6), ENC28J60_BITSET(2), HSERPRINT(4), ENC28J60_READREG(6)</td></tr>
+<tr><td>ENC28J60_PACKETSEND</td><td>13</td><td>100</td><td>2</td><td>SYSCOMPEQUAL(2), ENC28J60_WRITEREG(2), ENC28J60_READREG(2), ENC28J60_BITCLEAR(3), ENC28J60_BITSET(3)</td></tr>
+<tr><td>ENC28J60_PACKETSHAPE</td><td>12</td><td>27</td><td>3</td><td></td></tr>
+<tr><td>ENC28J60_PINGREPLY</td><td>26</td><td>117</td><td>2</td><td>SYSMULTSUB16(1), ENC28J60_PACKETSEND(1), ENC28J60_WRITEBUFFER(1), ENC28J60_CALCCHECKSUM(2), ENC28J60_SET_RESPONSE_MACADDRESS(1)</td></tr>
+<tr><td>ENC28J60_POLL</td><td>9</td><td>37</td><td>3</td><td>ENC28J60_PACKETRECEIVE(1), ENC28J60_READREG(2), HSERPRINTCRLF(1)</td></tr>
+<tr><td>ENC28J60_READBUFFER</td><td>30</td><td>125</td><td>2</td><td>SYSCOMPLESSTHAN16(6)</td></tr>
+<tr><td>ENC28J60_READREG</td><td>26</td><td>75</td><td>2</td><td>SYSDIVSUB(1), SYSCOMPLESSTHAN(1), ENC28J60_SELECTBANK(1)</td></tr>
+<tr><td>ENC28J60_SELECTBANK</td><td>16</td><td>50</td><td>3</td><td>FASTHWSPITRANSFER(6)</td></tr>
+<tr><td>ENC28J60_SET_RESPONSE_MACADDRESS</td><td>9</td><td>50</td><td>3</td><td></td></tr>
+<tr><td>ENC28J60_SETIPADDRS</td><td>10</td><td>29</td><td>3</td><td>ENC28J60_IP_HEADER_CHECKSUM(1), ENC28J60_SET_RESPONSE_MACADDRESS(1)</td></tr>
+<tr><td>ENC28J60_TCP_CHECKSUM</td><td>41</td><td>365</td><td>1</td><td>SYSDIVSUB16(1), SYSMULTSUB16(1), SYSCOMPLESSTHAN16(2)</td></tr>
+<tr><td>ENC28J60_UDP_CHECKSUM</td><td>49</td><td>5</td><td>3</td><td></td></tr>
+<tr><td>ENC28J60_WRITEBUFFER</td><td>20</td><td>97</td><td>2</td><td>SYSCOMPLESSTHAN16(3), ENC28J60_WRITEREG(2)</td></tr>
+<tr><td>ENC28J60_WRITEREG</td><td>12</td><td>47</td><td>3</td><td>SYSDIVSUB(1), SYSCOMPLESSTHAN(1), FASTHWSPITRANSFER(2), ENC28J60_SELECTBANK(1)</td></tr>
+<tr><td>ENC28J60_WRITEPHYREG</td><td>5</td><td>39</td><td>3</td><td>SYSCOMPEQUAL(1), ENC28J60_WRITEREG(3), ENC28J60_READREG(2)</td></tr>
+<tr><td>SWAP</td><td>3</td><td>7</td><td>3</td><td></td></tr>
+<tr><td>FNLSR</td><td>5</td><td>22</td><td>3</td><td></td></tr>
+<tr><td>FNLSL</td><td>5</td><td>22</td><td>3</td><td></td></tr>
+<tr><td>INITSYS</td><td>479</td><td>15</td><td>2</td><td></td></tr>
+<tr><td>SYSMULTSUB</td><td>39</td><td>12</td><td>3</td><td></td></tr>
+<tr><td>SYSMULTSUB16</td><td>73</td><td>36</td><td>3</td><td>SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>SYSDIVSUB</td><td>48</td><td>20</td><td>3</td><td></td></tr>
+<tr><td>SYSDIVSUB16</td><td>38</td><td>54</td><td>1</td><td>SYSCOMPEQUAL16(1)</td></tr>
+<tr><td>SYSCOMPEQUAL</td><td>20</td><td>6</td><td>3</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL16</td><td>34</td><td>11</td><td>3</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN</td><td>23</td><td>7</td><td>3</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>15</td><td>3</td><td></td></tr>
+<tr><td>SPIMODE</td><td>75</td><td>57</td><td>2</td><td></td></tr>
+<tr><td>FASTHWSPITRANSFER</td><td>15</td><td>14</td><td>3</td><td></td></tr>
+<tr><td>HSERPRINTCRLF</td><td>6</td><td>27</td><td>3</td><td>Delay_MS(2), HSERSEND(2)</td></tr>
+<tr><td>INITUSART</td><td>117</td><td>15</td><td>1</td><td></td></tr>
+<tr><td>HSERSEND</td><td>127</td><td>14</td><td>3</td><td></td></tr>
+<tr><td>HSERPRINT</td><td>15</td><td>37</td><td>3</td><td>Delay_MS(1), HSERSEND(1)</td></tr>
+<tr><td>HSERPRINT</td><td>23</td><td>97</td><td>2</td><td>SYSDIVSUB(2), SYSCOMPLESSTHAN(2), Delay_MS(3), HSERSEND(3)</td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>14</td><td>3</td><td></td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>265</td><td>2</td><td></td></tr>
+</table>
+</body>
+</html>

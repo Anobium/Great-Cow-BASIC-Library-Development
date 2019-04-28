@@ -1,0 +1,67 @@
+	#chip 16f18855,32
+	#Config FEXTOSC_OFF, RSTOSC_HFINT32
+	#Config WRT_OFF, CPD_ON, MCLRE_ON
+
+    'Set the PPS of the ports.
+    UNLOCKPPS
+      'USART
+      RC0PPS = 0x0010		  'RC0->EUSART:TX;
+      RXPPS  = 0x0011 		'RC1->EUSART:RX;
+
+      'SPI
+      RB3PPS = 0x0014     'RB3->MSSP1:SCK1;
+      SSP1CLKPPS = 0x000B 'RB3->MSSP1:SCK1;
+      SSP1DATPPS = 0x000C 'RB4->MSSP1:SDI1;
+      RB5PPS = 0x0015     'RB5->MSSP1:SDO1;
+    LOCKPPS
+
+    'USART settings
+    #define USART_BAUD_RATE 9600
+    #define USART_BLOCKING
+    #define USART_TX_BLOCKING
+
+    dim buffer1(4)
+    dim buffer2(4)
+
+    buffer1=1,2,3,4
+    buffer2=1,2,3,4
+
+    dir portc.7 out
+
+    '9.200us
+    do Forever
+
+      if buffer1(1)=buffer2(1) then
+        if buffer1(2)=buffer2(2) then
+          if buffer1(3)=buffer2(3) then
+            if buffer1(4)=buffer2(4) then
+
+               setwith ( portc.7, FnNotBit ( portc.7) )
+
+            end if
+          end if
+        end if
+      end if
+
+    loop
+
+
+'    dim bufferethermac Alias SYSBUFFER1_1, SYSBUFFER1_2, SYSBUFFER1_3, SYSBUFFER1_4 as long
+'    dim myethermac Alias SYSBUFFER2_1, SYSBUFFER2_3 , SYSBUFFER2_3 , SYSBUFFER2_4 as long
+'    bufferethermac = 1
+'    myethermac = 1
+'    portc.7 = 1
+'    '4.720us
+'    do Forever
+'      if 1 = 1 Then
+'          setwith ( portc.7, FnNotBit ( portc.7) )
+'      end if
+'    loop
+'
+'    portc.7 = 1
+'    '14.70us
+'    do Forever
+'      if bufferethermac = myethermac Then
+'          setwith ( portc.7, FnNotBit ( portc.7) )
+'      end if
+'    loop

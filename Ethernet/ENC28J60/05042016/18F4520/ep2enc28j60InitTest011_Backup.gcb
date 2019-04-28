@@ -1,0 +1,185 @@
+'''A program  for GCGB and GCB.
+'''A program  for GCGB and GCB.
+'''--------------------------------------------------------------------------------------------------------------------------------
+''' Description  :  Setup ENC28J60, then reads data from the Ethernet stream to a PC terminal.
+'''
+'''	You NEED a PC terminal connected to the serial out on the microprocessor.
+'''
+'''@author 		[todo]
+'''@licence		GPL
+'''@version		[todo]
+
+'''@date   		[todo]
+'''********************************************************************************
+
+'                                                    ___________
+'                                  MCLR - MCLR/E.3 -|1    U   40|- B.7/PGD - BUS 1 = Address Digit 4
+'                      Wireless Data In (D0) - A.0 -|2        39|- B.6/PGC - BUS 1 = Address Digit 3
+'                      Wireless Data In (D1) - A.1 -|3        38|- B.5/PGM - BUS 1 = Address Digit 2
+'                      Wireless Data In (D2) - A.2 -|4        37|- B.4 - BUS 1 = Address Digit 1
+'                      Wireless Data In (D3) - A.3 -|5        36|- B.3 - Data Bit 8
+'                             Button Input 1 - A.4 -|6        35|- B.2 - Data Bit 4
+'                             Button Input 2 - A.5 -|7        34|- B.1 - Data Bit 2
+'                             Button Input 4 - E.0 -|8        33|- B.0 - Data Bit 1
+'                Square Wave Input (I2C Bus) - E.1 -|9        32|- (+)
+'                                 Hooter Out - E.2 -|10       31|- (-)
+'                                              (+) -|11       30|- D.7 - BUS 2 = Address Digit 4
+'                                              (-) -|12       29|- D.6 - BUS 2 = Address Digit 3
+'                                             OSC1 -|13       28|- D.5 - BUS 2 = Address Digit 2
+'                                             OSC2 -|14       27|- D.4 - BUS 2 = Address Digit 1
+'                    BUS 1 = Address Digit 5 - C.0 -|15       26|- C.7/RX - RS232 RX
+'                    BUS 1 = Address Digit 6 - C.1 -|16       25|- C.6/TX - RS232 TX
+'                  Aux I/O 1 + Heartbeat LED - C.2 -|17       24|- C.5 - Button Input 3
+'                        I2C Bus (Clock) - C.3/SCL -|18       23|- C.4/SDA - I2C Bus (Data)
+'                    BUS 2 = Address Digit 5 - D.0 -|19       22|- D.3 - Aux I/O 3 -
+'                    BUS 2 = Address Digit 6 - D.1 -|20_______21|- D.2 - Aux I/O 2 -
+'
+
+#Chip 18F4520, 20
+#Config Osc = HS
+#Config MCLRE = ON
+
+    #include "..\ENC28J60_013.h"
+'    #define debug
+
+    'USART settings
+    #define USART_BAUD_RATE 9600
+    #define USART_BLOCKING
+    #define USART_TX_BLOCKING
+
+; ----- Define Hardware settings
+    ; ----- Constants
+    #Define ENC28J60_DI			PortC.4							'Connected to Device SO
+    #Define ENC28J60_DO			PortC.5							'Connected to Device SI
+    #Define ENC28J60_SCK		PortC.3							'Connected to Clock
+    #Define ENC28J60_CS 		PortA.5							'Chip select line
+    #Define ENC28J60_RESET  PortD.2							'Reset line
+    #Define Heartbeat 			PortC.2
+    #Define TX 							PortC.7
+    #Define RX							PortC.6
+    #Define Button					PortA.4
+
+
+; ----- Variables
+  'Lots defined... to many....
+
+; ----- Quick Command Reference:
+
+; ----- Main body of program commences here.
+
+    HSerPrintCRLF 2
+    HserPrint "ENC28J60 Ethernet Driver 011" : HSerPrintCRLF
+    HserPrint "Init Test": HSerPrintCRLF 2
+    HSerSend 7
+
+		'Set Key data.  mac, ip address etc.
+    ipaddr = 10,0,0,35
+    ipport = 80
+    ipserver = 10,0,0,36
+    iprouter = 10,0,0,2
+    macaddr = 0x00, 0x1E, 0xC0, 0x00, 0x00, 0x02
+
+
+    ENC28J60_Init ( macaddr )
+
+    dir Heartbeat out
+    dir Button in
+
+    ENC28J60_bitSet( ECON1 , econ1_txrst )
+    ENC28J60_bitClear( ECON1 , econ1_txrst )
+
+'    Enc28j60_data = ENC28J60_ReadReg( erevid)
+'    HSerPrint "#1"
+'    HSerPrintCRLF
+'    HSerPrint "Rx   : ERXST  ERXND  ERXWRPT ERXRDPT ERXFCON EPKTCNT"
+'    HSerPrintCRLF
+'    Enc28j60_data = ENC28J60_ReadReg(erxsth)
+'    HSerPrint "       " + Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(erxstl)
+'    HSerPrint Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(erxndh)
+'    HSerPrint "   " + Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(erxndl)
+'    HSerPrint Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(erxwrpth)
+'    HSerPrint "   " + Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(erxwrptl)
+'    HSerPrint Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(erxrdpth)
+'    HSerPrint "    " + Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(erxrdptl)
+'    HSerPrint Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(erxfcon)
+'    HSerPrint "    " + Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(epktcnt)
+'    HSerPrint "      " + Hex(enc28j60_data);
+'    HSerPrintCRLF
+'    HSerPrint "Write ARP"
+'    HSerPrintCRLF 2
+
+    repeat 5
+'      ARP-test. Fill buffer and send it on its way.
+      Enc28j60writebufferARP
+    end Repeat
+
+'    Enc28j60_data = ENC28J60_ReadReg( erevid)
+'    HSerPrint "#2"
+'    HSerPrintCRLF
+'    HSerPrint "Rx   : ERXST  ERXND  ERXWRPT ERXRDPT ERXFCON EPKTCNT"
+'    HSerPrintCRLF
+'    Enc28j60_data = ENC28J60_ReadReg(erxsth)
+'    HSerPrint "       " + Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(erxstl)
+'    HSerPrint Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(erxndh)
+'    HSerPrint "   " + Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(erxndl)
+'    HSerPrint Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(erxwrpth)
+'    HSerPrint "   " + Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(erxwrptl)
+'    HSerPrint Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(erxrdpth)
+'    HSerPrint "    " + Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(erxrdptl)
+'    HSerPrint Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(erxfcon)
+'    HSerPrint "    " + Hex(enc28j60_data);
+'    Enc28j60_data = ENC28J60_ReadReg(epktcnt)
+'    HSerPrint "      " + Hex(enc28j60_data);
+'    HSerPrintCRLF 2
+'    HSerPrintCRLF 2
+
+    dim OldpacketCounterOut, OldpacketCounterIn as long
+    ENC28J60_writeReg(ERXFCON, 0x00)
+    Do forever
+
+        Setwith ( Heartbeat, FnNotBit ( Heartbeat ))
+
+        if packetCounterOut <> OldpacketCounterOut or packetCounterIn <> OldpacketCounterIn then
+          HserPrint cnt
+          HserPrint ", "
+          HserPrint packetCounterOut
+          HserPrint ", "
+          HserPrint packetCounterIn
+
+          HSerPrintCRLF
+          OldpacketCounterIn = packetCounterIn
+          OldpacketCounterOut = packetCounterOut
+
+        end if
+
+        if Button = 1 then
+            Enc28j60regdump
+'            eth_read_at ( ENC_TXBUF_ST, 43 )
+            wait while Button = 1
+        end if
+
+        Enc28j60poll 'watch the terminal screen.... All traffic visible
+
+    Loop
+
+
+    end
+
+; ----- Support methods.  Subroutines and Functions

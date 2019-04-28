@@ -1,0 +1,433 @@
+'Current limitations.
+'1. Packet size cannot exceed 700 bytes.
+'2. Means, web page table cannot exceed 595 bytes.
+'3. Web pages have to be...... wait for this one.... an odd number of bytes!! ?
+
+'So, if things do not work....
+
+'1. Check the TCP packet size in the terminal windows - cannot exceed 685 bytes.
+'2. Check the table - cannot exceed 595
+'3. Make sure the TCP packet size in the terminal window is an odd number.
+'All this is sortable but for today. We are in a great place!
+'A web page is max at about 633... but, the converter strips out chars not required so this will vary on the CRLF's used.
+'you need the latest HTML2GCB.EXE.  I have uploaded also.
+'you need the latest compiler.  I have uploaded also.
+'
+'lots of todos
+
+'''A program  for GCGB and GCB.
+'''A program  for GCGB and GCB.
+'''--------------------------------------------------------------------------------------------------------------------------------
+''' Description  :  Setup ENC28j60, then reads data from the Ethernet stream to a PC terminal.
+'''
+'''	You NEED a PC terminal connected to the serial out on the microprocessor.
+'''
+'''@author 		[todo]
+'''@licence		GPL
+'''@version		[todo]
+
+'''@date   		[todo]
+'''********************************************************************************
+'                                                    ___________
+'                                  MCLR - MCLR/E.3 -|1    U   40|- B.7/PGD - BUS 1 = Address Digit 4
+'                      Wireless Data In (D0) - A.0 -|2        39|- B.6/PGC - BUS 1 = Address Digit 3
+'                      Wireless Data In (D1) - A.1 -|3        38|- B.5/PGM - BUS 1 = Address Digit 2
+'                      Wireless Data In (D2) - A.2 -|4        37|- B.4 - BUS 1 = Address Digit 1
+'                      Wireless Data In (D3) - A.3 -|5        36|- B.3 - Data Bit 8
+'                             Button Input 1 - A.4 -|6        35|- B.2 - Data Bit 4
+'                             Button Input 2 - A.5 -|7        34|- B.1 - Data Bit 2
+'                             Button Input 4 - E.0 -|8        33|- B.0 - Data Bit 1
+'                Square Wave Input (I2C Bus) - E.1 -|9        32|- (+)
+'                                 Hooter Out - E.2 -|10       31|- (-)
+'                                              (+) -|11       30|- D.7 - BUS 2 = Address Digit 4
+'                                              (-) -|12       29|- D.6 - BUS 2 = Address Digit 3
+'                                             OSC1 -|13       28|- D.5 - BUS 2 = Address Digit 2
+'                                             OSC2 -|14       27|- D.4 - BUS 2 = Address Digit 1
+'                    BUS 1 = Address Digit 5 - C.0 -|15       26|- C.7/RX - RS232 RX
+'                    BUS 1 = Address Digit 6 - C.1 -|16       25|- C.6/TX - RS232 TX
+'                  Aux I/O 1 + Heartbeat LED - C.2 -|17       24|- C.5 - Button Input 3
+'                        I2C Bus (Clock) - C.3/SCL -|18       23|- C.4/SDA - I2C Bus (Data)
+'                    BUS 2 = Address Digit 5 - D.0 -|19       22|- D.3 - Aux I/O 3 -
+'                    BUS 2 = Address Digit 6 - D.1 -|20_______21|- D.2 - Aux I/O 2 -
+'
+
+#Chip 18F4520, 20
+#Config Osc = HS
+#Config PWRT = On
+#Config MCLRE = On
+#Config WDT = Off
+#Config LVP = Off
+#Config BOREN = Off
+#Config STVREN = Off
+#Config PBADEN = Off
+
+    #include "index.htm"
+    #include "..\ENC28j60_028.h"
+    #include "..\ENC28j60_028_Aliases.h"
+
+    'USART settings
+    #define USART_BAUD_RATE 9600
+    #define USART_BLOCKING
+    #define USART_TX_BLOCKING
+
+; ----- Define Hardware settings
+    ; ----- Constants
+    #Define ENC28J60_DI								PortC.4			'Connected to Device SO
+    #Define ENC28J60_DO								PortC.5			'Connected to Device SI
+    #Define ENC28J60_SCK							PortC.3			'Connected to Clock
+    #Define ENC28J60_CS 							PortA.5			'Chip select line
+    #Define ENC28J60_RESET  					PortD.2			'Reset line
+    #Define Heartbeat 								PortC.2
+    #Define TX 												PortC.7
+    #Define RX												PortC.6
+    #Define I2C_MODE 						  		Master
+    #Define I2C_DATA 						  	 	PortC.4
+    #Define I2C_CLOCK 								PortB.0
+    #Define I2C_DISABLE_INTERRUPTS 		On
+    #Define LCD_IO 										10
+    #Define LCD_2C_Address_1 					0x4E 				'Default to 0x4E
+    #Define LCD_SPEED 								Fast
+    #Define LCD_Backlight_On_State  	1
+    #Define LCD_Backlight_Off_State 	0
+    #Define Delay											1 S
+
+
+Dir PortE.1	In
+Dim My_Pot As Byte
+
+; ----- Variables
+  'Lots defined... to many....
+
+; ----- Quick Command Reference:
+
+; ----- Main body of program commences here.
+    'Do not remove this LABEL - this is required.
+    Reset_ENC26j60:
+    #ifdef ENC28j60_Hserial_Supported
+        HSerPrintCRLF 2
+        HserPrint "ENC28j60 Ethernet Driver 028" : HSerPrintCRLF
+        HSerSend 7
+        My_Pot = ReadAD(AN6)
+        HSerPrint My_Pot
+        HSerPrintCRLF
+    #endif
+
+    #ifdef ENC28j60_Lcd_Supported
+      Cls
+        Locate (1,1)
+          Print "ENC28j60 Ethernet"
+        Locate (2,5)
+          Print "Driver 024"
+          Wait Delay
+          Cls
+    #endif
+
+		'Local key data:  ip address and mac address.
+    ipaddr = 10,0,0,35
+    macaddr = 0x00, 0x1E, 0xC0, 0x00, 0x00, 0x02
+
+    'Details of a remote server
+    ipport = 80
+    ipserver = 10,0,0,36
+
+    'Details of your router
+    iprouter = 10,0,0,2
+    macaddrrouter = 0x44, 0x94, 0xfc, 0xa3, 0xe5, 0x8f
+
+    'Remote IP address of the SNTP server
+    sntpserveraddr = 129, 6, 15, 28
+
+    ENC28j60_Init ( macaddr )
+
+    #ifdef ENC28j60_Hserial_Supported
+        HserPrint "Initialised"
+        HSerPrintCRLF
+    #endif
+
+    #ifdef ENC28j60_Lcd_Supported
+    		Locate (1,4)
+        Print "Initialised."
+    #endif
+
+    #define SwitchIn porta.4
+    dir SwitchIn  in
+
+    #define ButtonDown = 1
+    buttonstate = ButtonDown
+
+    ENC28j60_bitSet( ECON1 , econ1_txrst )
+    ENC28j60_bitClear( ECON1 , econ1_txrst )
+
+'    ENC28j60_Ntp_get                       'get the Network Time once
+    #ifdef ENC28j60_Hserial_Supported
+        HSerPrint "..."
+        HSerPrintCRLF 2
+    #endif
+
+    'Remove all filters
+    ENC28j60_writeReg(ERXFCON, 0x00)
+
+    Do forever
+
+        if SwitchIn = buttonstate then
+
+            if buttonstate  = ButtonDown then
+
+                #ifdef ENC28j60_packetCounting_Supported
+                  #ifdef ENC28j60_Hserial_Supported
+                      HserPrint cnt
+                      HserPrint ", "
+                      HserPrint packetCounterOut
+                      HserPrint ", "
+                      HserPrint packetCounterIn
+                      HserPrint ", "
+                  #endif
+                  OldpacketCounterIn = packetCounterIn
+                  OldpacketCounterOut = packetCounterOut
+                #endif
+
+                #ifdef ENC28j60regdump_Supported
+                  ENC28j60_regdump
+                #endif
+
+            end if
+
+        end if
+
+        ENC28j60_poll 'Start the process.
+
+    Loop
+
+
+    end
+
+; ----- Support methods.  Subroutines and Functions
+
+' CHANGE Epoch_seconds  TO SUIT LOCAL NEEDS.. IN SECONDS!!
+sub ENC28j60_UTC_Adjust ( in Epoch_seconds AS long )
+
+  'London time
+'  Epoch_seconds = Epoch_seconds + 3600
+
+  'South Africa time
+  Epoch_seconds = Epoch_seconds + 7200
+
+
+End sub
+
+
+Sub My_udp_handler
+
+;  Uncomment to show UDP packet data
+'            dim I_x as word
+'
+;        Calcualte UDP packet length
+'            I_value16_h = T_udp_len0
+'            [byte]I_value16 = T_udp_len1
+'            I_value16 = I_value16 - 8
+'
+'            For I_x = T_udp_data_pointer To ( T_udp_data_pointer + I_value16 - 1 )
+'                HSerPrint i_x
+'                HSerPrint "."
+'              Next
+'            HSerPrintCRLF
+'
+'            For I_x = T_udp_data_pointer To ( T_udp_data_pointer + I_value16 - 1 )
+'              HSerPrint hex(etherbuffer(i_x))
+'              HSerPrint ":"
+'            Next
+'            HSerPrintCRLF
+'
+'            For I_x = T_udp_data_pointer To ( T_udp_data_pointer + I_value16 - 1 )
+'                HSerPrint chr(etherbuffer(i_x))
+'              Next
+'            HSerPrintCRLF
+'            HSerPrint " -----------------------------------------------"
+'            HSerPrintCRLF
+
+      select case T_udp_destport
+          case 6000
+
+              #ifdef ENC28j60_reinitialisation_Supported
+                  if T_udp_data = "R" then
+                      ENC28j60_Initialise
+                      goto Reset_ENC26j60
+                  end if
+              #endif
+
+              #ifdef ENC28j60regdump_Supported
+                  if T_udp_data = "D" then
+                      ENC28j60_regdump
+                  end if
+              #endif
+
+          case 5000
+
+             'non-echo on PORT 5000
+             Select Case T_udp_data
+
+                   #ifdef ENC28j60_sntp_Remote_Supported
+                       CASE "T"
+                          HserPrint "Time...": HSerPrintCRLF
+                          ENC28j60_sntp_get
+                   #endif
+
+             End Select
+
+
+          case 5002
+
+    ;        Calcualte UDP packet length
+            I_value16_h = T_udp_len0
+            [byte]I_value16 = T_udp_len1
+            I_value16 = I_value16 - 8
+
+            #ifdef ENC28j60_Lcd_Supported
+              If  I_value16 = 2  then 'LCD Command
+
+                  select case T_udp_data0
+                      case 0
+                        'clear lcd
+                        Cls
+                      case 1
+                        Locate (0,0)
+                        Print "locate 1,0"
+                      case 2
+                        Locate (1,0)
+                        Print "locate 2,0"
+                      case 3
+                        Locate (2,0)
+                        Print "locate 3,0"
+                      case 4
+                        Locate (3,0)
+                        Print "locate 4,0"
+                  end select
+
+               else
+
+               'LCD string
+                  Locate (0,0)
+                  Print chr(T_udp_data0)
+              End If
+            #endif
+
+             'LCD Control on PORT 5002
+             if  I_value16 = 2  then 'LCD Command
+
+                select case T_udp_data0
+                    case 0
+                      'clear lcd
+                      HSerPrint "CLS"
+                    case 1
+                      HSerPrint "locate 1,0"
+                    case 2
+                      HSerPrint "locate 2,0"
+                    case 3
+                      HSerPrint "locate 3,0"
+                    case 4
+                      HSerPrint "locate 4,0"
+
+                end select
+                HSerPrintCRLF
+
+             else
+
+             'LCD string
+                HSerprint "Print "
+                HSerSend T_udp_data0
+                HSerPrintCRLF
+             end if
+
+      end select
+'
+    End Sub
+
+;If you want use the CALCULATED UDP checksum.  Not required typically.
+'    #define ENC28j60_UDP_checkSum_Supported
+
+;If you want the ENC28j60 to respond to ICMP/Ping requests
+    #define ENC28j60_ping_Supported
+
+;If you want the ENC28j60 to put things on the terminal
+    #define ENC28j60_Hserial_Supported
+    ;If you want to implement packet counting - you require ENC28j60_Hserial_Supported
+        #define ENC28j60_packetCounting_Supported
+    ;If you want to see the HTTP packet info
+        #define ENC28j60_ShowHTTPInfo_Supported
+
+;If you want the ENC28j60 to put things on the LCD
+    #define ENC28j60_Lcd_Supported
+
+;If you want the UDP protocols to be supported.  You cannot turn off UDP/ARP
+    #define ENC28j60_UDP_Supported
+    ;If you want to use UDP/Port 6000 and R to remote reset the ENC28j60 via UDP terminal application
+        #define ENC28j60_reinitialisation_Supported
+
+    ;If you want to use UDP/SNTP time. Provides lookup and terminal... but you will require ENC28j60_Hserial_Supported for the terminal!
+        #define ENC28j60_sntp_Supported
+
+    ;If you want to adjust the UDP/SNTP time. You need to define a sub called ENC28j60_UTC_Adjust ( in Epoch_seconds as Long )
+        #define ENC28j60_sntp_UTC_adjust_supported
+
+    ;If you want to call the UDP/SNTP time get time event.  Use a UDP client application on Port 5000 and "T" to call remote SNTP time.  Will display result on terminal.
+        #define ENC28j60_sntp_Remote_Supported
+
+    ;If you want to adjust the UDP/ECHO on port 7
+       #define ENC28j60_Echo7_Supported
+
+    ;If you want to support the UDP/Port 6000 and D to dump the registers from a UDP terminal application to the terminal
+        #define ENC28j60regdump_Supported
+
+;If you want the TCP protocols to be supported.
+    #define ENC28j60_tcp_supported
+    ;If you want the HTTP protocol to be supported.
+        #define ENC28j60_http_supported
+
+    ;If you want the Telnet protocol to be supported.
+'        #define ENC28j60_telnet_supported
+
+
+;If you want to add your own UDP handler.
+         #define ENC28j60_Handle_udp My_udp_handler
+
+
+#define HTTP_HANDLER userSub
+#define etherBufferSize 500
+Sub UserSub
+    'Called when there is a request
+    HTTPPrint "REFRESH: 5"
+    HTTPPrint ""
+    HTTPPrint "<html>"
+    HTTPPrint "Analog inputs are: "
+    for analogChannel = 0 to 3
+        HTTPPrint "<br />"
+        HTTPPrint "<br />"
+        HTTPPrint str(analogChannel)
+        HTTPPrint " = "
+        HTTPPrint str(ReadAD( analogChannel ))
+        HTTPPrint "<br />"
+    next
+    HTTPPrint "</html>"
+ReadTable index1,1, tt
+'    HTTPSend
+End Sub
+
+Sub HTTPPrint( HTTPData As String)
+'Copy data
+    For currbyte = 1 to HTTPData(0)
+        etherBuffer(arrayloc) = HTTPData(currbyte)
+        arrayloc += 1
+        If arrayloc >= etherBufferSize Then
+'            HTTPSend
+        End IF
+    Next
+    etherBuffer(arrayloc) = 0x0d: arrayloc += 1
+    etherBuffer(arrayloc) = 0x0a: arrayloc += 1
+
+End Sub
+
+Sub HTTPSend
+    if arrayloc0 > Then
+    'Do whatever it takes to flush buffer here
+    End If
+End Sub

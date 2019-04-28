@@ -1,0 +1,115 @@
+<html>
+<head>
+    <title>Microchip TCP/IP Stack Home</title>
+    <script src="/mchp.js" type="text/javascript"></script>
+</head>
+<body bgcolor="white" onload="newAJAXCommand('Version.cgi','txtStackVersion'); newAJAXCommand('BuildDate.cgi','txtBuildDate'); newAJAXCommand('Status.cgi','txtAutoUpdateStatus', true);">
+    <table border="0" width="100%">
+        <tr>
+            <td>
+                <img src="Mchp.gif" />
+            </td>
+            <td width="100%">
+                <p align="right">
+                    <font size="6" face="MS Sans Serif"><b>Microchip TCP/IP Stack </b></font>
+                </p>
+            </td>
+        </tr>
+    </table>
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" fgcolor="white">
+        <tr bgcolor="#FF0000" fgcolor="white">
+            <td width="25%">
+                <font color="#FFFFFF"><b>Home</b> </font>
+            </td>
+            <td width="25%">
+                <a href="Features.htm"><font color="#FFFFFF"><b>Features</b> </font></a>
+            </td>
+            <td width="25%">
+                <a href="Arch.htm"><font color="#FFFFFF"><b>Architecture</b> </font></a>
+            </td>
+            <td width="25%">
+                <a href="Footprnt.htm"><font color="#FFFFFF"><b>Stack Footprint</b> </font></a>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td valign="top" width="49%">
+                <b>Welcome!</b>
+                <br>
+                Stack version: <span id="txtStackVersion">Unknown</span><br>
+                Build date: <span id="txtBuildDate">Unknown</span><br>
+                <p>
+                    This site is used to demonstrate the power and abilities of an 8 or 16-bit embedded
+                    web server. This site is powered by a Microchip PIC microcontroller running a Microchip
+                    TCP/IP Stack. Everything you see is served through a Microchip ENC28J60 10Base-T
+                    Ethernet controller or the PIC18F97J60 family Ethernet module.
+                </p>
+                <p>
+                    The bottom portion of this page illustrates real-time control of the demo board.
+                    The &quot;Status&quot;
+                </p>
+            </td>
+            <td valign="top" width="2%">
+            </td>
+            <td valign="top" width="49%">
+                <p>
+                    section refreshes with board information periodically using JavaScript and the &quot;Actions&quot;
+                    section issues commands to toggle the on-board LEDs or LCD text (if LCD module is
+                    present).
+                </p>
+                <p>
+                    You can push the on-board switch(es) or rotate the potentiometer and see the new
+                    data. You may also click on one of the two LED command buttons to toggle on-board
+                    LEDs.
+                </p>
+                <p>
+                    If your browser does not support AJAX, you may wish to see <a href="Index.cgi">this
+                        page</a> for an easily refreshable static snapshot of the board state with control
+                    options.
+                </p>
+            </td>
+        </tr>
+    </table>
+    <table cellpadding="3">
+        <form>
+            <tr>
+                <td>
+                    <b>Actions</b>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Toggle LEDs:</td>
+                <td>
+                    <input type="button" value="LED2" onclick="GetServerFile('0?1=LED2','')" />
+                </td>
+                <td>
+                    <input type="button" value="LED1" onclick="GetServerFile('0?0=LED1','')" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Write to LCD:</td>
+                <td>
+                    <input type="text" name="3" id="LCDText" size="16" />
+                </td>
+                <td>
+                    <input type="button" value="Write" onclick="GetServerFile('1?3='+document.getElementById('LCDText').value,'')" />
+                </td>
+            </tr>
+        </form>
+        <tr>
+            <td>
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                <b>Status</b>
+            </td>
+        </tr>
+    </table>
+    <span id="txtAutoUpdateStatus">Loading...</span>
+</body>
+</html>

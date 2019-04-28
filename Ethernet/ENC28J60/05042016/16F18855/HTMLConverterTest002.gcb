@@ -1,0 +1,159 @@
+'''A demonstration program for GCGB and GCB.
+'''--------------------------------------------------------------------------------------------------------------------------------
+'''This program
+'''
+'''
+'''@author
+'''@licence	GPL
+'''@version
+'''@date   	01.11.2015
+'''********************************************************************************
+
+; ----- Configuration
+
+  #chip 16f877a, 4
+  #include "index.htm"
+
+  'Set up hardware serial connection
+  #define USART_BAUD_RATE 9600
+  #define USART_BLOCKING
+
+  #define debug
+
+  'To stop your brain from exploding, map the HTML references to meaningful variables
+  'Look at the bottom of the 'included' file for the array addresses to be mapped.
+  'Using a define simplifies the use.  You can use any meaningful constant.
+  '
+  ' #define AN2_GCB_HTML    HTMLMapping(1) maps a nice constant the variable HTMLMapping(1)
+  ' you could use the following but this is a not a meaningful.
+  ' #define POT2    HTMLMapping(1)... where POT2 still maps to the array.
+  '
+
+  #define AN2_GCB_HTML          HTMLMapping(1)
+  #define AN3_GCB_HTML          HTMLMapping(2)
+  #define PAGECOUNT_GCB_HTML    HTMLMapping(3)
+  #define PORTC_GCB_HTML        HTMLMapping(4)
+  #define PORTB_GCB_HTML        HTMLMapping(5)
+
+
+  'Now the real program.
+  dir porta.0 in          'switch
+  dir porta.2 in          'adc2
+  dir porta.3 in          'adc3
+
+  dir portc Out           'led array
+  dir portd Out           'led array
+
+  'You MUST use a WORD value as the can table contain more that 255 bytes.
+  dim TableLoc as Word
+
+  'Read the AD ports and display
+  do Forever
+
+    'Read the ADCs and lookup in a table to show the LED value.
+    readtable gray_code, ( ReadAD10 ( AN2 ) / 64 ), AN2_GCB_HTML      'This maps to the first element in the array... but, we use the constant! Easier.
+    readtable gray_code, ( ReadAD10 ( AN3 ) / 64 ), AN3_GCB_HTML
+
+    'Ensure we are only using the 4bits of the LED array
+    AN2_GCB_HTML = AN2_GCB_HTML & 0x0F
+    AN3_GCB_HTML = AN3_GCB_HTML & 0x0F
+
+    'Assign value to ports
+    portc = AN2_GCB_HTML
+    portd = AN3_GCB_HTML
+
+    'Show the state of ports
+    PORTC_GCB_HTML = portc   'portc
+    PORTB_GCB_HTML = portd   'portd
+
+    if porta.0 = 1 then DisplayHTMLPage
+  loop
+
+  end
+
+
+  'We need to output as many tables defined in the tables list
+  Sub DisplayHTMLPage
+    'Initialise a index. This is required.
+    HTMLElementTracker = 1
+
+    PAGECOUNT_GCB_HTML++
+
+    #ifdef SizeofTable1
+        for TableLoc = 1 to SizeofTable1
+            ReadTable index1, TableLoc, inByte
+            OutputHTMLVariable ( inByte )
+        Next
+    #endif
+
+    #ifdef SizeofTable2
+        for TableLoc = 1 to SizeofTable2
+            ReadTable index2, TableLoc, inByte
+            OutputHTMLVariable ( inByte )
+        Next
+    #endif
+
+    #ifdef SizeofTable3
+        for TableLoc = 1 to SizeofTable3
+            ReadTable index3, TableLoc, inByte
+            OutputHTMLVariable ( inByte )
+        Next
+    #endif
+
+    #ifdef SizeofTable4
+        for TableLoc = 1 to SizeofTable4
+            ReadTable index4, TableLoc, inByte
+            OutputHTMLVariable ( inByte )
+        Next
+    #endif
+
+    'Add more statements, if required
+
+  End Sub
+
+  'This routine goes through the byte provided and when it finds a Zero value byte, it transforms this single byte into the required data.
+  'The type of data output is either a string or a byte.  It is assumed these are asigned to Javascript variables in the HTML.
+  Sub OutputHTMLVariable ( in inByte )
+
+    if inByte = 0 then
+        'transform table value to real data.
+        'these both output same data. You may need to updated for your own needs.
+        if HTMLMappingType(HTMLElementTracker) = StringVar then
+            'transform to a string
+            HserPrint HTMLMapping(HTMLElementTracker)
+        else
+            'transform to a byte
+            HserPrint HTMLMapping(HTMLElementTracker)
+        end if
+        'Increment the element tracker as we have transformed an element, point to the next element.
+        HTMLElementTracker++
+        #ifdef debug
+          wait 1 s
+        #endif
+    Else
+        'Literal output. No transformation.
+        HSerPrint chr(inByte)
+    end if
+
+  end sub
+
+ 'this is NOT part of the HTML solution. It is simply to manage the LED array
+ 'transforms bitwise values to numeric values for LED display only.
+ table gray_code
+    0
+    0
+    0
+    1
+    1
+    1
+    3
+    3
+    3
+    3
+    7
+    7
+ 		7
+    15
+    15
+    15
+ end table

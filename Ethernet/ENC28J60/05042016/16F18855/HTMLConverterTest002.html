@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (DD/MM/YYYY): 0.95 2016-03-13</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 16F877A</p>
+<p>Program Memory: 2792/8192 words (34.08%)</p>
+<p>RAM: 75/368 bytes (20.38%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Page</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>29</td><td>101</td><td>1</td><td>SYSCOMPLESSTHAN16(2), INITUSART(4), SYSDIVSUBINT(2), DISPLAYHTMLPAGE(1), READAD10(2), INITSYS(1)</td></tr>
+<tr><td>DISPLAYHTMLPAGE</td><td>26</td><td>55</td><td>1</td><td>SYSCOMPLESSTHAN16(2), OUTPUTHTMLVARIABLE(2)</td></tr>
+<tr><td>OUTPUTHTMLVARIABLE</td><td>13</td><td>45</td><td>1</td><td>Delay_S(1), HSERPRINT(1), CHR(1), HSERPRINT(2)</td></tr>
+<tr><td>READAD10</td><td>40</td><td>48</td><td>1</td><td>Delay_10US(1)</td></tr>
+<tr><td>INITSYS</td><td>479</td><td>22</td><td>1</td><td></td></tr>
+<tr><td>SYSDIVSUB</td><td>48</td><td>17</td><td>1</td><td></td></tr>
+<tr><td>SYSDIVSUB16</td><td>38</td><td>56</td><td>1</td><td>SYSCOMPEQUAL16(1)</td></tr>
+<tr><td>SYSDIVSUBINT</td><td>14</td><td>31</td><td>1</td><td>SYSDIVSUB16(1)</td></tr>
+<tr><td>SYSCOMPEQUAL16</td><td>34</td><td>11</td><td>1</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN</td><td>23</td><td>7</td><td>1</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>15</td><td>1</td><td></td></tr>
+<tr><td>CHR</td><td>6</td><td>23</td><td>1</td><td></td></tr>
+<tr><td>INITUSART</td><td>117</td><td>18</td><td>1</td><td></td></tr>
+<tr><td>HSERSEND</td><td>127</td><td>8</td><td>1</td><td></td></tr>
+<tr><td>HSERPRINT</td><td>15</td><td>34</td><td>1</td><td>Delay_MS(1), HSERSEND(1)</td></tr>
+<tr><td>HSERPRINT</td><td>23</td><td>64</td><td>1</td><td>SYSDIVSUB(2), SYSCOMPLESSTHAN(2), Delay_MS(3), HSERSEND(3)</td></tr>
+<tr><td>Delay_10US</td><td>0</td><td>7</td><td>1</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>14</td><td>1</td><td></td></tr>
+<tr><td>Delay_S</td><td>0</td><td>8</td><td>1</td><td>Delay_MS(1)</td></tr>
+<tr><td>GRAY_CODE</td><td>0</td><td>30</td><td>1</td><td></td></tr>
+<tr><td>INDEX1</td><td>0</td><td>2032</td><td>2</td><td></td></tr>
+<tr><td>INDEX1_H</td><td>0</td><td>21</td><td>1</td><td></td></tr>
+<tr><td>INDEX2</td><td>0</td><td>125</td><td>1</td><td></td></tr>
+</table>
+</body>
+</html>
