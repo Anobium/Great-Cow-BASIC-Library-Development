@@ -1,0 +1,46 @@
+
+
+'Chip Settings
+#chip 16F886,16
+
+'Include
+#include <glcd.h>
+'#include "TTF.h"
+#include "Digital7.h"
+
+'GLCD selected extension font set. ASCII characters 31-254, the extended font uses 1358 bytes of program memory
+#define GLCD_EXTENDEDFONTSET1
+#define DigitalfntSize DigitalMediumSize
+
+;Defines (Constants)
+#define GLCD_RW PORTB.1  'D9 to pin 5 of LCD
+#define GLCD_RESET PORTB.5 'D13 to pin 17 of LCD
+#define GLCD_CS1 PORTB.3 'D12 to actually since CS1, CS2 can be reversed on some devices
+#define GLCD_CS2 PORTB.4 'D11 to actually since CS1, CS2 can be reversed on some devices
+#define GLCD_RS PORTB.0  'D8 to pin 4 D/I pin on LCD
+#define GLCD_ENABLE PORTB.2 'D10 to Pin 6 on LCD
+#define GLCD_DB0 PORTC.7 'D0 to pin 7 on LCD
+#define GLCD_DB1 PORTC.6 'D1 to pin 8 on LCD
+#define GLCD_DB2 PORTC.5 'D2 to pin 9 on LCD
+#define GLCD_DB3 PORTC.4 'D3 to pin 10 on LCD
+#define GLCD_DB4 PORTC.3 'D4 to pin 11 on LCD
+#define GLCD_DB5 PORTC.2 'D5 to pin 12 on LCD
+#define GLCD_DB6 PORTC.1 'D6 to pin 13 on LCD
+#define GLCD_DB7 PORTC.0 'D7 to pin 14 on LCD
+
+
+Dim CharStr as Byte
+Dim str1 as string
+Wait 1 s
+'Main Program
+InitGLCD
+
+GLCDForeground= 1
+
+PrintDigital 10 , 10 , "12345oC", 1  , 16
+'PrintDigital 10 , 60 , "12345oC", 1  ,
+'PrintDigital 10 , 120 , "12345oC", 1  , 38
+'PrintDigital 10 , 190 , "12345oC", 1  , 40
+Do Forever
+
+Loop

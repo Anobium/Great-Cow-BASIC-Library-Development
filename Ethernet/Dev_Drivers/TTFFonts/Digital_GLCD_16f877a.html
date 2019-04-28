@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (DD/MM/YYYY): 0.94 2015-08-05</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 16F886</p>
+<p>Program Memory: 6569/8192 words (80.19%)</p>
+<p>RAM: 162/368 bytes (44.02%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Page</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>25</td><td>58</td><td>1</td><td>SYSCOMPLESSTHAN16(10), SYSREADSTRING(1), Delay_S(1), PRINTDIGITAL(1), INITGLCD_KS0108(28), INITSYS(1)</td></tr>
+<tr><td>DIGITALINIT</td><td>1</td><td>3</td><td>1</td><td></td></tr>
+<tr><td>PRINTDIGITAL</td><td>13</td><td>60</td><td>4</td><td>DRAWDIGITAL(1)</td></tr>
+<tr><td>DRAWDIGITAL</td><td>148</td><td>455</td><td>3</td><td>SYSDIVSUB(1), SYSMULTSUB16(1), SYSCOMPLESSTHAN16(3), PSET_KS0108(2)</td></tr>
+<tr><td>INITGLCD_KS0108</td><td>25</td><td>61</td><td>1</td><td>Delay_MS(2), GLCDCLS_KS0108(1), GLCDWRITEBYTE_KS0108(2)</td></tr>
+<tr><td>GLCDCLS_KS0108</td><td>21</td><td>54</td><td>4</td><td>GLCDWRITEBYTE_KS0108(3)</td></tr>
+<tr><td>PSET_KS0108</td><td>48</td><td>91</td><td>4</td><td>SYSDIVSUB(1), GLCDREADBYTE_KS0108(2), GLCDWRITEBYTE_KS0108(4)</td></tr>
+<tr><td>GLCDWRITEBYTE_KS0108</td><td>45</td><td>74</td><td>3</td><td>Delay_US(1), GLCDREADBYTE_KS0108(1)</td></tr>
+<tr><td>GLCDREADBYTE_KS0108</td><td>21</td><td>49</td><td>4</td><td></td></tr>
+<tr><td>INITSYS</td><td>365</td><td>21</td><td>4</td><td></td></tr>
+<tr><td>SYSREADSTRING</td><td>103</td><td>40</td><td>4</td><td></td></tr>
+<tr><td>SYSMULTSUB16</td><td>73</td><td>42</td><td>1</td><td>SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>SYSDIVSUB</td><td>48</td><td>17</td><td>4</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>15</td><td>3</td><td></td></tr>
+<tr><td>Delay_US</td><td>0</td><td>10</td><td>2</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>14</td><td>4</td><td></td></tr>
+<tr><td>Delay_S</td><td>0</td><td>8</td><td>4</td><td>Delay_MS(1)</td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>59</td><td>2</td><td></td></tr>
+<tr><td>DIGITAL7_DESCRIPTORS</td><td>0</td><td>1038</td><td>1</td><td></td></tr>
+<tr><td>DIGITAL7_DESCRIPTORS_H</td><td>0</td><td>1038</td><td>2</td><td></td></tr>
+<tr><td>DIGITAL7_18</td><td>0</td><td>686</td><td>3</td><td></td></tr>
+<tr><td>DIGITAL7_18_H</td><td>0</td><td>25</td><td>4</td><td></td></tr>
+<tr><td>DIGITAL7_20</td><td>0</td><td>798</td><td>3</td><td></td></tr>
+<tr><td>DIGITAL7_20_H</td><td>0</td><td>25</td><td>4</td><td></td></tr>
+<tr><td>DIGITAL7_22</td><td>0</td><td>840</td><td>1</td><td></td></tr>
+<tr><td>DIGITAL7_22_H</td><td>0</td><td>25</td><td>4</td><td></td></tr>
+<tr><td>DIGITAL7_24</td><td>0</td><td>938</td><td>2</td><td></td></tr>
+<tr><td>DIGITAL7_24_H</td><td>0</td><td>25</td><td>4</td><td></td></tr>
+</table>
+</body>
+</html>
