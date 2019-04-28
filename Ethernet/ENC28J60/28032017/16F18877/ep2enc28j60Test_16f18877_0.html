@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (DD/MM/YYYY): 0.97.01 2017-02-20</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 16F18877</p>
+<p>Program Memory: 431/32768 words (1.32%)</p>
+<p>RAM: 21/2048 bytes (1.03%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Page</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>464</td><td>40</td><td>1</td><td>INITUSART(3), Delay_MS(1), ENC28J60_INIT(1), HSERPRINT(2), HSERPRINTCRLF(3), INITPPS(22), INITSYS(45)</td></tr>
+<tr><td>INITPPS</td><td>8</td><td>39</td><td>1</td><td></td></tr>
+<tr><td>ENC28J60_INIT</td><td>29</td><td>83</td><td>1</td><td>Delay_MS(3), ENC28J60_WRITEREG(3), HWSPITRANSFER(5), SPIMODE(1)</td></tr>
+<tr><td>ENC28J60_WRITEREG</td><td>4</td><td>14</td><td>1</td><td>HWSPITRANSFER(2)</td></tr>
+<tr><td>INITSYS</td><td>652</td><td>27</td><td>1</td><td></td></tr>
+<tr><td>SPIMODE</td><td>75</td><td>57</td><td>1</td><td></td></tr>
+<tr><td>HWSPITRANSFER</td><td>27</td><td>28</td><td>1</td><td></td></tr>
+<tr><td>HSERPRINTCRLF</td><td>6</td><td>21</td><td>1</td><td>Delay_MS(2), HSERSEND(2)</td></tr>
+<tr><td>INITUSART</td><td>117</td><td>14</td><td>1</td><td></td></tr>
+<tr><td>HSERSEND</td><td>127</td><td>14</td><td>1</td><td></td></tr>
+<tr><td>HSERPRINT</td><td>15</td><td>33</td><td>1</td><td>Delay_MS(1), HSERSEND(1)</td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>14</td><td>1</td><td></td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>47</td><td>1</td><td></td></tr>
+</table>
+</body>
+</html>

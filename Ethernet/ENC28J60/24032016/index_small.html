@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html><head>
+<meta content="url=http://192.168.0.248&gt;" http-equiv="refresh">
+</head>
+<body>
+<h1>Great Cow BASIC ENC28J60 Mini Web Server</h1>
+<a href="/">Reload</a>
+<script src="/s">
+</script>
+<table>
+<tbody>
+<tr>
+<td valign="top">
+<table style="font-size: 20px;" ;font-family="" terminal="" ;="" border="1">
+<tbody>
+<tr>
+<th colspan="2">ADC</th>
+</tr>
+<tr>
+<td>AN2</td>
+<td>
+<script>var AN2 = "255";document.write(AN2)</script></td>
+</tr>
+<tr>
+<td>AN3</td>
+<td>
+<script>var AN3 = "255";document.write(AN3)</script></td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table style="font-size: 20px;" ;font-family="" terminal="" ;="" border="1">
+<tbody>
+<tr>
+<th colspan="2">PORTB</th>
+</tr>
+<script>
+var str,i,PORTB, REQ;
+REQ=0;
+PORTB = 170;
+str="";
+for(i=0;i<8;i++)
+{str+="<tr><td bgcolor=pink>BUTTON #"+i+"</td>";
+if(PORTB&(1<<i)){str+="<td bgcolor=red>ON";}
+else {str+="<td bgcolor=#cccccc>OFF";}
+str+="</td></tr>";}
+document.write(str) ;
+</script>
+</tbody>
+</table>
+</td>
+<td>
+<table style="font-size: 20px;" ;font-family="" terminal="" ;="" border="1">
+<tbody>
+<tr>
+<th colspan="3">PORTD</th>
+</tr>
+<script>
+var str,i,PORTD;
+REQ++;
+PORTD = 85;
+str="";
+for(i=0;i<8;i++)
+{str+="<tr><td bgcolor=yellow>LED #"+i+"</td>";
+if(PORTD&(1<<i)){str+="<td bgcolor=red>ON";}
+else {str+="<td bgcolor=#cccccc>OFF";}
+str+="</td><td><a href=/t"+i+">Toggle</a></td></tr>";}
+document.write(str) ;
+</script>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+This is HTTP request #
+<script>document.write(REQ)</script>
+</body></html>

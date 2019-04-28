@@ -1,0 +1,115 @@
+''' Description  :
+'''      this code sets LEDA as link status display using standard SPITRANSER
+'''      and makes LEDB blink permamently
+''' target devices :
+'''      any PIC with integrated SPI on PORTC
+'''      the ENC28J60 SPI plus CLK, SO, SI must be connected to the corresponding SPI pins of the PIC
+'''      the INT and WOL signals from the ENC are not used
+
+''' If LEDA is off and LEDB starts blinking, that is good news : the PIC can talk to the ENC controller through SPI communication.
+''' If it does not, it should, check again your solderings & connections until it works.
+'''
+'''  Then connect your board to a hub with a straight cable : LEDA should now turn on with LEDB still blinking. LEDA on means that the adapter is correctly linked to the network. The network link LED of the other side hub should also turn on.
+
+#chip 16F1939, 32
+#config Osc = INT, MCLRE_ON, PLLEN_ON, CLKOUTEN_OFF
+
+#define ENC28J60_DI     portc.4             'Connected to Device SO
+#define ENC28J60_DO     portc.5             'Connected to Device SI
+#define ENC28J60_SCK    portc.3             'Connected to Clock
+#define ENC28J60_CS     portb.2             'Chip select line
+#define ENC28J60_RESET  PORTb.1             'Reset line
+
+#define debugport portb.0
+set debugport off
+
+'USART settings
+#define USART_BAUD_RATE 9600
+#define USART_BLOCKING
+#define USART_TX_BLOCKING
+
+
+        wait 1 s
+        HSerPrintCRLF 2
+        HserPrint "ENC28J60 Ethernet Driver - Flash LED Test" : HSerPrintCRLF
+
+        HserPrint "Init Test": HSerPrintCRLF
+
+
+        #define ENC28J60_Select         Set ENC28J60_CS off
+        #define ENC28J60_Deselect       Set ENC28J60_CS on
+        #define ENC28J60_Reset_CMD      Set ENC28J60_RESET on: Wait 10 ms :Set ENC28J60_RESET off: Wait 10 ms :Set ENC28J60_RESET on: Wait 10 ms
+
+
+        Dir ENC28J60_DI in
+        Dir ENC28J60_DO Out
+        Dir ENC28J60_SCK Out
+        Dir ENC28J60_CS out
+        Dir ENC28J60_RESET out
+
+        'Initial state of ports required for SW SPI
+        set ENC28J60_DO off
+        set ENC28J60_SCK off
+        set ENC28J60_CS off
+
+
+        'Reset the NIC
+        ENC28J60_Deselect
+        SPIMode MasterFast, 0
+        ENC28J60_Reset_CMD
+
+          ' set ENC memory bank 2
+
+        ENC28J60_Select
+        SPITransfer ( ( BFCCMD | ECON1 ), temp )
+        SPITransfer(0b00000001, temp )
+        ENC28J60_Deselect
+
+        ENC28J60_Select
+        SPITransfer( BFSCMD | ECON1, temp )
+        SPITransfer(0b00000010 , temp )
+        ENC28J60_Deselect
+
+        'Set address of PHY register to write
+        ENC28J60_writeReg(MIREGADR, PHLCON)
+
+
+
+
+        'Set LEDA for link status display
+        'and LEDB for blink fast
+        ENC28J60_writeReg(MIWRL, 0b10100010)
+        ENC28J60_writeReg(MIWRH, 0b00000100)
+
+
+
+        ; writes byte ENC_Outbyte in ENC register addr of the current bank
+        sub ENC28J60_writeReg( in addr,  in ENC_Outbyte as byte )
+
+                ENC28J60_Select
+                SPITransfer( addr OR WCRCMD , temp )
+                SPITransfer( ENC_Outbyte, temp )
+                ENC28J60_Deselect
+
+        end sub
+
+
+
+
+
+' ENC SPI commands
+#define WCRCMD  0b01000000      'write control register
+#define BFCCMD  0b10100000      'bit field clear
+#define BFSCMD  0b10000000      'bit field set
+#define BFCCMD  0b10100000      'bit field clear
+
+
+' ENC SFR
+#define MIREGADR        0x14
+#define ECON1           0x1f
+
+#define PHLCON          0x14
+#define MIWRL           0x16
+
+' ENC PHY register
+#define MIWRH   0x17

@@ -1,0 +1,119 @@
+'''A program  for GCGB and GCB.
+'''--------------------------------------------------------------------------------------------------------------------------------
+''' Description  :  Setup ENC28J60, then reads data from the Ethernet stream to a PC terminal.
+'''
+'''	You NEED a PC terminal connected to the serial out on the microprocessor.
+'''
+'''@author 		[todo]
+'''@licence		GPL
+'''@version		[todo]
+'''@date   		[todo]
+'''********************************************************************************
+
+; ----- Configuration
+#chip 16F1939, 4
+#config Osc = INT, MCLRE_ON, PLLEN_OFF, CLKOUTEN_OFF
+
+#include "..\ENC28J60_005.h"
+
+; ----- Constants
+#define ENC28J60_DI			portc.4							'Connected to Device SO
+#define ENC28J60_DO			portc.5							'Connected to Device SI
+#define ENC28J60_SCK		portc.3							'Connected to Clock
+#define ENC28J60_CS 		portb.2							'Chip select line
+#define ENC28J60_RESET  PORTb.1							'Reset line
+
+#define debugport portb.0
+
+'USART settings
+#define USART_BAUD_RATE 9600
+#define USART_BLOCKING
+#define USART_TX_BLOCKING
+
+; ----- Define Hardware settings
+set debugport off
+
+; ----- Variables
+  ' No Variables specified in this example. All byte variables are defined upon use.
+
+; ----- Quick Command Reference:
+
+; ----- Main body of program commences here.
+
+    wait 1 s
+    HSerPrintCRLF 2
+    HserPrint "ENC28J60 Ethernet Driver 004" : HSerPrintCRLF
+    HserPrint "Init Test": HSerPrintCRLF
+
+		' Set MAC address
+    macaddr =  0x42, 0x00, 0x33, 0x44, 0x55, 0x66
+    ENC28J60_Init ( macaddr )
+
+    'Set address of PHY register to write
+    ENC28J60_WriteReg(MIREGADR, PHLCON)
+    'Set LEDA for link status display
+    'and LEDB for blink fast
+
+    ENC28J60_WriteReg(MIWRL, 0b10100010)
+    ENC28J60_WriteReg(MIWRH, 0b00000100)
+
+    for xx = 1 to 5
+      ENC28J60_WriteReg(ECOCON, xx)
+    	wait 500 ms
+    next
+
+
+		'Has MAC address been saved? Display the MAC address
+    HserPrint "Mac Address ":
+    HserPrint hex(ENC28J60_ReadReg(MAADR1))+":"
+    HserPrint hex(ENC28J60_ReadReg(MAADR0))+":"
+    HserPrint hex(ENC28J60_ReadReg(MAADR3))+":"
+    HserPrint hex(ENC28J60_ReadReg(MAADR2))+":"
+    HserPrint hex(ENC28J60_ReadReg(MAADR5))+":"
+    HserPrint hex(ENC28J60_ReadReg(MAADR4)): HSerPrintCRLF
+
+
+		'Show packets on the wire - move to library later.
+    do
+
+        if (ENC28J60_ReadReg(EPKTCNT) = 1) then '* We received a packet
+        '		data = stack_read() 'Call our stack layer to receive it
+
+            ENC28J60_Select
+            FastHWSPITransfer  0b00111010, temp
+            ' Read bytes
+            for xx = 1 to 64
+                  'Put byte to send into buffer
+                  'Will start transfer
+                  SSPBUF = ENC28J60_READ_CTRL_REG | ( addr AND ADDR_MASK )
+
+                  'Read buffer
+                  Wait While SSPSTAT.BF = Off
+
+                  HSerPrint SSPBUF
+                  Set SSPSTAT.BF Off
+                  if xx=14 then
+                  		HSerPrint ":"
+                  Else
+                  		HSerPrint " "
+                  end if
+            next
+        'Finish SPI command
+        ENC28J60_DeSelect
+
+        'Process received data here
+
+        'Decrease packet received counter
+        ENC28J60_Select
+        FastHWSPITransfer(BFSCMD | ECON2, temp)
+        FastHWSPITransfer(EPKTDEC , temp)
+        ENC28J60_Deselect
+
+        else
+		        '	HSerPrint "."
+        end if
+
+    loop
+
+    end
+; ----- Support methods.  Subroutines and Functions

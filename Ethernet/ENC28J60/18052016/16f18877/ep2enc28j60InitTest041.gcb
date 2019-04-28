@@ -1,0 +1,574 @@
+'Current limitations.
+'1. Packet size cannot exceed 700 bytes.
+'2. Means, web page table cannot exceed 595 bytes.
+'3. Web pages have to be...... wait for this one.... an odd number of bytes!! ?
+
+'So, if things do not work....
+
+'1. Check the TCP packet size in the terminal windows - cannot exceed 685 bytes.
+'2. Check the table - cannot exceed 595
+'3. Make sure the TCP packet size in the terminal window is an odd number.
+'All this is sortable but for today. We are in a great place!
+'A web page is max at about 633... but, the converter strips out chars not required so this will vary on the CRLF's used.
+'you need the latest HTML2GCB.EXE.  I have uploaded also.
+'you need the latest compiler.  I have uploaded also.
+'
+'No DHCP support
+
+'''A program  for GCGB and GCB.
+'''A program  for GCGB and GCB.
+'''--------------------------------------------------------------------------------------------------------------------------------
+''' Description  :  Setup ENC28j60, then reads data from the Ethernet stream to a PC terminal.
+'''
+''' You NEED a PC terminal connected to the serial out on the microprocessor.
+'''
+'''@author    [todo]
+'''@licence   GPL
+'''@version   [todo]
+
+'''@date      [todo]
+'''********************************************************************************
+'
+
+    #Chip 16f18877,32
+    #option explicit
+    #Config MCLRE = On
+    #Config WDT = Off
+    #Config LVP = Off
+    #Config BOREN = Off
+    #Config STVREN = Off
+
+    #startup PPSINIT, 85
+
+    sub PPSINIT
+          RXPPS  = 0x17 'Pin RC7 source is an input for RX
+          RC6PPS = 0x10 'Pin RC6 source is TX/CK
+
+          SSP1CLKPPS = 0x09
+          RB1PPS = 0x14
+
+          SSP1DATPPS = 0x08
+          RB3PPS = 0x15
+    End Sub
+
+
+    #include "ivalid35.htm"
+    #include "..\ENC28j60_039.h"
+    #include "..\ENC28j60_037_Aliases.h"
+
+
+
+    'USART settings
+    #define USART_BAUD_RATE 115200
+    #define USART_BLOCKING
+    #define USART_TX_BLOCKING
+
+
+; ----- Define Hardware settings for the ENC28j60 for SPI, if PPS is used then needs to match the ports defined.
+    ; ----- Constants
+    #Define ENC28J60_DI               Portb.0     'Connected to Device SO
+    #Define ENC28J60_DO               Portb.3     'Connected to Device SI
+    #Define ENC28J60_SCK              Portb.1     'Connected to Clock
+    #Define ENC28J60_CS               Porta.5     'Chip select line
+    #Define ENC28J60_RESET            Portb.4     'Reset line
+
+; ----- Variables
+  'Lots defined... to many....
+
+; ----- Quick Command Reference:
+
+; ----- Main body of program commences here.
+
+    'Do not remove this LABEL - this is required.
+    Reset_ENC26j60:
+
+    #ifdef ENC28j60_Hserial_Supported
+        HSerPrintCRLF 2
+        HserPrint "ENC28j60 Ethernet Driver 040" : HSerPrintCRLF
+        HSerSend 7
+    #endif
+
+
+    '*****  KEY TCP/IP and ENC Controller Setup  ***************
+    'Local key data:  IP address and MAC address.
+    ENC_ipaddr = 192,168,0,3
+    ENC_macaddr = 0x00, 0x1E, 0xC0, 0x00, 0x00, 0x03
+
+    'Details of a remote server, if required
+    ENC_IpPort = 80
+    ENC_ipserver = 192,168,0,106
+
+    'Details of your router. Get this incorrect and NOTHING works!
+    ENC_iprouter = 192,168,0,250
+    ENC_MacAddRouter = 0x38, 0x10, 0xd5, 0xef, 0x0e, 0xdb
+
+    'Remote IP address of the SNTP server
+    ' an internet Time Server, one that works!
+    ENC_SntpServerAddr = 129, 6, 15, 28
+'    ENC_SntpServerAddr = 207, 126, 103, 202
+
+    ENC_MacAddSyslog(1)=0x00
+    ENC_MacAddSyslog(2)=0x06
+    ENC_MacAddSyslog(3)=0x29
+    ENC_MacAddSyslog(4)=0x29
+    ENC_MacAddSyslog(5)=0x95
+    ENC_MacAddSyslog(6)=0x2F
+
+    ENC_SysLogServerAddr=192, 168, 0, 249
+
+
+    ENC28j60_Init ( ENC_macaddr )
+
+    '*****  End of key TCP/IP and ENC Controller Setup  ***************
+
+
+
+   #ifdef ENC28j60_Hserial_Supported
+        HserPrint "Initialised"
+        HSerPrintCRLF
+    #endif
+
+    #ifdef ENC28j60_Lcd_Supported
+        Locate (1,4)
+        Print "Initialised."
+    #endif
+
+
+    #Define SwitchIn porta.4
+    dir SwitchIn  in
+
+    #Define ENC28j60Led portd.3
+    dir ENC28j60Led out
+
+    #Define ButtonDown = 1
+    dim buttonstate as byte
+    buttonstate = ButtonDown
+
+    'removed at 040 and proven to be ok
+    'ENC28j60_writeReg( ERXFCON, 0 )
+
+    dim myReadTime as bit
+    myReadTime = 0
+
+    'removed at 040 and proven to be ok and this exists in ENC28j60_packetsend with the .h
+    '        ENC28j60_bitSet( ECON1 , econ1_txrst )
+    '        ENC28j60_bitClear( ECON1 , econ1_txrst )
+    '        ENC28j60_bitClear( EIR , EIR_TXERIF )
+
+
+    'Show the ENC registers by calling this method
+    '  uses Hserial, hence the #ifdef
+    #ifdef ENC28j60_Hserial_Supported
+        ENC28j60_regdump
+    #endif
+
+    'Set the output frequency of the ENC28j60. Only used to show this is active.
+    'This is NOT required for optional of the ENC28j60
+    ENC28j60_setfrequency ( 3 )
+
+    ENC28j60_syslog_sendmessage
+
+    'Need to ensure we do not send 1000's of requests. So, check the Epoch_seconds
+    'get the SNTP time
+    #ifdef ENC28j60_sntp_Supported
+        repeat 3                                  'This, therefore, will display day and time 3 times.
+          ENC28j60_sntp_get                       'Get the Network Time 3 times.
+          wait 5 ms                               'wait for the response, then, proceed to main program
+        end repeat
+        #ifdef ENC28j60_Hserial_Supported
+            HSerPrint "Program Started "
+        #endif
+    #endif
+
+
+
+    Do forever
+
+        'Optional show the packets and/or the Register dump screen
+        if SwitchIn = buttonstate then
+
+            if buttonstate  = ButtonDown then
+
+                #ifdef ENC28j60_packetCounting_Supported
+                  #ifdef ENC28j60_Hserial_Supported
+                      HserPrint "Out:"
+                      HserPrint ENC_packetCounterOut
+                      HserPrint " In:"
+                      HserPrint ENC_packetCounterIn
+                      HSerPrintCRLF
+                  #endif
+                  ENC_packetCounterInPrevious = ENC_packetCounterIn
+                  ENC_packetCounterOutPrevious = ENC_packetCounterOut
+                #endif
+
+                #ifdef ENC28j60regdump_Supported
+                  #ifdef ENC28j60_Hserial_Supported
+                      ENC28j60_regdump
+                  #endif
+                #endif
+
+            end if
+
+        end if
+
+        'Check the ENC28j60 - this is NOT optional this is the working code. The key polling
+        'We use polling but this can be changed to an Interrupt - check the ERRATA for issue #6 before implementing Interrupt service routine.
+        ENC28j60_poll
+        'Flash the LED!!
+        ENC28j60Led = !ENC28j60Led
+
+    Loop
+
+
+    end 'main program ends here
+
+; ----- Support methods.  Subroutines and Functions
+
+' CHANGE Epoch_seconds  TO SUIT LOCAL NEEDS.. IN SECONDS!!
+#define ENC28j60_UTC_Adjust My_ENC28j60_UTC_Adjust
+sub My_ENC28j60_UTC_Adjust ( in Epoch_seconds AS long )
+
+  'London time summer time
+  Epoch_seconds = Epoch_seconds + 3600
+
+  'South Africa time summer time
+'  Epoch_seconds = Epoch_seconds + 7200
+
+End sub
+
+
+Sub My_udp_handler
+
+;  Uncomment to show UDP packet data
+'            dim I_x as word
+'
+;        Calcualte UDP packet length
+'            I_value16_h = T_udp_len0
+'            [byte]I_value16 = T_udp_len1
+'            I_value16 = I_value16 - 8
+'
+'            For I_x = T_udp_data_pointer To ( T_udp_data_pointer + I_value16 - 1 )
+'                HSerPrint i_x
+'                HSerPrint "."
+'              Next
+'            HSerPrintCRLF
+'
+'            For I_x = T_udp_data_pointer To ( T_udp_data_pointer + I_value16 - 1 )
+'              HSerPrint hex(etherbuffer(i_x))
+'              HSerPrint ":"
+'            Next
+'            HSerPrintCRLF
+'
+'            For I_x = T_udp_data_pointer To ( T_udp_data_pointer + I_value16 - 1 )
+'                HSerPrint chr(etherbuffer(i_x))
+'              Next
+'            HSerPrintCRLF
+'            HSerPrint " -----------------------------------------------"
+'            HSerPrintCRLF
+
+      select case T_udp_destport
+          case 6000
+
+              #ifdef ENC28j60_reinitialisation_Supported
+                  if T_udp_data = "R" then
+                      RESET
+                  end if
+              #endif
+
+              #ifdef ENC28j60regdump_Supported
+                  if T_udp_data = "D" then
+                      ENC28j60_regdump
+                  end if
+              #endif
+
+          case 5000
+
+             'non-echo on PORT 5000
+             Select Case T_udp_data
+
+                   #ifdef ENC28j60_sntp_Remote_Supported
+                       CASE "T"
+                          HserPrint "Time...": HSerPrintCRLF
+                          ENC28j60_sntp_get
+                   #endif
+
+             End Select
+
+
+          case 5002
+
+    ;        Calcualte UDP packet length
+            I_value16_h = T_udp_len0
+            [byte]I_value16 = T_udp_len1
+            I_value16 = I_value16 - 8
+
+            #ifdef ENC28j60_Lcd_Supported
+              If  I_value16 = 2  then 'LCD Command
+
+                  select case T_udp_data0
+                      case 0
+                        'clear lcd
+                        Cls
+                      case 1
+                        Locate (0,0)
+                        Print "locate 1,0"
+                      case 2
+                        Locate (1,0)
+                        Print "locate 2,0"
+                      case 3
+                        Locate (2,0)
+                        Print "locate 3,0"
+                      case 4
+                        Locate (3,0)
+                        Print "locate 4,0"
+                  end select
+
+               else
+
+               'LCD string
+                  Locate (0,0)
+                  Print chr(T_udp_data0)
+              End If
+            #endif
+
+             'LCD Control on PORT 5002
+             if  I_value16 = 2  then 'LCD Command
+
+                select case T_udp_data0
+                    case 0
+                      'clear lcd
+                      HSerPrint "CLS"
+                    case 1
+                      HSerPrint "locate 1,0"
+                    case 2
+                      HSerPrint "locate 2,0"
+                    case 3
+                      HSerPrint "locate 3,0"
+                    case 4
+                      HSerPrint "locate 4,0"
+
+                end select
+                HSerPrintCRLF
+
+             else
+
+             'LCD string
+                HSerprint "Print "
+                HSerSend T_udp_data0
+                HSerPrintCRLF
+             end if
+
+      end select
+'
+    End Sub
+
+;If you want use the CALCULATED UDP checksum.  Not required typically.
+'    #define ENC28j60_UDP_checkSum_Supported
+
+;If you want the ENC28j60 to respond to ICMP/Ping requests
+    #define ENC28j60_ping_Supported
+
+;If you want the ENC28j60 to put things on the LCD
+'    #define ENC28j60_Lcd_Supported
+
+;If you want the ENC28j60 to put things on the terminal
+    #define ENC28j60_Hserial_Supported
+    ;If you want to implement packet counting - you require ENC28j60_Hserial_Supported
+'        #define ENC28j60_packetCounting_Supported
+    ;If you want to see the buffer error messages - you require ENC28j60_Hserial_Supported
+        #define ENC28j60_BufferErrorMessages_Supported
+    ;If you want to see the incoming packets
+'        #define ReceivePacketDebug_Supported
+    ;If you want to see the HTTP packet info
+        #define ENC28j60_ShowHTTPInfo_Supported
+    ;If you want to see the HTTP header
+'        #define ShowHTTPHeader_Supported
+    ;If you want to see the HTTP Flag status
+'        #define ShowHTTPFlags
+
+;If you want the UDP protocols to be supported.  You cannot turn off UDP/ARP
+    #define ENC28j60_UDP_Supported
+    ;If you want to use UDP/Port 6000 and R to remote reset the ENC28j60 via UDP terminal application
+        #define ENC28j60_reinitialisation_Supported
+
+    ;If you want to use UDP/SNTP time. Provides lookup and terminal... but you will require ENC28j60_Hserial_Supported for the terminal!
+        #define ENC28j60_sntp_Supported
+
+    ;If you want to adjust the UDP/SNTP time. You need to define a sub called ENC28j60_UTC_Adjust ( in Epoch_seconds as Long )
+'        #define ENC28j60_sntp_UTC_adjust_supported
+
+    ;If you want to call the UDP/SNTP time get time event.  Use a UDP client application on Port 5000 and "T" to call remote SNTP time.  Will display result on terminal.
+        #define ENC28j60_sntp_Remote_Supported
+
+    ;If you want to adjust the UDP/ECHO on port 7
+        #define ENC28j60_Echo7_Supported
+
+    ;If you want to support the UDP/Port 6000 and D to dump the registers from a UDP terminal application to the terminal
+        #define ENC28j60regdump_Supported
+
+;If you want the TCP protocols to be supported.
+    #define ENC28j60_tcp_supported
+    ;If you want the HTTP protocol to be supported.
+        #define ENC28j60_http_supported
+
+    ;If you want the Telnet protocol to be supported.
+'        #define ENC28j60_telnet_supported
+
+
+;If you want to add your own UDP handler.
+'         #define ENC28j60_Handle_udp My_udp_handler
+
+
+'''http://www.hackshed.co.uk/lets-build-a-functional-arduino-webserver-sdcard-ethernet/
+'#define HTTP_HANDLER userSubAJAX
+'#define etherBufferSize 500
+'sub userSubAJAX
+'    HTTPPrint str(55155)
+'
+'end sub
+
+
+'http://tmail.mooo.com:8080                         'shows index.htm
+'http://tmail.mooo.com:8080/index.htm               'shows index.htm
+'http://tmail.mooo.com:8080/?data=val1              'currently, shows port status page. This will be an AJAX call.
+                                        'This will be  tmail.mooo.com:8080/ADCPage.htm
+'http://tmail.mooo.com:8080/?data=val1              'not operational. Will be AJAX call.
+'http://tmail.mooo.com:8080/anyinvalidurl           'shows 403 error
+
+'#define HTTP_HANDLER myHTTP_HANDLER
+#define HTTP_HANDLER PortsStatus_HTM
+#define etherBufferSize 1000
+
+sub myHTTP_HANDLER
+
+    #ifdef ENC28j60_ShowHTTPInfo_Supported
+        HSerPrint "/"
+        HSerPrint CommandLineString
+        HSerPrintCRLF
+    #endif
+
+    if CommandLineString="index.htm" then
+      Index_HTM
+      exit Sub
+    end if
+
+    if left(CommandLineString,1)="?" then
+      PortsStatus_HTM
+      exit Sub
+    end if
+
+    'else.......
+    Error400_HTM
+    #ifdef ENC28j60_ShowHTTPInfo_Supported
+        HSerPrintCRLF
+    #endif
+
+end sub
+
+
+Sub PortsStatus_HTM
+    dim analogChannel as byte
+    dir porta.0 in
+    dir porta.1 in
+    dir porta.2 in
+    dir porta.3 in
+
+    'Auto refresh web page
+    HTTPPrint( "REFRESH: 5",HTTPPrintCRLF )
+    'You must close off the header by add
+    HTTPPrint( "", HTTPPrintCRLF )
+
+    HTTPPrint ( "<html><font face=helvetica>")
+    HTTPPrint ( "<img alt=""GCB Logo!"" title=""Great Cow BASIC v0.040"" ")
+    HTTPPrint ( "src=""http://goo.gl/FZ4v4e"" height=""36"" ")
+    HTTPPrint ("width=""243""><br><br />" )
+    HTTPPrint  ("&nbsp;&nbsp;Evan is ")
+
+    if ReadAD( 0 ) < 50 then
+        HTTPPrint ("not ")
+    end if
+    HTTPPrint " in the lab at the moment.."
+
+    if ReadAD( 0 ) < 50 then
+        HTTPPrint ("probably working elsewhere, having family time or even asleep!")
+    Else
+        HTTPPrint ("probably working on a Great Cow BASIC solution!")
+    end if
+
+
+    HTTPPrint "<br /><br />"
+    HTTPPrint "&nbsp;&nbsp;Analog inputs are: "
+        HTTPPrint "<br />"
+    for analogChannel = 0 to 3
+        HTTPPrint "<br />&nbsp;&nbsp;ADC"
+        HTTPPrint str(analogChannel)
+        HTTPPrint ": "
+        HTTPPrint str(ReadAD( analogChannel ))
+        HTTPPrint "<br />"
+    next
+    HTTPPrint "<br />"
+    HTTPPrint "&nbsp;&nbspPorts A:&nbsp;" + ByteToBin(porta)
+    HTTPPrint "&nbsp;&nbsp;B:&nbsp;" + ByteToBin(portb)
+    HTTPPrint "&nbsp;&nbsp;C:&nbsp;" + ByteToBin(portc)
+    HTTPPrint "&nbsp;&nbsp;E:&nbsp;" + ByteToBin(porte)
+    HTTPPrint "<br /><br />"
+    HTTPPrint "&nbsp;&nbsp;Source: " + str(T_ip_destaddr0)
+    HTTPPrint "." + str(T_ip_destaddr1)
+    HTTPPrint "." + str(T_ip_destaddr2)
+    HTTPPrint "." + str(T_ip_destaddr3)
+    HTTPPrint "<br /><br />"
+
+    HTTPPrint ( "<img alt=""Lab"" title=""Great Cow BASIC"" ")
+    if ReadAD( 0 ) < 50 then
+
+        HTTPPrint ( "src=""http://goo.gl/yNg5Tr"" height=""217"" width=""386"" ")
+    Else
+
+        HTTPPrint ( "src=""http://goo.gl/NUOFWu"" height=""424"" width=""239"" ")
+
+    end if
+    HTTPPrint ("><br><br />" )
+
+    HTTPPrint ("</html>")
+
+    HTTPSend
+End Sub
+
+Sub Error400_HTM
+  HTTPPrint( "", HTTPPrintCRLF )
+
+  HTTPPrint "<html><font face=helvetica>"
+  HTTPPrint ( "<img alt=""GCB"" title=""Great Cow BASIC"" ")
+  HTTPPrint ( "src=""http://goo.gl/FZ4v4e"" height=""36"" width=""243""><br>")
+  HTTPPrint "<p><b>403.</b> Forbidden:  The request was a valid "
+  HTTPPrint "request, but the server is refusing to respond "
+  HTTPPrint "to it. <br /><br /><b>403.</b> Error semantically means "
+  HTTPPrint "unauthorized"
+  HTTPPrint ", i.e. the user does not have the necessary permissions"
+  HTTPPrint "for the resource."
+  HTTPPrint "<p>URL <code>/"
+  HTTPPrint CommandLineString
+  HTTPPrint "</code> was not found.  </b></b>That is all we know."
+
+  HTTPPrint "</html>"
+
+  HTTPSend
+
+
+end sub
+
+
+
+sub Index_HTM
+
+  dim TableLoc as word
+  HTTPPrint( "", HTTPPrintCRLF )
+
+  For [word]TableLoc = 1 to SizeofTable1
+      ReadTable index1, TableLoc,etherBuffer(arrayloc)
+      ;Want to see the HTML? uncomment..
+'                          HSerSend etherBuffer(arrayloc)
+      arrayloc = arrayloc +1
+  Next
+
+end sub

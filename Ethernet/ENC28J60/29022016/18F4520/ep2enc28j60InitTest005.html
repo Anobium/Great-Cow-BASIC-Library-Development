@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (DD/MM/YYYY): 0.95 2016-02-24</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 18F4520</p>
+<p>Program Memory: 1357/16384 words (8,28%)</p>
+<p>RAM: 90/1536 bytes (5,86%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>65</td><td>428</td><td>INITUSART(6), SYSCOPYSTRING(5), SYSREADSTRING(10), Delay_MS(3), Delay_S(1), HSERPRINT(1), FASTHWSPITRANSFER(3), HEX(6), ENC28J60_READREG(7), ENC28J60_WRITEREG(4), ENC28J60_INIT(1), HSERPRINT(11), HSERPRINTCRLF(4), INITSYS(1)</td></tr>
+<tr><td>ENC28J60_INIT</td><td>61</td><td>332</td><td>SYSCOMPEQUAL(2), Delay_MS(3), ENC28J60_WRITEPHYREG(4), ENC28J60_WRITEREG(43), ENC28J60_READREG(2), SPIMODE(1)</td></tr>
+<tr><td>ENC28J60_WRITEREG</td><td>6</td><td>28</td><td>SYSDIVSUB(1), FASTHWSPITRANSFER(2), ENC28J60_SELECTBANK(1)</td></tr>
+<tr><td>ENC28J60_WRITEPHYREG</td><td>4</td><td>22</td><td>ENC28J60_WRITEREG(3), ENC28J60_READREG(1)</td></tr>
+<tr><td>ENC28J60_SELECTBANK</td><td>28</td><td>86</td><td>SYSCOMPLESSTHAN(2), FASTHWSPITRANSFER(8)</td></tr>
+<tr><td>ENC28J60_READREG</td><td>25</td><td>46</td><td>SYSDIVSUB(1), ENC28J60_SELECTBANK(1)</td></tr>
+<tr><td>INITSYS</td><td>479</td><td>16</td><td></td></tr>
+<tr><td>SYSCOPYSTRING</td><td>118</td><td>18</td><td></td></tr>
+<tr><td>SYSREADSTRING</td><td>103</td><td>23</td><td></td></tr>
+<tr><td>SYSDIVSUB</td><td>48</td><td>19</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL</td><td>20</td><td>5</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN</td><td>23</td><td>5</td><td></td></tr>
+<tr><td>SPIMODE</td><td>60</td><td>50</td><td></td></tr>
+<tr><td>FASTHWSPITRANSFER</td><td>20</td><td>10</td><td></td></tr>
+<tr><td>HEX</td><td>14</td><td>41</td><td></td></tr>
+<tr><td>HSERPRINTCRLF</td><td>6</td><td>28</td><td>Delay_MS(2), HSERSEND(2)</td></tr>
+<tr><td>INITUSART</td><td>117</td><td>13</td><td></td></tr>
+<tr><td>HSERSEND</td><td>127</td><td>13</td><td></td></tr>
+<tr><td>HSERPRINT</td><td>15</td><td>38</td><td>Delay_MS(1), HSERSEND(1)</td></tr>
+<tr><td>HSERPRINT</td><td>23</td><td>76</td><td>SYSDIVSUB(2), SYSCOMPLESSTHAN(2), Delay_MS(3), HSERSEND(3)</td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>18</td><td></td></tr>
+<tr><td>Delay_S</td><td>0</td><td>10</td><td>Delay_MS(1)</td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>32</td><td></td></tr>
+</table>
+</body>
+</html>
