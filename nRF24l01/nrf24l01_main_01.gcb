@@ -1,0 +1,218 @@
+' This code depends on a clock frequency of 40 MHz (I use a 10 MHz crystal and
+' the PLL.  If you are using a slower clock, then you must change the SPI and
+' UART rates, as well as the delay lengths in delays.c
+#chip 16F1937, 32
+#config Osc = intOSC, MCLRE_ON, PLLEN_ON, VCAPEN_OFF
+
+
+
+
+
+
+
+  #include "outputserial.h"
+  #include "utils.h"
+  #include "nrf24l01.h"
+  #include "nrf24l01.gcb"
+
+
+  ' Works via Max232.  Blue cable for in, Yellow cable for out.
+  #define SendAHigh Set PORTa.5 Off
+  #define SendALow Set PORTa.5 On
+  #define RecAHigh PORTa.4 OFf
+  #define RecALow PORTa.4 On
+
+  Dir PORTa.5 Out
+  Dir PORTa.4 In
+
+  #define SerSendDelayms 5
+  'Set up serial connection
+  InitSer 1, r9600, 1+128, 8, 1, none, invert
+
+  wait SerSendDelayms ms
+  sersend 1,0x55
+
+  ANSIERASECREEN_SW
+  ANSI_SW ( 0,0)
+
+  dim data(6)
+  #define arraypnt0 = 1
+  #define arraypnt1 = 2
+  #define arraypnt2 = 3
+  #define arraypnt3 = 4
+  #define arraypnt4 = 5
+  #define arraypnt5 = 6
+  dim send_status(2)
+
+
+  scrndebug = false
+  scrndebug2 = true
+  'main routine
+
+  dim ug_data As byte          'register to hold letter sent and received
+  Dim ug_count as byte        ' counter for for loop
+	term "nrf24l01_main_01.gcb"
+
+	Initialize       'initialize IO, UART, SPI, set up nRF24L01 as TX
+
+
+  scrndebug = true
+
+
+	do
+          SerPrint 1, "$>"
+          SerReceive 1, temp  ' get data from UART
+          data(1) = temp
+          nrf24l01_write_tx_payload ( data(), 1, true) ' transmit received char over RF
+
+          ' wait until the packet has been sent or the maximum number of retries has been reached
+    '			while(!(nrf24l01_irq_pin_active() && 6()));
+
+
+          wait while ( !(nrf24l01_irq_pin_active & nrf24l01_irq_tx_ds_active ) )
+               term ".."
+               nrf24l01_irq_clear_all                 'clear all interrupts in the 24L01
+               nrf24l01_set_as_rx (true)               'change the device to an RX to get the character back from the other 24L01
+               ' wait a while to see if we get the data back (change the loop maximum and the lower if
+               ' argument (should be loop maximum - 1) to lengthen or shorten this time frame
+               dim bigcount as word
+               for bigcount = 0 to 20000
+
+                    ' check to see if the data has been received.  if so, get the data and exit the loop.
+                    ' if the loop is at its last count, assume the packet has been lost and set the data
+                    ' to go to the UART to "?".  If neither of these is true, keep looping.
+                    ' // if((nrf24l01_irq_pin_active() && nrf24l01_irq_rx_dr_active()))
+                    if (nrf24l01_irq_pin_active & nrf24l01_irq_tx_ds_active ) then
+                              nrf24l01_read_rx_payload ( data(), 1)            ' get the payload into data
+                              goto gotdata
+                    end if
+
+    '				//if loop is on its last iteration, assume packet has been lost.
+
+                    if (bigcount = 19999) then data(1) = "?"
+              next
+              gotdata:
+
+              nrf24l01_irq_clear_all       'clear interrupts again
+
+              termdata 1                     ' print the received data (or ? if none) to the screen
+
+              wait 130 us                     ' wait for receiver to come from standby to RX
+              nrf24l01_set_as_tx              ' resume normal operation as a TX
+
+              ToggleLED '/toggle the on-board LED as visual indication that the loop has completed
+
+	Loop
+
+
+
+sub Term ( in strg() as byte )
+    if scrndebug = false then exit sub
+    for ccc = 1 to strg(0)
+    SerSend 1, strg(ccc)
+    next
+    crlf
+End Sub
+
+sub TermData ( in ll as byte )
+'    if scrndebug = false then exit sub
+    for ccc = 1 to ll
+    SerSend 1, data(ccc)
+    next
+    crlf
+End Sub
+
+Sub Halt
+
+    scrndebug = true
+    term "99. Halted"
+    wait while (1)
+
+end sub
+
+End Sub
+' initialize routine
+sub  Initialize
+	InitializeIO        ' set up IO (directions and functions)
+	nrf24l01_initialize_debug(false, 1, false)  ' initialize the 24L01 to the debug configuration as TX, 1 data byte, and auto-ack disabled
+  term "Back from nrf24l01_initialize_debug"
+end sub
+
+' initialize IO pins
+sub InitializeIO
+
+
+    '//////////////////////////////////////////////////////////////////////////////////
+    '// IO pin definitions
+    '//
+    '// Below you will find several definitions and includes.  The first is an #include
+    '//   for your microcontroller's include file to allow you to use register names
+    '//   rather than numbers.  The next three are to allow you to control the pins on
+    '//   the 24L01 that aren't automatically handled by SPI.  These are CE, CSN, and
+    '//   IRQ.
+    '//
+    '// The general format of these defines is a define for the IO register the pin is
+    '//   attached to.  The second define is a mask for the pin.  For example, say that
+    '//   your CE pin is tied to an IO port with the register name IOPORT1. Also, let's
+    '//   say that the IO port is 8-bits wide, and you have attached the pin to pin 0 of
+    '//   the port.  Then your define would look like this:
+    '//
+    '//	 #define nrf24l01_CE_IOREGISTER		IOPORT1
+    '//   #define nrf24l01_CE_PINMASK		0x01
+    '//
+    '// If you have defines in your include file for individual IO pins, you could use
+    '//   this define in this file, as well.  Using the previous example, assume that in
+    '//   your microcontroller's include file, pin 0 of IOPORT1 has a define like this
+    '//
+    '//   #define IOPORT1_PIN0	0x01
+    '//
+    '// Then, you could make your defines for the CE pin in this file look like this:
+    '//
+    '//	 #define nrf24l01_CE_IOREGISTER		IOPORT1
+    '//   #define nrf24l01_CE_PINMASK		IOPORT1_PIN0
+    '//
+    '// You should also change the include file name below to whatever the name of your
+    '//   processor's register definition include file is.
+    '/////////////////////////////////////////////////////////////////////////////////////
+
+    '//defines for uC pins CE pin is connected to
+    '//This is used so that the routines can send TX payload data and
+    '//	properly initialize the nrf24l01 in TX and RX states.
+    '//Change these definitions (and then recompile) to suit your particular application.
+    #define nrf24l01_CE_IOREGISTER		PORTD
+    #define nrf24l01_CE_PINMASK			0x03
+
+    '//defines for uC pins CSN pin is connected to
+    '//This is used so that the routines can send properly operate the SPI interface
+    '// on the nrf24l01.
+    '//Change these definitions (and then recompile) to suit your particular application.
+    #define nrf24l01_CSN_IOREGISTER	PORTD
+    #define nrf24l01_CSN_PINMASK		0x02
+
+    '//defines for uC pins IRQ pin is connected to
+    '//This is used so that the routines can poll for IRQ or create an ISR.
+    '//Change these definitions (and then recompile) to suit your particular application.
+    #define nrf24l01_IRQ_IOREGISTER	PORTD
+    #define nrf24l01_IRQ_PINMASK		0x01
+
+
+    dir Portd.2 Out
+    dir Portd.1 Out
+    dir Portd.0 In
+
+    'Set SPI pin directions
+    dir PORTC.3 out ' CLOCK
+    dir PORTC.4 in  ' SDI - MISO - PIN 23
+    dir PORTC.5 out ' SDO - MOSI - PIN 24
+    'Set SPI Mode to master, with fast clock
+    SPIMode MasterFast
+
+    SerPrint 1, "SPIMode MasterFast"
+    crlf
+end sub
+
+' toggles on-board LED
+sub ToggleLED
+    Toggle ( porta, 1 )
+
+end sub

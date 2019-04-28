@@ -1,0 +1,465 @@
+'******************************************************************************
+'*
+'* File: nrf24l01.gcb
+'*
+'' Copyright S. Brennen Ball, 2006-2007
+'*
+'' The author provides no guarantees, warantees, or promises, implied or
+'*	otherwise. By using this software you agree to indemnify the author
+'' 	of any damages incurred by using it.
+'*
+'*****************************************************************************/
+
+#include "nrf24l01.h"
+
+
+
+' initializes the 24L01 to all default values except the PWR_UP and PRIM_RX bits
+' this function also disables the auto-ack feature on the chip (EN_AA register is 0)
+' bool rx is true if the device should be a receiver and false if it should be
+' a transmitter.
+' unsigned char payload_width is the payload width for pipe 0. All other pipes
+' are left in their default (disabled) state.
+' bool enable_auto_ack controls the auto ack feature on pipe 0. If true, auto-ack will
+' be enabled. If false, auto-ack is disabled.
+sub nrf24l01_initialize_debug (rx as bit , p0_payload_width as byte , enable_auto_ack as bit )
+
+	dim init_config as byte
+	Dim en_aa as byte
+
+          term "1. initialize_debug"	
+	config = nrf24l01_CONFIG_DEFAULT_VAL | nrf24l01_CONFIG_PWR_UP
+	
+	if (enable_auto_ack <> false) then
+             en_aa = nrf24l01_EN_AA_ENAA_P0
+	else
+             en_aa = nrf24l01_EN_AA_ENAA_NONE
+          end if
+
+	term "2. initialize_debug"
+	
+          if (rx = true) then
+             config = config | nrf24l01_CONFIG_PRIM_RX
+          end if
+
+dim null as byte
+null = 255
+         term "3. initialize_debug"
+	nrf24l01_initialize(config,	true,	en_aa,	nrf24l01_EN_RXADDR_DEFAULT_VAL, nrf24l01_SETUP_AW_DEFAULT_VAL, nrf24l01_SETUP_RETR_DEFAULT_VAL, nrf24l01_RF_CH_DEFAULT_VAL, nrf24l01_RF_SETUP_DEFAULT_VAL, NULL,NULL,nrf24l01_RX_ADDR_P2_DEFAULT_VAL,nrf24l01_RX_ADDR_P3_DEFAULT_VAL,nrf24l01_RX_ADDR_P4_DEFAULT_VAL,nrf24l01_RX_ADDR_P5_DEFAULT_VAL,NULL,p0_payload_width,nrf24l01_RX_PW_P1_DEFAULT_VAL,nrf24l01_RX_PW_P2_DEFAULT_VAL,nrf24l01_RX_PW_P3_DEFAULT_VAL,nrf24l01_RX_PW_P4_DEFAULT_VAL,nrf24l01_RX_PW_P5_DEFAULT_VAL)
+          term "4. initialize_debug"
+end sub
+
+
+' Arguments except opt_rx_standby_mode fill the actual register they are named
+' after. Registers that do not need to be initialized are not included here.
+' The argument opt_rx_active_mode is only used if the user is initializing the
+' 24L01 as a receiver. If the argument is false, the receiver will remain in
+' standby mode and not monitor for packets. If the argument is true, the CE
+' pin will be set and the 24L01 will monitor for packets. In TX mode, the value
+' of this argument is insignificant.
+' If the user wants to leave any 1-byte register in its default state, simply put
+' as that register's argument nrf24l01_<reg>_DEFAULT_VAL, where <reg> is the register
+' name.
+' If the user wants to leave any of the 5-byte registers RX_ADDR_P0, RX_ADDR_P1, or
+' TX_ADDR in its default state, simply put NULL in the argument for that address value.
+sub nrf24l01_initialize( init_char as byte, opt_rx_active_mode, en_aa, en_rxaddr, setup_aw, setup_retr, rf_ch, rf_setup, rx_addr_p0, rx_addr_p1, rx_addr_p2, rx_addr_p3, rx_addr_p4, rx_addr_p5, tx_addr, rx_pw_p0, rx_pw_p1, rx_pw_p2, rx_pw_p3, rx_pw_p4, rx_pw_p5)
+
+term "1. initialize"
+
+	data(arraypnt0) = en_aa
+term "2. initialize"
+          nrf24l01_write_register nrf24l01_EN_AA, data(), 1
+term "3. initialize"
+	data(arraypnt0) = en_rxaddr
+	nrf24l01_write_register (nrf24l01_EN_RXADDR, data(), 1)
+
+	data(arraypnt0) = setup_aw
+	nrf24l01_write_register (nrf24l01_SETUP_AW, data(), 1)
+
+	data(arraypnt0) = setup_retr
+	nrf24l01_write_register (nrf24l01_SETUP_RETR, data(), 1)
+
+	data(arraypnt0) = rf_ch
+	nrf24l01_write_register (nrf24l01_RF_CH, data(), 1)
+
+	data(arraypnt0) = rf_setup
+	nrf24l01_write_register (nrf24l01_RF_SETUP, data(), 1)
+term "9. initialize"
+	if (rx_addr_p0 <> NULL) then
+             nrf24l01_set_rx_addr(rx_addr_p0, 5, 0)
+	else
+             data(arraypnt0) = nrf24l01_RX_ADDR_P0_B0_DEFAULT_VAL
+             data(arraypnt1) = nrf24l01_RX_ADDR_P0_B1_DEFAULT_VAL
+             data(arraypnt2) = nrf24l01_RX_ADDR_P0_B2_DEFAULT_VAL
+             data(arraypnt3) = nrf24l01_RX_ADDR_P0_B3_DEFAULT_VAL
+             data(arraypnt4) = nrf24l01_RX_ADDR_P0_B4_DEFAULT_VAL
+
+             nrf24l01_set_rx_addr(data(), 5, 0)
+	end if
+
+	if (rx_addr_p1 <> NULL) then
+             nrf24l01_set_rx_addr(rx_addr_p1, 5, 1)
+	else
+             data(arraypnt0) = nrf24l01_RX_ADDR_P1_B0_DEFAULT_VAL
+             data(arraypnt1) = nrf24l01_RX_ADDR_P1_B1_DEFAULT_VAL
+             data(arraypnt2) = nrf24l01_RX_ADDR_P1_B2_DEFAULT_VAL
+             data(arraypnt3) = nrf24l01_RX_ADDR_P1_B3_DEFAULT_VAL
+             data(arraypnt4) = nrf24l01_RX_ADDR_P1_B4_DEFAULT_VAL
+
+             nrf24l01_set_rx_addr(data(), 5, 1)
+	end if
+
+	data(arraypnt0) = rx_addr_p2
+	nrf24l01_set_rx_addr(data(), 1, 2)
+
+	data(arraypnt0) = rx_addr_p3
+	nrf24l01_set_rx_addr(data(), 1, 3)
+
+	data(arraypnt0) = rx_addr_p4
+	nrf24l01_set_rx_addr(data(), 1, 4)
+
+	data(arraypnt0) = rx_addr_p5
+	nrf24l01_set_rx_addr(data(), 1, 5)
+
+	if (tx_addr <> NULL) then
+             nrf24l01_set_tx_addr(tx_addr, 5)
+	else
+	
+             data(arraypnt0) = nrf24l01_TX_ADDR_B0_DEFAULT_VAL
+             data(arraypnt1) = nrf24l01_TX_ADDR_B1_DEFAULT_VAL
+             data(arraypnt2) = nrf24l01_TX_ADDR_B2_DEFAULT_VAL
+             data(arraypnt3) = nrf24l01_TX_ADDR_B3_DEFAULT_VAL
+             data(arraypnt4) = nrf24l01_TX_ADDR_B4_DEFAULT_VAL
+
+             nrf24l01_set_tx_addr(data(), 5)
+	end if
+
+	data(arraypnt0) = rx_pw_p0
+	nrf24l01_write_register (nrf24l01_RX_PW_P0, data(), 1)
+
+	data(arraypnt0) = rx_pw_p1
+	nrf24l01_write_register (nrf24l01_RX_PW_P1, data(), 1)
+
+	data(arraypnt0) = rx_pw_p2
+	nrf24l01_write_register (nrf24l01_RX_PW_P2, data(), 1)
+
+	data(arraypnt0) = rx_pw_p3
+	nrf24l01_write_register (nrf24l01_RX_PW_P3, data(), 1)
+
+	data(arraypnt0) = rx_pw_p4
+	nrf24l01_write_register (nrf24l01_RX_PW_P4, data(), 1)
+
+	data(arraypnt0) = rx_pw_p5
+	nrf24l01_write_register (nrf24l01_RX_PW_P5, data(), 1)
+
+	if ((config & nrf24l01_CONFIG_PWR_UP) <> 0) then
+             nrf24l01_power_up_param(opt_rx_active_mode, config)
+	else
+             nrf24l01_power_down_param(config)
+          end if
+end sub
+
+' sets up the 24L01 as a receiver with all necessary delays
+' this function takes the existing contents of the CONFIG register and sets the PRIM_RX
+'   bit in the CONFIG register.
+' if the argument rx_active_mode is false, the receiver will remain in standby mode
+'   and not monitor for packets.  If the argument is true, the CE pin will be set
+'   and the 24L01 will monitor for packets.
+' note: if the read value of the CONFIG register already has the PRIM_RX bit set, this function
+'   exits in order to not make an unecessary register write.
+sub nrf24l01_set_as_rx ( rx_active_mode as bit )
+
+	dim config ( 2 )
+' ERV	unsigned char status;
+	
+	'erv I have  dumpted 'status' =
+          nrf24l01_read_register(0, config(), 1)
+
+	if ((config(1) & nrf24l01_CONFIG_PRIM_RX) <> 0) then
+	   exit Sub
+          end if
+
+	config(1) = config(1) | nrf24l01_CONFIG_PRIM_RX
+	
+	nrf24l01_write_register(nrf24l01_CONFIG, config(1), 1)
+
+	if (rx_active_mode <> false) then
+		nrf24l01_set_ce
+	else
+		nrf24l01_clear_ce
+          end if
+end sub
+
+' sets up the 24L01 as a transmitter
+' this function takes the existing contents of the CONFIG register and simply
+'   clears the PRIM_RX bit in the CONFIG register.
+' note: if the read value of the CONFIG register already has the PRIM_RX bit cleared, this
+'   function exits in order to not make an unecessary register write.
+sub nrf24l01_set_as_tx()
+
+'	unsigned char config;
+	
+	nrf24l01_read_register(nrf24l01_CONFIG, config, 1)
+	
+	if ((config & nrf24l01_CONFIG_PRIM_RX) = 0) then
+		exit Sub
+          end if
+	
+	config = config & NOT nrf24l01_CONFIG_PRIM_RX
+	
+	nrf24l01_write_register(nrf24l01_CONFIG, config, 1)
+
+	nrf24l01_clear_ce
+end sub
+
+Sub nrf24l01_write_register (regnumber as byte, data() as byte , lentosend as byte)
+    term "1. write_register"
+    changestate = nrf24l01_W_REGISTER | (regnumber & nrf24l01_W_REGISTER_DATA)
+    nrf24l01_execute_command    changestate , data(), lentosend, false
+    term "99. write_register"
+end sub
+
+Sub nrf24l01_power_up_param
+
+End Sub
+
+Sub nrf24l01_power_down_param
+
+End Sub
+
+Sub nrf24l01_set_rx_addr
+
+End Sub
+Sub nrf24l01_set_tx_addr
+
+End Sub
+
+Sub nrf24l01_execute_command ( instruction as byte , out data() as byte, lentosend as Byte, copydata as bit)
+	
+term "10. execute_command"
+term "instruction = 0x" + hex(instruction)
+	nrf24l01_clear_csn
+term "20. execute_command"
+'          dim send_status(2)
+	send_status(arraypnt0) = instruction
+	nrf24l01_spi_send_read (send_status(), 1, true)
+
+term "30. execute_command. Stat = 0x"+hex(send_status(arraypnt0))
+
+term "40. execute_command. Len = 0x"+hex(lentosend)
+
+          nrf24l01_spi_send_read (data(), lentosend, copydata)
+
+term "50. execute_command"	
+
+	nrf24l01_set_csn
+
+term "99. execute_command"
+end Sub
+
+
+
+
+' low-level spi send function for library use
+' the user should not call this function directly, but rather use one of the 8 SPI data instructions
+sub nrf24l01_spi_send_read ( out send_read_data() as byte, send_lentosend as byte, copydata as bit)
+    term "01. spi_send_read"
+
+	for loopcounter = 1 to send_lentosend
+                    term "02. spi_send_read"
+                    if scrndebug2 = true then
+
+                       SerSend 1,9
+                       SerSend 1,9
+                       SerPrint 1, "OUT @ "+ str(loopcounter) +" : 0x": term hex(send_read_data(loopcounter)):crlf
+
+                    end if
+
+		if (copydata <> false) then
+			'data(loopcounter) = spi_send_read_byte(data(loopcounter))
+
+
+                              SPITransfer send_read_data(loopcounter), send_read_data(loopcounter)
+                              if scrndebug2 = true then
+                                   SerSend 1,9
+                                   SerSend 1,9
+
+                                   SerPrint 1, "IN  @ "+ str(loopcounter) +" : 0x": term Hex(send_read_data(loopcounter)):crlf
+                                end if
+		else
+		          ' tempbyte = data(loopcounter)
+			'spi_send_read_byte(tempbyte)
+                              SPITransfer send_read_data(loopcounter), tempbyte
+		end if
+	Next
+        term "99. spi_send_read"
+end sub
+
+sub nrf24l01_write_tx_payload (data() as byte, lentosend as byte, transmit as bit)
+
+	
+' erv STATUS  is not there.....
+	term "01. write_tx_payload"
+	nrf24l01_execute_command nrf24l01_W_TX_PAYLOAD, data(), lentosend, false
+	
+	if (transmit = true) then
+		nrf24l01_transmit
+	end if
+	' return status
+          term "99. write_tx_payload"
+end sub
+
+
+' transmits the current tx payload
+sub nrf24l01_transmit
+
+	nrf24l01_set_ce
+	wait 10 us
+	nrf24l01_clear_ce
+end sub
+
+' executes the R_RX_PAYLOAD instruction
+' unsigned char * data is the actual payload that has been received by the nrf24l01.
+' 	The user must size data according to the payload width specified to the nrf24l01.
+' 	This variable is filled by this function, so individual byte values need not be
+' 	initialized by the user.
+' unsigned int len is the length of the payload being clocked out of the nrf24l01 (this
+' 	should be sized according to the payload length specified to the nrf24l01).
+' returns the value of the STATUS register
+sub nrf24l01_read_rx_payload (out data(), lentosend as byte )
+scrndebug = false
+term "10. nrf24l01_read_rx_payload"
+'	unsigned char status;
+	
+	nrf24l01_clear_ce
+	nrf24l01_execute_command(nrf24l01_R_RX_PAYLOAD, data(), lentosend, true)
+          ' this is the current returned status in the GCB version.   Use status(arraypnt0)
+	nrf24l01_set_ce
+	
+'	return status;
+term "99. nrf24l01_read_rx_payload"
+end sub
+
+
+
+' clears the pin on the host microcontroller that is attached to the 24l01's CE pin
+sub nrf24l01_clear_ce
+
+'	nrf24l01_CE_IOREGISTER = nrf24l01_CE_IOREGISTER & NOT nrf24l01_CE_PINMASK
+end sub
+
+' sets the pin on the host microcontroller that is attached to the 24l01's CE pin
+sub nrf24l01_set_ce
+
+	nrf24l01_CE_IOREGISTER = nrf24l01_CE_IOREGISTER | nrf24l01_CE_PINMASK
+end sub
+
+' sets the pin on the host microcontroller that is attached to the 24l01's CSN pin
+sub nrf24l01_clear_csn
+
+'	nrf24l01_CSN_IOREGISTER = nrf24l01_CSN_IOREGISTER & NOT nrf24l01_CSN_PINMASK
+end sub
+
+' clears the pin on the host microcontroller that is attached to the 24l01's CSN pin
+sub nrf24l01_set_csn
+	nrf24l01_CSN_IOREGISTER = nrf24l01_CSN_IOREGISTER | nrf24l01_CSN_PINMASK
+end Sub
+
+' clear all interrupts in the status register
+sub nrf24l01_irq_clear_all
+
+          data ( arraypnt0 ) = nrf24l01_STATUS_RX_DR | nrf24l01_STATUS_TX_DS | nrf24l01_STATUS_MAX_RT
+	nrf24l01_write_register (nrf24l01_STATUS, data(), 1)
+end sub
+
+
+
+
+
+' returns true if IRQ pin is low, false otherwise
+function nrf24l01_irq_pin_active as byte
+
+	if ((nrf24l01_IRQ_IOREGISTER & nrf24l01_IRQ_PINMASK) <> 0) then
+		nrf24l01_irq_pin_active = false
+                    term "99. irq_pin_active = false"
+	else
+		nrf24l01_irq_pin_active = true
+                    term "99. irq_pin_active = true"
+          end if
+
+end function
+
+
+
+
+' returns true if TX_DS interrupt is active, false otherwise
+function nrf24l01_irq_tx_ds_active as byte
+         nrf24l01_irq_tx_ds_active = false
+          ' ERV this function can be tidyied up once the code is working.
+          term "10. irq_tx_ds_active"
+         get_status_tmp = nrf24l01_get_status & nrf24l01_STATUS_TX_DS
+         term "20. irq_tx_ds_active = 0x" + hex(get_status_tmp)
+         ' [todo] ERV this needs to be get_status_tmp not true!!
+         nrf24l01_irq_tx_ds_active = get_status_tmp
+
+         term "99. irq_tx_ds_active" + " = " + str(nrf24l01_irq_tx_ds_active)
+
+end function
+
+
+
+' returns true if RX_DR interrupt is active, false otherwise
+function nrf24l01_irq_rx_dr_active as byte
+
+
+' return (nrf24l01_get_status() & nrf24l01_STATUS_RX_DR);
+
+          ' ERV this function can be tidyied up once the code is working.
+          term "10. irq_rx_dr_active"
+         get_status_tmp = nrf24l01_get_status & nrf24l01_STATUS_TX_DS
+         term "20. irq_rx_dr_active = 0x" + hex(get_status_tmp)
+
+         ' [todo] ERV this needs to be get_status_tmp not true!!
+         nrf24l01_irq_rx_dr_active = get_status_tmp
+         term "99. irq_rx_dr_active"
+'[todo]
+'nrf24l01_irq_rx_dr_active = true
+end function
+
+
+' return the value of the status register
+Function nrf24l01_get_status
+term "10. get_status"
+          tmp = nrf24l01_nop_f
+          term "20. get_status = 0x" + hex(tmp)
+	nrf24l01_get_status = tmp
+term "99. get_status"
+end Function
+
+' executes the FLUSH_TX SPI operation
+' this funciton does nothing
+' returns the value of the STATUS register
+Function nrf24l01_nop_f
+term "01. nop_f"
+     ' sending data() and 0 means send no data just the command
+      nrf24l01_execute_command (nrf24l01_NOP, data(), 0, true)
+      nrf24l01_nop_f = send_status(arraypnt0)
+term "99. nop_f"
+End Function
+
+
+' executes the R_REGISTER SPI operation
+' unsigned char regnumber indicates the register number assigned by the nrf24l01 specification.
+'   For regnumber values, see section titled "register definitions" in nrf24l01.h.
+' unsigned char * data should be of size 1 for all register writes except for RX_ADDR_P0, RX_ADDR_P1,
+' 	and TX_ADDR.  The size of data should be set according to the user-specified size of the address
+'   length for the register the address is being read from.
+' unsigned int len is always the size of unsigned char * data.  For example, if data is declared as
+'   data[6], len = 6.
+' returns the value of the STATUS register
+Sub nrf24l01_read_register( regnumber as byte , out read_reg_data() as byte , lentosend as byte)
+
+          tmpregister = regnumber & nrf24l01_R_REGISTER_DATA
+	'erv dumped nrf24l01_read_register =
+          nrf24l01_execute_command ( tmpregister , read_reg_data(), lentosend, true)
+end Sub

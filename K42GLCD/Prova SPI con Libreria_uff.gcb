@@ -1,0 +1,369 @@
+'''A demonstration program for GCGB and GCB.
+'''--------------------------------------------------------------------------------------------------------------------------------
+'''This program is a simple GLCD demonstration of the ILI9341 GLCD with the XPT2046 Touch capabilities.
+'''It is a nice graphical LCD, suitable for a lot of various projects.
+'''This program shows the calibration of the touch with the specific GLCD.
+'''The GLCD is connected to the microprocessor as shown in the hardware section of this code.
+''':
+'''This has been tested using the hardware and software SPI option.
+''':
+'''Note: for the correct operation of this display you MUST connect via a CD4050, see http://forum.arduino.cc/index.php?topic=181679.90
+''':
+'''@author
+'''@licence GPL
+'''@version 1.1
+'''@date
+'''********************************************************************************
+
+    'Chip Settings.
+    #chip 18F45k42, 32
+    #option explicit
+    #config MCLRE = ON
+    #startup InitPPS, 85 '//Call InitPPS per USART e I2C
+
+'______________
+'   USART
+    #define USART_BAUD_RATE 9600
+    #define USART_DELAY     5 ms
+    #define USART_BLOCKING
+    'Set pin USART directions
+    Dir portC.7 IN
+    Dir portC.6 OUT
+
+    '******************************************************************************************************
+    'Setup the GLCD
+
+    'Pin mappings for SPI - this GLCD driver supports Hardware SPI and Software SPI
+    #define GLCD_DC     portA.3 ' Data command/line
+    #define GLCD_CS     portD.0 ' Chip select line
+    #define GLCD_RESET  portA.2 ' Reset line
+    #define GLCD_DO     portC.5 'GLCD MOSI connect to MCU SDO
+    #define GLCD_DI     portC.4 'GLCD MISO Connect to MCU SDI
+    #define GLCD_SCK    portB.0 ' Clock Line
+    Dir   GLCD_DC     OUT
+    Dir   GLCD_CS     OUT
+    Dir   GLCD_RESET  OUT
+    Dir   GLCD_DI     IN
+    Dir   GLCD_DO     OUT
+    Dir   GLCD_SCK    OUT
+    '______________
+    #define ILI9341_HardwareSPI
+    #define GLCD_TYPE GLCD_TYPE_ILI9341
+    #include <My_Feb_19_glcd.h>
+
+    GLCDBackground = ILI9341_BLUE
+    GLCDForeground = ILI9341_WHITE
+    GLCDCLS(GLCDBackground)     'Clear screen
+    '******************************************************************************************************
+    'Setup the XPT2046
+
+    'Typical calibration range for Hardware SPI when using XPT2046
+    'for 320 * 240 screeen... may be different for others
+    #define XPT2046XMIN       7  '15
+    #define XPT2046YMIN       7  '14
+    #define XPT2046XMAX       58 '110
+    #define XPT2046YMAX       58 '113
+    #define XPT2046_ReadSamples 15
+
+    'Typical Calibration range for Software SPI when using XPT2046
+'    #define XPT2046XMIN   30
+'    #define XPT2046YMIN   25
+'    #define XPT2046XMAX   210
+'    #define XPT2046YMAX   225
+
+
+    #define XPT2046_DI       portC.4 ' TOUCH MISO Connect to MCU SDI
+    #define XPT2046_DO       portC.5 ' TOUCH MOSI connect to MCU SDO
+    #define XPT2046_SCK      portB.0 ' Clock Line
+    #define XPT2046_CS       portC.2 ' Touch Chip select line
+    #define XPT2046_IRQ      PORTC.0 ' Pen Interrupt
+    Dir XPT2046_DI    IN
+    Dir XPT2046_DO    Out
+    Dir XPT2046_SCK   Out
+    Dir XPT2046_CS    Out
+    Dir XPT2046_IRQ   IN
+    '______________
+    #define XPT2046_HardwareSPI              ' Hardware Touch Chip
+    #include <My_Feb_19_xpt2046.h>
+'    #define SPIMode MasterSlow
+'Set the initial calibration - shown here to show the method.
+'    '******If you rotate the screen then you will have to call the method to reset these parameters.
+    SetCalibation_XPT2046 ( XPT2046XMIN, XPT2046XMAX, XPT2046YMIN, XPT2046YMAX, GLCD_WIDTH, GLCD_HEIGHT  )
+'
+'
+    '******************************************************************************************************
+
+    'Main program
+
+'    GLCDRotate Portrait_Rev
+    GLCDCLS TFT_NAVY
+'    SetCalibation_XPT2046 ( XPT2046XMIN, XPT2046XMAX, XPT2046YMIN, XPT2046YMAX, GLCD_WIDTH, GLCD_HEIGHT )
+
+    ScreenLayout
+
+    dim Xconverge, Yconverge as Integer
+    dim convergeCounter as byte
+    do
+
+      Xconverge = 0
+      Yconverge = 0
+      convergeCounter = 1
+
+      filledbox Current_GLCD_WIDTH-10, 0, Current_GLCD_WIDTH, 10, TFT_RED  '***modificato
+'      sertxd(1,"1-isTouched_XPT2046=",isTouched_XPT2046,0)
+      'always wait for touch event
+      wait while isTouched_XPT2046
+'      sertxd(1,"2-isTouched_XPT2046=",isTouched_XPT2046,0)
+      filledbox Current_GLCD_WIDTH-10, 0, Current_GLCD_WIDTH, 10, TFT_YELLOW
+
+      do
+          repeat 5
+              'get the values -
+              GetXY_XPT2046( XTouchPoint_XPT2046, YTouchPoint_XPT2046 )
+          end Repeat
+'          sertxd(1,"XTouchPoint_XPT2046=",XTouchPoint_XPT2046,0)
+'          sertxd(0," YTouchPoint_XPT2046=",YTouchPoint_XPT2046,0)
+'          sertxd(0,"converge=",convergeCounter,0)
+
+          'test for settling by testing for convergance
+          if ABS( ( Xconverge - XTouchPoint_XPT2046 ) ) > 1  or  ABS( ( Yconverge - YTouchPoint_XPT2046 ) ) > 1  then
+              Xconverge = XTouchPoint_XPT2046
+              Yconverge = YTouchPoint_XPT2046
+              convergeCounter++
+          Else
+              'converged
+              exit do
+          end if
+      Loop
+      '*****Flip the data to handle for the screen rotation
+      YTouchPoint_XPT2046 = Current_GLCD_HEIGHT - YTouchPoint_XPT2046
+      filledbox Current_GLCD_WIDTH-10, 0, Current_GLCD_WIDTH, 10, TFT_GREEN
+
+        if XTouchPoint_XPT2046 > Current_GLCD_WIDTH-59 and YTouchPoint_XPT2046 > Current_GLCD_HEIGHT-20  then
+          if XTouchPoint_XPT2046 < Current_GLCD_WIDTH and  YTouchPoint_XPT2046 < Current_GLCD_HEIGHT then
+            'clear
+            ScreenLayout
+          end if
+      else
+          FilledCircle XTouchPoint_XPT2046, YTouchPoint_XPT2046, 3, TFT_LIGHTGREY
+
+          'Show the raw data
+          GLCDPrint ( 24, 56, pad(str(XTouchPoint_XPT2046raw),3 ) )
+          GLCDPrint ( 24, 72, pad(str(YTouchPoint_XPT2046raw),3 ) )
+          GLCDPrint ( 24, 90, pad(str(convergeCounter ) ,3 ) )
+
+          'Automatically adjust the values to min and max
+          'Not needed in a real program use SetCalibation_XPT2046( XPT2046_Xmin, XPT2046_Xmax, XPT2046_Ymin, XPT2046_Ymax )
+          if XTouchPoint_XPT2046raw < XPT2046_Xmin then XPT2046_Xmin = XTouchPoint_XPT2046raw
+          if YTouchPoint_XPT2046raw < XPT2046_Ymin then XPT2046_Ymin = YTouchPoint_XPT2046raw
+          if XTouchPoint_XPT2046raw > XPT2046_Xmax then XPT2046_Xmax = XTouchPoint_XPT2046raw
+          if YTouchPoint_XPT2046raw  > XPT2046_Ymax then XPT2046_Ymax = YTouchPoint_XPT2046raw
+
+          'show the values
+          GLCDPrint ( 102, 56, pad(str(XPT2046_Xmin),3 ) )
+          GLCDPrint ( 102, 72, pad(str(XPT2046_Ymin),3 ) )
+          GLCDPrint ( 162, 56, pad(str(XPT2046_Xmax),3 ) )
+          GLCDPrint ( 162, 72, pad(str(XPT2046_Ymax),3 ) )
+
+          GLCDPrint ( 24, 230, pad(str(XTouchPoint_XPT2046),5 ))
+          GLCDPrint ( 24, 246, pad(str(YTouchPoint_XPT2046),5 ))
+
+          'do not hammer the touch
+          wait 20 ms
+
+      end if
+
+    loop
+
+
+sub ScreenLayout
+
+        #define GLCD_OLED_FONT
+        GLCDfntDefaultsize = 2
+        GLCDFontWidth = 5
+        'Layout the screen
+        sertxd(1,"da"," screenLayout",0)
+        GLCDCLS
+        GLCDPrint ( 2, 3, "XPT2046 demonstration 2018")
+        line 0, 34, Current_GLCD_WIDTH, 34
+        line 0, 128, Current_GLCD_WIDTH, 128
+        line 0, 220, Current_GLCD_WIDTH, 220
+        line 0, 40,  Current_GLCD_WIDTH, 40,   TFT_green
+        line 0, 80,  Current_GLCD_WIDTH, 80,   TFT_black
+        line 0, 120,  Current_GLCD_WIDTH, 120, TFT_RED
+        line 0, 160,  Current_GLCD_WIDTH, 160, TFT_RED
+        line 0, 200,  Current_GLCD_WIDTH, 200, TFT_RED
+        line 0, 240,  Current_GLCD_WIDTH, 240, TFT_RED
+        line 0, 280,  Current_GLCD_WIDTH, 280, TFT_RED
+        line 0, 320,  Current_GLCD_WIDTH, 320, TFT_RED
+
+        line 0, 40,  Current_GLCD_WIDTH, 40, TFT_RED
+        GLCDPrint ( 2, 25, "Dynamic Calibration")
+        GLCDPrint ( 22, 40, "Raw    Min   Max")
+        GLCDPrint ( 2, 56, "X:")
+        GLCDPrint ( 2, 72, "Y:")
+        GLCDPrint ( 2, 90, "C:")
+
+        GLCDPrint ( 2, 122, "Current Calibration")
+        GLCDPrint ( 2, 146, "X:")
+        GLCDPrint ( 2, 162, "Y:")
+        GLCDPrint ( 102, 146, pad(str(XPT2046_Xmin),3 ) )
+        GLCDPrint ( 102, 162, pad(str(XPT2046_Ymin),3 ) )
+        GLCDPrint ( 162, 146, pad(str(XPT2046_Xmax),3 ) )
+        GLCDPrint ( 162, 162, pad(str(XPT2046_Ymax),3 ) )
+        GLCDPrint ( 2, 214, "Scaled")
+        GLCDPrint ( 2, 230, "X:")
+        GLCDPrint ( 2, 246, "Y:")
+
+        GLCDPrint ( 120, 214, "GLCD Size")
+        GLCDPrint ( 120, 230, "X:" + Str( Current_GLCD_WIDTH ) )
+        GLCDPrint ( 120, 246, "Y:" + Str( Current_GLCD_HEIGHT ) )
+
+
+        GLCDfntDefaultsize = 1
+        GLCDPrint ( 2, Current_GLCD_HEIGHT-17, "v0.9c")
+        GLCDfntDefaultsize = 2
+
+        filledbox Current_GLCD_WIDTH, 0, Current_GLCD_WIDTH-10, 10, TFT_RED
+
+        Dim oldGLCDBackground as word
+        oldGLCDBackground = GLCDBackground
+            GLCDBackground = TFT_WHITE
+            GLCDPrint ( Current_GLCD_WIDTH-58, Current_GLCD_HEIGHT-18, "Clear", TFT_BLACK )
+        GLCDBackground = oldGLCDBackground
+
+        ' ------ Version Control - optional
+        #include "GCBVersionNumber.cnt"
+        'Include the GCBVersionNumber.cnt to increment versionString and create the build time string called GCBBuildTimeStr.
+        ' versionString a string is created automatically.
+        ' GCBBuildTimeStr is a string that is also created automatically.
+        ' use "GCBVersionNumber.cnt" as this will create a local copy of the versionString tracker.
+        ' if you use <GCBVersionNumber.cnt> this is a system wide versionString tracker.
+
+        dim versionString as string * 40
+        versionString = "Build: "+GCBBuildStr
+        versionString = versionString + "@"+GCBBuildTimeStr
+        GLCDfntDefaultsize = 1
+        GLCDPrint ( 2, Current_GLCD_HEIGHT-10, versionString)
+        GLCDfntDefaultsize = 2
+        ' ------ End of Version Control - optional
+End Sub
+
+Sub InitPPS
+    '//sets up pins for USART
+
+    UNLOCKPPS
+        'Module: UART1  (0x.... è in ESADECIMALE)
+        U1RXPPS = 0x0017    'RC7 > RX1
+        RC6PPS  = 0x0013     'TX1 > RC6
+
+        'Module SPI     (0b.... è in BINARIO)
+        RB0PPS=0b011110     'B0 SCK(Out)
+        RC5PPS=0b011111     'C5 SDO
+        RD0PPS=0b100000     'D0 SS(Out)
+'
+        SPI1CON0.EN=0       'SPI disable
+
+        SPI1CLK=0           'Chose Fosc
+        SPI1BAUD=2          'Chose Baud=2; Freq=Fosc/(2+2*Baud)
+
+        SPI1CON0.LSBF=0     'MSBF (Most Significant Bit First)
+        SPI1CON0.MST=1      'SPI module is MASTER
+        SPI1CON0.BMODE=1    'as long as the RXFIFO is not full,'data will
+                            'be transmitted/received as soon 'as the SPIxTxB
+                            'register is written to.
+                            'SPI1TCNT contains the number of “Byte”
+                            'to be trasmitted and SPI1TWIDTH the
+                            'numbers of bit of each “Byte”
+        SPI1CON1.SMP=0      'SDI è campionato a metà del tempo di transito
+        SPI1CON1.CKE=1      'i dati cambiano nella transizione attivo-hidle
+        SPI1CON1.CKP=0      'polarità hidle=low
+        SPI1CON1.SSP=1      'fissa se ss è attivo alto o basso
+        SPI1CON1.SDIP=0     'SDI attivo high
+        SPI1CON1.SDOP=0     'SDO attivo high
+        SPI1CON1.FST=0      'ritardo dopo primo sck >1/2 baud
+        SPI1CON2.SSET=1     '(in master mode)1-> CS will be continuosly active
+
+        SPI1CON2.TXR=1      'master trasmette
+        SPI1CON2.RXR=1      'master riceve
+
+        PIE2.SPI1RXIE=1     'receiving FIFO interrupt enabled
+
+        TRISB.TRISB0=0      'B0 Output
+        TRISC.TRISC0=1      'C0 Input
+        TRISC.TRISC4=1       'C4 Input
+        TRISC.TRISC5=0      'C5 Output
+        TRISD.TRISD0=0      'D0 Output
+        TRISA.TRISA3=0      'A3 Output
+        TRISA.TRISA2=0      'A2 Output
+
+        ANSELA.ANSELA3=0    'A3 digital
+        ANSELA.ANSELA2=0    'A2 digital
+        ANSELB.ANSELB0=0    'B0 digital
+        ANSELC.ANSELC5=0    'C5 digital
+        ANSELC.ANSELC4=0    'C4 digital
+        ANSELC.ANSELC2=0    'C2 digital
+        ANSELC.ANSELC0=0    'C0 digital
+        ANSELD.ANSELD0=0    'D0 digital
+
+        SPI1CON0.EN=1       'SPI enable
+
+    LOCKPPS
+ End Sub
+ SUB Sertxd(in CRLF1 as byte, in stringa as string, in inputS as String,in CRLF2 as byte)
+
+  if CRLF1 < 2 Then
+    HSerPrintCRLF CRLF1     'carriage return + line feed
+  Else
+    HSerSend CRLF1
+  End if
+
+
+  HSerPrint stringa
+  HSerPrint inputS
+
+  if CRLF2 < 2 Then
+    HSerPrintCRLF CRLF2
+  Else
+    HSerSend CRLF2
+  End if
+
+END SUB
+
+SUB Sertxd(in CRLF1 as byte, in stringa as String, in inputB as Byte , in CRLF2 as Byte )
+
+  if CRLF1 < 2 Then
+    HSerPrintCRLF CRLF1
+  Else
+    HSerSend CRLF1
+  End if
+
+  HSerPrint stringa
+  HSerPrint inputB
+
+  if CRLF2 < 2 Then
+    HSerPrintCRLF CRLF2
+  Else
+    HSerSend CRLF2
+  End if
+
+END SUB
+
+SUB Sertxd(in CRLF1 as byte, in stringa as string, in inputW as Word, in CRLF2 as byte)
+
+  if CRLF1 < 2 Then
+    HSerPrintCRLF CRLF1
+  Else
+    HSerSend CRLF1
+  End if
+
+  HSerPrint stringa
+  HSerPrint inputW
+
+  if CRLF2 < 2 Then
+    HSerPrintCRLF CRLF2
+  Else
+    HSerSend CRLF2
+  End if
+
+END SUB
