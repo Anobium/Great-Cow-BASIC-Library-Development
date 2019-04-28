@@ -1,0 +1,12 @@
+;Chip Settings
+#chip 18F66J60
+#config ETHLED=ON
+
+Dir PORTB.1 In
+If PORTB.1 = 1 Then
+	Set PORTE.4 On
+End If
+If PORTB.1 = 0 Then
+	Set PORTE.4 Off
+End If
+

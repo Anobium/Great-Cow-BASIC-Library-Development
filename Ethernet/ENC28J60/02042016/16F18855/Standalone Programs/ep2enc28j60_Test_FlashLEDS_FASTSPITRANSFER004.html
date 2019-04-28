@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (DD/MM/YYYY): 0.95 2016-03-13</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 16F18855</p>
+<p>Program Memory: 359/8192 words (4.38%)</p>
+<p>RAM: 18/1024 bytes (1.76%)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Page</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>57</td><td>122</td><td>1</td><td>INITUSART(3), Delay_MS(3), Delay_S(1), ENC28J60_WRITEREG(3), FASTHWSPITRANSFER(4), SPIMODE(1), HSERPRINT(2), HSERPRINTCRLF(3), INITSYS(1)</td></tr>
+<tr><td>ENC28J60_WRITEREG</td><td>4</td><td>10</td><td>1</td><td>FASTHWSPITRANSFER(2)</td></tr>
+<tr><td>INITSYS</td><td>479</td><td>15</td><td>1</td><td></td></tr>
+<tr><td>SPIMODE</td><td>60</td><td>41</td><td>1</td><td></td></tr>
+<tr><td>FASTHWSPITRANSFER</td><td>17</td><td>7</td><td>1</td><td></td></tr>
+<tr><td>HSERPRINTCRLF</td><td>6</td><td>21</td><td>1</td><td>Delay_MS(2), HSERSEND(2)</td></tr>
+<tr><td>INITUSART</td><td>117</td><td>15</td><td>1</td><td></td></tr>
+<tr><td>HSERSEND</td><td>127</td><td>14</td><td>1</td><td></td></tr>
+<tr><td>HSERPRINT</td><td>15</td><td>33</td><td>1</td><td>Delay_MS(1), HSERSEND(1)</td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>14</td><td>1</td><td></td></tr>
+<tr><td>Delay_S</td><td>0</td><td>8</td><td>1</td><td>Delay_MS(1)</td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>59</td><td>1</td><td></td></tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,76 @@
+'''A program  for GCGB and GCB.
+'''--------------------------------------------------------------------------------------------------------------------------------
+''' Description  : Test routines.
+'''      this code test sends values via the SPI Line
+'''			 Connect analyser.
+'''			 Test#1: Ensure analyser can read results.  0 to 255 and 0 too 255 etc.
+'''			 Test#2: Connect SI to SO and ensure analyser can read results. Results should be as above.
+'''			 Test#3: Ensure the ALL lines are good at device.
+'''			 Test#4: Check CS line
+'''			 Test#5: Check Reset line
+'''.
+'''@author 		[todo]
+'''@licence		GPL
+'''@version		[todo]
+'''@date   		[todo]
+'''********************************************************************************
+
+; ----- Configuration
+#chip 16F1939, 4
+#config Osc = INT, MCLRE_ON, PLLEN_OFF, CLKOUTEN_OFF
+
+; ----- Constants
+#define ENC28J60_DI			portc.4							'Connected to Device SO
+#define ENC28J60_DO			portc.5							'Connected to Device SI
+#define ENC28J60_SCK		portc.3							'Connected to Clock
+#define ENC28J60_CS 		portb.2							'Chip select line
+#define ENC28J60_RESET  PORTb.1							'Reset line
+
+#define debugport portb.0
+
+'USART settings
+#define USART_BAUD_RATE 9600
+#define USART_BLOCKING
+#define USART_TX_BLOCKING
+
+; ----- Define Hardware settings
+set debugport off
+
+; ----- Variables
+  ' No Variables specified in this example. All byte variables are defined upon use.
+
+; ----- Quick Command Reference:
+
+; ----- Main body of program commences here.
+
+    wait 1 s
+    HSerPrintCRLF 2
+    HserPrint "ENC28J60 Ethernet Driver Initial Hardware Tests" : HSerPrintCRLF
+    HserPrint "Init Test": HSerPrintCRLF
+
+
+      #define ENC28J60_Select         Set ENC28J60_CS off
+      #define ENC28J60_Deselect       Set ENC28J60_CS on
+      #define ENC28J60_Reset_CMD			Set ENC28J60_RESET on: Wait 10 ms :Set ENC28J60_RESET off: Wait 10 ms :Set ENC28J60_RESET on: Wait 10 ms
+
+			'These are for TESTING ONLY! THESE SHOULD BE THE CORRECT DIRECTIONS!!
+      Dir ENC28J60_DI in
+      Dir ENC28J60_DO Out
+      Dir ENC28J60_SCK Out
+      Dir ENC28J60_CS out
+      Dir ENC28J60_RESET out
+
+
+			testdata = 0
+
+			SPIMode MasterFast, 0
+
+      do Forever
+      	ENC28J60_Reset_CMD
+				for testdata = 0 to 255
+            Set ENC28J60_CS Off
+                  SPITransfer testdata, temp
+            Set ENC28J60_CS On
+      	next
+      Loop
+

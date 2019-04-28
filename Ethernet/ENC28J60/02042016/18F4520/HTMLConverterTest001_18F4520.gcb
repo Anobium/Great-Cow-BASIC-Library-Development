@@ -1,0 +1,280 @@
+'''A demonstration program for GCGB and GCB.
+'''--------------------------------------------------------------------------------------------------------------------------------
+'''This program
+'''
+'''
+'''@author
+'''@licence	GPL
+'''@version
+'''@date   	01.11.2015
+'''********************************************************************************
+
+; ----- Configuration
+
+'                                                    ___________
+'                                  MCLR - MCLR/E.3 -|1    U   40|- B.7/PGD - BUS 1 = Address Digit 4
+'                      Wireless Data In (D0) - A.0 -|2        39|- B.6/PGC - BUS 1 = Address Digit 3
+'                      Wireless Data In (D1) - A.1 -|3        38|- B.5/PGM - BUS 1 = Address Digit 2
+'                      Wireless Data In (D2) - A.2 -|4        37|- B.4 - BUS 1 = Address Digit 1
+'                      Wireless Data In (D3) - A.3 -|5        36|- B.3 - Data Bit 8
+'                             Button Input 1 - A.4 -|6        35|- B.2 - Data Bit 4
+'                             Button Input 2 - A.5 -|7        34|- B.1 - Data Bit 2
+'                             Button Input 4 - E.0 -|8        33|- B.0 - Data Bit 1
+'                Square Wave Input (I2C Bus) - E.1 -|9        32|- (+)
+'                                 Hooter Out - E.2 -|10       31|- (-)
+'                                              (+) -|11       30|- D.7 - BUS 2 = Address Digit 4
+'                                              (-) -|12       29|- D.6 - BUS 2 = Address Digit 3
+'                                             OSC1 -|13       28|- D.5 - BUS 2 = Address Digit 2
+'                                             OSC2 -|14       27|- D.4 - BUS 2 = Address Digit 1
+'                    BUS 1 = Address Digit 5 - C.0 -|15       26|- C.7/RX - RS232 RX
+'                    BUS 1 = Address Digit 6 - C.1 -|16       25|- C.6/TX - RS232 TX
+'                  Aux I/O 1 + Heartbeat LED - C.2 -|17       24|- C.5 - Button Input 3
+'                        I2C Bus (Clock) - C.3/SCL -|18       23|- C.4/SDA - I2C Bus (Data)
+'                    BUS 2 = Address Digit 5 - D.0 -|19       22|- D.3 - Aux I/O 3 -
+'                    BUS 2 = Address Digit 6 - D.1 -|20_______21|- D.2 - Aux I/O 2 -
+'
+
+#Chip 18F4520, 20
+#Config Osc = HS
+#Config MCLRE = ON
+
+  #include "index.htm"
+
+    'USART settings
+    #define USART_BAUD_RATE 9600
+    #define USART_BLOCKING
+    #define USART_TX_BLOCKING
+    #Define Heartbeat 			PortC.2
+    #Define TX 							PortC.7
+    #Define RX							PortC.6
+
+
+  'To stop your brain from exploding, map the HTML references to meaningful variables
+  'Look at the bottom of the 'included' file for the array addresses to be mapped.
+  'Using a define simplifies the use.  You can use any meaningful constant.
+  '
+  ' #define AN6_GCB_HTML    HTMLMapping(1) maps a nice constant the variable HTMLMapping(1)
+  ' you could use the following but this is a not a meaningful.
+  ' #define POT2    HTMLMapping(1)... where POT2 still maps to the array.
+  '
+
+  #define AN6_GCB_HTML    HTMLMapping(1)					'AN4   ---> AN6
+  #define AN4_GCB_HTML    HTMLMapping(2)					'AN3	 ---> AN4
+  #define PORTB_GCB_HTML  HTMLMapping(3)					'PortC ---> PortB
+  #define PORTD_GCB_HTML  HTMLMapping(4)					'PortB ---> PORTD
+
+
+  'Now the real program.
+  dir porta.4 in          'switch
+  dir porta.3 in          'adc3
+  #define Potentiometer 	PORTE.1									' PortA.4  ---> PortE.1
+  dir Potentiometer 	in
+
+  dir PORTD Out           'led array
+  dir PortB Out           'led array
+
+  'You MUST use a WORD value as the can table contain more that 255 bytes.
+  dim TableLoc as Word
+
+  'Read the AD ports and display
+  do Forever
+  PulseOut HeartBeat, 10 Ms
+  Wait 100 Ms
+
+    'Read the ADCs and lookup in a table to show the LED value.
+    readtable gray_code, ( ReadAD10 ( AN6 ) / 64 ), AN6_GCB_HTML      'This maps to the first element in the array... but, we use the constant! Easier.
+    readtable gray_code, ( ReadAD10 ( AN4 ) / 64 ), AN4_GCB_HTML
+
+    'Ensure we are only using the 4bits of the LED array
+    AN6_GCB_HTML = AN6_GCB_HTML & 0x0F
+    AN4_GCB_HTML = AN4_GCB_HTML & 0x0F
+
+    'Assign value to ports
+    PortB = AN6_GCB_HTML
+    PortD = AN4_GCB_HTML
+
+    'Show the state of ports
+    PORTB_GCB_HTML = PortB   'PortB
+    PORTD_GCB_HTML = PortD   'PortD
+
+    if PortA.4 = 1 then DisplayHTMLPage
+  loop
+  DisplayHTMLPage
+
+  end
+
+
+  'We need to output as many tables defined in the tables list
+  Sub DisplayHTMLPage
+    'Initialise a index. This is required.
+    HTMLElementTracker = 1
+
+    #ifdef SizeofTable1
+        for TableLoc = 1 to SizeofTable1
+            ReadTable index1, TableLoc, inByte
+            OutputHTMLVariable ( inByte )
+        Next
+    #endif
+
+    #ifdef SizeofTable2
+        for TableLoc = 1 to SizeofTable2
+            ReadTable index2, TableLoc, inByte
+            OutputHTMLVariable ( inByte )
+        Next
+    #endif
+
+    #ifdef SizeofTable3
+        for TableLoc = 1 to SizeofTable3
+            ReadTable index3, TableLoc, inByte
+            OutputHTMLVariable ( inByte )
+        Next
+    #endif
+
+    #ifdef SizeofTable4
+        for TableLoc = 1 to SizeofTable4
+            ReadTable index4, TableLoc, inByte
+            OutputHTMLVariable ( inByte )
+        Next
+    #endif
+
+    'Add more statements, if required
+
+  End Sub
+
+  'This routine goes through the byte provided and when it finds a Zero value byte, it transforms this single byte into the required data.
+  'The type of data output is either a string or a byte.  It is assumed these are asigned to Javascript variables in the HTML.
+  Sub OutputHTMLVariable ( in inByte )
+
+    if inByte = 0 then
+        'transform table value to real data.
+        'these both output same data. You may need to updated for your own needs.
+        if HTMLMappingType(HTMLElementTracker) = StringVar then
+            'transform to a string
+            HserPrint HTMLMapping(HTMLElementTracker)
+        else
+            'transform to a byte
+            HserPrint HTMLMapping(HTMLElementTracker)
+        end if
+        'Increment the element tracker as we have transformed an element, point to the next element.
+        HTMLElementTracker++
+        #ifdef debug
+          wait 1 s
+        #endif
+    Else
+        'Literal output. No transformation.
+        HSerPrint chr(inByte)
+    end if
+
+  end sub
+
+ 'this is NOT part of the HTML solution. It is simply to manage the LED array
+ 'transforms bitwise values to numeric values for LED display only.
+ table gray_code
+    0
+    0
+    0
+    1
+    1
+    1
+    3
+    3
+    3
+    3
+    7
+    7
+ 		7
+    15
+    15
+    15
+ end table
+
+'''' GCB Optimisation file
+'
+''Optmise PWM.h
+'    #define USE_HPWMCCP1 FALSE
+'    #define USE_HPWMCCP2 FALSE
+'    #define USE_HPWMCCP3 FALSE
+'    #define USE_HPWMCCP4 FALSE
+'
+'    #define USE_HPWM6 FALSE
+'    #define USE_HPWM7 FALSE
+'
+'    #define USE_HPWM_TIMER2 FALSE
+'    #define USE_HPWM_TIMER4 FALSE
+'    #define USE_HPWM_TIMER6 FALSE
+'
+''Optimise A-d.h
+'    'Standard family chips
+'    #define USE_AD0 FALSE
+'    #define USE_AD1 FALSE
+'    #define USE_AD2 FALSE
+'    #define USE_AD2 FALSE
+'    #define USE_AD3 FALSE
+'    #define USE_AD4 TRUE
+'    #define USE_AD5 FALSE
+'    #define USE_AD6 FALSE
+'    #define USE_AD7 FALSE
+'    #define USE_AD8 FALSE
+'    #define USE_AD9 FALSE
+'    #define USE_AD10 FALSE
+'    #define USE_AD11 FALSE
+'    #define USE_AD12 FALSE
+'    #define USE_AD13 FALSE
+'    #define USE_AD14 FALSE
+'    #define USE_AD15 FALSE
+'    #define USE_AD16 FALSE
+'    #define USE_AD17 FALSE
+'    #define USE_AD18 FALSE
+'    #define USE_AD19 FALSE
+'    #define USE_AD20 FALSE
+'    #define USE_AD21 FALSE
+'    #define USE_AD22 FALSE
+'    #define USE_AD23 FALSE
+'    #define USE_AD24 FALSE
+'    #define USE_AD25 FALSE
+'    #define USE_AD26 FALSE
+'    #define USE_AD27 FALSE
+'    #define USE_AD28 FALSE
+'    #define USE_AD29 FALSE
+'    #define USE_AD30 FALSE
+'    #define USE_AD31 FALSE
+'    #define USE_AD32 FALSE
+'    #define USE_AD33 FALSE
+'    #define USE_AD34 FALSE
+'
+'    'Family of chips based on 16f1688x with ADCON3 register
+'    #define USE_ADA0 FALSE
+'    #define USE_ADA1 FALSE
+'    #define USE_ADA2 FALSE
+'    #define USE_ADA3 FALSE
+'    #define USE_ADA4 FALSE
+'    #define USE_ADA5 FALSE
+'    #define USE_ADA6 FALSE
+'    #define USE_ADA7 FALSE
+'    #define USE_ADB0 FALSE
+'    #define USE_ADB1 FALSE
+'    #define USE_ADB2 FALSE
+'    #define USE_ADB3 FALSE
+'    #define USE_ADB4 FALSE
+'    #define USE_ADB5 FALSE
+'    #define USE_ADB6 FALSE
+'    #define USE_ADB7 FALSE
+'    #define USE_ADC0 FALSE
+'    #define USE_ADC1 FALSE
+'    #define USE_ADC2 FALSE
+'    #define USE_ADC3 FALSE
+'    #define USE_ADC4 FALSE
+'    #define USE_ADC5 FALSE
+'    #define USE_ADC6 FALSE
+'    #define USE_ADC7 FALSE
+'    #define USE_ADD0 FALSE
+'    #define USE_ADD1 FALSE
+'    #define USE_ADD2 FALSE
+'    #define USE_ADD3 FALSE
+'    #define USE_ADD4 FALSE
+'    #define USE_ADD5 FALSE
+'    #define USE_ADD6 FALSE
+'    #define USE_ADD7 FALSE
+'    #define USE_ADE0 FALSE
+'    #define USE_ADE1 FALSE
+'    #define USE_ADE2 FALSE

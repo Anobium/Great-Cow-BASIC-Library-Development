@@ -1,0 +1,293 @@
+'''A program  for GCGB and GCB.
+'''--------------------------------------------------------------------------------------------------------------------------------
+''' Description  :  Setup ENC28J60, then reads data from the Ethernet stream to a PC terminal.
+'''
+'''	You NEED a PC terminal connected to the serial out on the microprocessor.
+'''
+'''@author 		[todo]
+'''@licence		GPL
+'''@version		[todo]
+
+'''@date   		[todo]
+'''********************************************************************************
+'                                                    ___________
+'                                  MCLR - MCLR/E.3 -|1    U   40|- B.7/PGD - BUS 1 = Address Digit 4
+'                      Wireless Data In (D0) - A.0 -|2        39|- B.6/PGC - BUS 1 = Address Digit 3
+'                      Wireless Data In (D1) - A.1 -|3        38|- B.5/PGM - BUS 1 = Address Digit 2
+'                      Wireless Data In (D2) - A.2 -|4        37|- B.4 - BUS 1 = Address Digit 1
+'                      Wireless Data In (D3) - A.3 -|5        36|- B.3 - Data Bit 8
+'                             Button Input 1 - A.4 -|6        35|- B.2 - Data Bit 4
+'                             Button Input 2 - A.5 -|7        34|- B.1 - Data Bit 2
+'                             Button Input 4 - E.0 -|8        33|- B.0 - Data Bit 1
+'                Square Wave Input (I2C Bus) - E.1 -|9        32|- (+)
+'                                 Hooter Out - E.2 -|10       31|- (-)
+'                                              (+) -|11       30|- D.7 - BUS 2 = Address Digit 4
+'                                              (-) -|12       29|- D.6 - BUS 2 = Address Digit 3
+'                                             OSC1 -|13       28|- D.5 - BUS 2 = Address Digit 2
+'                                             OSC2 -|14       27|- D.4 - BUS 2 = Address Digit 1
+'                    BUS 1 = Address Digit 5 - C.0 -|15       26|- C.7/RX - RS232 RX
+'                    BUS 1 = Address Digit 6 - C.1 -|16       25|- C.6/TX - RS232 TX
+'                  Aux I/O 1 + Heartbeat LED - C.2 -|17       24|- C.5 - Button Input 3
+'                        I2C Bus (Clock) - C.3/SCL -|18       23|- C.4/SDA - I2C Bus (Data)
+'                    BUS 2 = Address Digit 5 - D.0 -|19       22|- D.3 - Aux I/O 3 -
+'                    BUS 2 = Address Digit 6 - D.1 -|20_______21|- D.2 - Aux I/O 2 -
+'
+
+#Chip 18F4520,20
+#Config OSC = HS              'Oscillator Selection
+#Config FCMEN = Off           'Fail Safe Clock Monitor
+#Config IESO = Off            'Internal External Oscillator Switch Over
+#Config PWRT = On             'Power Up Timer
+#Config BOREN = On            'Brown Out Reset
+#Config BORV = 2              'Brown Out Voltage
+#Config WDT = Off             'Watchdog Timer
+#Config WDTPS = 32768         'Watchdog Postscaler
+#Config MCLRE = On            'MCLR Enable
+#Config PBADEN = Off          'PortB A/D Enable
+#Config CCP2MX = PortC        'CCP2 Mux
+#Config STVREN = Off          'Stack Overflow Reset
+#Config LVP = Off             'Low Voltage ICSP
+#Config DEBUG = Off           'Background Debugger Enabled
+#Config CP0 = Off             'Code Protection Block 0
+#Config CP1 = Off             'Code Protection Block 1
+#Config CP2 = Off             'Code Protection Block 2
+#Config CPB = Off             'Boot Block Code Protection
+#Config WRT0 = Off            'Write Protection Block 0
+#Config WRT1 = Off            'Write Protection Block 1
+#Config WRT2 = Off            'Write Protection Block 2
+#Config WRTB = Off            'Boot Block Write Protection
+#Config WRTC = Off            'Configuration Register Write Protection
+#Config EBTR0 = Off           'Table Read Protection Block 0
+#Config EBTR1 = Off           'Table Read Protection Block 1
+#Config EBTR2 = Off           'Table Read Protection Block 2
+#Config EBTRB = Off           'Boot Block Table Read Protection
+
+ADCON0 = 0x0F
+ADCON1 = 0x0F                 'Disable analog inputs
+CMCON = 0x07                  'Disable Comparator
+
+    #include "..\ENC28J60_007.h"
+
+    'USART settings
+    #define USART_BAUD_RATE 9600
+    #define USART_BLOCKING
+    #define USART_TX_BLOCKING
+
+; ----- Define Hardware settings
+    ; ----- Constants
+    #Define ENC28J60_DI			PortC.4							'Connected to Device SO
+    #Define ENC28J60_DO			PortC.5							'Connected to Device SI
+    #Define ENC28J60_SCK		PortC.3							'Connected to Clock
+    #Define ENC28J60_CS 		PortA.5							'Chip select line
+    #Define ENC28J60_RESET  PortD.2							'Reset line
+    #Define Heartbeat 			PortC.2
+    #Define TX 							PortC.7
+    #Define RX							PortC.6
+
+
+; ----- Variables
+  ' No Variables specified in this example. All byte variables are defined upon use.
+
+; ----- Quick Command Reference:
+
+; ----- Main body of program commences here.
+debug=0
+    HSerPrintCRLF 2
+    HserPrint "ENC28J60 Ethernet Driver 007" : HSerPrintCRLF
+    HserPrint "Init Test": HSerPrintCRLF
+
+		'Set Key data.  mac, ip address etc.
+    ipaddr = 10,0,0,35
+    ipport = 80
+    ipserver = 10,0,0,36
+    macaddr = 0x42, 0x00, 0x33, 0x44, 0x55, 0x65
+
+
+    ENC28J60_Init ( macaddr )
+
+    'Set address of PHY register to write
+'    ENC28J60_WriteReg(MIREGADR, PHLCON)
+
+
+    'Set LEDA for link status display
+    'and LEDB for blink fast
+'    ENC28J60_WriteReg(MIWRL, 0b01110010)
+'    ENC28J60_WriteReg(MIWRH, 0b00000100)
+
+    'Set LEDA
+    'and LEDB
+'    ENC28J60_WriteReg( MIWRL, 0x04 )
+'    ENC28J60_WriteReg( MIWRH, 0x76 )
+
+
+    'Adjust the clock out... not really required but you can check the output FREQ to check everythinh is workong ok
+'    for xx = 1 to 5
+'      ENC28J60_WriteReg(ECOCON, xx)
+'    next
+
+'A real highLIGHT, a led test. If your RJ45-connector has LED's for LINK and DATA you can test them with this small line. Put it somewhere after the ENC28J60init.
+        'Set address of PHY register to write
+        ENC28J60_writePhyReg ( PHLCON, 0x76, 0x04 )
+
+		'Display the MAC address. Has MAC address been saved? Display the MAC address
+    HserPrint         "Mac Address:         "
+    HserPrint hex(ENC28J60_ReadReg(MAADR1))+"-"
+    HserPrint hex(ENC28J60_ReadReg(MAADR0))+"-"
+    HserPrint hex(ENC28J60_ReadReg(MAADR3))+"-"
+    HserPrint hex(ENC28J60_ReadReg(MAADR2))+"-"
+    HserPrint hex(ENC28J60_ReadReg(MAADR5))+"-"
+    HserPrint hex(ENC28J60_ReadReg(MAADR4)): HSerPrintCRLF 4
+dir portB.4 out
+dir portA.4 in
+debug=0
+
+
+    do Forever
+
+      repeat 3
+        Setwith ( portB.4, FnNotBit ( portB.4 ))
+        ENC28J60_bitSet( ECON1 , econ1_txrst )
+        ENC28J60_bitClear( ECON1 , econ1_txrst )
+
+'    Enc28j60regdump
+        Enc28j60writebuffer
+'    Enc28j60regdump
+        Enc28j60packetsend(60)
+
+        if debug = 1 then
+            Enc28j60regdump
+            eth_read_at ( 0x1670, 60 )
+            debug = 0
+            wait while portA.4 = 1
+        end if
+
+      end Repeat
+      wait 1 s
+
+    loop
+
+    end
+'
+'		'Show packets on the wire - move to library later.
+'    do
+'
+'        if (ENC28J60_ReadReg(EPKTCNT) <> 0 ) then '* We received a packet
+'        '		data = stack_read() 'Call our stack layer to receive it
+'
+'            ENC28J60_Select
+'            FastHWSPITransfer  0b00111010, temp
+'
+'           for xx = 1 to 6
+'                  Set WCOL Off
+'                  'Put byte to send into buffer
+'                  'Will start transfer
+'                  SSPBUF = ENC28J60_READ_CTRL_REG | ( addr AND ADDR_MASK )
+'
+'                  'Read buffer
+'                  Wait While BF = Off
+'
+'                  temp = SSPBUF
+'
+'                  Set BF Off
+'
+'            next
+'
+'
+'            ' Read bytes
+'            HSerPrint "Destination address: "
+'            for xx = 1 to 6
+'                  Set WCOL Off
+'                  'Put byte to send into buffer
+'                  'Will start transfer
+'                  SSPBUF = ENC28J60_READ_CTRL_REG | ( addr AND ADDR_MASK )
+'
+'                  'Read buffer
+'                  Wait While BF = Off
+'
+'                  HSerPrint hex(SSPBUF)
+'                  Set BF Off
+'                  if xx < 6 then HSerPrint "-"
+'            next
+'
+'            HSerPrintCRLF
+'            HSerPrint "Source address:      "
+'            for xx = 1 to 6
+'                  Set WCOL Off
+'                  'Put byte to send into buffer
+'                  'Will start transfer
+'                  SSPBUF = ENC28J60_READ_CTRL_REG | ( addr AND ADDR_MASK )
+'
+'                  'Read buffer
+'                  Wait While BF = Off
+'
+'                  HSerPrint hex(SSPBUF)
+'                  Set BF Off
+'                  if xx < 6 then HSerPrint "-"
+'            next
+'
+'            HSerPrintCRLF
+'            HSerPrint "Type/Length:         "
+'
+'            Set WCOL Off
+'            'Put byte to send into buffer
+'            'Will start transfer
+'            SSPBUF = ENC28J60_READ_CTRL_REG | ( addr AND ADDR_MASK )
+'            'Read buffer
+'            Wait While BF = Off
+'            temp = SSPBUF
+'            HSerPrint hex(temp)
+'            Set WCOL Off
+'            'Put byte to send into buffer
+'            'Will start transfer
+'            SSPBUF = ENC28J60_READ_CTRL_REG | ( addr AND ADDR_MASK )
+'            'Read buffer
+'            Wait While BF = Off
+'            framelength = SSPBUF
+'            Set BF Off
+'            HSerPrint hex(framelength)
+'            HSerPrintCRLF
+'
+'            for xx = 14 to 64
+'                  Set WCOL Off
+'                  'Put byte to send into buffer
+'                  'Will start transfer
+'                  SSPBUF = ENC28J60_READ_CTRL_REG | ( addr AND ADDR_MASK )
+'
+'                  'Read buffer
+'                  Wait While BF = Off
+'
+'                  HSerPrint SSPBUF
+'                  Set BF Off
+'                  HSerPrint ","
+'            next
+'            HSerPrintCRLF
+'
+'        'Finish SPI command
+'        ENC28J60_DeSelect
+'
+'        'Process received data here
+'
+'        'Decrease packet received counter
+'        ENC28J60_Select
+'        FastHWSPITransfer(BFSCMD | ECON2, temp)
+'        FastHWSPITransfer(EPKTDEC , temp)
+'        ENC28J60_Deselect
+'
+'        else
+'		        '	HSerPrint "."
+'        end if
+'
+'    loop
+'
+'    end
+; ----- Support methods.  Subroutines and Functions
+
+
+        sub xENC28J60_writeReg( in addr,  in ENC_Outbyte as byte )
+
+                ENC28J60_Select
+                SPITransfer( addr OR WCRCMD , temp )
+                SPITransfer( ENC_Outbyte, temp )
+                ENC28J60_Deselect
+
+        end sub

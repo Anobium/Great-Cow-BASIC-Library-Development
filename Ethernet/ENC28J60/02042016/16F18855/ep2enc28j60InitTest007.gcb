@@ -1,0 +1,209 @@
+'''A program  for GCGB and GCB.
+'''--------------------------------------------------------------------------------------------------------------------------------
+''' Description  :  Setup ENC28J60, then reads data from the Ethernet stream to a PC terminal.
+'''
+'''	You NEED a PC terminal connected to the serial out on the microprocessor.
+'''
+'''@author 		[todo]
+'''@licence		GPL
+'''@version		[todo]
+'''@date   		[todo]
+'''********************************************************************************
+
+	#chip 16f18855,32
+	#Config FEXTOSC_OFF, RSTOSC_HFINT32
+	#Config WRT_OFF, CPD_ON, MCLRE_ON
+
+    #include "..\ENC28J60_007.h"
+
+    'Set the PPS of the ports.
+    UNLOCKPPS
+      'USART
+      RC0PPS = 0x0010		  'RC0->EUSART:TX;
+      RXPPS  = 0x0011 		'RC1->EUSART:RX;
+
+      'SPI
+      RB3PPS = 0x0014     'RB3->MSSP1:SCK1;
+      SSP1CLKPPS = 0x000B 'RB3->MSSP1:SCK1;
+      SSP1DATPPS = 0x000C 'RB4->MSSP1:SDI1;
+      RB5PPS = 0x0015     'RB5->MSSP1:SDO1;
+    LOCKPPS
+
+    'USART settings
+    #define USART_BAUD_RATE 9600
+    #define USART_BLOCKING
+    #define USART_TX_BLOCKING
+
+; ----- Define Hardware settings
+    ; ----- Constants
+    #define ENC28J60_DI			portb.4						'Connected to Device SO
+    #define ENC28J60_DO			portb.5							'Connected to Device SI
+    #define ENC28J60_SCK		portb.3							'Connected to Clock
+    #define ENC28J60_CS 		portb.2							'Chip select line
+    #define ENC28J60_RESET  PORTb.1							'Reset line
+
+
+; ----- Variables
+  ' No Variables specified in this example. All byte variables are defined upon use.
+
+; ----- Quick Command Reference:
+
+; ----- Main body of program commences here.
+
+    HSerPrintCRLF 2
+    HserPrint "ENC28J60 Ethernet Driver 007" : HSerPrintCRLF
+    HserPrint "Init Test": HSerPrintCRLF
+
+		'Set Key data.  mac, ip address etc.
+    ipaddr = 192,168,0,1
+    ipport = 80
+    ipserver = 192,168,0,249
+    macaddr = 0x42, 0x00, 0x33, 0x44, 0x55, 0x65
+
+
+    ENC28J60_Init ( macaddr )
+
+    'Set address of PHY register to write
+    ENC28J60_WriteReg(MIREGADR, PHLCON)
+
+
+    'Set LEDA for link status display
+    'and LEDB for blink fast
+'    ENC28J60_WriteReg(MIWRL, 0b01110010)
+'    ENC28J60_WriteReg(MIWRH, 0b00000100)
+
+    'Set LEDA
+    'and LEDB
+    ENC28J60_WriteReg( MIWRL, 0x04 )
+    ENC28J60_WriteReg( MIWRH, 0x76 )
+
+
+    'Adjust the clock out... not really required but you can check the output FREQ to check everythinh is workong ok
+    for xx = 1 to 5
+      ENC28J60_WriteReg(ECOCON, xx)
+    next
+
+
+		'Display the MAC address. Has MAC address been saved? Display the MAC address
+    HserPrint         "Mac Address:         "
+    HserPrint hex(ENC28J60_ReadReg(MAADR1))+"-"
+    HserPrint hex(ENC28J60_ReadReg(MAADR0))+"-"
+    HserPrint hex(ENC28J60_ReadReg(MAADR3))+"-"
+    HserPrint hex(ENC28J60_ReadReg(MAADR2))+"-"
+    HserPrint hex(ENC28J60_ReadReg(MAADR5))+"-"
+    HserPrint hex(ENC28J60_ReadReg(MAADR4)): HSerPrintCRLF
+
+
+		'Show packets on the wire - move to library later.
+    do
+
+        if (ENC28J60_ReadReg(EPKTCNT) <> 0 ) then '* We received a packet
+        '		data = stack_read() 'Call our stack layer to receive it
+
+            ENC28J60_Select
+            FastHWSPITransfer  0b00111010, temp
+
+           for xx = 1 to 6
+                  Set WCOL Off
+                  'Put byte to send into buffer
+                  'Will start transfer
+                  SSPBUF = ENC28J60_READ_CTRL_REG | ( addr AND ADDR_MASK )
+
+                  'Read buffer
+                  Wait While BF = Off
+
+                  temp = SSPBUF
+
+                  Set BF Off
+
+            next
+
+
+            ' Read bytes
+            HSerPrint "Destination address: "
+            for xx = 1 to 6
+                  Set WCOL Off
+                  'Put byte to send into buffer
+                  'Will start transfer
+                  SSPBUF = ENC28J60_READ_CTRL_REG | ( addr AND ADDR_MASK )
+
+                  'Read buffer
+                  Wait While BF = Off
+
+                  HSerPrint hex(SSPBUF)
+                  Set BF Off
+                  if xx < 6 then HSerPrint "-"
+            next
+
+            HSerPrintCRLF
+            HSerPrint "Source address:      "
+            for xx = 1 to 6
+                  Set WCOL Off
+                  'Put byte to send into buffer
+                  'Will start transfer
+                  SSPBUF = ENC28J60_READ_CTRL_REG | ( addr AND ADDR_MASK )
+
+                  'Read buffer
+                  Wait While BF = Off
+
+                  HSerPrint hex(SSPBUF)
+                  Set BF Off
+                  if xx < 6 then HSerPrint "-"
+            next
+
+            HSerPrintCRLF
+            HSerPrint "Type/Length:         "
+
+            Set WCOL Off
+            'Put byte to send into buffer
+            'Will start transfer
+            SSPBUF = ENC28J60_READ_CTRL_REG | ( addr AND ADDR_MASK )
+            'Read buffer
+            Wait While BF = Off
+            temp = SSPBUF
+            HSerPrint hex(temp)
+            Set WCOL Off
+            'Put byte to send into buffer
+            'Will start transfer
+            SSPBUF = ENC28J60_READ_CTRL_REG | ( addr AND ADDR_MASK )
+            'Read buffer
+            Wait While BF = Off
+            framelength = SSPBUF
+            Set BF Off
+            HSerPrint hex(framelength)
+            HSerPrintCRLF
+
+            for xx = 14 to 64
+                  Set WCOL Off
+                  'Put byte to send into buffer
+                  'Will start transfer
+                  SSPBUF = ENC28J60_READ_CTRL_REG | ( addr AND ADDR_MASK )
+
+                  'Read buffer
+                  Wait While BF = Off
+
+                  HSerPrint SSPBUF
+                  Set BF Off
+                  HSerPrint ","
+            next
+            HSerPrintCRLF
+
+        'Finish SPI command
+        ENC28J60_DeSelect
+
+        'Process received data here
+
+        'Decrease packet received counter
+        ENC28J60_Select
+        FastHWSPITransfer(BFSCMD | ECON2, temp)
+        FastHWSPITransfer(EPKTDEC , temp)
+        ENC28J60_Deselect
+
+        else
+		        '	HSerPrint "."
+        end if
+
+    loop
+
+    end
+; ----- Support methods.  Subroutines and Functions
