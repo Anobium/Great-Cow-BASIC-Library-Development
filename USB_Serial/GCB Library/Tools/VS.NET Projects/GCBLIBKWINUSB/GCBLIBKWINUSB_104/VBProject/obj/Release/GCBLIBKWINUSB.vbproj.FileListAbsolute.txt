@@ -42,3 +42,4 @@ D:\Great-Cow-BASIC-Library-Development.git\trunk\USB_Serial\GCB Library\Tools\VS
 D:\Great-Cow-BASIC-Library-Development.git\trunk\USB_Serial\GCB Library\Tools\VS.NET Projects\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\obj\Release\GCBLIBKWINUSB.vbproj.CoreCompileInputs.cache
 D:\Great-Cow-BASIC-Library-Development.git\trunk\USB_Serial\GCB Library\Tools\VS.NET Projects\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\obj\Release\GCBLIBKWINUSB.vbproj.CopyComplete
 D:\Great-Cow-BASIC-Library-Development.git\trunk\USB_Serial\GCB Library\Tools\VS.NET Projects\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\obj\Release\GCBLIBKWINUSB.exe
+D:\Great-Cow-BASIC-Library-Development.git\trunk\USB_Serial\GCB Library\Tools\VS.NET Projects\GCBLIBKWINUSB\GCBLIBKWINUSB_104\VBProject\obj\Release\GCBLIBKWINUSB.vbprojAssemblyReference.cache

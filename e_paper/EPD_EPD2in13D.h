@@ -68,7 +68,7 @@ wait 200 ms
 
     Do While EPD_Busy=OFF
     wait 200 ms
-    HSerPrint "."
+
     Loop
 
     SendCommand_EPD2in13D(Panel_Setting)
@@ -157,7 +157,7 @@ sub Refresh_EPD2in13D
 
     Do While EPD_Busy=OFF
     wait 200 ms
-    HSerPrint "^"
+
     Loop
 
 end sub
