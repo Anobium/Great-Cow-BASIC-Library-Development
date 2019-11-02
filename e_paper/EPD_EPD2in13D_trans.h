@@ -163,21 +163,21 @@ sub Init_EPD2in13D
 end sub
 
 
-sub CLS_EPD2in13D
+sub CLS_EPD2in13D ( Optional In  GLCDBackground as word = GLCDBackground )
 
       SendCommand_EPD2in13D(Data_Trasmission_1)
       wait 2 ms
-      for ind_raw=1 to EPD_Height
-        for ind_col=1 to EPD_width
-          SendData_EPD2in13D(EPD_Black)
+      for ind_raw=1 to GLCD_HEIGHT
+        for ind_col=1 to GLCD_WIDTH
+          SendData_EPD2in13D(GLCDBackground)
         next
       next
       wait 10 ms
       SendCommand_EPD2in13D(Data_Trasmission_2)
       wait 2 ms
-      for ind_raw=1 to EPD_Height
-        for ind_col=1 to EPD_width
-          SendData_EPD2in13D(EPD_Black)
+      for ind_raw=1 to GLCD_HEIGHT
+        for ind_col=1 to GLCD_WIDTH
+          SendData_EPD2in13D(GLCDBackground)
         next
       next
       wait 10 ms
@@ -459,7 +459,7 @@ Sub PSet_EPD2in13D(In GLCDX as word, In GLCDY as word, In GLCDColour As Word)
   Dim n_col, n_raw, ind_Trans as word
   Dim remainder as byte
   Dim value as bit
-  if GLCDColour <> EPD_Background then
+  if GLCDColour <> GLCDBackground then
     value=1
   else
     value=0
@@ -467,7 +467,7 @@ Sub PSet_EPD2in13D(In GLCDX as word, In GLCDY as word, In GLCDColour As Word)
 
     n_col=(GLCDX+1)/8       'numero dela colonna su cui è il byte coinvolto
     remainder=(GLCDX+1)%8
-    n_raw=GLCDY*EPD_Width8  'numero di riga del byte coinvolto
+    n_raw=GLCDY*GLCD_WIDTH8  'numero di riga del byte coinvolto
 
     if remainder=0 then
       ind=n_raw+n_col
