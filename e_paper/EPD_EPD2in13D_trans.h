@@ -38,6 +38,16 @@
     #define Deep_Sleep          0x07
 '______________________________________________________________________
 
+'Pin mappings
+#define EPD_DC GLCD_DC
+#define EPD_CS GLCD_CS
+#define EPD_RESET GLCD_RESET
+#define EPD_DO GLCD_DO
+#define EPD_SCK GLCD_SCK
+#define EPD_BUSY GLCD_BUSY
+
+
+
 '
     #ifndef GLCD_TYPE_EPD2in13D_CHARACTER_MODE_ONLY
         GLCD_TYPE_EPD2in13D_LOWMEMORY_GLCD_MODE=False
@@ -84,14 +94,26 @@
 
 sub Init_EPD2in13D
 
-    'Reset_EPD2in13D
+    Dir   EPD_DC     OUT
+    Dir   EPD_CS     OUT
+    Dir   EPD_RESET  OUT
+    Dir   EPD_DO     OUT
+    Dir   EPD_SCK    OUT
+    Dir   EPD_Busy   IN
 
+    'Reset_EPD2in13D
     SET EPD_reset ON
     wait 200 ms
     SET EPD_Reset OFF
     wait 20 ms
     SET EPD_reset ON
     wait 200 ms
+
+    #ifdef EPD2in13D_HardwareSPI
+      ' harware SPI mode
+       asm showdebug SPI constant used equates to HWSPIMODESCRIPT
+       SPIMode HWSPIMODESCRIPT, 0
+    #endif
 
     SendCommand_EPD2in13D(Booster_Soft_start)
     SendData_EPD2in13D(0x17)
@@ -251,21 +273,60 @@ sub Sleep_EPD2in13D
 
 end sub
 
-sub SendCommand_EPD2in13D(in Command as Byte)
+sub SendCommand_EPD2in13D(in EPD2in13D_Command as Byte)
 
     SET EPD_CS OFF
     SET EPD_DC OFF
-    SPITransfer Command, Dummy
-    SET EPD_CS ON
+
+    #ifdef EPD2in13D_HardwareSPI
+      SPITransfer EPD2in13D_Command, Dummy
+      SET EPD_CS ON
+      Exit Sub
+    #endif
+
+    #ifndef EPD2in13D_HardwareSPI
+      REPEAT 8
+
+        IF EPD2in13D_Data.7 = ON THEN
+          Set EPD_DO ON
+        ELSE
+          Set EPD_DO OFF
+        END IF
+        SET EPD_SCK On
+        Rotate EPD left
+        Set EPD_SCK Off
+
+      END REPEAT
+      Set EPD_CS ON
+    #endif
 
 end sub
 
-sub SendData_EPD2in13D(in Data as Byte)
+sub SendData_EPD2in13D(in EPD2in13D_Data as Byte)
 
     SET EPD_CS OFF
     SET EPD_DC ON
-    SPITransfer Data, Dummy
-    SET EPD_CS ON
+    #ifdef EPD2in13D_HardwareSPI
+      SPITransfer EPD2in13D_Data, Dummy
+      SET EPD_CS ON
+      Exit Sub
+    #endif
+
+    #ifndef EPD2in13D_HardwareSPI
+      REPEAT 8
+
+        IF EPD2in13D_Data.7 = ON THEN
+          Set EPD_DO ON
+        ELSE
+          Set EPD_DO OFF
+        END IF
+        SET EPD_SCK On
+        Rotate EPD left
+        Set EPD_SCK Off
+
+      END REPEAT
+      Set EPD_CS ON
+    #endif
 
 end sub
 

@@ -41,11 +41,8 @@
     Dir portC.6 OUT
 
 '******************************************************************************************************
-'ERV what is this?  The following should be used   '#define EPD_EPD2in13D_HardwareSPI     ' remove comment out if you want to use software SPI.
-    '#define Hardware SPI
-    #define SPI_HardwareSPI
-'ERV what is this?  This needs to be in the .h within the INIT
-    SPIMode ( MasterFast,0)
+'  The following should be used   '#define EPD_EPD2in13D_HardwareSPI     ' remove comment out if you want to use software SPI.
+    #define EPD2in13D_HardwareSPI
     #define SPI_BAUD_RATE_REGISTER 7 '**********||||||****|||****|
 
 '******************************************************************************************************
@@ -67,21 +64,14 @@
 
     'Pin mappings for SPI - this GLCD driver supports Hardware SPI and Software SPI
 
-'ERV What are these? These need to GLCD_DC ETC = wrong naming convention
-    #define EPD_DC     portA.0   ' Data(hight)/ command(low) line
-    #define EPD_CS     portC.1   ' Chip select line
-    #define EPD_RESET  portD.2   ' Reset line
-    #define EPD_DO     portC.5   ' GLCD MOSI connect to MCU SDO
-    #define EPD_SCK    portC.3   ' Clock Line
-    #define EPD_Busy   portC.0
+'ERV These need to GLCD_DC ETC = was wrong naming convention
+    #define GLCD_DC     portA.0   ' Data(hight)/ command(low) line
+    #define GLCD_CS     portC.1   ' Chip select line
+    #define GLCD_RESET  portD.2   ' Reset line
+    #define GLCD_DO     portC.5   ' GLCD MOSI connect to MCU SDO
+    #define GLCD_SCK    portC.3   ' Clock Line
+    #define GLCD_Busy   portC.0
 
-'ERV What are these? These need to be in the .h within the INIT
-    Dir   EPD_DC     OUT
-    Dir   EPD_CS     OUT
-    Dir   EPD_RESET  OUT
-    Dir   EPD_DO     OUT
-    Dir   EPD_SCK    OUT
-    Dir   EPD_Busy   IN
 
     #define GLCD_TYPE EPD_EPD2in13D
     #define GLCD_EXTENDEDFONTSET1
