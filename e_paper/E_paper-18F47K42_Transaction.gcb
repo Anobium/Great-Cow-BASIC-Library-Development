@@ -24,11 +24,13 @@
             'Module: UART1  (0x.... è in ESADECIMALE)
             U1RXPPS = 0x0017        'RC7 > RX1
             RC6PPS  = 0x0013        'TX1 > RC6
-            'Module: SPI1
-            SPI1SDIPPS = 0x0014     'RC4 > SDI1
-            RC5PPS = 0x001F         'SDO1 > RC5
-            RC3PPS = 0x001E         'SCK1 > RC3
-            SPI1SCKPPS = 0x0013     'RC3 > SCK1 (bi-directional)
+            #ifdef EPD2in13D_HardwareSPI
+                'Module: SPI1
+                SPI1SDIPPS = 0x0014     'RC4 > SDI1
+                RC5PPS = 0x001F         'SDO1 > RC5
+                RC3PPS = 0x001E         'SCK1 > RC3
+                SPI1SCKPPS = 0x0013     'RC3 > SCK1 (bi-directional)
+            #endif
     End Sub
 
 '______________
@@ -52,9 +54,6 @@
 'erv - You need to MIGRATE the GLCD.H I sent you. There are many changes that you need to test against.
     #include <Myglcd_trans.h>
     #include <EPD_EPD2in13D_trans.h>
-
-    GLCDDeviceHeight = 102
-    GLCDDeviceWidth  = 212
 
     #define GLCD_TYPE_EPD2in13D_CHARACTER_MODE_ONLY
     #define GLCD_TYPE_EPD2in13D_LOWMEMORY4_GLCD_MODE
