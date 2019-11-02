@@ -600,7 +600,7 @@ If GLCD_TYPE = GLCD_TYPE_Nextion Then
   End If
 ' For E-Paper Waveshare EP213inch HAT (D)
   If GLCD_TYPE = EPD_EPD2in13D Then
-     #include <EPD_EPD2in13D.h>
+     #include <D:\Great-Cow-BASIC-Library-Development.git\trunk\e_paper\EPD_EPD2in13D.h>
      InitGLCD = Init_EPD2in13D
      GLCDCLS = CLS_EPD2in13D
      GLCDDrawChar = DrawChar_EPD2in13D
