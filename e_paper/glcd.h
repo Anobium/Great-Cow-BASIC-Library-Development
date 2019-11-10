@@ -52,8 +52,10 @@
 '              Author: Abdul-Aziz Solyman Khalil,
 '              Department of Computer Science, University of Mosul, Mosul, Iraq, available on Internet.
 '    23/9/19  Added GLCD_TYPE_UC1601 support and added improved XPOS for GLCDPrintString
-'    10/9/19  Added GLCD_TYPE_ST7735R support
+'    10/9/19  Added GLCD_TYPE_ST7735R support               GLCD_WIDTH = 128  GLCD_HEIGHT = 160
+
 '    13/10/19 Added GLCD_TYPE_SSD1351 support
+'    3/11/19  Added GLCD_TYPE_ST7735R_160_80 support.       GLCD_WIDTH = 160 GLCD_HEIGHT = 80
 
 
 'Constants that might need to be set
@@ -61,7 +63,7 @@
 
 'GLCD types - add new types here!
 #define GLCD_TYPE_KS0108  1
-#define GLCD_TYPE_ST7735  2
+#define GLCD_TYPE_ST7735  2       'GLCD_WIDTH = 128  GLCD_HEIGHT = 160
 #define GLCD_TYPE_ST7920  3
 #define GLCD_TYPE_PCD8544 4
 #define GLCD_TYPE_SSD1306 5
@@ -84,9 +86,11 @@
 #define GLCD_TYPE_UC8230  22
 #define GLCD_TYPE_ILI9320 23
 #define GLCD_TYPE_UC1601  24
-#define GLCD_TYPE_ST7735R 25
+#define GLCD_TYPE_ST7735R 25           'GLCD_WIDTH = 128  GLCD_HEIGHT = 160
 #define GLCD_TYPE_SSD1351 26
-#define EPD_EPD2in13D     27
+#define GLCD_TYPE_EPD_EPD2in13D     27
+#define GLCD_TYPE_ST7735R_160_80 28    'GLCD_WIDTH = 160 GLCD_HEIGHT = 80
+
 ' Circle edge overdraw protection
 ' #define GLCD_PROTECTOVERRUN
 ' Defaults to KS0108
@@ -319,15 +323,42 @@ Dim GLCDDeviceWidth as Word
   If GLCD_TYPE = GLCD_TYPE_ST7735R Then
 
      #include <glcd_st7735r.h>
+     'Device specific
      InitGLCD = InitGLCD_ST7735R
-     GLCDCLS = GLCDCLS_ST7735R
+     Pset = Pset_ST7735R
+
+     'Shared with ST7735
+     GLCDCLS = GLCDCLS_ST7735
      GLCDDrawChar = GLCDDrawChar_ST7735
      FilledBox = FilledBox_ST7735
-     Pset = Pset_ST7735R
-     GLCDRotate = GLCDRotate_ST7735R
+     GLCDRotate = GLCDRotate_ST7735
+
      glcd_type_string = "ST7735R"
-     GLCD_WIDTH = 160
-     GLCD_HEIGHT = 80
+     GLCD_WIDTH = 128
+     GLCD_HEIGHT = 160
+     ST7735R_GLCD_HEIGHT = GLCDDeviceHeight
+     ST7735R_GLCD_WIDTH = GLCDDeviceWidth
+
+  End If
+
+
+  If GLCD_TYPE = GLCD_TYPE_ST7735R_160_80 Then
+
+     #include <glcd_st7735r.h>
+     'Device specific
+     InitGLCD = InitGLCD_ST7735R
+     Pset = Pset_ST7735R
+
+     'Shared with ST7735
+     GLCDCLS = GLCDCLS_ST7735
+     GLCDDrawChar = GLCDDrawChar_ST7735
+     FilledBox = FilledBox_ST7735
+     GLCDRotate = GLCDRotate_ST7735
+
+     glcd_type_string = "ST7735R"
+     GLCD_WIDTH = 80
+     GLCD_HEIGHT = 160
+
      ST7735R_GLCD_HEIGHT = GLCDDeviceHeight
      ST7735R_GLCD_WIDTH = GLCDDeviceWidth
 
@@ -668,8 +699,8 @@ If GLCD_TYPE = GLCD_TYPE_Nextion Then
   End If
 
 ' For E-Paper Waveshare EP213inch HAT (D)
-  If GLCD_TYPE = EPD_EPD2in13D Then
-     #include <EPD_EPD2in13D.h>
+  If GLCD_TYPE = GLCD_TYPE_EPD_EPD2in13D Then
+     #include <epd_epd2in13d.h>
      InitGLCD = Init_EPD2in13D
      GLCDCLS = CLS_EPD2in13D
      GLCDDrawChar = DrawChar_EPD2in13D
@@ -677,9 +708,13 @@ If GLCD_TYPE = GLCD_TYPE_Nextion Then
      FilledBox = FilledBox_EPD2in13D
      Pset = Pset_EPD2in13D
      GLCDRotate = DRotate_EPD2in13D
+     GLCD_Open_PageTransaction = GLCD_Open_PageTransaction_EPD2in13D
+     GLCD_Close_PageTransaction = GLCD_Close_PageTransaction_EPD2in13D
+
+
      glcd_type_string = "EPD2in13D"
-     GLCD_WIDTH =  EPD_Width
-     GLCD_HEIGHT = EPD_Height
+     GLCD_WIDTH =  104
+     GLCD_HEIGHT = 212
      GLCDBACKGROUND=EPD_BACKGROUND
      GLCDFOREGROUND=EPD_Foreground
      GLCDDeviceHeight=EPD_HEIGHT

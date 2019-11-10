@@ -57,13 +57,8 @@
      #define GLCD_TYPE GLCD_TYPE_EPD_EPD2in13D
      #define GLCD_EXTENDEDFONTSET1
 
-'     #define GLCD_TYPE_EPD2in13D_LOWMEMORY1_GLCD_MODE OFF
-     #define GLCD_TYPE_EPD2in13D_LOWMEMORY2_GLCD_MODE ON
-'     #define GLCD_TYPE_EPD2in13D_LOWMEMORY3_GLCD_MODE OFF
 
      'Pin mappings for SPI - this GLCD driver supports Hardware SPI and Software SPI
-
- 'ERV These need to GLCD_DC ETC = was wrong naming convention
      #define GLCD_DC     portA.0   ' Data(hight)/ command(low) line
      #define GLCD_CS     portC.1   ' Chip select line
      #define GLCD_RESET  portD.2   ' Reset line
@@ -72,7 +67,6 @@
      #define GLCD_Busy   portC.0
 
 
-'    GLCDRotate ( Landscape_rev )     ' optionally you can rotate the screen.
 
     Dim ind, counter, ind_raw, ind_col as word
     Dim DataVar, dummy, Flag, VERBOSE as byte
@@ -80,17 +74,19 @@
     Dim MyString, MyString1 as String
 
  '******************************************************************************************************
-     'Main program
 
-    GLCD_Open_PageTransaction (0, n_Page-1)   'Open Transaction
+    box 10, 10,GLCD_WIDTH-10, GLCD_HEIGHT-10
+    box 20, 20,GLCD_WIDTH-20, GLCD_HEIGHT-20
 
-        box 10, 10,GLCD_WIDTH-10, GLCD_HEIGHT-10
-        box 20, 20,GLCD_WIDTH-20, GLCD_HEIGHT-20
 
-        box 30, 30,GLCD_WIDTH-30, GLCD_HEIGHT-30
+    Pixel_To_Display_EPD2in13D(1, true)
+    box 30, 30,GLCD_WIDTH-30, GLCD_HEIGHT-30
 
-        Filledbox 40, 40,GLCD_WIDTH-40, GLCD_HEIGHT-40
+    Pixel_To_Display_EPD2in13D(1, true )
 
-    GLCD_Close_PageTransaction                 'Close Transaction
+    Filledbox 40, 40,GLCD_WIDTH-40, GLCD_HEIGHT-40
 
+    Pixel_To_Display_EPD2in13D(1, true )
+
+    wait 100 ms
     end

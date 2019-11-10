@@ -1,5 +1,5 @@
 '    Graphical LCD routines for the GCBASIC compiler
-'    Copyright (C) 2015, 2019 Paolo Iocco, Stan Cartwright and Evan Venn
+'    Copyright (C) 2019 Giuseppe D'Elia
 
 '    This library is free software; you can redistribute it and/or
 '    modify it under the terms of the GNU Lesser General Public
@@ -14,6 +14,11 @@
 '    You should have received a copy of the GNU Lesser General Public
 '    License along with this library; if not, write to the Free Software
 '    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+
+
+'  Initial release
+
 
 '''Draws a string at the specified location on theE-Paper
 '''@param StringLocX X coordinate for message
@@ -37,7 +42,55 @@
     #define Power_off           0x02
     #define Deep_Sleep          0x07
 
-sub Reset_EPD2in13D
+    'Pin mappings
+    #define EPD_DC GLCD_DC
+    #define EPD_CS GLCD_CS
+    #define EPD_RESET GLCD_RESET
+    #define EPD_DO GLCD_DO
+    #define EPD_SCK GLCD_SCK
+    #define EPD_BUSY GLCD_BUSY
+
+'_________________________________________________________________
+'
+#script
+
+    BuffWidth= 2756
+    n_page=  1
+    Full_Buff=1
+    if GLCD_TYPE_EPD2in13D_LOWMEMORY1_GLCD_MODE then
+      BuffWidth= 104
+      n_page= 26
+      Full_Buff=0
+    end if
+    if GLCD_TYPE_EPD2in13D_LOWMEMORY2_GLCD_MODE then
+      BuffWidth= 208
+      n_page= 13
+      Full_Buff=0
+    end if
+    if GLCD_TYPE_EPD2in13D_LOWMEMORY3_GLCD_MODE then
+      BuffWidth =1378
+      n_page= 2
+      Full_Buff=0
+    end if
+
+    GLCD_WIDTH8 = GLCD_WIDTH / 8
+
+#endscript
+
+    Dim EPD_Buffer(BuffWidth)
+
+#startup Init_EPD2in13D, 99
+
+sub Init_EPD2in13D
+
+    clear_buffer_EPD2in13D
+    asm showdebug Current_buffer_size_is BUFFWIDTH
+    Dir   EPD_DC     OUT
+    Dir   EPD_CS     OUT
+    Dir   EPD_RESET  OUT
+    Dir   EPD_DO     OUT
+    Dir   EPD_SCK    OUT
+    Dir   EPD_Busy   IN
 
     SET EPD_reset ON
     wait 200 ms
@@ -46,9 +99,11 @@ sub Reset_EPD2in13D
     SET EPD_reset ON
     wait 200 ms
 
-end sub
-
-sub Init_EPD2in13D
+    #ifdef EPD2in13D_HardwareSPI
+      ' harware SPI mode
+       asm showdebug SPI constant used equates to HWSPIMODESCRIPT
+       SPIMode HWSPIMODESCRIPT, 0
+    #endif
 
     SendCommand_EPD2in13D(Booster_Soft_start)
     SendData_EPD2in13D(0x17)
@@ -62,13 +117,11 @@ sub Init_EPD2in13D
     SendData_EPD2in13D(0x2B)
     SendData_EPD2in13D(0x2B)
     SendData_EPD2in13D(0x03)
-
-wait 200 ms
+    wait 200 ms
     SendCommand_EPD2in13D(Power_ON)
 
     Do While EPD_Busy=OFF
-    wait 200 ms
-
+        wait 200 ms
     Loop
 
     SendCommand_EPD2in13D(Panel_Setting)
@@ -85,10 +138,39 @@ wait 200 ms
     SendCommand_EPD2in13D(VCM_DC_Setting)
     SendData_EPD2in13D(0x12)
 
+    LoadLUTS_EPD2in13D
+
+    'Colours
+    GLCDForeground = TFT_WHITE
+    'Default Colours
+    #ifdef DEFAULT_GLCDBACKGROUND
+      GLCDBackground = DEFAULT_GLCDBACKGROUND
+    #endif
+
+    #ifndef DEFAULT_GLCDBACKGROUND
+      GLCDBackground = TFT_BLACK
+    #endif
+
+    'Variables required for device
+    GLCDDeviceWidth = GLCD_WIDTH - 1
+    GLCDDeviceHeight = GLCD_HEIGHT - 1
+
+    #ifndef GLCD_OLED_FONT
+      GLCDFontWidth = 6
+    #endif
+
+    #ifdef GLCD_OLED_FONT
+      GLCDFontWidth = 5
+    #endif
+
+    GLCDfntDefault = 0
+    GLCDfntDefaultsize = 1
+    GLCDfntDefaultHeight = 8
+    GLCDCLS
+
 end sub
 
 sub LoadLUTS_EPD2in13D
-
 
     SendCommand_EPD2in13D(VCM_DC_Setting)
     SendData_EPD2in13D(0x00)
@@ -99,54 +181,94 @@ sub LoadLUTS_EPD2in13D
 
     SendCommand_EPD2in13D(0x20) 'VCOM LUT
     for counter=1 to 44
-      ReadTable Lut_Vcom, Counter, Data
-      SendData_EPD2in13D(Data)
+      ReadTable Lut_Vcom, Counter, DataVar
+      SendData_EPD2in13D(DataVar)
     next
 
     SendCommand_EPD2in13D(0x21) 'WW LUT
     for counter=1 to 42
-      ReadTable Lut_WW, Counter, Data
-      SendData_EPD2in13D(Data)
+      ReadTable Lut_WW, Counter, DataVar
+      SendData_EPD2in13D(DataVar)
     next
 
     SendCommand_EPD2in13D(0x22) 'BW LUT
     for counter=1 to 42
-      ReadTable Lut_BW, Counter, Data
-      SendData_EPD2in13D(Data)
+      ReadTable Lut_BW, Counter, DataVar
+      SendData_EPD2in13D(DataVar)
     next
 
     SendCommand_EPD2in13D(0x23) 'WB LUT
     for counter=1 to 42
-      ReadTable Lut_WB, Counter, Data
-      SendData_EPD2in13D(Data)
+      ReadTable Lut_WB, Counter, DataVar
+      SendData_EPD2in13D(DataVar)
     next
 
     SendCommand_EPD2in13D(0x24) 'BB LUT
     for counter=1 to 42
-      ReadTable Lut_BB, Counter, Data
-      SendData_EPD2in13D(Data)
+      ReadTable Lut_BB, Counter, DataVar
+      SendData_EPD2in13D(DataVar)
     next
 
 end sub
-sub Clear_EPD2in13D
 
+
+sub CLS_EPD2in13D ( Optional In  GLCDBackground as word = GLCDBackground)
 
       SendCommand_EPD2in13D(Data_Trasmission_1)
       wait 2 ms
-      for ind_raw=1 to EPD_Height
-        for ind_col=1 to EPD_width
-          SendData_EPD2in13D(EPD_Black)
+      for ind_raw=1 to GLCD_Height
+        for ind_col=1 to GLCD_Width
+          SendData_EPD2in13D(GLCDBackGround)
         next
       next
       wait 10 ms
       SendCommand_EPD2in13D(Data_Trasmission_2)
       wait 2 ms
-      for ind_raw=1 to EPD_Height
-        for ind_col=1 to EPD_width
-          SendData_EPD2in13D(EPD_Black)
+      for ind_raw=1 to GLCD_Height
+        for ind_col=1 to GLCD_Width
+          SendData_EPD2in13D(GLCDBackGround)
         next
       next
       wait 10 ms
+
+      Refresh_EPD2in13D
+
+      Clear_buffer_EPD2in13D
+
+end sub
+
+sub   Pixel_To_Display_EPD2in13D( in mode as byte, Optional In _EPD2_refresh = false )
+
+    if mode = 1 then
+      SendCommand_EPD2in13D(Data_Trasmission_1)
+      wait 2 ms
+      for ind_raw=1 to GLCD_Height
+        for ind_col=1 to GLCD_Width
+          SendData_EPD2in13D(GLCDBackground)
+        next
+      next
+      wait 10 ms
+
+      SendCommand_EPD2in13D(Data_Trasmission_2)
+    wait 2 ms
+    end if
+
+    ind=BuffWidth
+    for ind_raw=1 to ind
+      SendData_EPD2in13D(EPD_Buffer(ind_raw))
+    next
+    wait 10 ms
+
+    if _EPD2_refresh <> false then
+        Refresh_EPD2in13D
+    end if
+
+end sub
+
+sub Clear_buffer_EPD2in13D
+    for ind_raw=1 to BuffWidth                 'ripulisce il buffer
+      EPD_Buffer(ind_raw)=GLCDBackground
+    next
 end sub
 
 sub Refresh_EPD2in13D
@@ -156,8 +278,7 @@ sub Refresh_EPD2in13D
     SendCommand_EPD2in13D(Display_Refresh)
 
     Do While EPD_Busy=OFF
-    wait 200 ms
-
+      wait 200 ms
     Loop
 
 end sub
@@ -174,22 +295,59 @@ sub Sleep_EPD2in13D
 
 end sub
 
-sub SendCommand_EPD2in13D(in Command as Byte)
+sub SendCommand_EPD2in13D(in EPD2in13D_Command as Byte)
 
     SET EPD_CS OFF
     SET EPD_DC OFF
-    SPITransfer Command, Dummy
-    SET EPD_CS ON
+    #ifdef EPD2in13D_HardwareSPI
+      SPITransfer EPD2in13D_Command, Dummy
+      SET EPD_CS ON
+      Exit sub
+    #endif
+
+    #ifndef EPD2in13D_HardwareSPI
+      REPEAT 8
+
+        IF EPD2in13D_Command.7 = ON THEN
+          Set EPD_DO ON
+        ELSE
+          Set EPD_DO OFF
+        END IF
+        SET EPD_SCK On
+        Rotate EPD left
+        Set EPD_SCK Off
+
+      END REPEAT
+      Set EPD_CS ON
+    #endif
 
 end sub
 
-sub SendData_EPD2in13D(in Data as Byte)
+sub SendData_EPD2in13D(in EPD2in13D_Data as Byte)
 
     SET EPD_CS OFF
     SET EPD_DC ON
-    SPITransfer Data, Dummy
-    SET EPD_CS ON
+    #ifdef EPD2in13D_HardwareSPI
+      SPITransfer EPD2in13D_Data, Dummy
+      SET EPD_CS ON
+      Exit Sub
+    #endif
 
+    #ifndef EPD2in13D_HardwareSPI
+      REPEAT 8
+
+        IF EPD2in13D_Data.7 = ON THEN
+          Set EPD_DO ON
+        ELSE
+          Set EPD_DO OFF
+        END IF
+        SET EPD_SCK On
+        Rotate EPD left
+        Set EPD_SCK Off
+
+      END REPEAT
+      Set EPD_CS ON
+    #endif
 end sub
 
 Sub DrawString_EPD2in13D( In StringLocX as word, In CharLocY as word, In Chars as string, Optional In LineColour as word = GLCDForeground )
@@ -231,10 +389,22 @@ Sub DrawChar_EPD2in13D(In CharLocX as word, In CharLocY as word, In CharCode, Op
   '
   'You can make independent change to section 2 and 3 but they are mutual exclusive with many common pieces
 
+
+    'invert colors if required
+    if LineColour <> GLCDForeground  then
+      'Inverted Colours
+      GLCDBackground = 1
+      GLCDForeground = 0
+    end if
+
+
    dim CharCol, CharRow, GLCDTemp as word
    CharCode -= 15
+  'CharCode needs to have 16 subtracted, table starts at char 16 not char 0
 
    CharCol=0
+
+
 
    #ifndef GLCD_OLED_FONT
 
@@ -367,42 +537,52 @@ End Sub
 '''@param GLCDColour State of pixel
 Sub PSet_EPD2in13D(In GLCDX as word, In GLCDY as word, In GLCDColour As Word)
 
-  Dim n_col, n_raw as word
+  Dim n_col, n_raw, ind_Trans as word
   Dim remainder as byte
   Dim value as bit
-  if GLCDColour <> EPD_Background then
+  Dim GLCD_Time_Buff as word
+
+  if GLCDColour <> GLCDBackGround then
     value=1
   else
     value=0
   end if
-    n_col=(GLCDX+1)/8
+    n_col=(GLCDX+1)/8       'numero della colonna su cui è il byte coinvolto
     remainder=(GLCDX+1)%8
-    n_raw=GLCDY*EPD_Width8
+    n_raw=GLCDY*GLCD_Width8  'numero di riga del byte coinvolto
     if remainder=0 then
       ind=n_raw+n_col
     else
-      ind=n_raw+n_col+1
+      ind=n_raw+n_col+1     'numero del byte coinvolto (a partire dal primo di ind=1)
     end if
-    Data=EPD_Buffer(ind)
-    Select Case remainder
-    case 0
-      data.0=value
+    GLCD_Time_Buff=_GLCDPage*BuffWidth
+    Ind_Trans=Ind
+    if Full_Buff=0 then
+     Ind_Trans=Ind_Trans-GLCD_Time_Buff
+    end if
+    if ind_Trans>BuffWidth then           'NOTE:it should be a control also for a
+      EXIT SUB                            'lower bound of ind (ind>GLCD_Time_Buff)
+    end if                                'However when the lower bound is violated,
+    DataVar=EPD_Buffer(ind_Trans)         'Ind_Trans should be negative and, due to non signed arithmetic
+    Select Case remainder                 'it will be very large, thus Exits sub is
+    case 0                                'executed.
+      DataVar.0=value
     case 1
-      data.7=value
+      DataVar.7=value
     case 2
-      data.6=value
+      DataVar.6=value
     case 3
-      data.5=value
+      DataVar.5=value
     case 4
-      data.4=value
+      DataVar.4=value
     case 5
-      data.3=value
+      DataVar.3=value
     case 6
-      data.2=value
+      DataVar.2=value
     case 7
-      data.1=value
+      DataVar.1=value
     End Select
-    EPD_Buffer(ind)=Data
+    EPD_Buffer(ind_Trans)=DataVar
 
 End Sub
 
@@ -507,6 +687,34 @@ Sub DrawBigChar_EPD2in13D (In CharLocX as Word, In CharLocY as Word, In CharCode
         Next
     Next
 End Sub
+
+Macro GLCD_Open_PageTransaction_EPD2in13D ( Optional In _GLCDPagesL As byte = 0 , Optional In _GLCDPagesH As byte = 7 )
+
+      dim _Flag as byte
+      dim _GLCDPage as byte
+
+      CLS_EPD2in13D
+
+      _Flag=0
+
+      for _GLCDPage = _GLCDPagesL to _GLCDPagesH    '_GLCDPage is a global variable - DO NOT CHANGE!!!
+
+          Clear_buffer_EPD2in13D
+
+end Macro
+
+Macro  GLCD_Close_PageTransaction_EPD2in13D
+          if _Flag=0 then
+            Pixel_To_Display_EPD2in13D(1)
+            _Flag=1
+          else
+            Pixel_To_Display_EPD2in13D(2)
+          end if
+      next
+
+      Refresh_EPD2in13D
+
+
 
 
 '______________________________________________________________
