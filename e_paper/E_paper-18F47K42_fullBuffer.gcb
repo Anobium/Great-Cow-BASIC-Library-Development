@@ -75,18 +75,13 @@
 
  '******************************************************************************************************
 
-    box 10, 10,GLCD_WIDTH-10, GLCD_HEIGHT-10
-    box 20, 20,GLCD_WIDTH-20, GLCD_HEIGHT-20
 
-
-    Pixel_To_Display_EPD2in13D(1, true)
-    box 30, 30,GLCD_WIDTH-30, GLCD_HEIGHT-30
-
-    Pixel_To_Display_EPD2in13D(1, true )
-
-    Filledbox 40, 40,GLCD_WIDTH-40, GLCD_HEIGHT-40
-
-    Pixel_To_Display_EPD2in13D(1, true )
+    GLCD_Open_PageTransaction
+      box 10, 10,GLCD_WIDTH-10, GLCD_HEIGHT-10
+      box 20, 20,GLCD_WIDTH-20, GLCD_HEIGHT-20
+      box 30, 30,GLCD_WIDTH-30, GLCD_HEIGHT-30
+      Filledbox 40, 40,GLCD_WIDTH-40, GLCD_HEIGHT-40
+    GLCD_Close_PageTransaction
 
     wait 100 ms
     end
