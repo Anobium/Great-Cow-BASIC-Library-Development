@@ -7,124 +7,145 @@
 ' *******
 
      'Chip Settings.
-     'Chip Settings.
-    #chip 18F47k42, 64
-     #config MCLRE = ON
+
+     #include <uno_mega328p.h>
      #option explicit
+  'USART settings
+  #define USART_BAUD_RATE 9600
+  #define USART_TX_BLOCKING
 
-
-    'PPS Tool version: 0.0.5.27
-    'PinManager data: v1.78
-    'Generated for 18F47K42
-    '
-    'Template comment at the start of the config file
-    '
-    #startup InitPPS, 85
-    #define PPSToolPart 18F47K42
-
-    Sub InitPPS
-         'This has been added to turn off PPS SPI when in SPI software mode
-             #ifdef EPD_HardwareSPI
-            'Module: SPI1
-            RC3PPS = 0x001E    'SCK1 > RC3
-            SPI1SCKPPS = 0x0013    'RC3 > SCK1 (bi-directional)
-            RC5PPS = 0x001F    'SDO1 > RC5
-            #endif
-    End Sub
-    'Template comment at the end of the config file
-
+ '______________
+ '   USART
+'     #define USART_BAUD_RATE 57600'9600
+'     #define USART_DELAY     5 ms
+'     #define USART_BLOCKING
+     'Set pin USART directions
 
  '******************************************************************************************************
  '  The following should be used   '#define EPD_HardwareSPI     'remove comment out if you want to use software SPI.
      #define EPD_HardwareSPI
+     #define HWSPIMode MasterUltraFast
  '***************************************************************************
+' ***************************
 
     'Setup the E-Paper
      #include <glcd.h>
 
-     #define GLCD_TYPE GLCD_TYPE_EPD_EPD7in5
+     #define GLCD_TYPE GLCD_TYPE_EPD_EPD2in13D
      #define GLCD_EXTENDEDFONTSET1
+     #define GLCD_TYPE_EPD2in13D_LOWMEMORY2_GLCD_MODE
      #define GLCD_OLED_FONT
-     #define GLCD_TYPE_EPD7in5_LOWMEMORY4_GLCD_MODE    ' fastest
-'     #define GLCD_TYPE_EPD7in5_LOWMEMORY3_GLCD_MODE
-'     #define GLCD_TYPE_EPD7in5_LOWMEMORY2_GLCD_MODE
-'     #define GLCD_TYPE_EPD7in5_LOWMEMORY1_GLCD_MODE
+     #define GLCD_PROTECTOVERRUN
+
 
 
      'Pin mappings for SPI - this GLCD driver supports Hardware SPI and Software SPI
-    #define GLCD_DC     portA.0   ' Data(hight)/ command(low) line
-    #define GLCD_CS     portC.1   ' Chip select line (negate)
-    #define GLCD_RESET  portD.2   ' Reset line       (negate)
-    #define GLCD_DO     portC.5   ' GLCD MOSI connect to MCU SDO
-    #define GLCD_SCK    portC.3   ' Clock Line
-    #define GLCD_Busy   portC.0   ' Busy Line
+     #define GLCD_DC     DIGITAL_9
+     #define GLCD_CS     DIGITAL_10
+     #define GLCD_RESET  DIGITAL_8
+     #define GLCD_DO     DIGITAL_11
+     #define GLCD_SCK    DIGITAL_13
+     #define GLCD_Busy   DIGITAL_7
 
+    Dim ind, counter, ind_raw, ind_col as word
+    Dim DataVar, dummy, Flag, VERBOSE as byte
+    Dim x_min, x_max, y_min, y_max as Word
+    Dim MyString, MyString1 as String
+
+ '******************************************************************************************************
 '******************************************************************************************************
      'Main program
+    dim upperPage, lowerPage as Byte
+    upperPage = 0
+    lowerPage = EPD_N_PAGE-1
 
-' Tests
+    GLCDForeground = TFT_BLACK
+    GLCDBackground = TFT_WHITE
 do
-     GLCDRotate Portrait
-
      GLCD_Open_PageTransaction
-
-        GLCDPrint 0,0, "Test @ Portrait"
-        GLCDPrint 30,16, GLCDDeviceWidth
-        GLCDPrint 30,32, GLCDDeviceHeight
+        GLCDPrint 0,0, "Test @ Default"
         line 0,0,GLCDDeviceWidth, GLCDDeviceHeight
         box 0,0,GLCDDeviceWidth, GLCDDeviceHeight
         Circle GLCDDeviceWidth/2, GLCDDeviceHeight/2, 20
         FilledBox( 12, 12,20, 80, GLCDForeground)  'Filled Rectangle
         FilledTriangle(12,80, 20,80,16,90, GLCDForeground)  'Filled Triangle
+        GLCDPrintStringLN " line1"
+        GLCDLocateString (20, 4)
+        GLCDPrintStringLN "Line 4"
+        GLCDPrintStringLN "Line 5"
 
      GLCD_Close_PageTransaction
-     wait 5 s
+     wait 2 s
+
+     GLCDRotate Portrait
+
+     GLCD_Open_PageTransaction
+        GLCDPrint 0,0, "Test @ Portrait"
+        line 0,0,GLCDDeviceWidth, GLCDDeviceHeight
+        box 0,0,GLCDDeviceWidth, GLCDDeviceHeight
+        Circle GLCDDeviceWidth/2, GLCDDeviceHeight/2, 20
+        FilledBox( 12, 12,20, 80, GLCDForeground)  'Filled Rectangle
+        FilledTriangle(12,80, 20,80,16,90, GLCDForeground)  'Filled Triangle
+        GLCDPrintStringLN " line1"
+        GLCDLocateString (20, 4)
+        GLCDPrintStringLN "Line 4"
+        GLCDPrintStringLN "Line 5"
+
+     GLCD_Close_PageTransaction
+     wait 2 s
 
      GLCDRotate Portrait_rev
 
      GLCD_Open_PageTransaction
         GLCDPrint 0,0, "Test @ Portrait_rev"
-        GLCDPrint 30,16, GLCDDeviceWidth
-        GLCDPrint 30,32, GLCDDeviceHeight
         line 0,0,GLCDDeviceWidth, GLCDDeviceHeight
         box 0,0,GLCDDeviceWidth, GLCDDeviceHeight
         Circle GLCDDeviceWidth/2, GLCDDeviceHeight/2, 20
         FilledBox( 12, 12,20, 80, GLCDForeground)  'Filled Rectangle
         FilledTriangle(12,80, 20,80,16,90, GLCDForeground)  'Filled Triangle
+        GLCDPrintStringLN " line1"
+        GLCDLocateString (20, 4)
+        GLCDPrintStringLN "Line 4"
+        GLCDPrintStringLN "Line 5"
 
      GLCD_Close_PageTransaction
-     wait 5 s
+     wait 2 s
 
      GLCDRotate Landscape
 
      GLCD_Open_PageTransaction
         GLCDPrint 0,0, "Test @ Landscape"
-        GLCDPrint 30,16, GLCDDeviceWidth
-        GLCDPrint 30,32, GLCDDeviceHeight
-
         line 0,0,GLCDDeviceWidth, GLCDDeviceHeight
         box 0,0,GLCDDeviceWidth, GLCDDeviceHeight
         Circle GLCDDeviceWidth/2, GLCDDeviceHeight/2, 20
         FilledBox( 12, 12,20, 80, GLCDForeground)  'Filled Rectangle
         FilledTriangle(12,80, 20,80,16,90, GLCDForeground)  'Filled Triangle
+        GLCDPrintStringLN " line1"
+        GLCDLocateString (20, 4)
+        GLCDPrintStringLN "Line 4"
+        GLCDPrintStringLN "Line 5"
+
 
      GLCD_Close_PageTransaction
-     wait 5 s
+     wait 2 s
 
      GLCDRotate Landscape_Rev
 
      GLCD_Open_PageTransaction
         GLCDPrint 0,0, "Test @ Landscape_Rev"
-        GLCDPrint 30,16, GLCDDeviceWidth
-        GLCDPrint 30,32, GLCDDeviceHeight
         line 0,0,GLCDDeviceWidth, GLCDDeviceHeight
         box 0,0,GLCDDeviceWidth, GLCDDeviceHeight
         Circle GLCDDeviceWidth/2, GLCDDeviceHeight/2, 20
         FilledBox( 12, 12,20, 80, GLCDForeground)  'Filled Rectangle
         FilledTriangle(12,80, 20,80,16,90, GLCDForeground)  'Filled Triangle
+        GLCDPrintStringLN " line1"
+        GLCDLocateString (20, 4)
+        GLCDPrintStringLN "Line 4"
+        GLCDPrintStringLN "Line 5"
+
 
      GLCD_Close_PageTransaction
-     wait 5 s
+     wait 2 s
 loop
      GLCDCLS
      GLCDSleep

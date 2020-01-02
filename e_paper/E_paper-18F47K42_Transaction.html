@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2019-11-14 (Windows 32 bit)</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 5.03125 seconds)</p>
+<p> (Assembly time: 0 seconds)</p>
+<p> (Download time: 0 seconds)</p>
+<p> (Total time: 5.03125 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 18F47K42</p>
+<p>Program Memory: 1823/65536 words (2.78%)</p>
+<p>RAM: 183/8192 bytes (2.23%)</p>
+<p> OSC: INT, 64</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>30</td><td>143</td><td>INIT_EPD2IN13D(47), SYSCOMPLESSTHAN(4), SENDCOMMAND_EPD2IN13D(1), PIXEL_TO_DISPLAY_EPD2IN13D(1), FILLEDBOX_EPD2IN13D(1), BOX(3), GLCDLOCATESTRING(1), CLEAR_BUFFER_EPD2IN13D(1), INITPPS(33), INITSYS(38)</td></tr>
+<tr><td>INITPPS</td><td>8</td><td>15</td><td></td></tr>
+<tr><td>GLCDLOCATESTRING</td><td>12</td><td>52</td><td>SYSDIVSUB16(1), SYSMULTSUB16(1), SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>BOX</td><td>20</td><td>177</td><td>SYSCOMPLESSTHAN16(6), PSET_EPD2IN13D(4)</td></tr>
+<tr><td>INIT_EPD2IN13D</td><td>67</td><td>145</td><td>Delay_MS(5), CLS_EPD2IN13D_INIT(1), ROTATE_EPD2IN13D(1), LOADLUTS_EPD2IN13D(1), SENDDATA_EPD2IN13D(14), SENDCOMMAND_EPD2IN13D(7)</td></tr>
+<tr><td>LOADLUTS_EPD2IN13D</td><td>31</td><td>116</td><td>SENDDATA_EPD2IN13D(7), SENDCOMMAND_EPD2IN13D(7)</td></tr>
+<tr><td>CLS_EPD2IN13D_INIT</td><td>32</td><td>168</td><td>SYSCOMPLESSTHAN16(5), Delay_MS(4), SENDCOMMAND_EPD2IN13D(2)</td></tr>
+<tr><td>PIXEL_TO_DISPLAY_EPD2IN13D</td><td>23</td><td>120</td><td>SYSCOMPLESSTHAN16(3), SENDCOMMAND_EPD2IN13D(2)</td></tr>
+<tr><td>CLEAR_BUFFER_EPD2IN13D</td><td>9</td><td>33</td><td>SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>SENDCOMMAND_EPD2IN13D</td><td>24</td><td>22</td><td></td></tr>
+<tr><td>SENDDATA_EPD2IN13D</td><td>4</td><td>19</td><td></td></tr>
+<tr><td>PSET_EPD2IN13D</td><td>67</td><td>318</td><td>SYSMULTSUB16(2), SYSCOMPLESSTHAN16(1), SYSCOMPEQUAL16(1), SYSDIVSUB16(2)</td></tr>
+<tr><td>FILLEDBOX_EPD2IN13D</td><td>16</td><td>129</td><td>SYSCOMPLESSTHAN16(6), PSET_EPD2IN13D(1)</td></tr>
+<tr><td>ROTATE_EPD2IN13D</td><td>20</td><td>62</td><td></td></tr>
+<tr><td>INITSYS</td><td>696</td><td>33</td><td></td></tr>
+<tr><td>SYSMULTSUB16</td><td>73</td><td>19</td><td></td></tr>
+<tr><td>SYSDIVSUB16</td><td>38</td><td>56</td><td>SYSCOMPEQUAL16(1)</td></tr>
+<tr><td>SYSCOMPEQUAL16</td><td>34</td><td>9</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN</td><td>23</td><td>5</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>14</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>18</td><td></td></tr>
+<tr><td>LUT_VCOM</td><td>0</td><td>30</td><td></td></tr>
+<tr><td>LUT_WW</td><td>0</td><td>30</td><td></td></tr>
+<tr><td>LUT_BW</td><td>0</td><td>30</td><td></td></tr>
+<tr><td>LUT_WB</td><td>0</td><td>30</td><td></td></tr>
+<tr><td>LUT_BB</td><td>0</td><td>30</td><td></td></tr>
+</table>
+</body>
+</html>

@@ -62,73 +62,11 @@
 '******************************************************************************************************
      'Main program
 
-' Tests
-do
-     GLCDRotate Portrait
 
-     GLCD_Open_PageTransaction
+    GLCDForeground=TFT_BLACK
+    GLCDBackground=TFT_WHITE
 
-        GLCDPrint 0,0, "Test @ Portrait"
-        GLCDPrint 30,16, GLCDDeviceWidth
-        GLCDPrint 30,32, GLCDDeviceHeight
-        line 0,0,GLCDDeviceWidth, GLCDDeviceHeight
-        box 0,0,GLCDDeviceWidth, GLCDDeviceHeight
-        Circle GLCDDeviceWidth/2, GLCDDeviceHeight/2, 20
-        FilledBox( 12, 12,20, 80, GLCDForeground)  'Filled Rectangle
-        FilledTriangle(12,80, 20,80,16,90, GLCDForeground)  'Filled Triangle
+    GLCDSleep
 
-     GLCD_Close_PageTransaction
-     wait 5 s
-
-     GLCDRotate Portrait_rev
-
-     GLCD_Open_PageTransaction
-        GLCDPrint 0,0, "Test @ Portrait_rev"
-        GLCDPrint 30,16, GLCDDeviceWidth
-        GLCDPrint 30,32, GLCDDeviceHeight
-        line 0,0,GLCDDeviceWidth, GLCDDeviceHeight
-        box 0,0,GLCDDeviceWidth, GLCDDeviceHeight
-        Circle GLCDDeviceWidth/2, GLCDDeviceHeight/2, 20
-        FilledBox( 12, 12,20, 80, GLCDForeground)  'Filled Rectangle
-        FilledTriangle(12,80, 20,80,16,90, GLCDForeground)  'Filled Triangle
-
-     GLCD_Close_PageTransaction
-     wait 5 s
-
-     GLCDRotate Landscape
-
-     GLCD_Open_PageTransaction
-        GLCDPrint 0,0, "Test @ Landscape"
-        GLCDPrint 30,16, GLCDDeviceWidth
-        GLCDPrint 30,32, GLCDDeviceHeight
-
-        line 0,0,GLCDDeviceWidth, GLCDDeviceHeight
-        box 0,0,GLCDDeviceWidth, GLCDDeviceHeight
-        Circle GLCDDeviceWidth/2, GLCDDeviceHeight/2, 20
-        FilledBox( 12, 12,20, 80, GLCDForeground)  'Filled Rectangle
-        FilledTriangle(12,80, 20,80,16,90, GLCDForeground)  'Filled Triangle
-
-     GLCD_Close_PageTransaction
-     wait 5 s
-
-     GLCDRotate Landscape_Rev
-
-     GLCD_Open_PageTransaction
-        GLCDPrint 0,0, "Test @ Landscape_Rev"
-        GLCDPrint 30,16, GLCDDeviceWidth
-        GLCDPrint 30,32, GLCDDeviceHeight
-        line 0,0,GLCDDeviceWidth, GLCDDeviceHeight
-        box 0,0,GLCDDeviceWidth, GLCDDeviceHeight
-        Circle GLCDDeviceWidth/2, GLCDDeviceHeight/2, 20
-        FilledBox( 12, 12,20, 80, GLCDForeground)  'Filled Rectangle
-        FilledTriangle(12,80, 20,80,16,90, GLCDForeground)  'Filled Triangle
-
-     GLCD_Close_PageTransaction
-     wait 5 s
-loop
-     GLCDCLS
-     GLCDSleep
-
-     do
-
-     loop
+    do
+    loop

@@ -1,0 +1,288 @@
+'''A demonstration program for Explicit-Paper.
+ '''-------------------------------------------------------------------------
+' -------------------------------------------------------
+ '''This has been tested using the hardware and software SPI option.
+
+ '''*************************************************************************
+' *******
+
+     'Chip Settings.
+
+     #include <uno_mega328p.h>
+     #option explicit
+  'USART settings
+  #define USART_BAUD_RATE 9600
+  #define USART_TX_BLOCKING
+
+ '______________
+ '   USART
+'     #define USART_BAUD_RATE 57600'9600
+'     #define USART_DELAY     5 ms
+'     #define USART_BLOCKING
+     'Set pin USART directions
+
+ '******************************************************************************************************
+ '  The following should be used   '#define EPD_HardwareSPI     'remove comment out if you want to use software SPI.
+     #define EPD_HardwareSPI
+     #define HWSPIMode MasterUltraFast
+ '***************************************************************************
+' ***************************
+
+    'Setup the E-Paper
+     #include <glcd.h>
+
+     #define GLCD_TYPE GLCD_TYPE_EPD_EPD2in13D
+     #define GLCD_EXTENDEDFONTSET1
+     #define GLCD_TYPE_EPD2in13D_LOWMEMORY4_GLCD_MODE
+     #define GLCD_OLED_FONT
+'     #define GLCD_PROTECTOVERRUN
+
+
+
+     'Pin mappings for SPI - this GLCD driver supports Hardware SPI and Software SPI
+     #define GLCD_DC     DIGITAL_9
+     #define GLCD_CS     DIGITAL_10
+     #define GLCD_RESET  DIGITAL_8
+     #define GLCD_DO     DIGITAL_11
+     #define GLCD_SCK    DIGITAL_13
+     #define GLCD_Busy   DIGITAL_7
+
+    Dim ind, counter, ind_raw, ind_col as word
+    Dim DataVar, dummy, Flag, VERBOSE as byte
+    Dim x_min, x_max, y_min, y_max as Word
+    Dim MyString, MyString1 as String
+
+ '******************************************************************************************************
+'******************************************************************************************************
+     'Main program
+    dim upperPage, lowerPage as Byte
+    upperPage = 0
+    lowerPage = EPD_N_PAGE-1
+
+    GLCDForeground = TFT_BLACK
+    GLCDBackground = TFT_WHITE
+
+
+
+' Tests
+'                                       GLCDRotate Portrait
+'                                       GLCD_Open_PageTransaction
+'                                          GLCDPrint 0,0, "Test @ Portrait"
+'
+'                                          GLCDPrintStringLn ( "1.First Line - P" )
+'                                          GLCDPrintStringLn ( "2.Second Ln" )
+'
+'                                          GLCDPrintStringLn ( "" )
+'                                          GLCDPrintStringLn ( "4.Forth Ln" )
+'                                          GLCDLocateString( 0, 5 )
+'                                  '        GLCDPrintStringLn ( "5." )
+'                                  '        GLCDPrintStringLn ( "Fifth Ln" )
+'                                  '
+'                                  '        GLCDPrintStringLn ( "6.Sixth Ln" )
+'                                  '        GLCDLocateString( 0, 3 )
+'                                  '        dim val3 as Byte
+'                                  '        val3 = 3
+'                                  '        GLCDPrintStringLn ( str( val3 ) + ".Third Ln" )
+'
+'                                       GLCD_Close_PageTransaction
+'                                       wait 2 s
+
+     GLCDRotate Portrait
+     GLCD_Open_PageTransaction
+        'GLCDPrint 0,0, "Test @ Portrait_rev"
+
+   GLCDPrintStringLn ( "P" )
+pset 0,0,0
+line 103,211,103-10,211-10
+
+'line 0,0,103,211
+
+'GLCDPrintStringLn ( "0" )
+
+'        GLCDPrintStringLn ( "1.First Line - PR" )
+'        GLCDPrintStringLn ( "2.Second Ln" )
+'
+'        GLCDPrintStringLn ( "" )
+'        GLCDPrintStringLn ( "4.Forth Ln" )
+'        GLCDLocateString( 0, 5 )
+'        GLCDPrintStringLn ( "5." )
+'        GLCDPrintStringLn ( "Fifth Ln" )
+'
+'        GLCDPrintStringLn ( "6.Sixth Ln" )
+'        GLCDLocateString( 0, 3 )
+'        dim val3 as Byte
+'        val3 = 3
+'        GLCDPrintStringLn ( str( val3 ) + ".Third Ln" )
+
+     GLCD_Close_PageTransaction
+HSerPrintCRLF 2
+
+     GLCDRotate Portrait_rev
+     GLCD_Open_PageTransaction
+        'GLCDPrint 0,0, "Test @ Portrait_rev"
+'GLCDPrint 0,0, "S"
+
+GLCDPrintStringLn ( "R" )
+pset 0,0,0
+line 103,211,103-10,211-10
+
+'GLCDPrintStringLn ( "0" )
+
+'        GLCDPrintStringLn ( "1.First Line - PR" )
+'        GLCDPrintStringLn ( "2.Second Ln" )
+'
+'        GLCDPrintStringLn ( "" )
+'        GLCDPrintStringLn ( "4.Forth Ln" )
+'        GLCDLocateString( 0, 5 )
+'        GLCDPrintStringLn ( "5." )
+'        GLCDPrintStringLn ( "Fifth Ln" )
+'
+'        GLCDPrintStringLn ( "6.Sixth Ln" )
+'        GLCDLocateString( 0, 3 )
+'        dim val3 as Byte
+'        val3 = 3
+'        GLCDPrintStringLn ( str( val3 ) + ".Third Ln" )
+
+     GLCD_Close_PageTransaction
+     wait 5 s
+
+'                                         GLCDRotate Landscape
+'                                         GLCD_Open_PageTransaction
+'                                            GLCDPrint 0,0, "Test @ Landscape"
+'
+'                                            GLCDPrintStringLn ( "1.First Line - L" )
+'                                            GLCDPrintStringLn ( "2.Second Ln" )
+'
+'                                            GLCDPrintStringLn ( "" )
+'                                            GLCDPrintStringLn ( "4.Forth Ln" )
+'                                    '        GLCDLocateString( 0, 5 )
+'                                    '        GLCDPrintStringLn ( "5." )
+'                                    '        GLCDPrintStringLn ( "Fifth Ln" )
+'                                    '
+'                                    '        GLCDPrintStringLn ( "6.Sixth Ln" )
+'                                    '        GLCDLocateString( 0, 3 )
+'                                    '        dim val3 as Byte
+'                                    '        val3 = 3
+'                                    '        GLCDPrintStringLn ( str( val3 ) + ".Third Ln" )
+'
+'                                         GLCD_Close_PageTransaction
+'                                         wait 2 s
+'
+'
+'                                         GLCDRotate Landscape_Rev
+'                                         GLCD_Open_PageTransaction
+'                                            GLCDPrint 0,0, "Test @ Landscape_Rev"
+'
+'                                            GLCDPrintStringLn ( "1.First Line - LR" )
+'                                            GLCDPrintStringLn ( "2.Second Ln" )
+'
+'                                            GLCDPrintStringLn ( "" )
+'                                            GLCDPrintStringLn ( "4.Forth Ln" )
+'                                    '        GLCDLocateString( 0, 5 )
+'                                    '        GLCDPrintStringLn ( "5." )
+'                                    '        GLCDPrintStringLn ( "Fifth Ln" )
+'                                    '
+'                                    '        GLCDPrintStringLn ( "6.Sixth Ln" )
+'                                    '        GLCDLocateString( 0, 3 )
+'                                    '        dim val3 as Byte
+'                                    '        val3 = 3
+'                                    '        GLCDPrintStringLn ( str( val3 ) + ".Third Ln" )
+'
+'                                         GLCD_Close_PageTransaction
+'                                         wait 2 s
+
+     GLCDCLS
+     GLCDSleep
+
+     do
+
+     loop
+
+
+
+Sub xPSet_EPD2in13D(In GLCDX as word, In GLCDY as word, In GLCDColour As Word)
+
+  Dim EPD_Ind, EPD_N_Col, EPD_N_raw, EPD_Ind_Trans as word
+  Dim remainder as byte
+  Dim DataVar as byte
+  Dim value as bit
+  Dim GLCD_Time_Buff as word
+  Dim GLCDDataTemp as word
+  Dim EPD2in13DAddressType as byte
+
+    #IFDEF GLCD_PROTECTOVERRUN
+        'anything off screen with be rejected
+        if GLCDX > GLCDDeviceWidth OR GLCDY > GLCDDeviceHeight Then
+            exit sub
+        end if
+
+    #ENDIF
+
+    Select Case EPD2in13DAddressType
+
+      case Landscape
+          GLCDDataTemp = GLCDX
+          GLCDX = GLCDY
+          GLCDY = GLCDDeviceWidth - GLCDDataTemp
+
+      case Landscape_Rev
+          GLCDDataTemp = GLCDX
+          GLCDX = GLCDDeviceHeight  - GLCDY
+          GLCDY = GLCDDataTemp
+
+      case Portrait
+            'Default do nothing
+
+      case Portrait_Rev
+          GLCDY = GLCDDeviceHeight - GLCDY
+          GLCDX = GLCDDeviceWidth - GLCDX
+
+    end select
+
+    Dim GLCDY_Temp, GLCDChange, GLCDBitNo as Byte
+    Dim EPD_BufferLocationCalc as Word
+
+    'Copy GLCDY as we destroy this value as part of the process
+    EPD_BufferLocationCalc = GLCDY
+    Repeat 3
+     Set C Off
+     Rotate EPD_BufferLocationCalc Right
+    End Repeat
+    EPD_BufferLocationCalc = EPD_BufferLocationCalc * GLCD_WIDTH
+    EPD_BufferLocationCalc = GLCDX + EPD_BufferLocationCalc + 1
+
+'    if GLCDY  < EPD_PIXELS_PER_PAGE then
+'      'Mod the YPOS to get the correct pixel with the page
+'      GLCDY = GLCDY mod 8
+'    Else
+'      'Exit if not the page we are looking for
+'      exit sub
+'    end if
+
+
+
+    GLCDDataTemp = EPD_Buffer(EPD_BufferLocationCalc)
+    'Change data to set/clear pixel
+    GLCDBitNo = GLCDY And 7
+    If GLCDColour.0 = 0 Then
+      GLCDChange = 254
+      Set C On
+    Else
+      GLCDChange = 1
+      Set C Off
+    End If
+    Repeat GLCDBitNo
+      Rotate GLCDChange Left
+    End Repeat
+
+    If GLCDColour.0 = 0 Then
+       GLCDDataTemp = GLCDDataTemp And GLCDChange
+    Else
+       GLCDDataTemp = GLCDDataTemp Or GLCDChange
+    End If
+
+    EPD_Buffer(EPD_BufferLocationCalc) = GLCDDataTemp
+
+End Sub
+
+

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2019-11-14 (Windows 32 bit)</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 4.25 seconds)</p>
+<p> (Assembly time: 0.5 seconds)</p>
+<p> (Download time: 5.09375 seconds)</p>
+<p> (Total time: 9.84375 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 18F47K42</p>
+<p>Program Memory: 683/65536 words (1.04%)</p>
+<p>RAM: 7717/8192 bytes (94.2%)</p>
+<p> OSC: INT, 64</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>19</td><td>21</td><td>INIT_EPD2IN13D(40), SLEEP_EPD2IN13D(1), CLS_EPD7IN5(1), INITPPS(32), INITSYS(32)</td></tr>
+<tr><td>INITPPS</td><td>5</td><td>9</td><td></td></tr>
+<tr><td>INIT_EPD2IN13D</td><td>67</td><td>1</td><td></td></tr>
+<tr><td>SLEEP_EPD2IN13D</td><td>5</td><td>20</td><td>SENDDATA_EPD2IN13D(2), SENDCOMMAND_EPD2IN13D(3)</td></tr>
+<tr><td>SENDCOMMAND_EPD2IN13D</td><td>24</td><td>12</td><td>FASTHWSPITRANSFER(1)</td></tr>
+<tr><td>SENDDATA_EPD2IN13D</td><td>4</td><td>8</td><td>FASTHWSPITRANSFER(1)</td></tr>
+<tr><td>INIT_EPD7IN5</td><td>83</td><td>208</td><td>Delay_MS(6), CLS_EPD7IN5(1), ROTATE_EPD7IN5(1), SENDDATA_EPD7IN5(17), SENDCOMMAND_EPD7IN5(13), SPIMODE(1)</td></tr>
+<tr><td>CLS_EPD7IN5_INIT</td><td>32</td><td>129</td><td>SYSCOMPEQUAL16(1), SYSCOMPLESSTHAN16(3), Delay_MS(2), FASTHWSPITRANSFER(1), SENDCOMMAND_EPD7IN5(3)</td></tr>
+<tr><td>CLS_EPD7IN5</td><td>2</td><td>5</td><td>REFRESH_EPD7IN5(1), CLS_EPD7IN5_INIT(1)</td></tr>
+<tr><td>REFRESH_EPD7IN5</td><td>4</td><td>15</td><td>Delay_MS(1), SENDCOMMAND_EPD7IN5(1)</td></tr>
+<tr><td>SENDCOMMAND_EPD7IN5</td><td>20</td><td>9</td><td>FASTHWSPITRANSFER(1)</td></tr>
+<tr><td>SENDDATA_EPD7IN5</td><td>4</td><td>8</td><td>FASTHWSPITRANSFER(1)</td></tr>
+<tr><td>ROTATE_EPD7IN5</td><td>19</td><td>71</td><td></td></tr>
+<tr><td>INITSYS</td><td>696</td><td>33</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL</td><td>20</td><td>5</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL16</td><td>34</td><td>9</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>14</td><td></td></tr>
+<tr><td>SPIMODE</td><td>148</td><td>73</td><td>SYSCOMPEQUAL(1)</td></tr>
+<tr><td>FASTHWSPITRANSFER</td><td>23</td><td>15</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>18</td><td></td></tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2019-11-14 (Windows 32 bit)</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 4.6875 seconds)</p>
+<p> (Assembly time: 0.625 seconds)</p>
+<p> (Download time: 6.65625 seconds)</p>
+<p> (Total time: 11.96875 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 18F47K42</p>
+<p>Program Memory: 3844/65536 words (5.87%)</p>
+<p>RAM: 7807/8192 bytes (95.3%)</p>
+<p> OSC: INT, 64</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>54</td><td>434</td><td>SYSCOMPLESSTHAN16(4), INIT_EPD2IN13D(46), SYSREADSTRING(15), Delay_S(5), SLEEP_EPD2IN13D(1), CLS_EPD7IN5(1), ROTATE_EPD7IN5(4), SENDCOMMAND_EPD7IN5(5), PIXEL_TO_DISPLAY_EPD7IN5(5), GLCDPRINTSTRINGLN(15), GLCDLOCATESTRING(5), CLEAR_BUFFER_EPD7IN5(5), INITPPS(37), INITSYS(57)</td></tr>
+<tr><td>INITPPS</td><td>5</td><td>9</td><td></td></tr>
+<tr><td>GLCDPRINT</td><td>19</td><td>83</td><td>DRAWCHAR_EPD7IN5(1)</td></tr>
+<tr><td>GLCDPRINTSTRINGLN</td><td>9</td><td>34</td><td>SYSDIVSUB16(1), GLCDPRINT(1)</td></tr>
+<tr><td>GLCDLOCATESTRING</td><td>12</td><td>53</td><td>SYSDIVSUB16(1), SYSMULTSUB16(1), SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>INIT_EPD2IN13D</td><td>67</td><td>1</td><td></td></tr>
+<tr><td>SLEEP_EPD2IN13D</td><td>5</td><td>20</td><td>SENDDATA_EPD2IN13D(2), SENDCOMMAND_EPD2IN13D(3)</td></tr>
+<tr><td>SENDCOMMAND_EPD2IN13D</td><td>24</td><td>12</td><td>FASTHWSPITRANSFER(1)</td></tr>
+<tr><td>SENDDATA_EPD2IN13D</td><td>4</td><td>8</td><td>FASTHWSPITRANSFER(1)</td></tr>
+<tr><td>INIT_EPD7IN5</td><td>83</td><td>208</td><td>Delay_MS(6), CLS_EPD7IN5(1), ROTATE_EPD7IN5(1), SENDDATA_EPD7IN5(17), SENDCOMMAND_EPD7IN5(13), SPIMODE(1)</td></tr>
+<tr><td>CLS_EPD7IN5_INIT</td><td>32</td><td>129</td><td>SYSCOMPEQUAL16(1), SYSCOMPLESSTHAN16(3), Delay_MS(2), FASTHWSPITRANSFER(1), SENDCOMMAND_EPD7IN5(3)</td></tr>
+<tr><td>CLS_EPD7IN5</td><td>2</td><td>5</td><td>REFRESH_EPD7IN5(1), CLS_EPD7IN5_INIT(1)</td></tr>
+<tr><td>PIXEL_TO_DISPLAY_EPD7IN5</td><td>46</td><td>118</td><td>SYSCOMPLESSTHAN16(1), Delay_MS(2), FASTHWSPITRANSFER(1), SENDCOMMAND_EPD7IN5(3)</td></tr>
+<tr><td>CLEAR_BUFFER_EPD7IN5</td><td>4</td><td>27</td><td>SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>REFRESH_EPD7IN5</td><td>4</td><td>15</td><td>Delay_MS(1), SENDCOMMAND_EPD7IN5(1)</td></tr>
+<tr><td>SENDCOMMAND_EPD7IN5</td><td>20</td><td>9</td><td>FASTHWSPITRANSFER(1)</td></tr>
+<tr><td>SENDDATA_EPD7IN5</td><td>4</td><td>8</td><td>FASTHWSPITRANSFER(1)</td></tr>
+<tr><td>DRAWCHAR_EPD7IN5</td><td>95</td><td>216</td><td>SYSMULTSUB16(1), SYSCOMPEQUAL(2), PSET_EPD7IN5(3)</td></tr>
+<tr><td>PSET_EPD7IN5</td><td>64</td><td>480</td><td>SYSMULTSUB32(2), SYSDIVSUB32(1), SYSCOMPLESSTHAN32(1), SYSCOMPEQUAL32(9)</td></tr>
+<tr><td>ROTATE_EPD7IN5</td><td>19</td><td>71</td><td></td></tr>
+<tr><td>INITSYS</td><td>696</td><td>33</td><td></td></tr>
+<tr><td>SYSREADSTRING</td><td>101</td><td>24</td><td></td></tr>
+<tr><td>SYSMULTSUB16</td><td>73</td><td>19</td><td></td></tr>
+<tr><td>SYSMULTSUB32</td><td>43</td><td>67</td><td>SYSCOMPLESSTHAN32(1)</td></tr>
+<tr><td>SYSDIVSUB16</td><td>38</td><td>56</td><td>SYSCOMPEQUAL16(1)</td></tr>
+<tr><td>SYSDIVSUB32</td><td>40</td><td>94</td><td>SYSCOMPEQUAL32(1)</td></tr>
+<tr><td>SYSCOMPEQUAL</td><td>20</td><td>5</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL16</td><td>34</td><td>9</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL32</td><td>52</td><td>15</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>14</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN32</td><td>63</td><td>22</td><td></td></tr>
+<tr><td>SPIMODE</td><td>148</td><td>82</td><td>SYSCOMPEQUAL(1)</td></tr>
+<tr><td>FASTHWSPITRANSFER</td><td>23</td><td>15</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>18</td><td></td></tr>
+<tr><td>Delay_S</td><td>0</td><td>10</td><td>Delay_MS(1)</td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>9</td><td></td></tr>
+<tr><td>OLEDFONT2</td><td>0</td><td>994</td><td></td></tr>
+<tr><td>OLEDFONT2_H</td><td>0</td><td>25</td><td></td></tr>
+<tr><td>OLEDFONT1INDEX</td><td>0</td><td>66</td><td></td></tr>
+<tr><td>OLEDFONT1INDEX_H</td><td>0</td><td>66</td><td></td></tr>
+<tr><td>OLEDFONT1DATA</td><td>0</td><td>236</td><td></td></tr>
+<tr><td>OLEDFONT1DATA_H</td><td>0</td><td>25</td><td></td></tr>
+</table>
+</body>
+</html>

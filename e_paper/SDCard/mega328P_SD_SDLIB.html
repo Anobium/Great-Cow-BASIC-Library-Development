@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2019-12-08 (Windows 32 bit)</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 2.25 seconds)</p>
+<p> (Assembly time: 0.8125 seconds)</p>
+<p> (Download time: 5.3125 seconds)</p>
+<p> (Total time: 8.375 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: MEGA328P</p>
+<p>Program Memory: 9824/16384 words (59.96%)</p>
+<p>RAM: 1984/2048 bytes (96.87%)</p>
+<p> OSC: , 16</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>131</td><td>1562</td><td>INITUSART(1), SYSMULTSUB32(2), SYSMULTSUB16(1), SYSDIVSUB(3), SYSREADSTRING(41), SYSCOMPLESSTHAN16(1), SYSCOMPEQUALSTRING(11), Delay_MS(2), LSB_TO_MSB(1), SDREAD_BLOCK(3), SERTXD(3), LEN(1), RIGHT(1), VAL(1), LEFT(7), DRAW_LINE(12), DISK_EXPLORER(2), PARTITION_ENTRY_AND_RELEVANT_DATA(1), SDINITIALIZE(1), HSERGETSTRING(2), SERTXD(6), CHR(1), HSERPRINT(1), SPIMODE(2), INITUNO(17), INITSYS(67)</td></tr>
+<tr><td>INITUNO</td><td>2</td><td>3</td><td></td></tr>
+<tr><td>SERTXD</td><td>12</td><td>69</td><td>HSERPRINT(2), HSERSEND(2), HSERPRINTCRLF(2)</td></tr>
+<tr><td>SERTXD</td><td>12</td><td>65</td><td>HSERPRINT(1), HSERPRINT(1), HSERSEND(2), HSERPRINTCRLF(2)</td></tr>
+<tr><td>SERTXD</td><td>12</td><td>69</td><td>HSERPRINT(1), HSERPRINT(1), HSERSEND(2), HSERPRINTCRLF(2)</td></tr>
+<tr><td>SERTXD</td><td>12</td><td>77</td><td>HSERPRINT(1), HSERPRINT(1), HSERSEND(2), HSERPRINTCRLF(2)</td></tr>
+<tr><td>DRAW_LINE</td><td>16</td><td>104</td><td>SYSREADSTRING(1), HSERPRINT(3), HSERPRINTCRLF(1)</td></tr>
+<tr><td>SDINITIALIZE</td><td>19</td><td>150</td><td>SYSREADSTRING(7), Delay_S(1), CALLCMD16(1), CALLACMD41(1), CALLCMD58(2), CALLCMD8(1), CALLCMD0(1), SERTXD(3), DRAW_LINE(1)</td></tr>
+<tr><td>SENDDUMMYBYTES</td><td>3</td><td>26</td><td>HWSPITRANSFER(1)</td></tr>
+<tr><td>SENDCOMMAND</td><td>9</td><td>73</td><td>SENDPULSES(1), HWSPITRANSFER(7)</td></tr>
+<tr><td>SENDPULSES</td><td>1</td><td>10</td><td>HWSPITRANSFER(1)</td></tr>
+<tr><td>GETSDRESPONSE</td><td>4</td><td>26</td><td>HWSPITRANSFER(1)</td></tr>
+<tr><td>CALLCMD0</td><td>16</td><td>128</td><td>SYSREADSTRING(3), Delay_MS(2), SYSCOMPLESSTHAN16(1), SYSCOMPEQUAL(1), SERTXD(1), GETSDRESPONSE(1), SENDCOMMAND(1), SENDDUMMYBYTES(1), HSERPRINT(1)</td></tr>
+<tr><td>CALLCMD8</td><td>39</td><td>615</td><td>SYSREADSTRING(28), SYSCOMPLESSTHAN16(2), SYSCOMPEQUAL(2), SERTXD(2), SERTXD(13), GETSDRESPONSE(4), SENDCOMMAND(1)</td></tr>
+<tr><td>CALLACMD41</td><td>27</td><td>327</td><td>SYSREADSTRING(7), SYSCOMPLESSTHAN16(2), SYSCOMPLESSTHAN(2), SERTXD(2), SERTXD(1), SERTXD(2), GETSDRESPONSE(2), SENDCOMMAND(2)</td></tr>
+<tr><td>CALLCMD58</td><td>61</td><td>579</td><td>SYSREADSTRING(19), SERTXD(1), SERTXD(6), SERTXD(6), GETSDRESPONSE(5), SENDCOMMAND(1)</td></tr>
+<tr><td>CALLCMD16</td><td>21</td><td>223</td><td>SYSREADSTRING(6), SYSCOMPLESSTHAN16(1), SYSCOMPEQUAL(1), SERTXD(1), SERTXD(1), SERTXD(2), GETSDRESPONSE(1), SENDCOMMAND(1)</td></tr>
+<tr><td>SDREAD_BLOCK</td><td>47</td><td>589</td><td>SYSREADSTRING(16), SYSCOMPEQUALSTRING(2), SYSCOMPLESSTHAN16(2), SYSCOMPEQUAL(4), HWSPITRANSFER(1), SERTXD(1), SERTXD(4), GETSDRESPONSE(2), SENDCOMMAND(1), HSERPRINT(1), SERTXD(3), DRAW_LINE(4)</td></tr>
+<tr><td>PARTITION_ENTRY_AND_RELEVANT_DATA</td><td>25</td><td>613</td><td>SYSMULTSUB32(1), SYSREADSTRING(23), SERTXD(4), SERTXD(2), SERTXD(3), READ_RELEVANT_PARTIT_DATA(1), READ_PARTIT_ENTRY(1), SERTXD(4), DRAW_LINE(8)</td></tr>
+<tr><td>READ_PARTIT_ENTRY</td><td>7</td><td>156</td><td>LSB_TO_MSB(1), SDREAD_BLOCK(1)</td></tr>
+<tr><td>LSB_TO_MSB</td><td>4</td><td>148</td><td>FNLSL(3)</td></tr>
+<tr><td>READ_RELEVANT_PARTIT_DATA</td><td>28</td><td>409</td><td>SYSCOPYSTRING(8), SYSCOMPLESSTHAN16(2), CHR(4), LSB_TO_MSB(1), FNLSL(3), SDREAD_BLOCK(1)</td></tr>
+<tr><td>DISK_EXPLORER</td><td>98</td><td>1536</td><td>SYSDIVSUB16(1), SYSREADSTRING(34), SYSCOPYSTRING(18), SYSCOMPEQUAL(4), SYSCOMPLESSTHAN16(4), SYSCOMPEQUAL16(1), SYSCOMPEQUAL32(3), SERTXD(7), SERTXD(10), DRAW_LINE(10), CHR(10), SDREAD_BLOCK(3)</td></tr>
+<tr><td>FNLSL</td><td>5</td><td>30</td><td></td></tr>
+<tr><td>INITSYS</td><td>696</td><td>7</td><td></td></tr>
+<tr><td>SYSCOPYSTRING</td><td>118</td><td>13</td><td></td></tr>
+<tr><td>SYSREADSTRING</td><td>101</td><td>24</td><td></td></tr>
+<tr><td>SYSCOMPEQUALSTRING</td><td>115</td><td>19</td><td></td></tr>
+<tr><td>SYSMULTSUB16</td><td>73</td><td>10</td><td></td></tr>
+<tr><td>SYSMULTSUB32</td><td>43</td><td>124</td><td>SYSCOMPLESSTHAN32(1)</td></tr>
+<tr><td>SYSDIVSUB</td><td>48</td><td>16</td><td></td></tr>
+<tr><td>SYSDIVSUB16</td><td>38</td><td>48</td><td>SYSCOMPEQUAL16(1)</td></tr>
+<tr><td>SYSDIVSUB32</td><td>40</td><td>176</td><td>SYSCOMPEQUAL32(1)</td></tr>
+<tr><td>SYSCOMPEQUAL</td><td>20</td><td>5</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL16</td><td>34</td><td>7</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL32</td><td>52</td><td>11</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN</td><td>23</td><td>6</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>10</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN32</td><td>63</td><td>15</td><td></td></tr>
+<tr><td>SPIMODE</td><td>148</td><td>79</td><td></td></tr>
+<tr><td>HWSPITRANSFER</td><td>35</td><td>25</td><td></td></tr>
+<tr><td>LEN</td><td>1</td><td>8</td><td></td></tr>
+<tr><td>VAL</td><td>15</td><td>87</td><td>SYSMULTSUB16(1)</td></tr>
+<tr><td>LEFT</td><td>11</td><td>78</td><td></td></tr>
+<tr><td>RIGHT</td><td>12</td><td>92</td><td></td></tr>
+<tr><td>CHR</td><td>6</td><td>16</td><td></td></tr>
+<tr><td>INITUSART</td><td>141</td><td>23</td><td></td></tr>
+<tr><td>HSERSEND</td><td>49</td><td>9</td><td></td></tr>
+<tr><td>HSERSEND</td><td>128</td><td>13</td><td></td></tr>
+<tr><td>HSERRECEIVE</td><td>145</td><td>20</td><td></td></tr>
+<tr><td>HSERGETSTRING</td><td>13</td><td>60</td><td>SYSCOMPLESSTHAN(2), HSERRECEIVE(1)</td></tr>
+<tr><td>HSERPRINT</td><td>12</td><td>46</td><td>HSERSEND(1)</td></tr>
+<tr><td>HSERPRINT</td><td>18</td><td>67</td><td>SYSDIVSUB(2), SYSCOMPLESSTHAN(2), HSERSEND(3)</td></tr>
+<tr><td>HSERPRINT</td><td>35</td><td>147</td><td>SYSDIVSUB16(4), SYSCOMPLESSTHAN16(4), HSERSEND(1), HSERSEND(4)</td></tr>
+<tr><td>HSERPRINT</td><td>17</td><td>95</td><td>SYSDIVSUB32(1), SYSCOMPEQUAL32(1), HSERSEND(1)</td></tr>
+<tr><td>HSERPRINTCRLF</td><td>4</td><td>27</td><td>HSERSEND(2)</td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>12</td><td></td></tr>
+<tr><td>Delay_S</td><td>0</td><td>7</td><td>Delay_MS(1)</td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>835</td><td></td></tr>
+</table>
+</body>
+</html>

@@ -7,8 +7,7 @@
 ' *******
 
      'Chip Settings.
-     'Chip Settings.
-    #chip 18F47k42, 64
+    #chip 18F47k42
      #config MCLRE = ON
      #option explicit
 
@@ -36,20 +35,19 @@
 
  '******************************************************************************************************
  '  The following should be used   '#define EPD_HardwareSPI     'remove comment out if you want to use software SPI.
-     #define EPD_HardwareSPI
+   #define EPD_HardwareSPI
+
  '***************************************************************************
+' ***************************
 
     'Setup the E-Paper
      #include <glcd.h>
 
-     #define GLCD_TYPE GLCD_TYPE_EPD_EPD7in5
+     #define GLCD_TYPE GLCD_TYPE_EPD_EPD2in13D
      #define GLCD_EXTENDEDFONTSET1
+     #define GLCD_TYPE_EPD2in13D_LOWMEMORY4_GLCD_MODE
      #define GLCD_OLED_FONT
-     #define GLCD_TYPE_EPD7in5_LOWMEMORY4_GLCD_MODE    ' fastest
-'     #define GLCD_TYPE_EPD7in5_LOWMEMORY3_GLCD_MODE
-'     #define GLCD_TYPE_EPD7in5_LOWMEMORY2_GLCD_MODE
-'     #define GLCD_TYPE_EPD7in5_LOWMEMORY1_GLCD_MODE
-
+'     #define GLCD_PROTECTOVERRUN
 
      'Pin mappings for SPI - this GLCD driver supports Hardware SPI and Software SPI
     #define GLCD_DC     portA.0   ' Data(hight)/ command(low) line
@@ -59,33 +57,40 @@
     #define GLCD_SCK    portC.3   ' Clock Line
     #define GLCD_Busy   portC.0   ' Busy Line
 
+
+
+ '******************************************************************************************************
 '******************************************************************************************************
      'Main program
+    dim upperPage, lowerPage as Byte
+    upperPage = 0
+    lowerPage = EPD_N_PAGE-1
+
+    GLCDForeground = TFT_BLACK
+    GLCDBackground = TFT_WHITE
+
 
 ' Tests
-do
      GLCDRotate Portrait
 
      GLCD_Open_PageTransaction
-
         GLCDPrint 0,0, "Test @ Portrait"
-        GLCDPrint 30,16, GLCDDeviceWidth
-        GLCDPrint 30,32, GLCDDeviceHeight
         line 0,0,GLCDDeviceWidth, GLCDDeviceHeight
         box 0,0,GLCDDeviceWidth, GLCDDeviceHeight
         Circle GLCDDeviceWidth/2, GLCDDeviceHeight/2, 20
         FilledBox( 12, 12,20, 80, GLCDForeground)  'Filled Rectangle
         FilledTriangle(12,80, 20,80,16,90, GLCDForeground)  'Filled Triangle
+        GLCDLocateString (20, 4)
+        GLCDPrintStringLN "Line 4"
+        GLCDPrintStringLN "Line 5"
 
      GLCD_Close_PageTransaction
-     wait 5 s
+     wait 2 s
 
      GLCDRotate Portrait_rev
 
      GLCD_Open_PageTransaction
         GLCDPrint 0,0, "Test @ Portrait_rev"
-        GLCDPrint 30,16, GLCDDeviceWidth
-        GLCDPrint 30,32, GLCDDeviceHeight
         line 0,0,GLCDDeviceWidth, GLCDDeviceHeight
         box 0,0,GLCDDeviceWidth, GLCDDeviceHeight
         Circle GLCDDeviceWidth/2, GLCDDeviceHeight/2, 20
@@ -93,15 +98,12 @@ do
         FilledTriangle(12,80, 20,80,16,90, GLCDForeground)  'Filled Triangle
 
      GLCD_Close_PageTransaction
-     wait 5 s
+     wait 2 s
 
      GLCDRotate Landscape
 
      GLCD_Open_PageTransaction
         GLCDPrint 0,0, "Test @ Landscape"
-        GLCDPrint 30,16, GLCDDeviceWidth
-        GLCDPrint 30,32, GLCDDeviceHeight
-
         line 0,0,GLCDDeviceWidth, GLCDDeviceHeight
         box 0,0,GLCDDeviceWidth, GLCDDeviceHeight
         Circle GLCDDeviceWidth/2, GLCDDeviceHeight/2, 20
@@ -109,14 +111,12 @@ do
         FilledTriangle(12,80, 20,80,16,90, GLCDForeground)  'Filled Triangle
 
      GLCD_Close_PageTransaction
-     wait 5 s
+     wait 2 s
 
      GLCDRotate Landscape_Rev
 
      GLCD_Open_PageTransaction
         GLCDPrint 0,0, "Test @ Landscape_Rev"
-        GLCDPrint 30,16, GLCDDeviceWidth
-        GLCDPrint 30,32, GLCDDeviceHeight
         line 0,0,GLCDDeviceWidth, GLCDDeviceHeight
         box 0,0,GLCDDeviceWidth, GLCDDeviceHeight
         Circle GLCDDeviceWidth/2, GLCDDeviceHeight/2, 20
@@ -124,8 +124,8 @@ do
         FilledTriangle(12,80, 20,80,16,90, GLCDForeground)  'Filled Triangle
 
      GLCD_Close_PageTransaction
-     wait 5 s
-loop
+     wait 2 s
+
      GLCDCLS
      GLCDSleep
 

@@ -1,0 +1,274 @@
+'''A demonstration program for Explicit-Paper.
+ '''-------------------------------------------------------------------------
+' -------------------------------------------------------
+ '''This has been tested using the hardware and software SPI option.
+
+ '''*************************************************************************
+' *******
+
+     'Chip Settings.
+    #chip 18F47k42
+     #config MCLRE = ON
+     #option explicit
+
+
+    'PPS Tool version: 0.0.5.27
+    'PinManager data: v1.78
+    'Generated for 18F47K42
+    '
+    'Template comment at the start of the config file
+    '
+    #startup InitPPS, 85
+    #define PPSToolPart 18F47K42
+
+    Sub InitPPS
+         'This has been added to turn off PPS SPI when in SPI software mode
+             #ifdef EPD_HardwareSPI
+            'Module: SPI1
+            RC3PPS = 0x001E    'SCK1 > RC3
+            SPI1SCKPPS = 0x0013    'RC3 > SCK1 (bi-directional)
+            RC5PPS = 0x001F    'SDO1 > RC5
+            #endif
+    End Sub
+    'Template comment at the end of the config file
+
+
+ '******************************************************************************************************
+ '  The following should be used   '#define EPD_HardwareSPI     'remove comment out if you want to use software SPI.
+   #define EPD_HardwareSPI
+
+ '***************************************************************************
+' ***************************
+
+    'Setup the E-Paper
+     #include <glcd.h>
+
+     #define GLCD_TYPE GLCD_TYPE_EPD_EPD2in13D
+     #define GLCD_EXTENDEDFONTSET1
+     #define GLCD_TYPE_EPD2in13D_LOWMEMORY2_GLCD_MODE
+     #define GLCD_OLED_FONT
+'     #define GLCD_PROTECTOVERRUN
+
+     'Pin mappings for SPI - this GLCD driver supports Hardware SPI and Software SPI
+    #define GLCD_DC     portB.7   ' Data(hight)/ command(low) line
+    #define GLCD_CS     portC.1   ' Chip select line (negate)
+    #define GLCD_RESET  portD.2   ' Reset line       (negate)
+    #define GLCD_DO     portC.5   ' GLCD MOSI connect to MCU SDO
+    #define GLCD_SCK    portC.3   ' Clock Line
+    #define GLCD_Busy   portC.0   ' Busy Line
+
+
+
+'     #define GLCD_DC     DIGITAL_9
+'     #define GLCD_CS     DIGITAL_10
+'     #define GLCD_RESET  DIGITAL_8
+'     #define GLCD_DO     DIGITAL_11
+'     #define GLCD_SCK    DIGITAL_13
+'     #define GLCD_Busy   DIGITAL_7
+
+    Dim ind, counter, ind_raw, ind_col as word
+    Dim DataVar, dummy, Flag, VERBOSE as byte
+    Dim x_min, x_max, y_min, y_max as Word
+    Dim MyString, MyString1 as String
+
+ '******************************************************************************************************
+'******************************************************************************************************
+     'Main program
+    dim upperPage, lowerPage as Byte
+    upperPage = 0
+    lowerPage = EPD_N_PAGE-1
+
+
+    GLCDForeground = TFT_BLACK
+    GLCDBackground = TFT_WHITE
+
+
+
+
+    GLCD_Open_PageTransaction
+
+        GLCDPrint 0,0, STR(GLCDVERSION)
+        GLCDPrint 0,8, STR(EPD2_13VERSION)
+
+
+    GLCD_Close_PageTransaction
+
+end
+'    GLCDCLS
+'    GLCDSleep
+'
+'    do
+'
+'    loop
+'
+'
+'
+'
+mm:
+    GLCD_Open_PageTransaction
+        GLCDDrawString(2,2 ,"1Caso Probabile")
+        GLCDDrawString(2,12 ,"perche la rela")
+        GLCDDrawString(2,22 ,"zione non era")
+        GLCDDrawString(2,32 ,"attendibile.")
+        GLCDDrawString(2,42 ,"Comunque la ")
+        GLCDDrawString(2,52 ,"nuova versione")
+        GLCDDrawString(2,62 ,"dara risultati")
+        GLCDDrawString(2,72 ,"migliori?")
+        GLCDDrawString(2,108,"Seconda Parte")
+        GLCDDrawString(2,118,"dello schermo")
+        GLCDDrawString(2,128,"con un buffer")
+        GLCDDrawString(2,138,"ridotto. Si puo")
+        GLCDDrawString(2,148,"anche disegnare")
+        GLCDDrawString(2,158,"fig. geometriche")
+    GLCD_Close_PageTransaction
+
+    wait 1000 ms
+
+    GLCD_Open_PageTransaction
+        box 1,1,GLCDDeviceWidth-1, GLCDDeviceHeight-1
+        GLCDPrintStringLn ( "1.First Ln" )
+        GLCDPrintStringLn ( "2.Second Ln" )
+        GLCDPrintStringLn ( "" )
+        GLCDPrintStringLn ( "4.Forth Ln" )
+        GLCDLocateString( 0, 5 )
+        GLCDPrintString ( "5." )
+        GLCDPrintStringLn ( "Fifth Ln" )
+
+        GLCDPrintStringLn ( "6.Sixth Ln" )
+        GLCDLocateString( 0, 3 )
+        dim val3 as Byte
+        val3 = 3
+        GLCDPrintStringLn ( str( val3 ) + ".Third Ln" )
+    GLCD_Close_PageTransaction
+
+    wait 1000 ms
+
+    GLCD_Open_PageTransaction
+
+        box 10, 10,GLCDDeviceWidth-10, GLCDDeviceHeight-10
+        box 20, 20,GLCDDeviceWidth-20, GLCDDeviceHeight-20
+        box 30, 30,GLCDDeviceWidth-30, GLCDDeviceHeight-30
+        Filledbox 40, 40,GLCDDeviceWidth-40, GLCDDeviceHeight-40
+    GLCD_Close_PageTransaction
+    wait 1000 ms
+
+    GLCD_Open_PageTransaction
+        GLCDDrawString(2,2 ,"Caso Probabile")
+        GLCDDrawString(2,12 ,"perché la rela")
+        GLCDDrawString(2,22 ,"zione non era")
+        GLCDDrawString(2,32 ,"attendibile.")
+        GLCDDrawString(2,42 ,"Comunque la ")
+        GLCDDrawString(2,52 ,"nuova versione")
+        GLCDDrawString(2,62 ,"darà risultati")
+        GLCDDrawString(2,72 ,"migliori?")
+        GLCDDrawString(2,108,"Seconda Parte")
+        GLCDDrawString(2,118,"dello schermo")
+        GLCDDrawString(2,128,"con un buffer")
+        GLCDDrawString(2,138,"ridotto. Si può")
+        GLCDDrawString(2,148,"anche disegnare")
+        GLCDDrawString(2,158,"fig. geometriche")
+        GLCDDrawString(2,168,"OLD FONT WILL ERROR!!")
+
+    GLCD_Close_PageTransaction
+    wait 1000 ms
+
+
+    GLCD_Open_PageTransaction
+        GLCDLocateString( 0, 0)
+        dim xloop as byte
+        for xloop = 1 to 26
+          GLCDPrintString leftpad(Str(xloop),2)
+          GLCDPrintStringLN "-WaveShare"
+        next
+    GLCD_Close_PageTransaction
+    wait 1000 ms
+
+
+    GLCD_Open_PageTransaction
+    FilledBox( 4, 4,42, 42, GLCDForeground)  'Filled Rectangle
+    FilledBox( 5, 5,41, 41, GLCDBackground)
+    FilledBox( 6, 6,40, 40, GLCDForeground)
+    FilledBox( 7, 7,39, 39, GLCDBackground)
+    FilledBox( 8, 8,38, 38, GLCDForeground)
+    FilledBox( 9, 9,37, 37, GLCDBackground)
+    FilledBox(10,10,36, 36, GLCDForeground)
+    FilledBox(11,11,35, 35, GLCDBackground)
+    FilledBox(12,12,34, 34, GLCDForeground)
+    FilledBox(13,13,33, 33, GLCDBackground)
+    FilledBox(14,14,32, 32, GLCDForeground)
+    FilledBox(15,15,31, 31, GLCDBackground)
+
+    FilledCircle(77,25,23, GLCDForeground)              'Filled Circle
+    FilledCircle(77,25,19, GLCDBackground)
+    FilledCircle(77,25,14, GLCDForeground)
+    FilledCircle(77,25,11, GLCDBackground)
+    FilledCircle(77,25,5 , GLCDForeground)
+    FilledCircle(77,25,2 , GLCDBackground)
+
+    FilledEllipse(25,60,16,8, GLCDForeground)           'Filled Ellipse
+    FilledEllipse(25,60,14,7, GLCDBackground)
+    FilledEllipse(25,60,12,6, GLCDForeground)
+    FilledEllipse(25,60,10,5, GLCDBackground)
+    FilledEllipse(25,60,8 ,4, GLCDForeground)
+    FilledEllipse(25,60,6, 3, GLCDBackground)
+
+    FillRoundRect(50,50,100,100,GLCDForeground)         'Filled rounded
+    FillRoundRect(55,55,95 ,95, GLCDBackground)
+    FillRoundRect(60,60,90 ,90, GLCDForeground)
+    FillRoundRect(65,65,85 ,85, GLCDBackground)
+    FillRoundRect(70,70,80 ,80, GLCDForeground)
+    FillRoundRect(75,75,75 ,75, GLCDBackground)
+    FillRoundRect(80,80,80 ,80, GLCDForeground)
+
+    FilledTriangle(25,70,2,102,46,102, GLCDForeground)  'Filled Triangle
+    FilledTriangle(25,78,10,98,38,98 , GLCDBackground)
+    FilledTriangle(25,86,18,94,30,94 , GLCDForeground)
+
+    FilledBox(8, 108,90,148, GLCDForeground) 'Filled rectangle
+    FilledBox(18,118,80, 136, GLCDBackground)
+    FilledBox(28,128,70, 126, GLCDForeground)
+
+    GLCDDrawString(9,108 ,"Rectangle..1")
+    GLCDDrawString(19,117 ,"Rectangle..2")
+    GLCDDrawString(19,149 ,"Hyperbole")
+
+    Hyperbole(50,181, 4, 2, 1,1, GLCDForeground)        'Hyperbole
+    Hyperbole(50,181, 6, 3, 1,1, GLCDBackground)
+    Hyperbole(50,181,10, 5, 1,1, GLCDForeground)
+    Hyperbole(50,181,14, 7, 1,1, GLCDBackground)
+    Hyperbole(50,181,18, 9, 1,1, GLCDForeground)
+    Hyperbole(50,181,22,11, 1,1, GLCDBackground)
+    Hyperbole(50,181,26,13, 1,1, GLCDForeground)
+    Hyperbole(50,181,30,15, 1,1, GLCDBackground)
+    Hyperbole(50,181,34,17, 1,1, GLCDForeground)
+
+    GLCD_Close_PageTransaction                 'Close Transaction
+
+    wait 1000 ms
+
+        dim xloop, rnumber as byte
+        rnumber=RANDOM
+      GLCD_Open_PageTransaction
+
+
+        for xloop = 1 to 26
+          GLCDPrintString Str(xloop)
+          GLCDPrintStringLN "-WaveShare"
+        next
+      GLCD_Close_PageTransaction
+
+    wait 1000 ms
+
+
+      GLCD_Open_PageTransaction
+        'GLCDLocateString( 0, 0)
+        dim xloop as byte
+        for xloop = 27 to 52
+          GLCDPrintString Str(xloop)
+          GLCDPrintStringLN "-WaveShare"
+        next
+      GLCD_Close_PageTransaction
+
+    wait 1000 ms
+goto mm
+    end

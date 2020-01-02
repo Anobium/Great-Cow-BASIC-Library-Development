@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2019-11-14 (Windows 32 bit)</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 5.75 seconds)</p>
+<p> (Assembly time: 0.46875 seconds)</p>
+<p> (Download time: 4.0625 seconds)</p>
+<p> (Total time: 10.28125 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: MEGA328P</p>
+<p>Program Memory: 6295/16384 words (38.42%)</p>
+<p>RAM: 1542/2048 bytes (75.29%)</p>
+<p> OSC: , 16</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>42</td><td>342</td><td>SYSCOMPLESSTHAN16(4), INIT_EPD2IN13D(44), SYSDIVSUB16(2), SYSREADSTRING(4), Delay_S(1), CLS_EPD2IN13D(1), REFRESH_EPD2IN13D(1), PIXEL_TO_DISPLAY_EPD2IN13D(1), GLCDPRINTSTRINGLN(3), FILLEDTRIANGLE(1), FILLEDBOX_EPD2IN13D(1), CIRCLE(1), BOX(1), LINE(1), GLCDPRINT(1), GLCDLOCATESTRING(2), CLEAR_BUFFER_EPD2IN13D(1), INITSYS(60)</td></tr>
+<tr><td>GLCDPRINT</td><td>19</td><td>127</td><td>DRAWCHAR_EPD2IN13D(1)</td></tr>
+<tr><td>GLCDPRINTSTRINGLN</td><td>9</td><td>41</td><td>SYSDIVSUB16(1), GLCDPRINT(1)</td></tr>
+<tr><td>GLCDLOCATESTRING</td><td>12</td><td>55</td><td>SYSDIVSUB16(1), SYSMULTSUB16(1), SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>BOX</td><td>20</td><td>271</td><td>SYSCOMPLESSTHAN16(6), PSET_EPD2IN13D(4)</td></tr>
+<tr><td>CIRCLE</td><td>20</td><td>418</td><td>SYSMULTSUBINT(1), SYSDIVSUBINT(1), SYSCOMPLESSTHANINT(2), PSET_EPD2IN13D(8)</td></tr>
+<tr><td>LINE</td><td>55</td><td>484</td><td>SYSMULTSUBINT(4), SYSCOMPLESSTHANINT(5), SYSCOMPEQUAL16(2), PSET_EPD2IN13D(4)</td></tr>
+<tr><td>FILLEDTRIANGLE</td><td>66</td><td>835</td><td>SYSMULTSUBINT(2), SYSDIVSUBINT(4), SYSCOMPEQUAL16(2), SYSCOMPLESSTHAN16(13), LINE(3), SWAP(8)</td></tr>
+<tr><td>INIT_EPD2IN13D</td><td>67</td><td>195</td><td>Delay_MS(5), CLS_EPD2IN13D_INIT(1), ROTATE_EPD2IN13D(1), LOADLUTS_EPD2IN13D(1), SENDDATA_EPD2IN13D(14), SENDCOMMAND_EPD2IN13D(7), SPIMODE(1)</td></tr>
+<tr><td>LOADLUTS_EPD2IN13D</td><td>31</td><td>166</td><td>SENDDATA_EPD2IN13D(7), SENDCOMMAND_EPD2IN13D(7)</td></tr>
+<tr><td>CLS_EPD2IN13D_INIT</td><td>32</td><td>210</td><td>SYSCOMPLESSTHAN16(5), Delay_MS(4), FASTHWSPITRANSFER(2), SENDCOMMAND_EPD2IN13D(2)</td></tr>
+<tr><td>CLS_EPD2IN13D</td><td>2</td><td>4</td><td>REFRESH_EPD2IN13D(1), CLS_EPD2IN13D_INIT(1)</td></tr>
+<tr><td>PIXEL_TO_DISPLAY_EPD2IN13D</td><td>23</td><td>138</td><td>SYSCOMPLESSTHAN16(3), FASTHWSPITRANSFER(2), SENDCOMMAND_EPD2IN13D(2)</td></tr>
+<tr><td>CLEAR_BUFFER_EPD2IN13D</td><td>9</td><td>55</td><td>SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>REFRESH_EPD2IN13D</td><td>1</td><td>5</td><td>SENDCOMMAND_EPD2IN13D(1)</td></tr>
+<tr><td>SENDCOMMAND_EPD2IN13D</td><td>24</td><td>13</td><td>FASTHWSPITRANSFER(1)</td></tr>
+<tr><td>SENDDATA_EPD2IN13D</td><td>4</td><td>10</td><td>FASTHWSPITRANSFER(1)</td></tr>
+<tr><td>DRAWCHAR_EPD2IN13D</td><td>95</td><td>336</td><td>SYSMULTSUB16(1), SYSCOMPEQUAL(2), PSET_EPD2IN13D(3)</td></tr>
+<tr><td>PSET_EPD2IN13D</td><td>67</td><td>463</td><td>SYSMULTSUB16(2), SYSCOMPEQUAL16(1), SYSDIVSUB16(2), SYSCOMPLESSTHAN16(3)</td></tr>
+<tr><td>FILLEDBOX_EPD2IN13D</td><td>16</td><td>183</td><td>SYSCOMPLESSTHAN16(6), PSET_EPD2IN13D(1)</td></tr>
+<tr><td>ROTATE_EPD2IN13D</td><td>20</td><td>91</td><td></td></tr>
+<tr><td>SWAP</td><td>4</td><td>7</td><td></td></tr>
+<tr><td>INITSYS</td><td>696</td><td>7</td><td></td></tr>
+<tr><td>SYSREADSTRING</td><td>101</td><td>24</td><td></td></tr>
+<tr><td>SYSMULTSUB16</td><td>73</td><td>10</td><td></td></tr>
+<tr><td>SYSMULTSUBINT</td><td>13</td><td>39</td><td>SYSMULTSUB16(1)</td></tr>
+<tr><td>SYSDIVSUB16</td><td>38</td><td>48</td><td>SYSCOMPEQUAL16(1)</td></tr>
+<tr><td>SYSDIVSUBINT</td><td>14</td><td>48</td><td>SYSDIVSUB16(1)</td></tr>
+<tr><td>SYSCOMPEQUAL</td><td>20</td><td>5</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL16</td><td>34</td><td>7</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>10</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHANINT</td><td>48</td><td>42</td><td></td></tr>
+<tr><td>SPIMODE</td><td>148</td><td>79</td><td></td></tr>
+<tr><td>FASTHWSPITRANSFER</td><td>23</td><td>10</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>12</td><td></td></tr>
+<tr><td>Delay_S</td><td>0</td><td>7</td><td>Delay_MS(1)</td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>20</td><td></td></tr>
+<tr><td>OLEDFONT2</td><td>0</td><td>983</td><td></td></tr>
+<tr><td>OLEDFONT2_H</td><td>0</td><td>15</td><td></td></tr>
+<tr><td>OLEDFONT1INDEX</td><td>0</td><td>60</td><td></td></tr>
+<tr><td>OLEDFONT1INDEX_H</td><td>0</td><td>60</td><td></td></tr>
+<tr><td>OLEDFONT1DATA</td><td>0</td><td>225</td><td></td></tr>
+<tr><td>OLEDFONT1DATA_H</td><td>0</td><td>15</td><td></td></tr>
+<tr><td>LUT_VCOM</td><td>0</td><td>24</td><td></td></tr>
+<tr><td>LUT_WW</td><td>0</td><td>24</td><td></td></tr>
+<tr><td>LUT_BW</td><td>0</td><td>24</td><td></td></tr>
+<tr><td>LUT_WB</td><td>0</td><td>24</td><td></td></tr>
+<tr><td>LUT_BB</td><td>0</td><td>24</td><td></td></tr>
+</table>
+</body>
+</html>

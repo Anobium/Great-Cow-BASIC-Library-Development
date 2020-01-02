@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2019-12-08 (Windows 32 bit)</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 3.5625 seconds)</p>
+<p> (Assembly time: 0.5625 seconds)</p>
+<p> (Download time: 5.875 seconds)</p>
+<p> (Total time: 10 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 18F47K42</p>
+<p>Program Memory: 2360/65536 words (3.6%)</p>
+<p>RAM: 359/8192 bytes (4.38%)</p>
+<p> OSC: INT, 64</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>46</td><td>98</td><td>INIT_EPD2IN13D(51), SYSREADSTRING(2), SPIMODE(1), SENDCOMMAND_EPD2IN13D(1), PIXEL_TO_DISPLAY_EPD2IN13D(1), BOX_EXAMPLE(1), GLCDLOCATESTRING(1), CLEAR_BUFFER_EPD2IN13D(1), CALLCMD0(1), HSERPRINT(2), INITPPS(49), INITSYS(54)</td></tr>
+<tr><td>INITPPS</td><td>8</td><td>15</td><td></td></tr>
+<tr><td>BOX_EXAMPLE</td><td>4</td><td>72</td><td>FILLEDBOX_EPD2IN13D(1), BOX(3)</td></tr>
+<tr><td>SERTXD</td><td>12</td><td>51</td><td>HSERPRINT(2), HSERSEND(2), HSERPRINTCRLF(2)</td></tr>
+<tr><td>GLCDLOCATESTRING</td><td>12</td><td>52</td><td>SYSDIVSUB16(1), SYSMULTSUB16(1), SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>BOX</td><td>20</td><td>177</td><td>SYSCOMPLESSTHAN16(6), PSET_EPD2IN13D(4)</td></tr>
+<tr><td>SENDDUMMYBYTES</td><td>3</td><td>15</td><td>HWSPITRANSFER(1)</td></tr>
+<tr><td>SENDCOMMAND</td><td>9</td><td>45</td><td>SENDPULSES(1), HWSPITRANSFER(7)</td></tr>
+<tr><td>SENDPULSES</td><td>1</td><td>6</td><td>HWSPITRANSFER(1)</td></tr>
+<tr><td>GETSDRESPONSE</td><td>4</td><td>15</td><td>HWSPITRANSFER(1)</td></tr>
+<tr><td>CALLCMD0</td><td>16</td><td>122</td><td>SYSREADSTRING(3), Delay_MS(2), SYSCOMPLESSTHAN16(1), SYSCOMPEQUAL(1), SERTXD(1), GETSDRESPONSE(1), SENDCOMMAND(1), SENDDUMMYBYTES(1), HSERPRINT(1)</td></tr>
+<tr><td>INIT_EPD2IN13D</td><td>67</td><td>147</td><td>Delay_MS(5), ROTATE_EPD2IN13D(1), CLS_EPD2IN13D(1), LOADLUTS_EPD2IN13D(1), SENDDATA_EPD2IN13D(14), SENDCOMMAND_EPD2IN13D(7)</td></tr>
+<tr><td>LOADLUTS_EPD2IN13D</td><td>31</td><td>116</td><td>SENDDATA_EPD2IN13D(7), SENDCOMMAND_EPD2IN13D(7)</td></tr>
+<tr><td>CLS_EPD2IN13D_INIT</td><td>32</td><td>168</td><td>SYSCOMPLESSTHAN16(5), Delay_MS(4), SENDCOMMAND_EPD2IN13D(2)</td></tr>
+<tr><td>CLS_EPD2IN13D</td><td>2</td><td>4</td><td>REFRESH_EPD2IN13D(1), CLS_EPD2IN13D_INIT(1)</td></tr>
+<tr><td>PIXEL_TO_DISPLAY_EPD2IN13D</td><td>23</td><td>120</td><td>SYSCOMPLESSTHAN16(3), SENDCOMMAND_EPD2IN13D(2)</td></tr>
+<tr><td>CLEAR_BUFFER_EPD2IN13D</td><td>9</td><td>33</td><td>SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>REFRESH_EPD2IN13D</td><td>1</td><td>4</td><td>SENDCOMMAND_EPD2IN13D(1)</td></tr>
+<tr><td>SENDCOMMAND_EPD2IN13D</td><td>24</td><td>22</td><td></td></tr>
+<tr><td>SENDDATA_EPD2IN13D</td><td>4</td><td>19</td><td></td></tr>
+<tr><td>PSET_EPD2IN13D</td><td>81</td><td>312</td><td>SYSMULTSUB16(2), SYSCOMPLESSTHAN16(1), SYSCOMPEQUAL16(1), SYSDIVSUB16(2)</td></tr>
+<tr><td>FILLEDBOX_EPD2IN13D</td><td>16</td><td>129</td><td>SYSCOMPLESSTHAN16(6), PSET_EPD2IN13D(1)</td></tr>
+<tr><td>ROTATE_EPD2IN13D</td><td>20</td><td>62</td><td></td></tr>
+<tr><td>INITSYS</td><td>696</td><td>33</td><td></td></tr>
+<tr><td>SYSREADSTRING</td><td>101</td><td>24</td><td></td></tr>
+<tr><td>SYSMULTSUB16</td><td>73</td><td>19</td><td></td></tr>
+<tr><td>SYSDIVSUB16</td><td>38</td><td>56</td><td>SYSCOMPEQUAL16(1)</td></tr>
+<tr><td>SYSCOMPEQUAL</td><td>20</td><td>5</td><td></td></tr>
+<tr><td>SYSCOMPEQUAL16</td><td>34</td><td>9</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>14</td><td></td></tr>
+<tr><td>SPIMODE</td><td>148</td><td>75</td><td>SYSCOMPEQUAL(1)</td></tr>
+<tr><td>HWSPITRANSFER</td><td>35</td><td>15</td><td></td></tr>
+<tr><td>INITUSART</td><td>141</td><td>13</td><td></td></tr>
+<tr><td>HSERSEND</td><td>49</td><td>17</td><td>Delay_MS(1)</td></tr>
+<tr><td>HSERSEND</td><td>128</td><td>23</td><td>Delay_MS(1)</td></tr>
+<tr><td>HSERPRINT</td><td>12</td><td>37</td><td>HSERSEND(1)</td></tr>
+<tr><td>HSERPRINTCRLF</td><td>4</td><td>18</td><td>HSERSEND(2)</td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>18</td><td></td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>30</td><td></td></tr>
+<tr><td>LUT_VCOM</td><td>0</td><td>30</td><td></td></tr>
+<tr><td>LUT_WW</td><td>0</td><td>30</td><td></td></tr>
+<tr><td>LUT_BW</td><td>0</td><td>30</td><td></td></tr>
+<tr><td>LUT_WB</td><td>0</td><td>30</td><td></td></tr>
+<tr><td>LUT_BB</td><td>0</td><td>30</td><td></td></tr>
+</table>
+</body>
+</html>

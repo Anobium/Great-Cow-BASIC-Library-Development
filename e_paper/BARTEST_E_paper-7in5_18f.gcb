@@ -62,70 +62,56 @@
 '******************************************************************************************************
      'Main program
 
+
+    GLCDForeground=TFT_BLACK
+    GLCDBackground=TFT_WHITE
+    GLCDfntDefaultSize = 2
+
+     GLCD_Open_PageTransaction
+        GLCDPrintStringLn "BAR1"
+        GLCDPrintStringLn "BAR2"
+        GLCDPrintStringLn "BAR3"
+     GLCD_Close_PageTransaction
+     wait 2 s
+
 ' Tests
-do
      GLCDRotate Portrait
 
      GLCD_Open_PageTransaction
-
-        GLCDPrint 0,0, "Test @ Portrait"
-        GLCDPrint 30,16, GLCDDeviceWidth
-        GLCDPrint 30,32, GLCDDeviceHeight
-        line 0,0,GLCDDeviceWidth, GLCDDeviceHeight
-        box 0,0,GLCDDeviceWidth, GLCDDeviceHeight
-        Circle GLCDDeviceWidth/2, GLCDDeviceHeight/2, 20
-        FilledBox( 12, 12,20, 80, GLCDForeground)  'Filled Rectangle
-        FilledTriangle(12,80, 20,80,16,90, GLCDForeground)  'Filled Triangle
-
+        GLCDPrintStringLn "BAR1"
+        GLCDPrintStringLn "BAR2"
+        GLCDPrintStringLn "BAR3"
      GLCD_Close_PageTransaction
-     wait 5 s
+     wait 2 s
 
      GLCDRotate Portrait_rev
 
      GLCD_Open_PageTransaction
-        GLCDPrint 0,0, "Test @ Portrait_rev"
-        GLCDPrint 30,16, GLCDDeviceWidth
-        GLCDPrint 30,32, GLCDDeviceHeight
-        line 0,0,GLCDDeviceWidth, GLCDDeviceHeight
-        box 0,0,GLCDDeviceWidth, GLCDDeviceHeight
-        Circle GLCDDeviceWidth/2, GLCDDeviceHeight/2, 20
-        FilledBox( 12, 12,20, 80, GLCDForeground)  'Filled Rectangle
-        FilledTriangle(12,80, 20,80,16,90, GLCDForeground)  'Filled Triangle
+        GLCDPrintStringLn "BAR1"
+        GLCDPrintStringLn "BAR2"
+        GLCDPrintStringLn "BAR3"
 
      GLCD_Close_PageTransaction
-     wait 5 s
+     wait 2 s
 
      GLCDRotate Landscape
 
      GLCD_Open_PageTransaction
-        GLCDPrint 0,0, "Test @ Landscape"
-        GLCDPrint 30,16, GLCDDeviceWidth
-        GLCDPrint 30,32, GLCDDeviceHeight
-
-        line 0,0,GLCDDeviceWidth, GLCDDeviceHeight
-        box 0,0,GLCDDeviceWidth, GLCDDeviceHeight
-        Circle GLCDDeviceWidth/2, GLCDDeviceHeight/2, 20
-        FilledBox( 12, 12,20, 80, GLCDForeground)  'Filled Rectangle
-        FilledTriangle(12,80, 20,80,16,90, GLCDForeground)  'Filled Triangle
-
+        GLCDPrintStringLn "BAR1"
+        GLCDPrintStringLn "BAR2"
+        GLCDPrintStringLn "BAR3"
      GLCD_Close_PageTransaction
-     wait 5 s
+     wait 2 s
 
      GLCDRotate Landscape_Rev
 
      GLCD_Open_PageTransaction
-        GLCDPrint 0,0, "Test @ Landscape_Rev"
-        GLCDPrint 30,16, GLCDDeviceWidth
-        GLCDPrint 30,32, GLCDDeviceHeight
-        line 0,0,GLCDDeviceWidth, GLCDDeviceHeight
-        box 0,0,GLCDDeviceWidth, GLCDDeviceHeight
-        Circle GLCDDeviceWidth/2, GLCDDeviceHeight/2, 20
-        FilledBox( 12, 12,20, 80, GLCDForeground)  'Filled Rectangle
-        FilledTriangle(12,80, 20,80,16,90, GLCDForeground)  'Filled Triangle
-
+        GLCDPrintStringLn "BAR1"
+        GLCDPrintStringLn "BAR2"
+        GLCDPrintStringLn "BAR3"
      GLCD_Close_PageTransaction
-     wait 5 s
-loop
+     wait 2 s
+
      GLCDCLS
      GLCDSleep
 

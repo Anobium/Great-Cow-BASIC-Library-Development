@@ -1,0 +1,27 @@
+#chip 16f877a
+
+dim bitNo,SysDivLoop,SysValueTemp as Byte
+dim selectedregisterbyte as byte alias portc
+dir porta out
+dir portc out
+
+selectedregisterbyte=0
+
+for bitNo = 0 to 7
+
+    incf bitNo, W
+    movwf SysDivLoop
+    clrf SysValueTemp
+    bsf STATUS,C
+    label1:
+    rlf SysValueTemp, F
+    decfsz SysDivLoop, F
+    goto label1
+
+'    movf SysValueTemp, W ; (or comf if clearing)
+'    iorwf Variable, W ; (or andwf if clearing)
+    movf	selectedregisterbyte,W
+    iorwf	SYSVALUETEMP,W
+    movwf	selectedregisterbyte
+    wait 100 ms
+next
