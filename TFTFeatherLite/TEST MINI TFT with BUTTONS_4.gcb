@@ -1,0 +1,197 @@
+  'Chip Settings.
+  #chip 18F4550,48
+ '   #option explicit
+#config PLLDIV=1, CPUDIV=OSC1_PLL2, OSC=HSPLL_HS, LVP=OFF, MCLRE=ON
+
+    #include <glcd.h>
+
+#define LCD_IO 2
+#define LCD_CB PORTE.1
+#define LCD_DB PORTE.0
+
+#define HI2C_BAUD_RATE 100
+#define HI2C_DATA PORTB.0 ;Brown
+#define HI2C_CLOCK PORTB.1 ;Green This was same CLOCK as SPI below. Is this allowed ??????  Changed below to D.7  ????????
+#define MiniTFT_WRITEADDR 188 ;0xBC
+#define MiniTFT_READADDR 189 ;0xBD
+
+
+ #define GLCD_TYPE GLCD_TYPE_ST7735R_160_80
+   ''''   #define ST7735R_HardwareSPI     ' remove comment out if you want to use software SPI.
+ '   #define GLCD_TYPE GLCD_TYPE_ST7735  ' can be GLCD_TYPE_ST7735 OR GLCD_TYPE_ST7735R OR GLCD_TYPE_ST7735R_160_80
+
+    #define ST7735TABCOLOR ST7735_GREENTAB  ' can be ST7735_BLACKTAB, ST7735_GREENTAB or ST7735_REDTAB.  Each tab is a different ST7735 configuration.
+                                            ' you may have to try all three - if you do not know what chipset you have.
+  '  #option Explicit
+
+   'Pin mappings for SPI ST7735
+    #define GLCD_DC         portE.2              'Data/Command select   Purple Wire
+    #define GLCD_CS         portB.2              'CS Chip select        White
+    #define GLCD_RESET      portC.6              'Through pin 7 of ATSAMD09D14A-MU chip - i.e. no direct connection
+    #define GLCD_DO         portC.7              'SPI SDO (MOSI)        Blue
+    #define GLCD_DI         portC.7              'SPI SDI (MISO)  assume bi-directional DO/DI
+    #define GLCD_SCK        portD.7              'SPI SCK               Green
+
+'#define RESET_Pin 28 ;PA28_RESET pin 18
+
+'#define CTRL_Reset 0 ;Reset the SAM-D09 pg 51
+'Buttons
+#define DirClr_GPIO 3 ;0x03 Pg 22 of Seesaw Tutorial - Writing a 1 to any bit in this register sets the direction of the corresponding pin to INPUT.
+#define PullenSet_GPIO 11 ;0x0B Pg 23 of Seesaw Tutorial - Writing a 1 to any bit in this register enables the internal pullup or pulldown on the corresponding pin.
+#define Set_FunctionReg 5 ;Writing a 1 to any bit in this register writes the corresponding pin HIGH. pg 22
+
+#define Module_Base_Address_GPIO 1 ;GPIO = 1  Pg 21 of Seesaw Tutorial
+#define GPIO_BULK 4 ;GPIO = 4 Reading this register reads all pins on PORTA of the seesaw device.
+
+#define Module_Base_Address_AD 9 ;AD = 9  Pg 24 of Seesaw Tutorial
+#define Module_function_register_address_AD0 7 ;PA02_A0 AD  = 7
+#define Module_function_register_address_AD1 8 ;PA03_A1 AD  = 8
+
+Dir HI2C_DATA in
+Dir HI2C_CLOCK in
+
+HI2CMode Master
+
+'seesaw is on I2C, it is a pre-programmed ATSAMD09 chip which will listen to commands over I2C and read buttons,
+'   dim the backlight and toggle the display reset line.
+
+locate 0, 0
+print "Mini TFT with"
+locate 1, 0
+print "Buttons_4"
+locate 2, 0
+print "Dec. 10, 2019"
+wait 1 s
+cls
+'The Mini TFT needs 4.1 VDC for the GLCD good display quality.  PIC needs to run at 5 VDC.
+' It will work with 3.5 VDC but colors may blur.
+'   CAUTION: Exceeding 3.8 VDC could damage ATSAMD09D14A-MU chip. (Spec says Max voltage is 3.8 VDC)
+'
+'Button B now working - BUT Reset Switch causes displays to print out ALL buttons/Switches continuously.  WHY ?????????????????????
+'**********************************************************************
+  GLCDCLS
+    GLCDRotate ( Landscape )
+     GLCDPrintLargeFont(4, 0, "Great", TFT_YELLOW )
+      GLCDPrintLargeFont(4, 20, "Cow", TFT_GREEN )
+          GLCDPrintLargeFont(4, 40, "Basic", TFT_WHITE )
+            wait 2 s
+              GLCDCLS
+'Do_Again:
+
+'Button B problem occurs AFTER it prints "Button B" on the GLCD.  i.e. it happens after the HI2C WRITES or READ. The LCD still works properly.
+  HI2CStart
+    HI2CSend MiniTFT_WRITEADDR
+      HI2CSend Module_Base_Address_GPIO
+        HI2CSend DirClr_GPIO
+          HI2CSend 211 ;Writing a 1 to any bit in this register sets the direction of the corresponding pin to INPUT.
+            HI2CSend 195 ;Writing zeros to this register has no effect.
+              HI2CSend 207 ;PA15:PA08 = 1100 1111 - Pin 12 to Pin 7
+                HI2CSend 220 ;PA07:PA02 = 1101 1100 - Pin 6 to Pin 1   LSB
+                  HI2CStop
+
+  HI2CStart
+    HI2CSend MiniTFT_WRITEADDR
+      HI2CSend Module_Base_Address_GPIO ;Writing a 1 to any bit in this register enables the internal pullup or pulldown on the corresponding pin. The pull direction
+        HI2CSend PullenSet_GPIO ;(up/down) is determined by the GPIO (output) value - if the corresponding GPIO register bit is low, its a pulldown. High, its a pullup.
+          HI2CSend 211
+            HI2CSend 195
+              HI2CSend 207
+                HI2CSend 220
+                  HI2CStop
+
+  HI2CStart
+    HI2CSend MiniTFT_WRITEADDR
+      HI2CSend Module_Base_Address_GPIO ;Writing a 1 to any bit in this register writes the corresponding pin HIGH.  Writing zeros to this register has no effect.
+        HI2CSend Set_FunctionReg
+          HI2CSend 211
+            HI2CSend 195
+              HI2CSend 207
+                HI2CSend 220
+                  HI2CStop
+Cnt_1 = 1
+Do_Again:
+locate 0, 17
+print Cnt_1
+
+    HI2CStart
+      HI2CSend MiniTFT_WRITEADDR
+        HI2CSend Module_Base_Address_GPIO
+          HI2CSend GPIO_BULK ;Reading this register reads all pins on PORTA of the seesaw device.
+            HI2CRestart
+              HI2CSend MiniTFT_READADDR
+                HI2CReceive Fourth_Byte ;Bits [31:24] MSB      Seems like BIG_ENDIAN is being used - Data sheet says LITTLE_ENDIAN ????????????
+                  HI2CReceive Third_Byte ;Bits [23:16]         I show bit order as if it is BIG ENDIAN
+                    HI2CReceive Button_ABS ;Bits [15:8]
+                      HI2CReceive Button_XY, Nack ;Bits [7:0] LSB
+                        HI2CStop
+
+                          locate 0, 0
+                            print Fourth_Byte
+                              print " "
+                                print ByteToBin(Fourth_Byte)
+
+                                  locate 1, 0
+                                    print Third_Byte
+                                      print " "
+                                        print ByteToBin(Third_Byte)
+
+                                          locate 2, 0
+                                            print Button_ABS
+                                              print " "
+                                                print ByteToBin(Button_ABS)
+
+                                                  locate 3, 0
+                                                    print Button_XY
+                                                      print " "
+                                                        print ByteToBin(Button_XY)
+print "  "
+
+If Fourth_Byte = 255 then RESET ;To recover from Reset Button problem
+
+'locate 3, 0
+
+'CHECK FOR SHORT ON BUTTON B
+
+        If Button_ABS.1 = 0 then
+          print "B" ;Button_ABS = 204
+            GLCDPrintLargeFont(4, 0, "Button B", TFT_RED )
+'RESET ;To recover from Button B white screen problem - Press long enough for LCD to show "B"
+              End If
+
+                If Button_ABS.2 = 0 then
+                  print "A" ;Button_ABS = 202
+                    GLCDPrintLargeFont(4, 10, "Button A", TFT_YELLOW )
+                      End If
+
+                        If Button_ABS.3 = 0 then
+                                print "SELECT" ;Button_ABS = 198 - Push for Select
+                                  GLCDPrintLargeFont(4, 20, "SELECT", TFT_Green )
+                                    End If
+
+        If Button_XY.2 = 0 then
+          print "UP" ;Button_XY = 216
+            GLCDPrintLargeFont(4, 30, "UP", TFT_RED )
+              End If
+
+                If Button_XY.3 = 0 then
+                  print "LEFT" ;Button_XY = 212
+                    GLCDPrintLargeFont(4, 40, "LEFT", TFT_YELLOW )
+                      End If
+
+                        If Button_XY.4 = 0 then
+                          print "DOWN" ;Button_XY = 204
+                            GLCDPrintLargeFont(4, 50, "DOWN", TFT_GREEN )
+                              End If
+
+                            If Button_XY.7 = 0 then
+                              print "RIGHT" ;Button_XY = 92
+                                GLCDPrintLargeFont(4, 60, "RIGHT", TFT_CYAN )
+                                  End If
+
+Cnt_1 = Cnt_1 + 1
+If Cnt_1 = 255 then Cnt_1 = 1
+wait 1 s
+
+GLCDCLS
+cls
+Goto Do_Again

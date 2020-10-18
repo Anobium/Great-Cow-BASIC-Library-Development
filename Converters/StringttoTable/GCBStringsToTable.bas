@@ -70,11 +70,6 @@ main:
 
 
       params(1) = trim(fbuffer)
-      fbuffer = params(1)
-
-      dotPointer = instrrev(fbuffer,".")
-      fbuffer = left(fbuffer , dotPointer )+"h"
-      result = kill ( fbuffer )
 
 
 
@@ -116,16 +111,53 @@ end
 
       fileresult = Open ( Fisier for input As #filehandle )
 
-      Line Input #filehandle, VersionDataStr
+      dim VersionMajor as  Long
+      dim VersionMinor as  Long
+      dim VersionDot as  Long
 
-      VersionData = val(VersionDataStr)+ 1
+      dim VersionNotes as string * 512
+
+      dim NumberFamilies as  Long
+      dim NumberParts as  Long
+      dim NumberScripts as  Long
+      dim Compatibility as Byte
+      dim UNUSED1A as  Integer
+      dim UNUSED1B as  Integer
+      dim UNUSED2 as  Long
+
+
+      Get #filehandle, ,VersionMajor
+      Get #filehandle, ,VersionMinor
+      Get #filehandle, ,VersionDot
+      Get #filehandle, ,VersionNotes
+      Get #filehandle, ,NumberFamilies
+      Get #filehandle, ,NumberParts
+      Get #filehandle, ,NumberScripts
+      Get #filehandle, ,Compatibility
+      Get #filehandle, ,UNUSED1A
+      Get #filehandle, ,UNUSED1B
+      Get #filehandle, ,UNUSED2
+
+
+print VersionMajor
+print VersionMinor
+print VersionDot
+print VersionNotes
+print NumberFamilies
+print NumberParts
+print NumberScripts
+print Compatibility
+print UNUSED1A
+print UNUSED1B
+print UNUSED2
+
 
 
       Close #filehandle
 
-      fileresult = Open ( Fisier for output As #filehandle )
-      Put #filehandle , , str(VersionData):Put #filehandle , , chr(13) : Put #filehandle , , chr(10)
-      close #filehandle
+'      fileresult = Open ( Fisier for output As #filehandle )
+'      Put #filehandle , , str(VersionData):Put #filehandle , , chr(13) : Put #filehandle , , chr(10)
+'      close #filehandle
 
       isValid = true
 

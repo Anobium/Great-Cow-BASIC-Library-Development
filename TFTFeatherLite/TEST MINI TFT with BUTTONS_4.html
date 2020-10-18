@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2020-04-09 (Windows 32 bit)</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 4.21875 seconds)</p>
+<p> (Assembly time: 4.71875 seconds)</p>
+<p> (Download time: 0.84375 seconds)</p>
+<p> (Total time: 9.78125 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 18F4550</p>
+<p>Program Memory: 4411/16384 words (26.92%)</p>
+<p>RAM: 108/2048 bytes (5.27%)</p>
+<p> OSC: HSPLL_HS, 48Mhz (Clock source is not a primary internal oscillator. Ensure the clock source is correctly setup)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>141</td><td>759</td><td>HIC2INIT(1), INITLCD(21), INITGLCD_ST7735(74), SYSREADSTRING(25), Delay_S(3), BYTETOBIN(4), HI2CRECEIVE(4), HI2CRESTART(1), PRINT(5), HI2CSTOP(4), HI2CSEND(25), HI2CSTART(4), GLCDPRINTLARGEFONT(10), GLCDROTATE_ST7735(1), GLCDCLS_ST7735(3), CLS(2), PRINT(19), LOCATE(8), HI2CMODE(1), INITSYS(120)</td></tr>
+<tr><td>GLCDPRINTLARGEFONT</td><td>10</td><td>48</td><td>DRAWBIGCHAR(1)</td></tr>
+<tr><td>DRAWBIGCHAR</td><td>73</td><td>470</td><td>SYSDIVSUB(1), SYSCOMPLESSTHAN(26), PSET_ST7735R(2)</td></tr>
+<tr><td>INITGLCD_ST7735</td><td>268</td><td>1</td><td></td></tr>
+<tr><td>GLCDCLS_ST7735</td><td>26</td><td>76</td><td>SYSCOMPLESSTHAN16(1), Delay_MS(3), SENDWORD_ST7735(1), SENDCOMMAND_ST7735(1), SETADDRESS_ST7735(2)</td></tr>
+<tr><td>SENDCOMMAND_ST7735</td><td>18</td><td>19</td><td></td></tr>
+<tr><td>SENDDATA_ST7735</td><td>18</td><td>19</td><td></td></tr>
+<tr><td>SENDWORD_ST7735</td><td>19</td><td>20</td><td></td></tr>
+<tr><td>SETADDRESS_ST7735</td><td>24</td><td>77</td><td>SENDDATA_ST7735(4), SENDCOMMAND_ST7735(1)</td></tr>
+<tr><td>GLCDROTATE_ST7735</td><td>43</td><td>81</td><td>SENDDATA_ST7735(10), SENDCOMMAND_ST7735(1)</td></tr>
+<tr><td>INITGLCD_ST7735R</td><td>409</td><td>502</td><td>Delay_S(1), Delay_MS(22), GLCDCLS_ST7735(1), GLCDROTATE_ST7735(1), SENDDATA_ST7735(66), SENDCOMMAND_ST7735(22)</td></tr>
+<tr><td>PSET_ST7735R</td><td>6</td><td>30</td><td>SENDWORD_ST7735(1), SENDCOMMAND_ST7735(1), SETADDRESS_ST7735(2)</td></tr>
+<tr><td>SWAP4</td><td>10</td><td>3</td><td></td></tr>
+<tr><td>LOCATE</td><td>7</td><td>24</td><td>Delay_10US(1), LCDNORMALWRITEBYTE(1)</td></tr>
+<tr><td>CLS</td><td>5</td><td>20</td><td>Delay_MS(1), LCDNORMALWRITEBYTE(2)</td></tr>
+<tr><td>INITLCD</td><td>281</td><td>97</td><td>Delay_MS(10), LCDNORMALWRITEBYTE(5), LCD2_NIBBLEOUT(4), LCDBACKLIGHT(1)</td></tr>
+<tr><td>PRINT</td><td>8</td><td>33</td><td>LCDNORMALWRITEBYTE(1)</td></tr>
+<tr><td>PRINT</td><td>13</td><td>62</td><td>SYSDIVSUB(2), SYSCOMPLESSTHAN(2), LCDNORMALWRITEBYTE(3)</td></tr>
+<tr><td>LCDNORMALWRITEBYTE</td><td>216</td><td>26</td><td>SWAP4(1), LCD2_NIBBLEOUT(2)</td></tr>
+<tr><td>LCD2_NIBBLEOUT</td><td>76</td><td>36</td><td>Delay_MS(1)</td></tr>
+<tr><td>LCDBACKLIGHT</td><td>27</td><td>1</td><td></td></tr>
+<tr><td>INITSYS</td><td>730</td><td>16</td><td></td></tr>
+<tr><td>SYSCOPYSTRING</td><td>118</td><td>18</td><td></td></tr>
+<tr><td>SYSREADSTRING</td><td>101</td><td>21</td><td></td></tr>
+<tr><td>SYSDIVSUB</td><td>48</td><td>22</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN</td><td>23</td><td>5</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>14</td><td></td></tr>
+<tr><td>BYTETOBIN</td><td>9</td><td>54</td><td>SYSCOPYSTRING(2), SYSREADSTRING(3)</td></tr>
+<tr><td>HI2CMODE</td><td>28</td><td>33</td><td></td></tr>
+<tr><td>HI2CSTART</td><td>17</td><td>14</td><td>HI2CWAITMSSP(1)</td></tr>
+<tr><td>HI2CRESTART</td><td>9</td><td>9</td><td>HI2CWAITMSSP(1)</td></tr>
+<tr><td>HI2CSTOP</td><td>13</td><td>17</td><td>HI2CWAITMSSP(1)</td></tr>
+<tr><td>HI2CSEND</td><td>20</td><td>25</td><td>HI2CWAITMSSP(1)</td></tr>
+<tr><td>HI2CRECEIVE</td><td>25</td><td>49</td><td>HI2CWAITMSSP(1)</td></tr>
+<tr><td>HI2CWAITMSSP</td><td>24</td><td>18</td><td></td></tr>
+<tr><td>HIC2INIT</td><td>5</td><td>2</td><td></td></tr>
+<tr><td>Delay_10US</td><td>0</td><td>9</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>18</td><td></td></tr>
+<tr><td>Delay_S</td><td>0</td><td>10</td><td>Delay_MS(1)</td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>60</td><td></td></tr>
+<tr><td>BIGFONT32_41</td><td>0</td><td>133</td><td></td></tr>
+<tr><td>BIGFONT42_51</td><td>0</td><td>133</td><td></td></tr>
+<tr><td>BIGFONT52_61</td><td>0</td><td>134</td><td></td></tr>
+<tr><td>BIGFONT62_71</td><td>0</td><td>133</td><td></td></tr>
+<tr><td>BIGFONT72_81</td><td>0</td><td>134</td><td></td></tr>
+<tr><td>BIGFONT82_91</td><td>0</td><td>133</td><td></td></tr>
+<tr><td>BIGFONT92_101</td><td>0</td><td>133</td><td></td></tr>
+<tr><td>BIGFONT102_111</td><td>0</td><td>133</td><td></td></tr>
+<tr><td>BIGFONT112_121</td><td>0</td><td>133</td><td></td></tr>
+<tr><td>BIGFONT122_126</td><td>0</td><td>68</td><td></td></tr>
+<tr><td>BIGFONT193_202</td><td>0</td><td>133</td><td></td></tr>
+<tr><td>BIGFONT203_212</td><td>0</td><td>132</td><td></td></tr>
+<tr><td>BIGFONT213_216</td><td>0</td><td>61</td><td></td></tr>
+</table>
+</body>
+</html>

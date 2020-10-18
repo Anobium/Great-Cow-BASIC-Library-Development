@@ -1,0 +1,284 @@
+;vl53l0x converted from picaxe
+#chip 16F886,8
+#option Explicit
+#define W_ADDRESS 0xEC
+#define R_ADDRESS 0xED
+#define VL53Dev 0x52
+
+#define HI2C_BAUD_RATE 400
+#define HI2C_DATA PORTC.5
+#define HI2C_CLOCK PORTC.4
+HI2CMode Master
+
+#define USART_BAUD_RATE 9600
+#define USART_TX_BLOCKING
+#define USART_DELAY 1 ms
+
+dim VL52ByteValue as byte
+dim VL52WordValue as word
+dim DATABUFFER_POINTER as byte
+
+
+'VL53L0x Registers Write and Read
+'No.  Command Return value  Description
+'1    0XA0    BYTE1,BYTE2   Word output mode, the output distance is (BYTE1 < 8) &BYTE2;
+'                       the conversion to 10 is the actual measurement distance, the unit is mm
+'2    0XA1    BYTE1,BYTE2   VL53L0X initialization (initialization time is 500mS)
+'3    0XB0    0XB0      The module baud rate is set to 9600, and it takes effect in time (default)
+'4    0XB1    0XB1      The module baud rate is set to 19200, and it takes effect in time
+'5    0XB2    0XB2      The module baud rate is set to 115200, and it takes effect in time
+'6    0XC0    0XC0      Set up as a long distance measurement mode (default)
+'7    0XC1    0XC1      Set up as a high-speed measurement model
+'8    0XC2    0XC2      Set to high precision measurement mode (measurement interval is greater than 180mS)
+'9    0XD0    0XD0      Set XSHUT to high level, module work normally and initialize module
+'10         0XD1          0XD1      Setting XSHUT to low level, VL53L0X closes
+'11         0XF0            BYTE1--BYTE4          Current baud rate (MSB)
+'                     BYTE5  0X00 long distance mode                                                    0X01 high speed measurement mode
+'                            0X02 high precision measurement mode
+'                     BYTE6  The status of the current XSHUT
+dim da(14) as byte
+'Symbol Da1        = b10
+'Symbol Da2        = b11
+'Symbol Da3        = b12
+'Symbol Da4        = b13
+'Symbol Da5        = b14
+'Symbol Da6        = b15
+'Symbol Da7        = b16
+'Symbol Da8        = b17
+'Symbol Da9        = b18
+'Symbol Da10       = b19
+'Symbol Da11       = b20
+'Symbol Da12       = b21
+'
+'Symbol devError   = b22
+'Symbol datoVL   = b23
+'Symbol Distance   = w12
+'Symbol Signal   = w13
+'Symbol SPAD     = w14
+'Symbol Ambient    = w15
+dim devError,datoVL,tmp,addr,ctr as byte
+dim Distance,Signal,SPAD,Ambient as word
+
+;hi2csetup I2CMASTER, $52, i2cfast, i2cbyte
+HSerPrint "Device ID       0xEE           0x"
+'do
+;  hi2cin $C0,(b0)
+    rd_byte_verVL53( VL53Dev, 0xC0, VL52ByteValue )
+    HSerPrint "Device ID       0xEE           0x"
+    HSerPrint hex(VL52ByteValue)
+    HSerPrintCRLF
+    wait 10 ms
+
+;  hi2cin $C1,(b0)
+    rd_byte_verVL53( VL53Dev, 0xC1, VL52ByteValue )
+    HSerPrint "Address 0xC1    0xAA           0x"
+    HSerPrint hex(VL52ByteValue)
+    HSerPrintCRLF
+    wait 10 ms
+
+;  hi2cin $C2,(b0)
+    rd_byte_verVL53( VL53Dev, 0xC2, VL52ByteValue )
+    HSerPrint "Revision ID     0x10           0x"
+    HSerPrint hex(VL52ByteValue)
+    HSerPrintCRLF
+    wait 1 s
+
+' Soft reset
+'hi2cout $89,($01)
+    wr_byte_VL52 ( VL53Dev,0x89,  0x01 )
+
+    wait 200 ms
+do
+'Sys range start
+';hi2cout $00,($01)
+    wr_byte_VL52 ( VL53Dev,0x00,  0x01 )
+
+rd_byte_verVL53( VL53Dev, 0x01, VL52ByteValue )
+    HSerPrint "SysSeqConfig     ?           0x"
+    HSerPrint hex(VL52ByteValue)
+    HSerPrintCRLF
+wait 200 ms
+
+'Read 12 raw data of Sensor:
+;hi2cin $14,(da1,da2,da3,da4,da5,da6,da7,da8,da9,da10,da11,da12)
+rd_multi_verVL53  ( VL53Dev, 0x14, 13, Da() )
+
+;sertxd (#da1," ",#da2," ",#da3," ",#da4," ",#da5," ",#da6," ",#da7," ",#da8," ",#da9," ",#da10," ",#da11," ",#da12,cr,lf)
+for ctr=1 to 13
+  hserprint str(da(ctr))+" , "
+next ctr
+hserprintcrlf
+
+'Resolve sensor errors
+devError = (Da(1) and 0x78)/8  ' // Check for errors
+hserprint "Status: "
+;sertxd (" (",devError,")",cr,lf)
+hserprint "devError= "+str(devError) +"  "
+;If devError = $00 Then  sertxd ("Data OK!") : endif  ' No device error
+If devError = 0 Then hserprint "Data OK!"
+;If devError = $01 Then  sertxd ("VCSEL CONTINUITY TEST FAILURE!") : endif
+If devError = 1 Then hserprint "VCSEL CONTINUITY TEST FAILURE!"
+;If devError = $02 Then  sertxd ("VCSEL WATCHDOG TEST FAILURE!") : endif
+If devError = 2 Then hserprint "VCSEL WATCHDOG TEST FAILURE!"
+;If devError = $03 Then  sertxd ("NO VHV VALUE FOUND!") : endif
+If devError = 3 Then hserprint "NO VHV VALUE FOUND!"
+;If devError = $04 Then  sertxd ("MSRC NO TARGET!") : endif
+If devError = 4 Then hserprint "MSRC NO TARGET!"
+;If devError = $05 Then  sertxd ("SNR CHECK!") : endif
+If devError = 5 Then hserprint "SNR CHECK!"
+;If devError = $06 Then  sertxd ("RANGE PHASE CHECK!") : endif
+If devError = 6 Then hserprint "RANGE PHASE CHECK!"
+;If devError = $07 Then  sertxd ("SIGMA THRESHOLD CHECK!") : endif
+If devError = 7 Then hserprint "SIGMA THRESHOLD CHECK!"
+;If devError = $08 Then  sertxd ("TCC!"): endif
+If devError = 8 Then hserprint "TCC- Target Center Check!"
+;If devError = $09 Then  sertxd ("PHASE CONSISTENCY!") : endif
+If devError = 9 Then hserprint "PHASE CONSISTENCY!"
+;If devError = $0A Then  sertxd ("MIN CLIP!" ): endif
+If devError = 10 Then hserprint "MIN CLIP!"
+;If devError = $0B Then  sertxd ("RANGE COMPLETE!") : endif
+If devError = 11 Then hserprint "RANGE COMPLETE!"
+;If devError = $0C Then  sertxd ("ALGO UNDERFLOW!") : endif
+If devError = 12 Then hserprint "ALGO UNDERFLOW!"
+;If devError = $0D Then  sertxd ("ALGO OVERFLOW!") : endif
+If devError = 13 Then hserprint "ALGO OVERFLOW!"
+;If devError = $0E Then  sertxd ("RANGE IGNORE THRESHOLD!") : endif
+If devError = 14 Then hserprint "RANGE IGNORE THRESHOLD!"
+
+hserprintcrlf
+
+'Resolve info of sensor VL53L0x:
+  'If devError = $00 or devError = $06 update Distance
+  'If devError = $00 Or devError = $06Then
+Distance=Da(11)*256+Da(12)
+'endif
+  'Effective SPAD Return Count
+SPAD = Da(3) + Da(4) /255
+  'Signal Rate
+Signal = Da(7)*256+Da(8)
+  'Ambient Rate
+Ambient= Da(9)*256+Da(10)
+
+'Send terminal info:
+;sertxd ( "Distance: ", #Distance," mm",13,10 )
+hserprint "Distance: "+str(Distance)+" mm"
+hserprintcrlf
+;sertxd ("Ambient ", #Ambient,"mc/s",13,10 )
+hserprint "Ambient "+str(Ambient)+" mc/s"
+hserprintcrlf
+;sertxd ( "Signal Rate = ",#Signal,"mc/s",13,10 )
+hserprint "Signal Rate = "+str(Signal)+" mc/s"
+hserprintcrlf
+;sertxd ( "SPAD = ",#SPAD,13,10 )
+hserprint "SPAD = "+str(SPAD)
+hserprintcrlf
+wait 2 s
+loop
+
+  sub rd_byte_verVL53( in VL53Dev as byte, in VL53Addr as byte, out VL53ByteVal as byte )
+      ;read a single byte from an address
+      #ifdef HI2C_DATA
+          HI2CStart
+          HI2CSend(VL53Dev)
+          HI2CSend(VL53Addr)
+          HI2CReStart
+          HI2CSend(VL53Dev or 1)                   ;set the read flag
+          HI2CReceive(VL53ByteVal, NACK)           ;read one byte and conclude
+          HI2CStop
+      #endif
+
+      #ifdef I2C_DATA
+          I2CStart                              ;generate a start signal
+          I2CSend(VL53Dev)                       ;inidcate a write
+          I2CSend(VL53Addr)
+          I2CReStart
+          I2CSend(VL53Dev or 1)                   ;set the read flag
+          I2CReceive(VL53ByteVal, NACK)           ;read one byte and conclude
+          I2CStop
+          I2CAckPoll(VL53Dev)                ;wait for buffer write
+      #endif
+
+    end sub
+
+
+    sub rd_word_verVL53( in VL53Dev as byte, in VL53Addr as byte, out VL53WordVal as word )
+      ;read a single byte from an address
+      #ifdef HI2C_DATA
+          HI2CStart
+          HI2CSend(VL53Dev)
+          HI2CSend(VL53Addr)
+          HI2CReStart
+          HI2CSend(VL53Dev or 1)                   ;set the read flag
+          HI2CReceive(VL53WordVal_h)           ;read one byte and conclude
+          HI2CReceive(VL53WordVal, NACK)           ;read one byte and conclude
+          HI2CStop
+      #endif
+
+      #ifdef I2C_DATA
+          I2CStart                              ;generate a start signal
+          I2CSend(VL53Dev)                       ;inidcate a write
+          I2CSend(VL53Addr)
+          I2CReStart
+          I2CSend(VL53Dev or 1)                   ;set the read flag
+          I2CReceive(VL53WordVal_h)           ;read one byte and conclude
+          I2CReceive(VL53WordVal, NACK)           ;read one byte and conclude
+          I2CStop
+          I2CAckPoll(VL53Dev)                ;wait for buffer write
+      #endif
+
+    end sub
+
+    sub rd_multi_verVL53  ( in VL53Dev as byte, in VL53Addr as byte,  in  NumOfByteData as byte, out DataBuffer() )
+      'NumOfByteData--
+      Dim NumOfByteData as byte
+      #ifdef I2C_DATA
+          I2CStart
+          I2CSend(VL53Dev)                 ;Send address
+          I2CSend(VL53Addr)
+          I2CReStart
+          I2CSend(VL53Dev+1)               ;indicate a read operation
+          For DataBuffer_Pointer = 1 to NumOfByteData
+              I2CReceive DataBuffer( DataBuffer_Pointer), ACK
+          next
+          I2CReceive BME280_DataBuffer( NumOfByteData ) , NACK
+          I2CStop
+      #endif
+
+      #ifdef HI2C_DATA
+          HI2CStart
+          HI2CSend(VL53Dev)
+          HI2CSend(VL53Addr)
+          HI2CReStart
+          HI2CSend(VL53Dev+1)               ;indicate a read operation
+
+          For DataBuffer_Pointer = 1 to NumOfByteData
+              HI2CReceive DataBuffer( DataBuffer_Pointer), ACK
+          next
+          HI2CReceive DataBuffer( NumOfByteData  ), NACK  'needed for the NACK
+          HI2CStop
+      #endif
+
+end sub
+
+
+
+
+sub wr_byte_VL52 ( in VL52Dev as byte, in VL52Address as byte,  in VL52_SendByte as byte )
+
+      #ifdef I2C_DATA
+          I2CStart
+          I2CSend(VL52Dev)                 ;Send address
+          I2CSend(VL52Address)
+          I2CSend(VL52_SendByte)           ;Send data
+          I2CStop
+      #endif
+
+      #ifdef HI2C_DATA
+          HI2CStart
+          HI2CSend(VL52Dev)
+          HI2CSend(VL52Address)
+          HI2CSend(VL52_SendByte)
+          HI2CStop
+      #endif
+
+end sub

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Compilation Report</title>
+</head>
+<body>
+<h1>Compilation Report</h1>
+<p>Compiler Version (YYYY-MM-DD): 0.98.<<>> 2020-04-09 (Windows 32 bit)</p>
+<h2>Compilation time</h2>
+<p> (Compile time: 3.96875 seconds)</p>
+<p> (Assembly time: 0.46875 seconds)</p>
+<p> (Download time: 1.0625 seconds)</p>
+<p> (Total time: 5.5 seconds)</p>
+<h2>Chip resource usage:</h2>
+<p>Chip Model: 16F18855</p>
+<p>Program Memory: 3194/8192 words (38.99%)</p>
+<p>RAM: 97/1024 bytes (9.47%)</p>
+<p> OSC: HFINT32, 32Mhz (Internal oscillator)</p>
+<h2>RAM Allocation</h2>
+<table border="1">
+</table>
+<h2>Subroutines</h2>
+<table border="1">
+<tr><th>Name</th><th>Code Size (lines)</th><th>Compiled Size (words)</th><th>Page</th><th>Outgoing calls</th></tr>
+<tr><td>Main</td><td>51</td><td>478</td><td>1</td><td>HIC2INIT(1), INITGLCD_ST7735(74), SYSCOMPEQUAL16(1), HEX(8), GLCDPRINT(2), STR(7), GLCDPRINTSTRING(13), GLCDLOCATESTRING(7), READMINITFT(5), GLCDPRINT(7), HI2CMODE(1), INITPPS(9), INITSYS(85)</td></tr>
+<tr><td>INITPPS</td><td>4</td><td>13</td><td>1</td><td></td></tr>
+<tr><td>READMINITFT</td><td>35</td><td>100</td><td>2</td><td>HI2CSTOP(1), HI2CRECEIVE(4), HI2CRESTART(1), HI2CSEND(25), HI2CSTART(4)</td></tr>
+<tr><td>GLCDPRINT</td><td>19</td><td>77</td><td>1</td><td>SYSMULTSUB(1), GLCDDRAWCHAR_ST7735(1)</td></tr>
+<tr><td>GLCDPRINT</td><td>18</td><td>73</td><td>2</td><td>SYSMULTSUB(1), GLCDDRAWCHAR_ST7735(1)</td></tr>
+<tr><td>GLCDPRINTSTRING</td><td>2</td><td>6</td><td>2</td><td>GLCDPRINT(1)</td></tr>
+<tr><td>GLCDLOCATESTRING</td><td>12</td><td>55</td><td>2</td><td>SYSDIVSUB16(1), SYSMULTSUB16(1), SYSMULTSUB(1), SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>INITGLCD_ST7735</td><td>268</td><td>1</td><td>1</td><td></td></tr>
+<tr><td>GLCDCLS_ST7735</td><td>26</td><td>65</td><td>2</td><td>SYSCOMPLESSTHAN16(1), Delay_MS(3), SENDWORD_ST7735(1), SENDCOMMAND_ST7735(1), SETADDRESS_ST7735(2)</td></tr>
+<tr><td>GLCDDRAWCHAR_ST7735</td><td>99</td><td>188</td><td>1</td><td>SYSCOMPLESSTHAN(2), PSET_ST7735R(2)</td></tr>
+<tr><td>SENDCOMMAND_ST7735</td><td>18</td><td>16</td><td>2</td><td></td></tr>
+<tr><td>SENDDATA_ST7735</td><td>18</td><td>16</td><td>2</td><td></td></tr>
+<tr><td>SENDWORD_ST7735</td><td>19</td><td>17</td><td>2</td><td></td></tr>
+<tr><td>SETADDRESS_ST7735</td><td>24</td><td>66</td><td>2</td><td>SENDDATA_ST7735(4), SENDCOMMAND_ST7735(1)</td></tr>
+<tr><td>GLCDROTATE_ST7735</td><td>43</td><td>67</td><td>2</td><td>SENDDATA_ST7735(10), SENDCOMMAND_ST7735(1)</td></tr>
+<tr><td>INITGLCD_ST7735R</td><td>409</td><td>612</td><td>1</td><td>Delay_S(1), Delay_MS(22), GLCDCLS_ST7735(1), GLCDROTATE_ST7735(1), SENDDATA_ST7735(66), SENDCOMMAND_ST7735(22)</td></tr>
+<tr><td>PSET_ST7735R</td><td>6</td><td>26</td><td>2</td><td>SENDWORD_ST7735(1), SENDCOMMAND_ST7735(1), SETADDRESS_ST7735(2)</td></tr>
+<tr><td>INITSYS</td><td>730</td><td>24</td><td>1</td><td></td></tr>
+<tr><td>SYSMULTSUB</td><td>39</td><td>12</td><td>2</td><td></td></tr>
+<tr><td>SYSMULTSUB16</td><td>73</td><td>36</td><td>2</td><td>SYSCOMPLESSTHAN16(1)</td></tr>
+<tr><td>SYSDIVSUB16</td><td>38</td><td>52</td><td>2</td><td>SYSCOMPEQUAL16(1)</td></tr>
+<tr><td>SYSCOMPEQUAL16</td><td>34</td><td>11</td><td>2</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN</td><td>23</td><td>7</td><td>2</td><td></td></tr>
+<tr><td>SYSCOMPLESSTHAN16</td><td>38</td><td>15</td><td>2</td><td></td></tr>
+<tr><td>STR</td><td>36</td><td>224</td><td>1</td><td>SYSDIVSUB16(4), SYSCOMPLESSTHAN16(4)</td></tr>
+<tr><td>HEX</td><td>14</td><td>38</td><td>2</td><td></td></tr>
+<tr><td>HI2CMODE</td><td>28</td><td>39</td><td>1</td><td></td></tr>
+<tr><td>HI2CSTART</td><td>17</td><td>14</td><td>2</td><td>HI2CWAITMSSP(1)</td></tr>
+<tr><td>HI2CRESTART</td><td>9</td><td>9</td><td>2</td><td>HI2CWAITMSSP(1)</td></tr>
+<tr><td>HI2CSTOP</td><td>13</td><td>16</td><td>2</td><td>HI2CWAITMSSP(1)</td></tr>
+<tr><td>HI2CSEND</td><td>20</td><td>34</td><td>2</td><td>HI2CWAITMSSP(1)</td></tr>
+<tr><td>HI2CRECEIVE</td><td>25</td><td>56</td><td>2</td><td>HI2CWAITMSSP(1)</td></tr>
+<tr><td>HI2CWAITMSSP</td><td>24</td><td>20</td><td>2</td><td></td></tr>
+<tr><td>HIC2INIT</td><td>5</td><td>2</td><td>1</td><td></td></tr>
+<tr><td>Delay_MS</td><td>0</td><td>14</td><td>2</td><td></td></tr>
+<tr><td>Delay_S</td><td>0</td><td>8</td><td>2</td><td>Delay_MS(1)</td></tr>
+<tr><td>SysStringTables</td><td>0</td><td>57</td><td>2</td><td></td></tr>
+<tr><td>GLCDCHARCOL3</td><td>0</td><td>126</td><td>1</td><td></td></tr>
+<tr><td>GLCDCHARCOL4</td><td>0</td><td>126</td><td>1</td><td></td></tr>
+<tr><td>GLCDCHARCOL5</td><td>0</td><td>126</td><td>1</td><td></td></tr>
+<tr><td>GLCDCHARCOL6</td><td>0</td><td>126</td><td>2</td><td></td></tr>
+<tr><td>GLCDCHARCOL7</td><td>0</td><td>126</td><td>2</td><td></td></tr>
+</table>
+</body>
+</html>
