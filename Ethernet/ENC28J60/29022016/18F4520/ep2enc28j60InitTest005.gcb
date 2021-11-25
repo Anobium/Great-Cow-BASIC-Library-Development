@@ -2,37 +2,40 @@
 '''--------------------------------------------------------------------------------------------------------------------------------
 ''' Description  :  Setup ENC28J60, then reads data from the Ethernet stream to a PC terminal.
 '''
-'''	You NEED a PC terminal connected to the serial out on the microprocessor.
+''' You NEED a PC terminal connected to the serial out on the microprocessor.
 '''
-'''@author 		[todo]
-'''@licence		GPL
-'''@version		[todo]
-'''@date   		[todo]
+'''@author    [todo]
+'''@licence   GPL
+'''@version   [todo]
+'''@date      [todo]
 '''********************************************************************************
 
 ; ----- Configuration
-#Chip 18F4520, 20
-#Config Osc = HS
-#Config MCLRE = ON
+#CHIP 18F4520, 20
+#CONFIG Osc = HS
+#CONFIG MCLRE = ON
 
-#include "..\ENC28J60_005.h"
+#INCLUDE "..\ENC28J60_005.h"
 
 ; ----- Constants
-#Define Heartbeat 			PortC.2
-#Define ENC28J60_DI			PortC.4							'Connected to Device SO
-#Define ENC28J60_DO			PortC.5							'Connected to Device SI
-#Define ENC28J60_SCK		PortC.3							'Connected to Clock
-#Define ENC28J60_CS 		PortA.5							'Chip select line
-#Define ENC28J60_RESET  PortD.2							'Reset line
-#Define TX 							PortC.7
-#Define RX							PortC.6
+#DEFINE Heartbeat       PortC.2
+#DEFINE ENC28J60_DI     PortC.4             'Connected to Device SO
+#DEFINE ENC28J60_DO     PortC.5             'Connected to Device SI
+#DEFINE ENC28J60_SCK    PortC.3             'Connected to Clock
+#DEFINE ENC28J60_CS     PortA.5             'Chip select line
+#DEFINE ENC28J60_RESET  PortD.2             'Reset line
 
-#define debugport portb.0
-
+#DEFINE TX              PortC.7
+#DEFINE RX              PortC.6
 'USART settings
-#define USART_BAUD_RATE 9600
-#define USART_BLOCKING
-#define USART_TX_BLOCKING
+#DEFINE USART_BAUD_RATE 9600
+#DEFINE USART_BLOCKING
+#DEFINE USART_TX_BLOCKING
+
+
+#DEFINE debugport portb.0
+
+
 
 ; ----- Define Hardware settings
 set debugport off
@@ -46,11 +49,11 @@ set debugport off
 
     wait 1 s
     HSerPrintCRLF 2
-    HserPrint "ENC28J60 Ethernet Driver 004" : HSerPrintCRLF
+    HserPrint "ENC28J60 Ethernet Driver 005" : HSerPrintCRLF
     HserPrint "Init Test": HSerPrintCRLF
     PulseOut Heartbeat, 15 Ms
 
-		' Set MAC address
+    ' Set MAC address
     macaddr =  0x42, 0x00, 0x33, 0x44, 0x55, 0x66
     ENC28J60_Init ( macaddr )
 
@@ -64,11 +67,11 @@ set debugport off
 
     for xx = 1 to 5
       ENC28J60_WriteReg(ECOCON, xx)
-    	wait 500 ms
+      wait 500 ms
     next
 
 
-		'Has MAC address been saved? Display the MAC address
+    'Has MAC address been saved? Display the MAC address
     HserPrint "Mac Address ":
     HserPrint hex(ENC28J60_ReadReg(MAADR1))+":"
     HserPrint hex(ENC28J60_ReadReg(MAADR0))+":"
@@ -78,13 +81,13 @@ set debugport off
     HserPrint hex(ENC28J60_ReadReg(MAADR4)): HSerPrintCRLF
 
 
-		'Show packets on the wire - move to library later.
+    'Show packets on the wire - move to library later.
     do
 
-    PulseOut Heartbeat, 15 Ms
+        PulseOut Heartbeat, 15 Ms
 
         if (ENC28J60_ReadReg(EPKTCNT) = 1) then '* We received a packet
-        '		data = stack_read() 'Call our stack layer to receive it
+        '   data = stack_read() 'Call our stack layer to receive it
 
             ENC28J60_Select
             FastHWSPITransfer  0b00111010, temp
@@ -100,24 +103,24 @@ set debugport off
                   HSerPrint SSPBUF
                   Set SSPSTAT.BF Off
                   if xx=14 then
-                  		HSerPrint ":"
+                      HSerPrint ":"
                   Else
-                  		HSerPrint " "
+                      HSerPrint " "
                   end if
             next
-        'Finish SPI command
-        ENC28J60_DeSelect
+            'Finish SPI command
+            ENC28J60_DeSelect
 
-        'Process received data here
+            'Process received data here
 
-        'Decrease packet received counter
-        ENC28J60_Select
-        FastHWSPITransfer(BFSCMD | ECON2, temp)
-        FastHWSPITransfer(EPKTDEC , temp)
-        ENC28J60_Deselect
+            'Decrease packet received counter
+            ENC28J60_Select
+            FastHWSPITransfer(BFSCMD | ECON2, temp)
+            FastHWSPITransfer(EPKTDEC , temp)
+            ENC28J60_Deselect
 
         else
-		        '	HSerPrint "."
+            ' HSerPrint "."
         end if
 
     loop
